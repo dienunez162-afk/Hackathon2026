@@ -58,15 +58,6 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 #btn-bitacora:hover img { transform: translateY(-2px) rotate(-3deg); }
 #btn-bitacora:focus-visible { outline: 2px solid var(--crema); outline-offset: 3px; }
 #bitacora-nuevos { position: absolute; right: -6px; top: -6px; min-width: 20px; height: 20px; border-radius: 10px; background: var(--rojo); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; padding: 0 4px; box-sizing: border-box; }
-#h-track { display: flex; gap: 4px; }
-.dia { width: 28px; height: 28px; border: 1px solid var(--borde); display: grid; place-items: center; font-size: 11px; color: var(--faint); position: relative; background: rgba(8, 10, 24, 0.6); }
-.dia.noche { background: rgba(24, 28, 90, 0.6); }
-.dia.pasado { color: var(--dim); border-color: rgba(168, 162, 232, 0.55); }
-.dia.hoy { color: var(--negro); background: var(--crema); border-color: var(--crema); font-weight: 700; }
-.dia i { position: absolute; bottom: -7px; width: 6px; height: 6px; border-radius: 50%; }
-.dia i.ll { left: 4px; background: var(--cian); }
-.dia i.av { left: 12px; background: var(--rojo); }
-.dia i.ev { right: 4px; background: var(--crema); border-radius: 0; transform: rotate(45deg); }
 
 .panel { background: var(--panel); border: 1px solid var(--borde); }
 .panel h3 { margin: 0 0 8px; font-size: 11px; letter-spacing: 0.16em; color: var(--dim); font-weight: 400; display: flex; justify-content: space-between; }
@@ -74,12 +65,12 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 /* sistemas (arriba a la izquierda) */
 .izq { position: absolute; left: 16px; top: 96px; width: 262px; padding: 10px 6px; box-sizing: border-box; }
 .izq h3 { padding: 0 6px; }
-/* barra = sprite de 760x160 (img/hud/barra-*.png); 10 segmentos de 10 puntos; los apagados se oscurecen */
+/* barra = sprite de 760x160 (img/hud/barra-*.png); 10 segmentos de 10 puntos.
+   Debajo la barra vacía y encima la llena, recortada con clip-path en el hueco entre segmentos (juego.js) */
 .barra { margin-bottom: 3px; }
 .barra .marco { position: relative; }
 .barra img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
-.barra .seg { position: absolute; top: 37.5%; height: 25%; width: 5.26%; background: rgba(8, 10, 26, 0.86); opacity: 0; transition: opacity 0.35s; }
-.barra .seg.off { opacity: 1; }
+.barra img.llena { position: absolute; left: 0; top: 0; transition: clip-path 0.35s steps(4); }
 .barra .lbl { display: block; padding-left: 24%; margin-bottom: -6px; position: relative; z-index: 1; font-size: 9.5px; letter-spacing: 0.12em; color: var(--casco); text-shadow: 1px 1px 0 #000; }
 .barra .delta { position: absolute; right: 4%; top: 30%; font-weight: 700; font-size: 15px; opacity: 0; transition: opacity 0.3s; text-shadow: 1px 1px 0 #000; }
 .barra .delta.on { opacity: 1; }
@@ -92,8 +83,18 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 #extra { border-top: 1px dashed var(--borde); padding-top: 8px; font-size: 12px; color: var(--dim); display: grid; gap: 4px; }
 #extra b { color: var(--ink); font-weight: 700; }
 
-/* cartas (arriba a la derecha) */
-.der { position: absolute; right: 16px; top: 96px; width: 262px; padding: 12px; box-sizing: border-box; }
+/* cartas: botón compacto arriba a la derecha que abre y cierra el panel (antes ocupaba la columna entera) */
+#btn-cartas { position: absolute; right: 16px; top: 96px; height: 28px; box-sizing: border-box; border-style: solid; border-color: transparent; border-width: 0 20px; border-image: url(img/dialogo/etiqueta-normal.png) 0 20 fill / 0 20px / 0 stretch; image-rendering: pixelated; background: none; padding: 0 2px 3px 8px; display: inline-flex; align-items: center; gap: 8px; font: 700 12px var(--mono); letter-spacing: 0.14em; color: rgb(24, 22, 58); cursor: pointer; }
+#btn-cartas b { letter-spacing: 0.04em; }
+#btn-cartas .flecha { transition: transform 0.2s; }
+#btn-cartas[aria-expanded="true"] .flecha { transform: rotate(180deg); }
+#btn-cartas:hover, #btn-cartas:focus-visible { filter: brightness(1.12); outline: none; }
+#btn-cartas.nueva { animation: carta-nueva 0.7s steps(2) 6; }
+@keyframes carta-nueva { 50% { filter: brightness(1.5) drop-shadow(0 0 8px rgb(255, 246, 225)); } }
+#btn-cartas.armada::after { content: "ESCUDO LISTO"; position: absolute; right: 0; top: 30px; font-size: 9.5px; letter-spacing: 0.1em; color: var(--hielo); white-space: nowrap; }
+.der { position: absolute; right: 16px; top: 132px; width: 262px; padding: 4px 8px 8px; box-sizing: border-box; z-index: 3; background: none; border: 16px solid transparent; border-image: url(img/dialogo/panel-normal.png) 32 fill / 32px / 0 stretch; image-rendering: pixelated; }
+#cerrar-cartas { background: none; border: 0; color: var(--dim); font: 700 13px var(--mono); cursor: pointer; padding: 0 2px; }
+#cerrar-cartas:hover { color: var(--crema); }
 #cartas { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
 .carta { text-align: left; background: rgba(20, 22, 50, 0.9); border: 1px solid var(--borde); color: var(--ink); padding: 5px 6px; min-height: 44px; cursor: pointer; font-size: 11px; line-height: 1.25; display: flex; flex-direction: column; gap: 2px; }
 .carta small { color: var(--dim); font-size: 10px; }
@@ -189,6 +190,13 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 .mj-barras .mb { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; font-size: 11px; color: var(--dim); }
 .mj-barras .mb i { width: 100%; display: block; }
 .interruptor.off { color: var(--faint); }
+/* "así se juega": instrucciones cortas + demo animada antes de empezar */
+.mj-demo { display: grid; grid-template-columns: 320px 1fr; gap: 18px; align-items: center; }
+.mj-demo img { width: 320px; height: 192px; image-rendering: pixelated; border: 3px solid var(--tema, var(--lila)); box-shadow: 0 0 0 2px rgb(24, 22, 52); background: rgb(10, 12, 28); }
+.mj-pasos { margin: 0; padding: 0; list-style: none; counter-reset: paso; display: grid; gap: 12px; font-size: 16px; line-height: 1.35; }
+.mj-pasos li { counter-increment: paso; display: grid; grid-template-columns: 28px 1fr; gap: 8px; align-items: start; }
+.mj-pasos li::before { content: counter(paso); display: grid; place-items: center; width: 24px; height: 24px; background: var(--tema, var(--lila)); color: rgb(24, 22, 58); font-weight: 700; box-shadow: inset -2px -2px 0 rgba(0, 0, 0, 0.3); }
+.mj-intro .ops { justify-content: flex-end; }
 
 /* aviso */
 #toast { position: absolute; right: 16px; bottom: 14px; width: 262px; font-size: 12.5px; padding: 10px 12px; box-sizing: border-box; background: var(--panel); border: 1px solid var(--crema); color: var(--crema); opacity: 0; transition: opacity 0.4s; pointer-events: none; }
@@ -284,7 +292,6 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
     <div id="hud" hidden>
       <div class="top">
         <div id="h-dia"><img src="img/hud/panel-dia.png" alt=""><span class="luna" aria-hidden="true"></span><span class="dia-txt"><small>DÍA</small><b id="h-num">00</b></span></div>
-        <div id="h-track" aria-label="Días de la misión"></div>
         <button type="button" id="btn-bitacora" title="Bitácora: lo que has descubierto" aria-label="Abrir la bitácora"><img src="img/hud/bitacora-icono.png" alt=""><span id="bitacora-nuevos" hidden>0</span></button>
       </div>
       <div id="h-fase"></div>
@@ -293,8 +300,9 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
         <div id="barras"></div>
         <div id="extra"></div>
       </aside>
-      <aside class="der panel" aria-label="Cartas">
-        <h3><span>CARTAS</span><span id="n-cartas"></span></h3>
+      <button type="button" id="btn-cartas" aria-expanded="false" aria-controls="panel-cartas" title="Tus cartas de la Luna">CARTAS <b id="n-cartas-btn">0 / 10</b><span class="flecha" aria-hidden="true">▾</span></button>
+      <aside class="der panel" id="panel-cartas" aria-label="Cartas" hidden>
+        <h3><span>CARTAS</span><span id="n-cartas"></span><button type="button" id="cerrar-cartas" aria-label="Cerrar cartas">✕</button></h3>
         <div id="cartas"></div>
         <p class="mini">Toca una carta para usarla. Escudo: frena la mitad del próximo daño a esa barra. Recurso: suma al instante.</p>
       </aside>

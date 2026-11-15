@@ -31,6 +31,8 @@ Lista revisada el 15 de noviembre de 2026, después del primer despliegue en Ver
 - [ ] Revisar en la página del reto qué piden exactamente (normalmente un video corto de demo, la descripción del proyecto y qué datos de la NASA se usan). La tabla de APIs del README sirve para esto último.
 
 ## Hecho
+- [x] **Pendientes del equipo (PDF).** Menú de cartas retráctil, "Así se juega" con demo animada antes de cada minijuego, sin la tira de días y barras sin rayitas en los segmentos apagados.
+- [x] **Cuadros de texto pixel art** con colores según la tensión (normal, llamada, alerta, catástrofe).
 - [x] **Sprites del HUD.** Barras de 10 segmentos, panel de día con luna de noche, botón de bitácora y retratos que hablan.
 - [x] **Bitácora.** Cartas, informes, datos reales de la NASA y lo aprendido; se guarda entre misiones.
 - [x] **Dificultad.** Ya se puede perder: con 50% de habilidad, 30% de las partidas terminan en evacuación (antes 5%). Tabla completa en `balance` de `datos/grafo-mision-lunar.json`.

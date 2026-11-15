@@ -55,8 +55,9 @@ Los originales están en `diseno/sprites/`. `herramientas/recortar-sprites.ps1` 
 
 | Sprite | Uso |
 |---|---|
-| `barra-salud / comida / energia / radiacion.png` | Barras de 10 segmentos; cada segmento vale 10 puntos y los apagados se oscurecen; parpadean en rojo |
-| `panel-dia.png` | Día de la misión; de noche (días 11-14) el sol cambia por una luna |
+| `barra-salud / comida / energia / radiacion.png` | Barras de 10 segmentos; cada segmento vale 10 puntos; parpadean en rojo |
+| `barra-*-vacia.png` | La misma barra con los segmentos apagados. El HUD la pone debajo y recorta la llena justo en el hueco entre segmentos. Se crea con `python herramientas/barras-vacias.py` |
+| `panel-dia.png` | Día de la misión; de noche (días 11-14) el sol cambia por una luna. Es el único indicador de día (se quitó la tira de días 0-14, que repetía lo mismo) |
 | `bitacora-icono.png` | Botón de la bitácora, con contador de cosas nuevas |
 | `bitacora-libro.png` | Fondo de la bitácora abierta |
 | `img/personajes/cientifica.jpg`, `control-mision.jpg` | Retratos de la Dra. Ortiz y Control de Misión; alternan los dos cuadros mientras hablan |
@@ -76,6 +77,10 @@ El color cambia según la tensión del momento. `pantalla()` en `public/js/juego
 - Sprites del juego (a 2x): `public/img/dialogo/` (`panel-<tema>.png`, `etiqueta-<tema>.png`, `boton*.png`).
 - Kit para reutilizar fuera del juego (1x y 4x, demo, CSS y ayuda para canvas): `diseno/dialogo/`. Abre `diseno/dialogo/demo.html`.
 - Para cambiar colores o crear un tema: edita `TEMAS` en `herramientas/generar-sprites-dialogo.py` y corre `python herramientas/generar-sprites-dialogo.py` (requiere `pip install pillow`).
+
+## Cartas y minijuegos en pantalla
+- **Cartas:** el botón `CARTAS n / 10` (arriba a la derecha) abre y cierra el panel. Se cierra con ✕, con Esc o tocando fuera. Brilla cuando llega una carta nueva y avisa "ESCUDO LISTO" si hay un escudo armado.
+- **Minijuegos:** antes de empezar se muestra "Así se juega": 2 o 3 pasos cortos y una demo animada (`public/img/minijuegos/<tipo>.gif`) donde una manita juega una ronda. El tiempo corre solo después de tocar "¡Empezar!" (o Enter). Los textos están en `COMO_SE_JUEGA` de `public/js/juego.js`; las demos se generan con `python herramientas/generar-demos-minijuegos.py`.
 
 ## Bitácora
 `public/js/bitacora.js`. Se llena sola y se guarda entre misiones (en el dispositivo):
