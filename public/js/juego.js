@@ -77,7 +77,7 @@
   const guardadoUso = leerLS("gnosis-uso") || {};
   const ui = {
     uso: guardadoUso.uso || "libre", grado: guardadoUso.grado || 4,
-    modo: qs.get("auto") ? "auto" : "manual", vel: +qs.get("vel") || 1, hab: 0.7, comp: 0.65, voz: false, textoGrande: false,
+    modo: qs.get("auto") ? "auto" : "manual", vel: +qs.get("vel") || 1, hab: 0.7, comp: 0.65, voz: true, textoGrande: false,
     // prueba de lectura (solo equipo): oculta los textos para comparar aciertos con y sin leer
     sinTexto: qs.get("sintexto") === "1", lecturaStats: { con: { ok: 0, n: 0 }, sin: { ok: 0, n: 0 } },
   };
@@ -382,9 +382,20 @@
   }
   const continuar = (cont, html = "Continuar ▸", delay = 1800) => botones(cont, [{ html, prim: true }], { auto: 0, delay });
   function marcar(cont, i, clase) { const b = cont.querySelector(`[data-i="${i}"]`); if (b) b.classList.add(clase); }
-  function voz(texto) {
-    if (!(ui.voz && J.lectura === 1)) return;
-    try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(texto); u.lang = "es-MX"; u.rate = 0.95; speechSynthesis.speak(u); } catch (e) { /* sin voz */ }
+  // narrador: lee en voz alta los textos del juego (activo por defecto, en todos los niveles; se apaga en la pausa)
+  let vozEs = null;
+  function elegirVoz() {
+    try { const vs = speechSynthesis.getVoices(); vozEs = vs.find((v) => /es[-_]MX/i.test(v.lang)) || vs.find((v) => /es[-_](US|419)/i.test(v.lang)) || vs.find((v) => /^es/i.test(v.lang)) || null; } catch (e) { vozEs = null; }
+  }
+  try { elegirVoz(); speechSynthesis.addEventListener("voiceschanged", elegirVoz); } catch (e) { /* sin voz */ }
+  function voz(texto, forzar) {
+    if ((!ui.voz && !forzar) || !texto || silenciado || ui.modo === "auto") return;
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(String(texto).replace(/[«»"]/g, "").replace(/\s+/g, " "));
+      u.lang = vozEs ? vozEs.lang : "es-MX"; if (vozEs) u.voice = vozEs; u.rate = 0.95;
+      speechSynthesis.speak(u);
+    } catch (e) { /* el navegador no tiene voz */ }
   }
   // quien: "control" (Control de Misión) o "cientifica" (Dra. Ortiz): su retrato habla mientras se lee el texto
   const NOMBRE_RETRATO = { control: "CONTROL DE MISIÓN", cientifica: "DRA. ORTIZ", laika: "LAIKA" };
@@ -527,6 +538,7 @@
     if (on && estado !== "juego") return;
     PAUSA.poner(on);
     $("pausa").hidden = !on;
+    try { if (on) speechSynthesis.pause(); else speechSynthesis.resume(); } catch (e) { /* sin voz */ }
     $("btn-pausa").setAttribute("aria-expanded", String(on));
     if (on) { abrirCartas(false); pintarPausa(); $("p-continuar").focus(); }
     if (!on) $("p-salir").dataset.confirma = "";
@@ -544,8 +556,13 @@
   $("p-musica").addEventListener("input", (e) => { AJUSTES_AUDIO.musica = +e.target.value / 100; $("o-musica").textContent = e.target.value + "%"; guardarAudio(); });
   $("p-efectos").addEventListener("input", (e) => { AJUSTES_AUDIO.efectos = +e.target.value / 100; $("o-efectos").textContent = e.target.value + "%"; guardarAudio(); });
   $("p-efectos").addEventListener("change", () => { if (window.SFX) SFX.play("acierto"); });   // para oír el volumen nuevo
-  $("p-silencio").addEventListener("click", () => { alternarSilencio(); pintarPausa(); });
-  $("p-voz").addEventListener("click", () => { ui.voz = !ui.voz; guardarLS("gnosis-pref", { voz: ui.voz, textoGrande: ui.textoGrande }); pintarPausa(); pintarCtl(); });
+  $("p-musica").addEventListener("change", () => { if (window.MUSICA_BASE) MUSICA_BASE.sincronizar(); });
+  $("p-silencio").addEventListener("click", () => { alternarSilencio(); if (silenciado) try { speechSynthesis.cancel(); } catch (e) { /* sin voz */ } pintarPausa(); });
+  $("p-voz").addEventListener("click", () => {
+    ui.voz = !ui.voz; guardarLS("gnosis-pref", { voz: ui.voz, textoGrande: ui.textoGrande }); pintarPausa(); pintarCtl();
+    try { speechSynthesis.cancel(); } catch (e) { /* sin voz */ }
+    if (ui.voz) voz("Narrador activado. Voy a leer los textos del juego.");
+  });
   $("p-texto").addEventListener("click", () => { ui.textoGrande = !ui.textoGrande; app.classList.toggle("texto-grande", ui.textoGrande); guardarLS("gnosis-pref", { voz: ui.voz, textoGrande: ui.textoGrande }); pintarPausa(); });
   $("p-pantalla").addEventListener("click", () => { fullscreen(); setTimeout(pintarPausa, 300); });
   $("p-salir").addEventListener("click", (e) => {
@@ -553,7 +570,7 @@
     if (b.dataset.confirma !== "1") { b.dataset.confirma = "1"; b.querySelector("span").textContent = "¿Seguro? Toca otra vez: se pierde esta partida (tu bitácora se guarda)"; return; }
     abrirPausa(false); volverAlMenu();
   });
-  { const pref = leerLS("gnosis-pref"); if (pref) { ui.voz = !!pref.voz; ui.textoGrande = !!pref.textoGrande; app.classList.toggle("texto-grande", ui.textoGrande); } }
+  { const pref = leerLS("gnosis-pref"); if (pref) { ui.voz = pref.voz !== false; ui.textoGrande = !!pref.textoGrande; app.classList.toggle("texto-grande", ui.textoGrande); } }
 
   // menú de cartas retráctil: un botón arriba a la derecha lo abre y lo cierra
   function abrirCartas(abrir) {
@@ -675,6 +692,7 @@
     const tema = estados && estados.alarma ? "catastrofe" : estados && estados.llamada || motivo === MOTIVO.control_mision ? "llamada" : motivo === MOTIVO.evento ? "alerta" : "normal";
     const c = pantalla(`<span class="tag">PLANO DE LA BASE</span><p class="txt">${motivo ? esc(motivo) + " " : ""}<b>${esc(NOMBRE_ESC[destino] || destino)}</b>${motivo && /¡[^!]*$/.test(motivo) ? "!" : "."}</p>` +
       `<p class="sub">${mod ? "Toca en el plano el módulo que parpadea, o el botón." : fuera ? "Ponte el traje: vas a salir de la base." : ""}</p><div class="ops" id="ops"></div>`, null, tema);
+    voz((motivo ? motivo + " " : "Ve a ") + (NOMBRE_ESC[destino] || destino) + ".");
     J.esperaModulo = mod || null;
     try { await continuar(c.querySelector("#ops"), fuera ? "Salir ▸" : "Ir ▸", 1300); } finally { J.esperaModulo = null; }
     escena(destino, estados);
@@ -785,6 +803,7 @@
     escena("plano", {});
     pantalla(`<div class="grande">DÍA ${String(J.dia).padStart(2, "0")}</div><p class="sub" style="text-align:center">${faseTxt(J.dia)}</p>` +
       (noche ? `<p class="txt" style="text-align:center">Se ocultó el Sol. Los paneles ya no cargan: la energía solo puede bajar.</p>` : ""));
+    voz(`Día ${J.dia}.` + (noche ? " Se ocultó el Sol. Los paneles ya no cargan." : ""));
     if (noche) log("Cayó la noche lunar.");
     animo("calma");
     await espera(noche ? 2200 : 1100);

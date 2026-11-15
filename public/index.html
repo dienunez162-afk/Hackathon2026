@@ -374,12 +374,12 @@ details.saber[open] summary { color: var(--ink); }
           <label class="p-fila" for="p-efectos"><span>✦ Efectos</span><input id="p-efectos" type="range" min="0" max="100" step="5"><output id="o-efectos"></output></label>
           <div class="p-botones">
             <button type="button" class="op" id="p-silencio" aria-pressed="false">Silenciar todo: <b>NO</b></button>
-            <button type="button" class="op" id="p-voz" aria-pressed="false">Leer en voz alta: <b>NO</b></button>
+            <button type="button" class="op" id="p-voz" aria-pressed="true">Narrador (leer en voz alta): <b>SÍ</b></button>
             <button type="button" class="op" id="p-texto" aria-pressed="false">Letra grande: <b>NO</b></button>
             <button type="button" class="op" id="p-pantalla" aria-pressed="false">Pantalla completa: <b>NO</b></button>
           </div>
           <button type="button" class="op p-salir" id="p-salir"><span>Salir al menú</span></button>
-          <p class="sub">Esc o P: pausa · M: silenciar · F: pantalla completa</p>
+          <p class="sub">Esc, P o ⏸: pausa (en pantalla completa usa P o el botón) · M: silenciar · F: pantalla completa</p>
         </div>
       </section>
     </div>
@@ -396,7 +396,7 @@ details.saber[open] summary { color: var(--ink); }
         <button type="button" data-vel="1">1×</button><button type="button" data-vel="2">2×</button><button type="button" data-vel="4">4×</button></div>
       <label class="ctl" for="c-hab">Habilidad <input id="c-hab" type="range" min="10" max="100" step="5" value="70"><output id="o-hab">70%</output></label>
       <label class="ctl" for="c-comp">Comprensión <input id="c-comp" type="range" min="10" max="100" step="5" value="65"><output id="o-comp">65%</output></label>
-      <div class="ctl"><button type="button" id="c-voz" aria-pressed="false">Voz en off (lectura 1)</button></div>
+      <div class="ctl"><button type="button" id="c-voz" aria-pressed="true">Narrador (voz)</button></div>
       <div class="ctl"><button type="button" id="c-sintexto" aria-pressed="false" title="Oculta los textos de lectura para comparar aciertos con y sin leer (también con ?sintexto=1)">Prueba: texto oculto</button></div>
       <div class="ctl ancho"><span>Prueba de lectura (aciertos al primer intento):</span><output id="c-lectura">—</output></div>
       <div class="ctl"><button type="button" id="c-reiniciar">Nueva partida</button><button type="button" id="c-menu">Menú</button><button type="button" id="c-borrar">Borrar progreso</button></div>
