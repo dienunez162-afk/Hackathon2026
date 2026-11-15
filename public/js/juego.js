@@ -661,7 +661,7 @@
       if (i.tipo === "mision") return `<span class="costo bueno">+${i.v} tarea de Control</span>`;
       if (i.tipo === "recarga") return `<span class="costo bueno">+${i.v} a la barra más débil</span>`;
       if (i.numero) return `<span class="costo ${cls}">${i.v > 0 ? "+" : ""}${i.v} ${MINUS[i.clave]}</span>`;
-      return `<span class="costo ${cls}"><span aria-hidden="true">${i.v > 0 ? "▲" : "▼"}</span> ${MINUS[i.clave]}<span class="oculto"> ${i.v > 0 ? "sube" : "baja"}</span></span>`;
+      return `<span class="costo ${cls}"><span aria-hidden="true">${i.v > 0 ? "▲" : "▼"}</span> ${MINUS[i.clave]}<span class="oculto"> ${window.I18N && window.I18N.idioma === "en" ? (i.v > 0 ? "rises" : "drops") : (i.v > 0 ? "sube" : "baja")}</span></span>`;
     }).join("") + "</span>";
   }
   // lo que se juega en un minijuego: si lo logras / si fallas (niveles 1 y 2)
@@ -760,7 +760,7 @@
     ajustar: (s) => (s.movil ? ["La zona verde se mueve: síguela con − y + (o ← →).", "Mantén la nave adentro hasta llenar la barra.", "Si te sales, la barra baja."]
       : ["Usa − y + (o ← →) para mover la aguja.", "Mantenla en la zona verde hasta llenar la barra."]),
     buscar: (s) => (s.objetivo === "fuga" ? ["Busca la tubería que gotea: ═💧═", "Las válvulas ═◘═ están bien: no las toques."] : [`Toca solo ${BUSCAR_QUE[s.objetivo] || "lo que buscas"}.`, "¡No toques las demás!"]),
-    grafica: (s) => (s.modo === "radiacion" ? ["Cada barra es un día de radiación.", "La última es hoy: ¿es seguro salir?"] : ["Lee las alertas del Sol.", "Decide cuándo tener listo el refugio."]),
+    grafica: (s) => (s.modo === "radiacion" ? ["Cada barra es un día de radiación.", "La última es hoy: ¿es seguro salir?"] : ["Mira la gráfica: cada barra es un día de alertas del Sol.", "Encuentra el día con más alertas y decide cuándo tener listo el refugio."]),
     rover: (s) => ["Mueve el rover con las flechas.", "El radar te dice si el hielo está cerca."].concat(s.guia ? ["Sigue la flecha de Control de Misión."] : ["¡Cuida la batería!"]),
     energia: () => ["Apaga lo que no necesitas.", "Cuando la barra quede en verde, confirma."],
     quiz: () => ["Lee la carta.", "Elige cuándo sirve."],
@@ -966,7 +966,7 @@
   document.addEventListener("click", (e) => { const b = e.target.closest("button.palabra"); if (b && window.BITACORA) { e.preventDefault(); BITACORA.abrir("diccionario", b.dataset.palabra); } });
   function lectura(texto, extra = "", titulo = "LEE Y BUSCA LA RESPUESTA") {
     if (ui.sinTexto) return `<div class="lectura"><span class="paso">${titulo}</span><p class="txt sub">[Texto oculto: prueba sin lectura]</p></div>`;
-    return `<div class="lectura"><span class="paso">${titulo}</span><p class="txt">${conPalabras(esc(texto))}</p>` +
+    return `<div class="lectura"><span class="paso">${titulo}</span><p class="txt">${conPalabras(esc(window.tr ? window.tr(texto) : texto))}</p>` +
       (extra ? `<details class="saber"><summary>Saber más</summary>${extra}</details>` : "") + `</div>`;
   }
   // pregunta del banco ligada a un informe: rota sin azar según la partida y cuántos informes de ese tema van
@@ -986,7 +986,7 @@
     // en el invernadero, un estudio real de NASA OSDR sobre plantas en el espacio (va en «Saber más»)
     const est = t === "invernadero" ? APIS.estudio() : null;
     const saber = `<p class="sub">Fuente: ${esc(n.informe.fuente || "NASA")} · se guardó en tu bitácora.</p>` +
-      (est ? `<p class="sub">La NASA lo estudia de verdad: «${esc(est.titulo)}» (${esc(est.id)}${est.mision ? ", misión " + esc(est.mision) : ""}). <a href="${esc(est.url)}" target="_blank" rel="noopener" style="color:var(--cian)">Ver el estudio</a></p>` : "");
+      (est ? `<p class="sub">La NASA lo estudia de verdad: «${esc(est.titulo)}» (${esc(est.id)}${est.mision ? (window.I18N && window.I18N.idioma === "en" ? ", mission " : ", misión ") + esc(est.mision) : ""}). <a href="${esc(est.url)}" target="_blank" rel="noopener" style="color:var(--cian)">Ver el estudio</a></p>` : "");
     let cab;
     if (nueva) {
       J.cartas[t] = { usada: false, armada: false };
@@ -994,7 +994,7 @@
       pintarCartas(t);
       if (window.SFX) SFX.play("carta-nueva");
       cab = `<span class="tag">NUEVA CARTA · INFORME</span><h2 class="titulo">${esc(k.nombre)}</h2>` +
-        `<p class="sub">${esc(k.frase)} ${k.uso.tipo === "escudo" ? `Es un escudo para la ${MINUS[k.uso.barra]}.` : `Suma ${k.uso.valor} de ${MINUS[k.uso.barra]}.`}</p>`;
+        `<p class="sub">${esc(k.frase)} <span>${k.uso.tipo === "escudo" ? `Es un escudo para la ${MINUS[k.uso.barra]}.` : `Suma ${k.uso.valor} de ${MINUS[k.uso.barra]}.`}</span></p>`;
       log(`Nueva carta: ${k.nombre}.`);
     } else cab = `<span class="tag">INFORME</span><h2 class="titulo">${esc(n.titulo)}</h2>`;
     if (nueva && Object.keys(J.cartas).length === 1) J.laikaCarta = true;   // primera carta: Laika explica al terminar
@@ -1066,7 +1066,7 @@
     return d ? ` <span class="malo">${d > 0 ? "+" : ""}${d} ${MINUS[b]}</span>` : "";
   }
   function aprender(clave, titulo, texto, quien, tema) {
-    if (window.BITACORA) BITACORA.registrar("aprendido", clave, { titulo, texto, quien, tema: tema || null });
+    if (window.BITACORA) { const T = window.tr || ((x) => x); BITACORA.registrar("aprendido", clave, { titulo: T(titulo), texto: T(texto), quien: T(quien), tema: tema || null }); }
   }
   // pregunta con opciones; en automático acierta con probabilidad "comprensión"
   // (no se puede llamar elegir: esa es la del menú y si se repite el nombre, JUGAR deja de funcionar)
@@ -1378,7 +1378,7 @@
       const tt = libres[i]; elegidas.push(tt);
       const k2 = R.temas[tt].carta;
       // por qué: razones predefinidas; la correcta es su momento, las demás son de otras cartas
-      const razon = (m) => "Porque sirve " + m.charAt(0).toLowerCase() + m.slice(1) + ".";
+      const razon = (m) => `Porque sirve ${m.charAt(0).toLowerCase() + m.slice(1)}.`;
       const otras = barajar(Object.keys(R.temas).filter((x) => x !== tt)).slice(0, PQ.opcionesPorNivel(J.reto) - 1).map((x) => razon(R.temas[x].carta.momento));
       const rz = PQ.barajarConCorrecta([razon(k2.momento), ...otras], 0);
       c = pantalla(`<span class="tag">MANUAL PARA EL SIGUIENTE CAPITÁN</span><h2 class="titulo">${esc(k2.nombre)}</h2><p class="txt">¿Por qué se la recomiendas?</p><div class="ops col" id="ops"></div><div id="res"></div>`);

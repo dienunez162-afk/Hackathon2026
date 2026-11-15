@@ -90,9 +90,10 @@
   const claseNum = (c) => { const m = /^([ABCMX])(\d*\.?\d*)/i.exec(c || ""); return m ? "ABCMX".indexOf(m[1].toUpperCase()) * 10 + (parseFloat(m[2]) || 0) : -1; };
   // la clase de una llamarada en palabras (para 7-8 años), sin quitar el dato real: «M3.5 · fuerte»
   // misma escala que ya explicaba el juego: A, B y C son suaves; M y X son fuertes (X, la más fuerte). TODO NASA: confirmar redacción.
-  const fuerzaDe = (c) => ({ X: "muy fuerte", M: "fuerte", C: "suave", B: "suave", A: "suave" })[String(c || "").charAt(0).toUpperCase()] || "";
+    const fuerzaDe = (c, en) => (en ? { X: "very strong", M: "strong", C: "mild", B: "mild", A: "mild" } : { X: "muy fuerte", M: "fuerte", C: "suave", B: "suave", A: "suave" })[String(c || "").charAt(0).toUpperCase()] || "";
   const MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
-  const fechaTxt = (f) => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(f || "")); return m ? `el ${+m[3]} de ${MESES[+m[2] - 1]}` : String(f || "").slice(0, 10); };
+  const MESES_EN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const fechaTxt = (f, en) => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(f || "")); return m ? (en ? `on ${MESES_EN[+m[2] - 1]} ${+m[3]}` : `el ${+m[3]} de ${MESES[+m[2] - 1]}`) : String(f || "").slice(0, 10); };
   // tres variantes, siempre con el dato en vivo de DONKI; cuál sale depende del número de partida (sin azar)
   const VARIANTES_BITACORA = ["dia", "letra", "fuerza"];
   function preguntaBitacora(datos, partida = 1) {

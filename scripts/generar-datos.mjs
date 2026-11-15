@@ -32,6 +32,11 @@ for (const [n, t] of en) {
   if (marcas(es.get(n)) !== marcas(t)) console.warn(`i18n: la línea ${n} no tiene los mismos {n} en los dos idiomas`);
   dic[es.get(n)] = t;
 }
+// traducciones extra (frases con «;», plantillas con datos, pistas): datos/i18n/extra-en.json
+try {
+  const extra = JSON.parse(readFileSync(join(raiz, "datos", "i18n", "extra-en.json"), "utf8"));
+  for (const [k, v] of Object.entries(extra)) if (!k.startsWith("_") && typeof v === "string") dic[k] = v;
+} catch (e) { console.warn("i18n: no se pudo leer extra-en.json:", e.message); }
 writeFileSync(join(raiz, "public", "js", "i18n-en.js"), "/* generado por scripts/generar-datos.mjs desde datos/i18n/: no editar a mano */\n" +
   `window.I18N_EN = ${JSON.stringify(dic)};\n`);
 console.log(`public/js/i18n-en.js listo (${Object.keys(dic).length} de ${es.size} textos traducidos)`);

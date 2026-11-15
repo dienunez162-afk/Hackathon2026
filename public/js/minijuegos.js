@@ -304,13 +304,45 @@
   function grafica(op) {
     const d = op.datos || {};
     if (op.modo === "pronostico") {
-      const eventos = (d.donki && d.donki.cmes && d.donki.cmes.length ? d.donki.cmes.slice(-3) : [{ fecha: "hace 2 días" }, { fecha: "ayer" }]);
-      const ui = marco(op, "Pronóstico del clima espacial", "Lee las alertas del Sol y decide cuándo tener listo el refugio.");
-      const opciones = barajar([["En los próximos 1 a 3 días", true], ["Dentro de un mes", false], ["Nunca: el Sol no llega a la Luna", false], ["Hace una semana", false]].slice(0, op.nivel + 1));
-      ui.cuerpo.innerHTML = `<div class="mj-datos"><p class="mj-ins">Alertas de ${esc(d.donki && d.donki.fuente || "NASA DONKI (muestra)")}:</p><ul>${eventos.map((e) => `<li>Nube de material del Sol (CME) · ${esc(String(e.fecha).slice(0, 10))}</li>`).join("")}</ul>
-        <p>Una CME tarda de 1 a 3 días en llegar. ¿Cuándo debes tener listo el refugio?</p></div><div class="mj-opciones">${opciones.map(([t], i) => `<button type="button" class="op" data-i="${i}">${esc(t)}</button>`).join("")}</div>`;
-      const s = sesion(op, ui, tiempoBase(op, 25));
-      ui.cuerpo.querySelector(".mj-opciones").addEventListener("click", (e) => { const b = e.target.closest("[data-i]"); if (!b || !s.vivo()) return; const ok = opciones[+b.dataset.i][1]; b.classList.add(ok ? "ok" : "mal"); s.fin(ok, ok ? "¡Buen pronóstico!" : "Recuerda: tarda de 1 a 3 días."); });
+      // Gráfica real de las alertas del Sol (NASA DONKI), una barra por día: sube con cada nube de material (CME) o llamarada fuerte (M y X).
+      // Paso 1: leer la gráfica (¿qué día hubo más alertas?). Paso 2: recordar lo que leíste en el informe (¿cuándo llega una CME?),
+      // sin que la pregunta lo diga.
+      const PQ = window.PREGUNTAS, DIAS = 10, iso = (f) => String(f || "").slice(0, 10);
+      const donki = d.donki || {};
+      const ev = [...(donki.cmes || []), ...(donki.llamaradas || []).filter((l) => /^[MX]/i.test(l.clase || ""))].map((e) => iso(e.fecha)).filter((f) => /^\d{4}-\d{2}-\d{2}$/.test(f));
+      const sumar = (f, k) => new Date(Date.parse(f + "T12:00:00Z") + k * 86400000).toISOString().slice(0, 10);
+      const fin = ev.length ? ev.slice().sort().pop() : new Date().toISOString().slice(0, 10);
+      let dias = Array.from({ length: DIAS }, (_, i) => sumar(fin, i - (DIAS - 1)));
+      let cuenta = dias.map((f) => ev.filter((x) => x === f).length);
+      let real = ev.length > 0;
+      // sin datos o con empate en el día más alto: datos de muestra con un día claramente más alto
+      const tope = Math.max(...cuenta);
+      if (!real || tope === 0 || cuenta.filter((n) => n === tope).length > 1) { cuenta = [0, 1, 0, 2, 0, 0, 5, 1, 0, 1]; real = false; dias = Array.from({ length: DIAS }, (_, i) => sumar(new Date().toISOString().slice(0, 10), i - (DIAS - 1))); }
+      const maxN = Math.max(...cuenta), iMax = cuenta.indexOf(maxN);
+      const nOpc = Math.max(2, op.nivel + 1);
+      const otros = barajar(dias.map((f, i) => i).filter((i) => cuenta[i] < maxN)).slice(0, nOpc - 1);
+      const op1 = barajar([iMax, ...otros]);
+      const lista1 = op1.map((i) => PQ.fechaTxt(dias[i]));
+      const op2 = barajar([["En los próximos 1 a 3 días", true], ["Dentro de un mes", false], ["Nunca: el Sol no llega a la Luna", false], ["Hace una semana", false]].slice(0, nOpc));
+      const ui = marco(op, "Pronóstico del clima espacial", "Mira la gráfica de alertas del Sol y contesta.");
+      const fuente = real ? (donki.fuente || "NASA DONKI") : "NASA DONKI (muestra)";
+      ui.cuerpo.innerHTML = `<div class="mj-datos"><p class="mj-ins">Fuente: ${esc(fuente)} · cada barra es un día; sube con cada nube de material del Sol (CME) o llamarada fuerte.</p>
+        <div class="mj-barras">${cuenta.map((n, k) => `<div class="mb"><b style="font-size:11px;color:var(--ink)">${n}</b><i style="height:${Math.max(4, Math.round(100 * n / maxN))}%;background:var(--ambar)"></i><span>${esc(dias[k].slice(8) + "/" + dias[k].slice(5, 7))}</span></div>`).join("")}</div></div>
+        <p class="mj-tit2" style="font-size:15px">1 · ¿Qué día hubo más alertas del Sol?</p><div class="mj-opciones col" id="r1">${lista1.map((t, i) => `<button type="button" class="op" data-i="${i}">${esc(t)}</button>`).join("")}</div>
+        <div id="r2"></div>`;
+      const s = sesion(op, ui, tiempoBase(op, 35));
+      let ok1 = null;
+      ui.cuerpo.querySelector("#r1").addEventListener("click", (e) => {
+        const b = e.target.closest("[data-i]"); if (!b || !s.vivo() || ok1 !== null) return;
+        ok1 = op1[+b.dataset.i] === iMax; b.classList.add(ok1 ? "ok" : "mal"); sfx(ok1 ? "acierto" : "error");
+        const r2 = ui.cuerpo.querySelector("#r2");
+        r2.innerHTML = `<p class="mj-tit2" style="font-size:15px">2 · Una nube de material del Sol (CME) salió ese día rumbo a la Luna. ¿Cuándo debes tener listo el refugio?</p>${op.nivel <= 1 ? '<p class="mj-ins">Pista: lo leíste en el informe del Sol.</p>' : ""}<div class="mj-opciones col">${op2.map(([t], i) => `<button type="button" class="op" data-i="${i}">${esc(t)}</button>`).join("")}</div>`;
+        r2.querySelector(".mj-opciones").addEventListener("click", (e2) => {
+          const b2 = e2.target.closest("[data-i]"); if (!b2 || !s.vivo()) return;
+          const ok2 = op2[+b2.dataset.i][1]; b2.classList.add(ok2 ? "ok" : "mal");
+          s.fin(ok1 && ok2, ok1 && ok2 ? "¡Buen pronóstico!" : !ok2 ? "Recuerda: una CME tarda de 1 a 3 días en llegar." : "La barra más alta es el día con más alertas.");
+        });
+      });
       return s.promesa;
     }
     // radiación: 7 días reales de CRaTER (RadLab). Sin colores que den la respuesta: cada barra dice

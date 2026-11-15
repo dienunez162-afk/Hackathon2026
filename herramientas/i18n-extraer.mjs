@@ -18,7 +18,7 @@ const agregar = (t) => { t = t.trim(); const solo = t.replace(/\{\d+\}/g, "").tr
 
 function recorrer(x, clave) {
   if (typeof x === "string") { if (!NO_TRADUCIR.has(clave) && esTexto(x)) agregar(x); return; }
-  if (Array.isArray(x)) x.forEach((v) => recorrer(v, clave));
+  if (Array.isArray(x)) x.forEach((v) => recorrer(v, clave === "clave" ? "" : clave));   // pistas de las averías
   else if (x && typeof x === "object") for (const [k, v] of Object.entries(x)) recorrer(v, k);
 }
 for (const f of ["grafo-mision-lunar.json", "retos-mision-lunar.json", "preguntas-mision-lunar.json"]) recorrer(JSON.parse(readFileSync(join(raiz, "datos", f), "utf8")), "");

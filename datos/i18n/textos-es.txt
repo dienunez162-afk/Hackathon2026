@@ -1701,14 +1701,14 @@
 1700	Una base que dura meses recibe más golpes que una visita de días.
 1701	Una base que produce su comida depende menos de los envíos.
 1702	Una CME tarda de 1 a 3 días en llegar. ¿Cuándo debes tener listo el refugio?
-1703	Una eyección de masa coronal viaja hacia la Luna. Sin campo magnético, la superficie recibe la radiación directo.
+1703	Una nube de material del Sol (CME) viaja hacia la Luna. Sin campo magnético, la superficie recibe la radiación directo.
 1704	Una frase corta con vocabulario simple.
 1705	Una fuga de agua
 1706	Una fuga en el pasillo
 1707	Una fuga hace bajar el medidor de agua cada hora hasta que cierras la válvula. Con menos agua, también baja el oxígeno.
 1708	Una lluvia de micrometeoritos golpea la base.
 1709	Una lluvia de micrometeoritos golpea la base. Viajan a más de 20 km por segundo.
-1710	Una nube de material del Sol (eyección de masa coronal) suele tardar de 1 a 3 días en llegar. Si la detectas a tiempo, puedes preparar el refugio antes.
+1710	Una nube de material del Sol (CME) suele tardar de 1 a 3 días en llegar. Si la detectas a tiempo, puedes preparar el refugio antes.
 1711	Una nube de material del Sol puede tardar varios días en llegar.
 1712	Una nube de material que lanza el Sol. Suele tardar de 1 a 3 días en llegar.
 1713	Una nube de regolito, el polvo lunar, cubrió los paneles solares. El polvo lunar es filoso como vidrio.

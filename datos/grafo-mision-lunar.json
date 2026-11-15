@@ -244,7 +244,7 @@
       },
       "informe": {
         "tema": "radiacion",
-        "texto": "Una nube de material del Sol (eyección de masa coronal) suele tardar de 1 a 3 días en llegar. Si la detectas a tiempo, puedes preparar el refugio antes.",
+        "texto": "Una nube de material del Sol (CME) suele tardar de 1 a 3 días en llegar. Si la detectas a tiempo, puedes preparar el refugio antes.",
         "fuente": "NASA DONKI – CME"
       },
       "escenario": "control"
@@ -412,7 +412,7 @@
           "pista": "Busca las paredes más gruesas."
         },
         "nivel3": {
-          "texto": "Una eyección de masa coronal viaja hacia la Luna. Sin campo magnético, la superficie recibe la radiación directo.",
+          "texto": "Una nube de material del Sol (CME) viaja hacia la Luna. Sin campo magnético, la superficie recibe la radiación directo.",
           "decision": "Si refuerzas el refugio hoy, la próxima tormenta será más fácil; si no, la radiación se acumula.",
           "pista": "¿Qué módulo tiene más blindaje?"
         }

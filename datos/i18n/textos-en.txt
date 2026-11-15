@@ -1254,14 +1254,14 @@
 1697=A bar needs attention. Mission Control will stay closer to you these days.
 1698=A NASA database where every storm from the Sun is kept.
 1702=A CME takes 1 to 3 days to arrive. When should you have the shelter ready?
-1703=A coronal mass ejection is traveling toward the Moon. Without a magnetic field, the surface gets the radiation directly.
+1703=A cloud of material from the Sun (CME) is traveling toward the Moon. Without a magnetic field, the surface gets the radiation directly.
 1704=A short sentence with simple words.
 1705=A water leak
 1706=A leak in the hallway
 1707=A leak makes the water meter go down every hour until you close the valve. With less water, oxygen goes down too.
 1708=A micrometeorite shower hits the base.
 1709=A micrometeorite shower hits the base. They travel at more than 20 km per second.
-1710=A cloud of material from the Sun (coronal mass ejection) usually takes 1 to 3 days to arrive. If you detect it in time, you can get the shelter ready first.
+1710=A cloud of material from the Sun (CME) usually takes 1 to 3 days to arrive. If you detect it in time, you can get the shelter ready first.
 1712=A cloud of material thrown out by the Sun. It usually takes 1 to 3 days to arrive.
 1713=A cloud of regolith, the moon dust, covered the solar panels. Moon dust is sharp like glass.
 1717=A small rock hit a panel. Repair it before the Sun comes out again.

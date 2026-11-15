@@ -257,6 +257,8 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 .oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .apuesta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 13px; color: var(--dim); }
 .apuesta .costos { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+/* el cuadro de texto y los minijuegos van por encima de la etiqueta de las barras (antes se encimaba COMIDA / RADIACIÓN sobre el juego) */
+#consola, #mj { z-index: 2; }
 #girar { display: none; position: fixed; inset: 0; z-index: 50; place-content: center; text-align: center; gap: 12px; padding: 24px; background: #05060f; color: var(--ink); font: 700 20px/1.4 var(--mono); }
 #girar b { font-size: 56px; }
 @media (orientation: portrait) and (max-width: 820px) { #girar { display: grid; } }
@@ -399,7 +401,7 @@ details.saber[open] summary { color: var(--ink); }
 </style>
 </head>
 <body>
-<div id="girar" role="alert"><b aria-hidden="true">⟳</b><span>Gira tu dispositivo para jugar</span><span style="font-weight:400;font-size:15px;color:var(--dim)">Rotate your device to play</span></div>
+<div id="girar" role="alert" data-sin-traducir><b aria-hidden="true">⟳</b><span>Gira tu dispositivo para jugar</span><span style="font-weight:400;font-size:15px;color:var(--dim)">Rotate your device to play</span></div>
 <div id="app">
   <div id="stage">
     <canvas id="juego" width="2560" height="1440" aria-label="G-NOSIS: la Luna y la base dibujadas en ASCII"></canvas>

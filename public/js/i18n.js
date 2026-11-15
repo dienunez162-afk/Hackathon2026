@@ -21,7 +21,7 @@
   // ---------- diccionario ----------
   // palabras sueltas del panel del equipo que el extractor no alcanza a ver (vienen de claves internas)
   // y frases con «;» (el extractor las salta porque parecen código)
-  const EXTRA = { sube: "rises", baja: "drops", "Si lo logras:": "If you win:", "Si fallas:": "If you fail:", despensa: "pantry", agotado: "exhausted", "Datos:": "Data:", fuerte: "strong", suave: "mild",
+  const EXTRA = { "Si lo logras:": "If you win:", "Si fallas:": "If you fail:", despensa: "pantry", agotado: "exhausted", "Datos:": "Data:", fuerte: "strong", suave: "mild",
     "La Tierra tiene un escudo invisible (su campo magnético) y aire grueso; la Luna no.": "Earth has an invisible shield (its magnetic field) and thick air; the Moon doesn't.",
     "Una nube de material del Sol (CME) puede llegar en apenas unas 15 horas; las más lentas tardan varios días. Si la detectas a tiempo, puedes preparar el refugio antes.": "A cloud of material from the Sun (CME) can arrive in as little as 15 hours; the slowest take several days. If you detect it in time, you can get the shelter ready first.",
     "Una nube de material del Sol (CME) puede llegar en apenas unas 15 horas; las más lentas tardan varios días.": "A cloud of material from the Sun (CME) can arrive in as little as 15 hours; the slowest take several days.",
@@ -46,6 +46,12 @@
       else if (/^[\p{L}]{4,}$/u.test(es)) palabras.set(es, en);     // RADIACIÓN, Energía, invernadero...
     }
   }
+  const partirFrases = (x) => x.split(/(?<=[.!?])\s+(?=[¿¡"«A-ZÁÉÍÓÚÑ])/);
+  for (const [es, en] of Object.entries(D)) {
+    if (/\{\d+\}/.test(es)) continue;
+    const a = partirFrases(es), b = partirFrases(en);
+    if (a.length >= 2 && a.length === b.length) a.forEach((f, i) => { if (!exacto.has(f) && !/\{\d+\}/.test(f)) exacto.set(f, b[i]); });
+  }
   const rePalabras = palabras.size ? new RegExp(`(?<!\\p{L})(${[...palabras.keys()].sort((a, b) => b.length - a.length).map(escRe).join("|")})(?!\\p{L})`, "gu") : null;
   patrones.sort((a, b) => b.fijo - a.fijo);           // primero los más específicos
   fragmentos.sort((a, b) => b[0].length - a[0].length);
@@ -54,6 +60,8 @@
   function traducir(t) {
     const x = exacto.get(t);
     if (x !== undefined) return x;
+    const c0 = t.charAt(0);
+    if (c0 && c0 !== c0.toUpperCase()) { const y = exacto.get(c0.toUpperCase() + t.slice(1)); if (y !== undefined) return y.charAt(0).toLowerCase() + y.slice(1); }
     for (const p of patrones) {
       const m = p.re.exec(t);
       if (!m) continue;

@@ -54,6 +54,19 @@
     ["Sismómetro", ["sismómetros", "sismómetro"], "Un aparato que mide los temblores. Los astronautas de Apollo dejaron varios en la Luna."],
     ["Tormenta solar", ["tormenta solar", "tormentas solares"], "Cuando el Sol lanza partículas con mucha energía. Las más rápidas pueden llegar en menos de una hora."],
   ].map(([palabra, formas, def]) => ({ palabra, formas, def }));
+  // en inglés: el nombre y las formas que se buscan dentro del texto ya traducido (la definición se traduce con el diccionario del juego)
+  const EN_GLOSARIO = {
+    "Atmósfera": ["Atmosphere", ["atmosphere"]], "Autosuficiente": ["Self-sufficient", ["self-sufficient"]], "Campo magnético": ["Magnetic field", ["magnetic field"]],
+    "CME (eyección de masa coronal)": ["CME (coronal mass ejection)", ["coronal mass ejection", "CME"]], "Cráter": ["Crater", ["craters", "crater"]],
+    "CRaTER": ["CRaTER", ["CRaTER"]], "DONKI": ["DONKI", ["DONKI"]], "Hidrógeno": ["Hydrogen", ["hydrogen"]], "Invernadero": ["Greenhouse", ["greenhouse"]],
+    "Llamarada solar": ["Solar flare", ["solar flares", "solar flare", "flares", "flare"]], "Micrometeorito": ["Micrometeoroid", ["micrometeoroids", "micrometeoroid", "micrometeorites", "micrometeorite"]],
+    "Moho": ["Mold", ["moldy", "mold"]], "Noche lunar": ["Lunar night", ["lunar night"]], "Oxígeno": ["Oxygen", ["oxygen"]],
+    "Panel solar": ["Solar panel", ["solar panels", "solar panel", "panels"]], "Radiación": ["Radiation", ["radiation"]], "Rayos cósmicos": ["Cosmic rays", ["cosmic rays"]],
+    "Refugio": ["Shelter", ["shelter"]], "Regolito": ["Regolith", ["regolith"]], "Relevo": ["Relief crew", ["relief crew"]], "Rover": ["Rover", ["rover"]],
+    "Sismo lunar": ["Moonquake", ["moonquakes", "moonquake"]], "Sismómetro": ["Seismometer", ["seismometers", "seismometer"]], "Tormenta solar": ["Solar storm", ["solar storms", "solar storm"]],
+  };
+  const enIngles = () => !!(window.I18N && window.I18N.idioma === "en");
+  const glosarioVisible = () => (!enIngles() ? GLOSARIO : GLOSARIO.map((g) => { const e = EN_GLOSARIO[g.palabra]; return e ? { palabra: e[0], formas: e[1], def: window.tr ? window.tr(g.def) : g.def } : g; }));
 
   const $ = (id) => document.getElementById(id);
   let seccion = "cartas", elegido = null;
@@ -127,11 +140,11 @@
     const izq = `<h3 class="bt-tit">Clima espacial real</h3>
       <p class="bt-mini">NASA DONKI · últimos 30 días · ${etiqueta(est.donki)}</p>
       <ul class="bt-datos">
-        <li><b>${fl.length}</b> llamaradas solares${fuerte ? `; la más fuerte fue <b>${esc(fuerte.clase)} · ${esc(PREGUNTAS.fuerzaDe(fuerte.clase))}</b> ${esc(PREGUNTAS.fechaTxt(fuerte.fecha))}` : ""}</li>
+        <li><b>${fl.length}</b> llamaradas solares${fuerte ? `; la más fuerte fue <b>${esc(fuerte.clase)} · ${esc(PREGUNTAS.fuerzaDe(fuerte.clase, enIngles()))}</b> ${esc(PREGUNTAS.fechaTxt(fuerte.fecha, enIngles()))}` : ""}</li>
         <li><b>${(dk.cmes || []).length}</b> nubes de material del Sol (CME)</li>
         <li>Tormenta geomagnética más fuerte: <b>Kp ${kp || "—"}</b> ${kp >= 6 ? "(¡fuerte!)" : kp >= 5 ? "(moderada)" : ""}</li>
       </ul>
-      <p class="bt-mini">Últimas llamaradas: ${fl.slice(0, 5).map((f) => `${esc(f.clase)} · ${esc(PREGUNTAS.fuerzaDe(f.clase))} (${esc(PREGUNTAS.fechaTxt(f.fecha))})`).join(" · ") || "—"}</p>
+      <p class="bt-mini">Últimas llamaradas: ${fl.slice(0, 5).map((f) => `${esc(f.clase)} · ${esc(PREGUNTAS.fuerzaDe(f.clase, enIngles()))} (${esc(PREGUNTAS.fechaTxt(f.fecha, enIngles()))})`).join(" · ") || "—"}</p>
       <p class="bt-mini">Las llamaradas A, B y C son suaves; M y X son fuertes. Una CME tarda de 1 a 3 días en llegar a la Luna.</p>`;
     const serie = (rl && rl.serie) || [], base = (rl && rl.base) || 1;
     const maxL = Math.log10(Math.max(1.5, ...serie.map((x) => x.dosis / base)));
@@ -195,7 +208,7 @@
   setTimeout(badge, 0);
 
   window.BITACORA = {
-    registrar, abrir, cerrar, glosario: GLOSARIO,
+    registrar, abrir, cerrar, get glosario() { return glosarioVisible(); },
     abierta: () => !!$("bitacora") && !$("bitacora").hidden,
     // lo guardado en «Lo aprendido» (para el repaso al empezar otra misión)
     aprendidos: () => Object.entries(B.aprendido).map(([clave, a]) => Object.assign({ clave }, a)),
