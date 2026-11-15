@@ -142,1640 +142,1724 @@
 141	¿Qué pasa con los paneles solares en la noche lunar?
 142	¿Qué tan rápido pueden llegar las partículas más rápidas de una tormenta solar?
 143	¿Seguro? Toca otra vez: se pierde esta partida (tu bitácora se guarda)
-144	… PRIMERO CAMBIA {0}. ¿QUÉ BARRA CAMBIA DESPUÉS?
-145	.mj-opciones .op
-146	.mj-tiempo i
-147	· ajustes: {0}
-148	· BAJA = MEJOR
-149	· del {0} al {1}
-150	(¡fuerte!)
-151	((( Llamada de Control de Misión )))
-152	(máximo
-153	(solo de día)
-154	) · Combustible:
-155	[G-NOSIS] pregunta del banco omitida (
-156	[G-NOSIS] pregunta omitida (
-157	[G-NOSIS] pregunta omitida: opciones o respuesta inválidas
-158	[ON ]
-159	[sin texto]
-160	[Texto oculto: prueba sin lectura]
-161	{0} · partida {1} · reto {2} · lectura {3} ·
-162	{0} de {1} recomendaciones con buena razón
-163	{0} de {1} respuestas para la Tierra.
-164	{0} está lista: frenará la mitad del próximo daño a la {1}.
-165	{0} frenó la mitad del daño.
-166	{0} solo sirve cuando hay Sol.
-167	{0}: {1} de 100
-168	{0}: falta la fuente NASA
-169	{0}: falta una URL de nasa.gov
-170	{0}: id repetido
-171	{0}: la frase de evidencia no está en la lectura
-172	{0}: menos de 3 opciones
-173	{0}: tema desconocido {1}
-174	{0}: transferencia fuera del nivel 3
-175	// mision lunar
-176	#mj-ops .op.prim:not([disabled])
-177	#panel-cartas, #btn-cartas
-178	+{0} a la barra más débil
-179	+{0} tarea de Control
-180	+12 a la barra más débil, al instante.
-181	⏸ PAUSA
-182	▲ MOTOR
-183	▶ Continuar
-184	♪ Música
-185	♪ SONIDO: NO  [M]
-186	♪ SONIDO: SI  [M]
-187	♪ toca para activar el sonido
-188	✦ Efectos
-189	🗣 Voz
-190	0% evacuación, 27% una estrella, 6% dos, 67% tres
-191	1 · ¿Cómo está la radiación hoy?
-192	1 · ¿CUÁL ES LA CAUSA?
-193	1 · PREDICE: ¿QUÉ BARRA CAMBIA PRIMERO?
-194	1. Aviso: Control de Misión describe la situación.
-195	1. Suena una alarma: una barra baja y no se dice por qué.
-196	14 días
-197	14 días sin Sol: carga antes de que oscurezca.
-198	15% evacuación, 83% una estrella, 2% dos, 1% tres
-199	1ª llamada: un repaso pendiente de la partida anterior, o un tema que aprendió en ella (retención diferida).
-200	2 · ¿QUÉ DATO DEL INFORME LO PRUEBA?
-201	2 · ¿QUÉ REPARAS?
-202	2. El niño recorre la base y encuentra pistas.
-203	2. Predecir: el niño toca la barra que cree que va a cambiar.
-204	20 km en un solo segundo: mucho más rápido que una bala.
-205	28 días
-206	2ª y 3ª llamada: un tema que falló en esta partida hace 2+ días (repaso).
-207	3 · ACTÚA
-208	3. Actuar: elige qué hacer (2, 3 o 4 acciones según el nivel).
-209	3. Elige la reparación. Si acierta al primer intento, repara rápido y gana +5 en esa barra.
-210	30% evacuación, 70% una estrella, 0% dos, 0% tres
-211	4 · MIRA QUÉ PASÓ
-212	4. Cada intento fallido: la barra baja 4 más, esa opción se tacha y la Dra. Ortiz manda una pista extra.
-213	4. Ver: las barras cambian frente a él. Si se equivocó, una línea explica por qué.
-214	5% evacuación, 76% una estrella, 6% dos, 13% tres
-215	53% evacuación, 47% una estrella, 0% dos, 0% tres
-216	59 días
-217	72% evacuación, 28% una estrella, 0% dos, 0% tres
-218	84 días
-219	A la Estación Espacial llegan naves de carga cada pocos meses. En la Luna serán menos frecuentes, así que no puedes depender solo de ellas: también hay que cultivar.
-220	A menos de -246 °C
-221	A unos -13 °C
-222	A unos -133 °C
-223	A unos 2 km por hora
-224	A unos 20 °C
-225	A unos 20 km por hora
-226	A unos 20 km por segundo
-227	A unos 20 metros por segundo
-228	ABCMX
-229	Abre tu bitácora en «Datos NASA». ¿Qué clase (letra y número) tuvo la llamarada solar más fuerte?
-230	Abre tu bitácora en «Datos NASA». ¿Qué día fue la llamarada solar más fuerte?
-231	Abre tu bitácora en «Datos NASA». En la peor tormenta, ¿cuánta radiación hubo comparada con un día normal?
-232	Abre tu bitácora en «Datos NASA». La llamarada más fuerte, ¿fue suave, fuerte o muy fuerte?
-233	Abre tu bitácora en «Lo aprendido» y busca ese título.
-234	Abrir la bitácora
-235	Abrir la bitácora ▸
-236	Acostados, mirando hacia arriba
-237	Además, el oxígeno para respirar se obtiene separando el agua en hidrógeno y oxígeno.
-238	Afuera hay unos -133 °C y sin calor el cuerpo sufre
-239	Afuera te llegan las partículas. El refugio te protege.
-240	Agua de más
-241	Agua reciclada
-242	Agua y aire van juntos: por eso una fuga es tan grave.
-243	Agujero: se escapa el aire
-244	Ahí no hay luz, así que el rover no puede recargar sus baterías.
-245	Ahí nunca llega el Sol, así que es más frío que la noche cerca del ecuador.
-246	Ahora ya lo sabes.
-247	Ahorrar: apagar las luces que no se necesitan
-248	Ahorras en lo que no importa y cuidas la calefacción para los días de frío.
-249	Ajusta el medidor
-250	Al amanecer en la Luna, el Sol sale muy bajo, cerca del horizonte. ¿Cómo pones los paneles?
-251	Al caer la noche la pantalla oscurece, los paneles se apagan y la energía solo puede bajar. Hace un frío que se nota en la salud si apagas la calefacción.
-252	Al girar los paneles hacia el Sol, la barra de energía sube más rápido. Chuecos, apenas cargan.
-253	al menos 1 barra en rojo
-254	Al separar el agua salen hidrógeno y oxígeno.
-255	Al separar el agua, ¿qué dos gases salen?
-256	Al terminar la partida (relevo o evacuación).
-257	ALARMA
-258	Alertas de {0}:
-259	Alguien dejó una taza en la mesa.
-260	alguna barra está en rojo
-261	Algunas CME son rápidas: con el aviso, conviene preparar el refugio desde el principio.
-262	Algunas plantas se ven enfermas. Encuentra cuáles y ajusta la humedad.
-263	Algunos duran varios minutos, y los más fuertes de poca profundidad fueron cerca del polo sur.
-264	Algunos sismos lunares de poca profundidad duraron más de 10 minutos.
-265	Algunos sismos lunares duran varios minutos, más que muchos terremotos en la Tierra.
-266	Algunos sismos lunares duran varios minutos, más que muchos terremotos en la Tierra. Los sismómetros de Apollo los registraron. Asegurar los objetos evita perder comida y equipo.
-267	Alinea la nave con la plataforma
-268	Alinear la nave con la plataforma usando las luces.
-269	Almacén de comida
-270	ALT  {0} km
-271	ALUNIZAJE COMPLETADO
-272	Ámbar
-273	Antes de la noche cuenta cada día de Sol: limpia ahora y descansa después.
-274	Antes de que empiece la noche lunar
-275	Antes de que tiemble
-276	Apaga lo que no necesitas.
-277	Apagar el panel
-278	Apagar la calefacción
-279	Apagar la calefacción ahorra energía, pero el frío baja tu salud.
-280	Apagar la calefacción para ahorrar
-281	Apagar la calefacción para tener energía de sobra
-282	Apagar las luces de los pasillos
-283	Apagar las luces del invernadero
-284	Apagar las luces para que descansen
-285	Apagar lo que no sea necesario y guardar energía para la calefacción
-286	Apagar los paneles
-287	Apagó la radio
-288	apagón
-289	Apagón: evacuación
-290	Aplica la regla de la segunda oración a la reparación de mañana.
-291	Aplica la segunda oración: ¿qué se fabrica con el agua?
-292	Arena para lo fino
-293	Arreglar cables con el tiempo corriendo.
-294	Asegurar las cajas de comida
-295	Atascó mecanismos y rasgó trajes
-296	Aterriza la nave del relevo
-297	atmósfera
-298	Atmósfera
-299	Atrapa cada {0} que cae.
-300	Atrapadas
-301	Atrapar objetos que caen de los estantes.
-302	Automático
-303	Autosuficiente
-304	Avería reparada.
-305	Avería: {0} Causa en {1} intento(s), reparación en {2}.
-306	Ayer bajó un poco el medidor de agua
-307	Ayer hubo un pequeño sismo
-308	Baja la temperatura a la zona verde
-309	Bajar la humedad y regar lo justo
-310	Bajó muy rápido: hay que frenar antes con el motor.
-311	barra inválida
-312	Base en verde
-313	Batería:
-314	Baterías
-315	Baterías llenas
-316	Baterías: de noche solo se gastan
-317	Bitácora
-318	Bitácora, «Lo aprendido»: {0}.
-319	Bitácora: lo que has descubierto
-320	bold 15px {0}
-321	bold 16px {0}
-322	bold 17px {0}
-323	bold 22px {0}
-324	bold 24px {0}
-325	bold 26px {0}
-326	bold 36px {0}
-327	bold 60px {0}
-328	BONUS · ¿QUÉ FRASE LO PRUEBA?
-329	Borrar progreso
-330	Buen descanso
-331	Busca «piedrita» en el texto.
-332	Busca cómo debe llegarle la luz al panel.
-333	Busca cómo debe llegarle la luz.
-334	Busca cómo son los escudos Whipple.
-335	Busca con qué lo compara el texto.
-336	Busca cuánto «duran».
-337	Busca cuánto duran los sismos lunares.
-338	Busca de dónde vienen los rayos cósmicos.
-339	Busca dónde fueron los sismos más fuertes.
-340	Busca el año 2015.
-341	Busca el año 2016.
-342	Busca el número con «%».
-343	Busca el tiempo más corto que dice el texto.
-344	Busca en el texto:
-345	Busca hielo con el rover
-346	Busca la oración que habla de Apollo.
-347	Busca la palabra «apuntar».
-348	Busca la palabra «envíos».
-349	Busca la palabra «oxígeno» en el texto.
-350	Busca la palabra «por eso».
-351	Busca la palabra «porque».
-352	Busca la palabra «rápidas».
-353	Busca la palabra «separando».
-354	Busca la primera oración.
-355	Busca la segunda oración.
-356	Busca la temperatura de la noche lunar.
-357	Busca la tubería que gotea (═💧═) y tócala. Las válvulas (═◘═) están bien: no las toques.
-358	Busca la tubería que gotea: ═💧═
-359	Busca las paredes más gruesas.
-360	Busca qué cosas no tiene la Luna.
-361	Busca qué dice el texto sobre los paneles sin Sol.
-362	Busca qué falta «si se pierde agua».
-363	Busca qué más se fabrica con el agua.
-364	Busca qué no hay en esos cráteres.
-365	Busca qué pasa «hoy» y qué pasa «en los próximos días».
-366	Busca qué pasa «si se respira».
-367	Busca qué pasa «sin Sol».
-368	Busca qué pasa cuando un astronauta está cansado.
-369	Busca qué pasa después de los 14 días de Sol.
-370	Busca qué tapa el polvo.
-371	Busca qué tiene el refugio que no tienen otros cuartos.
-372	Busca un año en la primera oración.
-373	Busca un lugar de la Luna en la primera oración.
-374	Busca un lugar de la Luna en la última oración.
-375	Busca un lugar donde nunca da el Sol.
-376	Busca un número de días en la primera oración.
-377	Busca un número de días en la segunda oración.
-378	Busca un número de horas.
-379	Busca y toca
-380	Buscar hielo (con guía)
-381	Buscar hielo en el cráter
-382	Cada aparato encendido gasta energía. En la noche lunar, de unos 14 días, no hay Sol para recargar los paneles, así que ahorrar es parte del trabajo.
-383	Cada barra es un día de radiación.
-384	Cada barra es un día. Rojo = tormenta solar: hasta {3} veces más radiación de lo normal.
-385	Cada carta bien emparejada empieza desbloqueada en la siguiente partida.
-386	Cada carta se usa una vez por partida, cuando el niño decida. Escudo: la próxima vez que esa barra empeore, empeora la mitad. Recurso: suma a esa barra al instante.
-387	Cada cuadro se limpia con una pasada.
-388	Cada evento de la misión deja un informe. Aquí se guardan todos.
-389	Cada golpe deja un agujero. Si no lo tapas, el aire se escapa y la barra de salud baja poco a poco.
-390	Cada gota sirve dos veces: para beber y para respirar.
-391	Cada tripulación cuidó la estación hasta que llegó la siguiente, como tú hasta el relevo.
-392	Cae la noche lunar
-393	Cae la noche: reparte la energía
-394	caja de comida
-395	Calefacción
-396	CALMA
-397	Calor: baja la salud
-398	Cambiar el panel 3
-399	Cambiar un panel
-400	Cambio de equipo: ¡te toca descansar!
-401	Camino al refugio con flechas y mucho tiempo.
-402	Campo de paneles solares
-403	campo magnético
-404	Campo magnético
-405	Cansado te equivocas más, y los errores dañan la base.
-406	Capas protectoras
-407	Capitán
-408	Capitán agotado: evacuación
-409	Capitán completo
-410	Carbón para olores
-411	Cargador del rover
-412	Cargar las baterías y apagar las luces que no se necesitan
-413	Cargar todas las baterías
-414	Cartas
-415	CARTAS
-416	Cartas · {0} de {1}
-417	Casi igual que un día normal (hasta 1.5 veces)
-418	Casi toda el agua se reutiliza, y con ella se hace oxígeno.
-419	Casi toda el agua se usa una y otra vez.
-420	Cayó la noche lunar.
-421	celda limpia
-422	celda raya
-423	Cerca del 50%
-424	Cerca del 9%
-425	Cerca del 98%
-426	Cerca del ecuador
-427	Cerca del ecuador, la noche lunar baja a unos -133 °C: mucho más frío que cualquier congelador.
-428	Cerca del ecuador, la noche lunar baja a unos -133 °C.
-429	Cerca del polo sur
-430	Cerrar ✕
-431	Cerrar cartas
-432	Cerrar la compuerta del refugio
-433	Cerrar la válvula de la fuga primero
-434	Cerrar la válvula de la tubería
-435	Cerrar la válvula del pasillo
-436	Chuecos les llega menos luz, y con menos luz producen menos.
-437	Cian
-438	Científica lunar de la NASA (personaje ficticio). Manda pistas en las averías y explica la causa al final.
-439	Cinco
-440	Clima espacial real
-441	CME
-442	CME (eyección de masa coronal)
-443	Colgar ▸
-444	Comenzar la misión ▸
-445	Comer más
-446	Comete más errores
-447	Comida
-448	COMIDA
-449	Cómo aprende el niño sin que se sienta trivia: los conceptos son reglas del juego, las llamadas son situaciones (predecir → actuar → ver), las averías se diagnostican con pistas, la bitácora son cartas que se usan y al final se escribe un manual para el siguiente capitán.
-450	Como sea: el polvo lunar es suave
-451	Compara con la Tierra en la primera oración.
-452	Compara contra un día normal: hasta 1.5 veces es seguro, hasta 3 veces sal poco tiempo, más de 3 veces quédate en el refugio. Si bajó, fíjate en cuánto marca hoy.
-453	Compara cuánto tiempo dura cada misión.
-454	Compara los dos números del texto.
-455	Comparados con muchos terremotos de la Tierra, ¿cómo son algunos sismos lunares?
-456	Comparar alertas reales de DONKI y elegir el día más probable de la tormenta.
-457	Comprensión
-458	Compuerta abierta: entra al refugio
-459	Compuerta cerrada
-460	Con cuidado y sin tallar, para no rayarlo
-461	Con el agua también se fabrica oxígeno: si se pierde agua, falta para respirar.
-462	Con escudos de varias capas separadas
-463	Con ese frío, la calefacción gasta energía pero protege tu salud.
-464	Con imanes que los desvían
-465	Con la comida en amarillo, perder cajas te acerca al rojo antes del relevo.
-466	Con la compuerta abierta entran las partículas. Y la radiación llega aunque sea de noche.
-467	Con la luz de frente le llega más luz al panel, y produce más.
-468	Con la luz de frente, los paneles dan más energía.
-469	Con la radiación alta, gastar un poco de energía evita llegar al rojo.
-470	Con la salud baja, los minijuegos dan menos tiempo: el capitán cansado se equivoca más.
-471	Con lo que marca hoy, ¿qué haces?
-472	Con luces que los espantan
-473	Con luz y el agua justa, las plantas dan comida.
-474	con texto {0}/{1} ({2}) · sin texto {3}/{4} ({5})
-475	Con un trapo con arena, para pulirlo
-476	Conecta los cables
-477	Conecta los cables de los paneles
-478	Conectar cables del mismo color (estilo 'arreglar cables').
-479	Conectar los cables
-480	Confirmar
-481	Congeló los trajes
-482	Conocer la base ▸
-483	Consecuencia a dos pasos.
-484	Consecuencia directa e inmediata.
-485	CONSULTA TU BITÁCORA
-486	Contesta llamadas y repara averías para aprender.
-487	Continuar ▸
-488	Control de Misión
-489	CONTROL DE MISIÓN
-490	Control de Misión cuida tu descanso porque un astronauta cansado comete más errores.
-491	Control de Misión revisa tus barras otra vez. Así empezará tu noche lunar.
-492	Control de Misión revisa tus barras y decide qué tan difíciles serán los próximos días.
-493	Control de Misión te ayuda
-494	Control de Misión te guía con una flecha.
-495	Control de Misión te guía paso a paso para encontrar hielo en un cráter.
-496	Control de Misión te llama desde
-497	Control de Misión te manda una gráfica real de radiación. ¿Es un día seguro para salir?
-498	Control de Misión vio una explosión en el Sol: lo que lanzó llega en una hora.
-499	Control de Misión vio una explosión en el Sol.
-500	Control de Misión:
-501	copia guardada
-502	Corre más rápido
-503	correcta con pista
-504	correcta fuera de rango
-505	Correr al refugio
-506	Cosecha en el invernadero
-507	Cosecha extra
-508	Cosecha las lechugas listas
-509	Cosecha paso a paso
-510	Cosecha rápida
-511	Cosechar
-512	cráter
-513	Cráter
-514	CRaTER (datos de muestra)
-515	Cráter oscuro
-516	CRaTER viaja en la nave LRO de la NASA, que llegó a la Luna en 2009.
-517	cráteres
-518	cualquier otro caso
-519	Cualquiera: los micrometeoritos son muy pequeños
-520	Cuando Control de Misión o la Dra. Ortiz te explican algo, se guarda aquí.
-521	Cuando el Sol lanza partículas con mucha energía. Las más rápidas pueden llegar en menos de una hora.
-522	Cuando está a la sombra de la base
-523	Cuando estás muy cansado
-524	Cuando falta agua
-525	Cuando hay polvo en los paneles
-526	Cuando hay una fuga de agua
-527	Cuando la barra quede en verde, confirma.
-528	Cuando la comida está bajando
-529	Cuando la luz del Sol le llega de frente
-530	Cuando la luz le llega de lado
-531	Cuando tiene un poco de polvo encima
-532	Cuándo usarla:
-533	Cuando viene una tormenta solar
-534	Cuántas acciones hay en las llamadas, cuántas pistas y reparaciones en las averías y cuántas cartas van al manual.
-535	Cuenta cuántos números de días aparecen.
-536	Cuida tus cuatro barras durante 14 días. Si alguna llega al límite, tendrás que evacuar. ¡Yo te aviso cuando pase algo nuevo!
-537	Cuidaste las 4 barras a la vez y cumpliste lo que pidió la Tierra.
-538	Cultivar comida
-539	Cultivar gasta energía hoy y da comida después.
-540	Cultivar gasta energía hoy, pero da comida en los próximos días.
-541	Cultivar gasta energía hoy, pero da comida en los próximos días. En la Luna los envíos de comida serán poco frecuentes, por eso cultivar es clave.
-542	Da igual: la luz llega igual de todos lados
-543	datos en vivo
-544	Datos NASA
-545	Datos NASA (RadLab): hasta {0} veces más radiación de lo normal.
-546	Datos NASA: la más fuerte fue {0} ({1}) {2}.
-547	de {1} · se cayeron
-548	de {2} · escapes
-549	de {2} s
-550	de esta partida
-551	de la partida pasada
-552	De los paneles solares
-553	De noche no hay Sol: no cargan
-554	De noche, cerca del ecuador, la Luna baja a unos -133 °C. En los cráteres que nunca reciben Sol, la NASA midió menos de -246 °C.
-555	De separar el agua
-556	Debajo de los paneles solares
-557	Decide cuándo tener listo el refugio.
-558	DECISIÓN
-559	Dejar el hielo
-560	Dejar el polvo
-561	Dejar el rover en el cráter
-562	Dejar la fuga
-563	Dejarlo en el cráter: el hielo no sirve para respirar
-564	Dejarlos así
-565	Dejarlos sueltos: ahí casi no tiembla
-566	del {0} al {1}
-567	Del polvo lunar
-568	delta on
-569	Demasiada agua trae moho y las plantas se enferman.
-570	Demasiada radiación: evacuación
-571	Demasiadas conexiones equivocadas.
-572	Demasiados errores.
-573	Dentro de un mes
-574	Derretirlo y separar el agua para sacar oxígeno
-575	Descansar hoy y comer bien
-576	Descansar sube tu salud.
-577	Descansar también es parte de la misión.
-578	Descansar todo el día
-579	Descanso y comida caliente
-580	DESCENSO FINAL
-581	Descubre cartas jugando: cada evento te enseña algo nuevo.
-582	Descubriste {0} de {1} cartas de la Luna.
-583	Desde 1969
-584	Desde 1973
-585	Desde 2009
-586	Desde 2016
-587	Desde hace muchos años las naves usan escudos Whipple: varias capas separadas que las protegen de los micrometeoritos.
-588	Deslizar para limpiar el polvo sin pasar dos veces por el mismo lugar.
-589	Despensa vacía: evacuación
-590	Después de cada nodo, si una barra llega al límite (energía, comida o salud en 0, o radiación en 100) la partida salta al final FAIL-<barra> correspondiente.
-591	Detectamos una tormenta solar con mucha anticipación. Ve al refugio con calma.
-592	DÍA
-593	DÍA {0}
-594	Día {0} de 14
-595	Día {0} de 14 · tu partida sigue aquí.
-596	Día {0}.
-597	DÍA 13
-598	Día 13: la base aguanta... ¡un día más!
-599	DÍA 14 · ¡LO LOGRASTE!
-600	día normal (x1)
-601	Diccionario
-602	Diccionario · {0} palabras
-603	Donde aterrizó Apollo 11
-604	Dónde se juega
-605	DONKI
-606	DONKI: {0} · RadLab: {1} · OSDR: {2}
-607	DONKI: subir si hubo llamaradas fuertes (clase M o X) en la última semana real
-608	Dormir tus horas para no equivocarte mañana
-609	Dormir y descansar son parte del plan diario de los astronautas: un astronauta cansado comete más errores.
-610	Dos
-611	Dra. Ortiz
-612	DRA. ORTIZ
-613	Dra. Ortiz: era «{0}». {1}
-614	Dra. Valeria Ortiz
-615	Duran exactamente igual
-616	Duran más tiempo
-617	Duran menos tiempo
-618	Durante la noche lunar, de unos 14 días, la temperatura baja a unos -133 °C.
-619	Durante la noche lunar, de unos 14 días, la temperatura baja a unos -133 °C. Sin calefacción, la salud del capitán baja rápido.
-620	Durante los 14 días sin Sol, la energía sale de las baterías.
-621	Durante una lluvia de micrometeoritos
-622	Durante unos 14 días no hay Sol: la energía de la noche es la que guardaste antes.
-623	el {0} de {1}
-624	El agua de la base se recicla una y otra vez: la Estación Espacial recupera casi toda, cerca del 98%. Si se pierde agua, también falta para fabricar oxígeno, que se obtiene separando el agua.
-625	El agua de la base se recicla una y otra vez.
-626	El agua está hecha de hidrógeno y oxígeno.
-627	El agua se usa una y otra vez. Arma los filtros en el orden correcto.
-628	El agua y la comida bajan rápido.
-629	El campo magnético de la Luna
-630	EL CAPITÁN ESTÁ CANSADO
-631	El capitán sube a la nave para descansar.
-632	El capitán trabajó y trabajó sin parar...
-633	el cráter de sombra
-634	El cuarto de la base con paredes más gruesas, que frenan las partículas del Sol.
-635	El cuarto de la base donde crecen las plantas con luz y la cantidad justa de agua.
-636	El enfriamiento está apagado
-637	El equipo que llega a reemplazarte para cuidar la base.
-638	el exterior de la base
-639	El frío de la noche lo endurece
-640	El gas que respiramos. En la base se obtiene separando el agua.
-641	El hielo es agua para la base.
-642	El informe se guardó en tu bitácora.
-643	El instrumento CRaTER mide la radiación cerca de la Luna desde 2009.
-644	El instrumento CRaTER mide la radiación cerca de la Luna desde 2009. La Luna no tiene campo magnético ni atmósfera gruesa que la proteja, por eso hay que vigilar la radiación y tener un refugio de paredes gruesas.
-645	el invernadero
-646	El niño elige cartas para dejarle consejos al siguiente capitán y empareja cada una con su momento ("Antes de que empiece la noche lunar").
-647	El niño nunca ve su nivel, su rama ni la palabra apoyo. Las estrellas premian la misión, no el nivel: en nivel 1 también se pueden ganar 3 estrellas. En modo educativo, el maestro ve el nivel de cada alumno en su panel.
-648	El nuevo equipo entra y tú subes a la nave.
-649	El orden no fue el correcto.
-650	El panel 3 hace un ruido raro
-651	el pasillo y el refugio
-652	el plano
-653	El polvo los calienta y se apagan
-654	El polvo los vuelve imanes
-655	El polvo lunar es filoso como vidrio porque en la Luna no hay viento ni agua que lo desgaste.
-656	El polvo lunar es filoso como vidrio porque en la Luna no hay viento ni agua que lo desgaste. En las misiones Apollo atascó mecanismos y rasgó trajes, y si se respira daña los pulmones.
-657	El polvo lunar es filoso como vidrio porque en la Luna no hay viento ni agua que lo desgaste. En las misiones Apollo atascó mecanismos y rasgó trajes, y si se respira puede dañar los pulmones.
-658	El polvo lunar es filoso: se limpia sin tallar.
-659	El polvo lunar tapa la luz que llega a los paneles: les llega menos luz y producen menos energía.
-660	El polvo tapa la luz que les llega
-661	El polvo tapa la luz: hay que limpiarlo.
-662	El polvo trae radiación
-663	El polvo y las piedritas que cubren la Luna. Es filoso como vidrio.
-664	El radar del rover solo marca hielo en las zonas que siempre están en sombra. Dentro del cráter, la batería del rover no se recarga.
-665	El radar te dice si el hielo está cerca.
-666	El refugio de paredes gruesas te protege de día y de noche.
-667	El refugio tiene paredes más gruesas que frenan esas partículas.
-668	El refugio tiene paredes más gruesas que frenan las partículas del Sol. En la Luna no hay campo magnético que te proteja como en la Tierra.
-669	El regolito tapa la luz que llega a los paneles.
-670	El regolito, el polvo lunar, es filoso como vidrio. Tapa la luz que llega a los paneles, y si se talla fuerte los raya y producen menos.
-671	El rover encontró hielo en un cráter oscuro, donde nunca da el Sol. Ahí sus baterías no se recargan.
-672	El rover encontró hielo en un cráter oscuro.
-673	El rover está estacionado afuera.
-674	El rover no recarga aquí
-675	El sismo de poca profundidad más fuerte que se registró fue en la región del polo sur.
-676	El sismo dura minutos: las cajas sueltas se caen y se rompen.
-677	El Sol
-678	El Sol está alto. Conecta los cables para que los paneles miren hacia él.
-679	El Sol lanzó una tormenta. Tienes algo de tiempo: llega al refugio.
-680	El Sol se esconde: llega la noche en la Luna.
-681	El Sol se ocultó. Los paneles ya no producen energía. Reparte la que tienes.
-682	El texto da un número con «°C».
-683	El visor de tu casco quedó lleno de polvo lunar. ¿Cómo lo limpias?
-684	Elige cuándo sirve.
-685	Elige una carta para recomendarle ({0} de {1}).
-686	Empieza con {0} carta(s) del manual del capitán anterior.
-687	Empieza por el primero.
-688	En 1973 tres tripulaciones vivieron en Skylab, una tras otra: 28, 59 y 84 días.
-689	En 1973 tres tripulaciones vivieron en Skylab, una tras otra: 28, 59 y 84 días. Cada una cuidó la estación hasta que llegó la siguiente. Igual que ellos, cuida la base y cuídate: un astronauta cansado comete más errores.
-690	En 1973 tres tripulaciones vivieron en Skylab, una tras otra.
-691	En 2015 los astronautas de la Estación Espacial comieron la primera lechuga cultivada en el espacio.
-692	En 2016 unas flores de la Estación Espacial se llenaron de moho por exceso de agua.
-693	En 2016, ¿por qué se llenaron de moho unas flores de la Estación Espacial?
-694	En cráteres donde nunca da el Sol
-695	En cráteres que nunca reciben Sol hay hielo, a menos de -198 °C. Con él se obtiene agua, y separándola, oxígeno para respirar y combustible para cohetes.
-696	En el centro de la cara que vemos
-697	En la bitácora, busca la línea que dice «la más fuerte fue».
-698	En la bitácora, mira la barra más alta de la gráfica.
-699	En la cima de las montañas
-700	En la Estación Espacial los paneles giran para apuntar al Sol.
-701	En la Estación Espacial, ¿hacia dónde giran los paneles solares?
-702	En la Estación Espacial, los paneles solares giran para apuntar al Sol: así producen más energía.
-703	En la fase 1, en la rama Rescate o si alguna barra ya está en rojo, una acción equivocada hace la mitad de daño y en las averías la Dra. Ortiz manda una pista extra desde el principio. Así el niño que va batallando aprende sin hundirse.
-704	En la Luna el día y la noche duran unos 14 días terrestres cada uno.
-705	En la Luna el Sol brilla unos 14 días seguidos y luego se oculta otros 14.
-706	En la Luna el Sol se oculta unos 14 días seguidos: hay que cargar las baterías antes.
-707	En la Luna los envíos de comida serán poco frecuentes, así que la base tendrá que cultivar para ser autosuficiente.
-708	En la Luna los envíos de comida serán poco frecuentes, así que la base tendrá que cultivar para ser autosuficiente. En 2015 los astronautas de la Estación Espacial comieron la primera lechuga cultivada en el espacio.
-709	En la Luna los envíos de comida serán poco frecuentes, por eso hay que cultivar. Una base que produce su comida es más autosuficiente.
-710	En la Luna los envíos de comida serán poco frecuentes.
-711	En la Luna no hay viento ni agua que lo desgaste
-712	En la noche lunar apagas la calefacción para ahorrar. ¿Por qué empeora tu SALUD?
-713	En la noche lunar, de unos 14 días, no hay Sol para recargar los paneles, así que ahorrar es parte del trabajo.
-714	En la zona:
-715	En las misiones Apollo atascó mecanismos y rasgó trajes, y si se respira puede dañar los pulmones.
-716	En las misiones Apollo el polvo atascó mecanismos y rasgó trajes.
-717	En las misiones Apollo, ¿qué hizo el polvo lunar?
-718	En los cráteres donde nunca da el Sol hay hielo: agua para la base. Ahí no hay luz, así que el rover no puede recargar sus baterías.
-719	En los cráteres que nunca reciben Sol, la NASA midió menos de -246 °C.
-720	En los cráteres siempre en sombra hace tanto frío que el hielo dura.
-721	En los cráteres sin Sol hay hielo: agua y oxígeno.
-722	En los próximos 1 a 3 días
-723	En menos de una hora
-724	EN SUPERFICIE
-725	En toda la superficie durante el día
-726	En un día con Sol
-727	En un mes: las CME son muy lentas
-728	En una avería, si el niño tiene la carta de ese tema, una de las pistas clave se resalta.
-729	En una base lejana, ¿por qué conviene recuperar casi toda el agua?
-730	En una semana
-731	En una tormenta solar la radiación puede subir cientos de veces. Por eso el refugio es clave.
-732	En unos 14 días
-733	En unos 3 días
-734	Encender el enfriamiento
-735	Encender todo para que la base guarde el calor
-736	Encontrar las plantas enfermas y bajar la humedad al nivel correcto.
-737	Encontraste hielo y en la base empieza a faltar oxígeno. ¿Qué te conviene hacer con el hielo?
-738	Encuentra la fuga
-739	Encuentra las plantas enfermas
-740	energía
-741	Energía
-742	ENERGÍA
-743	Energía solar
-744	Energía, comida, salud y radiación se cuidan al mismo tiempo.
-745	Enter
-746	ENTER / TOCA = saltar
-747	ENTER o toca = saltar
-748	ENTER o toca JUGAR  -  F pantalla completa  -  M silenciar
-749	ENTER o toca para continuar
-750	ENTRADA EN ORBITA
-751	Entrega de la base
-752	Entregaste la base con todas las barras en verde. ¡Excelente trabajo!
-753	Era «{0}». {1}{2}
-754	Era el calor, como en Skylab. Trabajar cansa, pero hoy el problema era la temperatura.
-755	Era el polvo: tapaba la luz y los paneles casi no cargaban.
-756	Era moho por exceso de agua, como les pasó a unas flores en la Estación Espacial.
-757	Es de noche
-758	Es de noche y un astronauta está afuera manejando el rover. Suena la alerta de tormenta solar. ¿Qué le dices?
-759	Es de noche: no hay Sol
-760	Es un escudo para la {0}.
-761	Es una inversión: pierdes un poco hoy para tener comida después.
-762	Esa no. Errores: {0} de {1}.
-763	Esc, P o ⏸: pausa (en pantalla completa usa P o el botón) · M: silenciar · F: pantalla completa
-764	Escape
-765	Escribir el manual para el siguiente capitán ▸
-766	ESCUDO · {0}
-767	escudo: frena la mitad del próximo daño a la {0}.
-768	Ese hielo es agua para beber y para fabricar oxígeno y combustible.
-769	Ese no es: busca el módulo que parpadea.
-770	Ese no es. Errores: {0} de {1}.
-771	Ese paso va después. Errores: {0} de {1}.
-772	Esperar a la noche para limpiar
-773	Esperar a que crezcan
-774	Esperar a que haya más Sol
-775	Esperar a que los paneles carguen con la luz de las estrellas
-776	Esperar a que los paneles carguen de noche
-777	Esperar al primer sismo para decidir
-778	Esta carta sirve {0}.
-779	Está oscuro: solo ves cerca de ti.
-780	Estabas preparado por el Pronóstico: el daño fue la mitad.
-781	Estás muy cansado.
-782	Este dispositivo no tiene voz en este idioma. En Windows: Configuración › Hora e idioma › Voz › Agregar voces. En Chrome o Edge suele haber voces más claras.
-783	Este navegador no puede leer en voz alta. Prueba con Chrome o Edge.
-784	EVACUACIÓN
-785	EVENTO
-786	EVF
-787	Evidencia: «{0}» · {1}
-788	Exterior de la base
-789	eyección de masa coronal
-790	Falla en la calefacción
-791	Falta comida
-792	Faltan 10 días de noche lunar y tus baterías están a la mitad. ¿Qué plan funciona mejor?
-793	Faltan luces de cultivo
-794	FASE 1 · BIENVENIDA · SOL
-795	FASE 2 · CLIMA ESPACIAL · SOL
-796	FASE 3 · NOCHE LUNAR
-797	Fijarlos bien desde el principio
-798	Fíjate bien en la unidad: ¿por segundo o por hora?
-799	Filoso como vidrio
-800	Fin: {0} ({1} estrellas).
-801	Fin: {0}.
-802	Final desconocido:
-803	Finales
-804	Fresas traídas de la Luna
-805	frío
-806	Fue la primera verdura cultivada y comida en el espacio.
-807	Fuente: {0} · se guardó en tu bitácora.
-808	Fuga de agua
-809	Fuga de agua y, al mismo tiempo, una tarea de Control de Misión que da una estrella extra. Tu comida está en amarillo y tu salud en verde.
-810	Fuga: se pierde agua (y oxígeno)
-811	G-NOSIS // {0}
-812	G-NOSIS: la Luna y la base dibujadas en ASCII
-813	Gasta energía hoy, pero da comida en los próximos días
-814	Gastar la energía que queda
-815	Gastar toda la energía en el invernadero
-816	Gastar toda la energía te deja sin nada para la noche lunar.
-817	Girar los paneles hacia el Sol
-818	Girar perillas hasta la temperatura correcta.
-819	Girarlos cuando sea de noche
-820	Grupo de un maestro. El maestro elige el grado del grupo y puede cambiar el nivel inicial de cada alumno. Después el ajuste es el mismo.
-821	Guardar comida extra
-822	Guardar en el almacén
-823	Guardar la energía en las baterías
-824	Guardarlo congelado para enfriar la base
-825	Guardarlos solo en el refugio contra la radiación
-826	Guardaste {0}.
-827	Guía:
-828	GWOWWWG
-829	Habilidad
-830	hace 2 días
-831	Hace las llamadas de situación.
-832	Hace mucho frío. Ajusta la calefacción para que la base esté cómoda.
-833	Hace una semana
-834	Hacer la reparación de una vez, de noche
-835	Hacer la tarea primero y la fuga después
-836	Hacia el Sol
-837	Hacia la Luna
-838	Hacia la sombra, para no calentarse
-839	Hacia la Tierra
-840	Hay evidencia de hielo cerca del polo sur de la Luna.
-841	Hay evidencia de hielo en cráteres sombreados cerca del polo sur de la Luna, donde nunca da el Sol.
-842	Hay evidencia de hielo en cráteres sombreados cerca del polo sur de la Luna, donde nunca da el Sol. Ese hielo es agua para beber y para fabricar oxígeno y combustible.
-843	Hay mucho hielo en el cráter, pero el rover tiene poca energía. Tu comida está en amarillo y faltan 4 días para el relevo.
-844	Hay mucho hielo en un cráter oscuro, pero el rover tiene poca batería. Tu comida está en amarillo.
-845	Hay un charco en el pasillo y, al mismo tiempo, una tarea de Control que da una estrella extra. Tu comida está en amarillo.
-846	Hay un charco en el pasillo.
-847	Hay un poco de polvo en el suelo
-848	Hay una foto familiar junto a la litera.
-849	Hay una fuga de agua. Con el agua de la base también se fabrica oxígeno para respirar.
-850	Hazlo en orden
-851	herramientas del equipo
-852	hidrógeno
-853	Hidrógeno
-854	Hidrógeno y dióxido de carbono
-855	Hidrógeno y oxígeno
-856	Hielo del cráter
-857	Hielo en los cráteres
-858	Hielo: solo donde nunca da el Sol
-859	Hizo agujeros en la nave
-860	Hola, capitán. Así suena tu narrador.
-861	Hoy hubo x{0} de un día normal: {1}.{2}
-862	Hoy no pasa nada malo. Descansa y come algo caliente.
-863	Hoy salió del Sol una nube de material (una CME) hacia la Luna. ¿Cuándo debes tener listo el refugio?
-864	Hoy toca limpiar el pasillo.
-865	Hoy trabajaste mucho
-866	Hoy tus paneles quedaron chuecos.
-867	Hubo una explosión en el Sol y llega en una hora. Tu energía está en amarillo y en pocos días empieza la noche lunar.
-868	Igual que un día normal
-869	Igual: unos -133 °C
-870	Inclinados hacia el horizonte, de frente al Sol
-871	indiceCorrecto fuera de rango
-872	indiceCorrecto no es entero
-873	INFORME
-874	INFORME DE CONTROL
-875	INFORME FINAL · DÍA 14
-876	Informe guardado sin pantalla (tema ya leído): {0}.
-877	Informes
-878	Informes · {0}
-879	INICIO
-880	inset(0 {0}% 0 0)
-881	Interruptores de energía
-882	Invernadero
-883	Invernadero sin cosecha
-884	Invernadero: aquí crece tu comida
-885	Invernadero: aquí crece tu comida.
-886	Ir ▸
-887	Ir al refugio
-888	Ir al refugio con las compuertas abiertas
-889	Ir al refugio protege tu cuerpo ahora.
-890	Ir al refugio y cerrar las compuertas
-891	Juego en pausa
-892	Juego fuera del salón. No se pide edad ni grado. Empieza en nivel 2 y se calibra rápido con los primeros retos.
-893	JUGAR
-894	Jugar otra misión ▸
-895	KKKKKKKKKKKKKK
-896	Kp {4}
-897	KRRKDGGGDKRRK
-898	KRRKGGWGGKRRK
-899	La base recicla casi toda su agua, como la Estación Espacial (cerca del 98%). Con el agua también se fabrica oxígeno: si se pierde agua, falta para respirar.
-900	La base se está calentando demasiado. Activa el enfriamiento.
-901	La base se quedó sin energía y una nave de rescate te llevó a casa. Aprendiste que sin Sol hay que ahorrar.
-902	La calefacción a todo lo que da
-903	La calefacción está apagada
-904	La calefacción funciona
-905	La calefacción se apagó y afuera hay -133 °C. ¡Repárala rápido!
-906	La capa de aire que rodea a un planeta. La Luna no tiene una atmósfera gruesa que la proteja.
-907	La comida está bajando y las plantas del invernadero esperan.
-908	La comida está bajando.
-909	La comida está bajando. Las plantas del invernadero necesitan luz, y la luz gasta energía.
-910	La comida está en verde
-911	La compuerta del refugio está abierta
-912	La cosecha está saliendo mala.
-913	La energía baja aunque es de día.
-914	La energía baja y ningún panel carga.
-915	La energía no alcanzó.
-916	La Estación Espacial recicla cerca del 98% de su agua, incluso el sudor.
-917	La Estación Espacial recicla cerca del 98% de su agua, incluso el sudor. Además, el oxígeno para respirar se obtiene separando el agua en hidrógeno y oxígeno.
-918	La fuga tira el agua: hay que cerrarla.
-919	La humedad del invernadero está alta
-920	La leíste en: {0}.
-921	La Luna no tiene campo magnético ni atmósfera gruesa que la proteja, por eso hay que vigilar la radiación y tener un refugio de paredes gruesas.
-922	La Luna no tiene un campo magnético como la Tierra. Ir al refugio de paredes gruesas a tiempo es la mejor protección.
-923	La Luna no tiene un campo magnético que la proteja como a la Tierra. Con aviso a tiempo, llegar al refugio de paredes gruesas es fácil.
-924	La luz gasta energía hoy, y las plantas dan comida en los próximos días.
-925	La mejor era
-926	La misión LCROSS de la NASA encontró agua en un cráter cerca del polo sur.
-927	La NASA dice que sobrevivir la noche lunar es clave para vivir en la Luna.
-928	La NASA guarda cada tormenta del Sol en una base de datos llamada DONKI.
-929	La NASA lo estudia
-930	La NASA lo estudia de verdad: «{0}» ({1}{2}).
-931	La NASA vigila el Sol todos los días y guarda cada tormenta en una base de datos llamada DONKI. Aun sin aviso, el refugio de paredes gruesas te protege, porque la Luna no tiene campo magnético.
-932	La noche lunar
-933	La noche lunar dura unos 14 días terrestres y la temperatura baja a unos -133 °C.
-934	La noche lunar dura unos 14 días terrestres y la temperatura baja a unos -133 °C. Sin Sol los paneles no producen energía, así que hay que cargar las baterías antes.
-935	La noche lunar dura unos 14 días terrestres.
-936	La noche lunar dura unos 14 días y la temperatura baja a unos -133 °C. La calefacción gasta energía, pero protege tu salud.
-937	La noche lunar dura unos 14 días, sin Sol y a unos -133 °C. Los paneles dejan de producir y la calefacción gasta energía para cuidar tu salud.
-938	La primera lechuga cultivada en el espacio
-939	La primera pizza hecha en el espacio
-940	La próxima vez, ¡ahorra energía para la noche!
-941	La próxima vez, ¡intenta dejar todo en verde!
-942	La prueba era:
-943	La prueba está en el informe de esta llamada, no en otros.
-944	La radiación del Sol lo afila
-945	La radiación está alta
-946	La radiación está en verde
-947	La radiación llega aunque sea de noche: los rayos cósmicos vienen de todas direcciones.
-948	La radiación llega aunque sea de noche: los rayos cósmicos vienen de todas direcciones. El refugio de paredes gruesas te protege de día y de noche.
-949	La radiación sube aunque estás en el refugio.
-950	La radiación sube y sube... ¡suena la alarma!
-951	La regla es «de frente al Sol». Si el Sol está bajo, el panel se inclina hacia él.
-952	La regla está en la segunda oración. Piensa: ¿entra energía nueva de noche?
-953	La regla: cansado te equivocas más. Para una tarea difícil, conviene llegar descansado.
-954	La regla: cerca del polo sur hubo los sismos poco profundos más fuertes, y duran minutos. Hay que asegurar todo antes.
-955	La regla: demasiada agua enferma a las plantas. Si la tierra está muy mojada, hay que regar menos.
-956	La regla: el hielo es agua, y del agua se fabrica oxígeno.
-957	La regla: el oxígeno sale del agua. Si se pierde agua, después puede faltar oxígeno para respirar.
-958	La regla: el polvo es filoso como vidrio. Tallar fuerte raya el visor (en Apollo 17 un visor quedó tan rayado que no se veía).
-959	La regla: la radiación llega de noche también, y lo que protege es el refugio, no la oscuridad.
-960	La regla: las capas separadas protegen de los golpes. Una base de años recibe muchos golpes.
-961	La regla: sin Sol no entra energía nueva. Si faltan muchos días, hay que repartir la que queda.
-962	la sala de control
-963	la sala de máquinas
-964	La salud del capitán está bajando.
-965	La salud es la barra en peligro y la comida aguanta: hoy toca descansar.
-966	La siguiente misión empieza con:
-967	La siguiente misión empieza sin cartas.
-968	La Tierra se ve azul por la ventana.
-969	La Tierra: ¡a casa!
-970	La última es hoy: ¿es seguro salir?
-971	La ventana muestra día, noche o tormenta
-972	La zona verde se mueve: síguela con − y + (o ← →).
-973	Laberinto a oscuras con linterna limitada.
-974	Laberinto contra reloj: cerrar compuertas y llegar al refugio.
-975	Laberinto hacia el refugio con tiempo moderado.
-976	LAIKA
-977	LAIKA · TU AYUDANTE
-978	las 4 barras en verde
-979	las 4 barras en verde y al menos 3 tareas de Control de Misión cumplidas
-980	Las cajas de comida están completas
-981	Las enfermas tienen manchas blancas (@). Tócalas.
-982	las fugas de agua
-983	Las lechugas ya están listas. Cosecha todas las que puedas.
-984	Las listas se ven grandes y redondas (o). Tócalas.
-985	Las llamadas empiezan en la sala de control (el aviso) y la acción ocurre en el escenario de la situación. El plano de la base es el mapa para moverse entre escenarios.
-986	Las luces de la base encendidas
-987	Las luces del invernadero funcionan
-988	Las luces frenan la radiación
-989	Las luces también recargan las baterías
-990	Las misiones Apollo reportaron trajes gastados y piezas atascadas por el polvo.
-991	Las naves usan escudos Whipple de varias capas separadas.
-992	Las paredes gruesas del refugio frenan las partículas del Sol.
-993	Las paredes gruesas frenan la radiación, pero solo con las compuertas cerradas.
-994	Las paredes más gruesas del refugio
-995	Las partículas más rápidas de una tormenta solar pueden llegar en menos de una hora.
-996	Las partículas más rápidas de una tormenta solar pueden llegar en menos de una hora. El refugio tiene paredes más gruesas que frenan esas partículas.
-997	Las plantas crecen día a día solo si tienen luz y la cantidad justa de agua. Con demasiada agua les salen manchas de moho.
-998	Las plantas crecieron. Riega y cosecha en el orden correcto.
-999	Las plantas del invernadero necesitan luz y la cantidad justa de agua.
-1000	Las plantas del invernadero necesitan luz y la cantidad justa de agua. En 2016 unas flores de la Estación Espacial se llenaron de moho por exceso de agua.
-1001	Las plantas del invernadero necesitan luz y la cantidad justa de agua. La luz gasta energía hoy, y las plantas dan comida en los próximos días.
-1002	Las plantas del invernadero son tu comida...
-1003	Las plantas devuelven la energía esa misma noche
-1004	las plantas enfermas (@)
-1005	las plantas listas para cosechar
-1006	Las plantas necesitan luz y agua para dar comida.
-1007	Las plantas se ven sanas
-1008	Las plantas usan demasiada agua
-1009	Las tres tripulaciones se quedaron 28, 59 y 84 días: la última fue la más larga.
-1010	Las tripulaciones de Skylab se relevaban: cada grupo cuidaba la estación hasta que llegaba el siguiente. Fueron 3 tripulaciones: 28, 59 y 84 días.
-1011	Las válvulas ═◘═ están bien: no las toques.
-1012	Le da más energía
-1013	Le entregas la base al nuevo equipo.
-1014	Le puede dañar los pulmones
-1015	Lee el medidor de radiación
-1016	Lee la carta.
-1017	LEE LA REGLA Y ÚSALA EN ESTE CASO
-1018	Lee las alertas del Sol y decide cuándo tener listo el refugio.
-1019	Lee las alertas del Sol.
-1020	Lee las pistas: no todas tienen que ver.
-1021	Lee los datos del Sol
-1022	LEE Y BUSCA LA RESPUESTA
-1023	Leer el medidor de radiación
-1024	Leer una gráfica con datos reales y elegir: seguro / cuidado / peligro.
-1025	Les dieron demasiada agua y salió un hongo.
-1026	Letra grande:
-1027	Libre
-1028	Lila
-1029	Limpia el polvo
-1030	Limpiar los paneles
-1031	Limpiar los paneles con cuidado
-1032	Limpiar todos los paneles
-1033	Limpieza suave
-1034	LISTA
-1035	Litera para descansar
-1036	LLAMADA · CONTROL DE MISIÓN
-1037	Llamada ({0}): predicción {1}, dato {2}, acción {3}{4}.
-1038	Llamada entrante de Control de Misión
-1039	Llamadas (acción correcta) y averías (resueltas al primer intento).
-1040	Llamadas resueltas bien: {0} de {1} · Averías al primer intento: {2} de {3} · Minijuegos ganados: {4} de {5} · Cartas usadas: {6}
-1041	Llamarada solar
-1042	llamaradas solares{2}
-1043	Llega a la R antes de que se acabe el tiempo.
-1044	Llega la nave con el nuevo equipo.
-1045	Llega la nave del relevo
-1046	Llega una nave de rescate.
-1047	Llega una nave de suministros
-1048	LLEGADA
-1049	Llegada a la base
-1050	Llegan tan rápido que hay que ir al refugio en cuanto suena la alerta.
-1051	llegaste al día 14 sin que ninguna barra llegara al límite
-1052	LLEGÓ EL RELEVO
-1053	Llevas días trabajando sin parar, tu comida está en verde y mañana hay una tarea difícil.
-1054	Llevas varios días trabajando sin parar y casi sin dormir.
-1055	Llevas varios días trabajando sin parar.
-1056	Llevas varios días trabajando sin parar. Un astronauta cansado comete más errores.
-1057	Lluvia de micrometeoritos
-1058	Lluvia de micrometeoritos a 2 días de la noche lunar. Tu energía está en amarillo.
-1059	Lluvia de micrometeoritos a 2 días de la noche lunar. Un golpe puede romper un panel y otro puede hacer un agujero. Tu energía está en amarillo.
-1060	Lo aprendido
-1061	Lo aprendido · {0}
-1062	Lo leíste en: {0}.
-1063	Lo peligroso no es su tamaño sino su velocidad.
-1064	LO QUE APRENDISTE
-1065	lo que buscas
-1066	Lo que no está asegurado se cae, como las cajas de comida de los estantes.
-1067	Lo que no está asegurado se cae: por eso hay que sujetar las cosas.
-1068	Lo que no está asegurado se cae.
-1069	Los astronautas de Apollo dejaron sismómetros que registraron sismos lunares.
-1070	Los astronautas de Apollo dejaron sismómetros que registraron sismos lunares. Algunos duran varios minutos, y los más fuertes de poca profundidad fueron cerca del polo sur.
-1071	Los astronautas de Apollo dejaron sismómetros que registraron sismos lunares. Algunos duran varios minutos, y los más fuertes de poca profundidad fueron cerca del polo sur. Asegurar los objetos evita perder comida y equipo.
-1072	Los astronautas de la Estación Espacial tienen programadas unas 8 horas y media para dormir.
-1073	Los astronautas de la Estación Espacial tienen programadas unas 8 horas y media para dormir. Un astronauta cansado comete más errores.
-1074	Los astronautas de la Estación Espacial tienen programadas unas 8 horas y media para dormir. Un capitán descansado comete menos errores.
-1075	Los astronautas de la Estación tienen programadas unas 8 horas y media para dormir.
-1076	Los astronautas lo pisaron mucho
-1077	Los astronautas tienen unas 8 horas y media para dormir. Un astronauta cansado comete más errores, y los errores dañan la base.
-1078	Los científicos te cuentan una situación. ¿Qué carta es la mejor para ese momento?
-1079	Los científicos tienen preguntas sobre la base. Respóndelas para ganar puntos.
-1080	Los demás paneles están limpios
-1081	Los días {0} fueron muy altos, pero hoy bajó. ¿Ya es seguro salir?
-1082	Los doctores dicen: ¡es hora de volver!
-1083	Los errores dañan la base: descansar es parte del trabajo.
-1084	Los escudos Whipple tienen varias capas: la de afuera recibe el golpe primero.
-1085	Los golpes llegan todo el tiempo: entre más tiempo estés, más recibes.
-1086	Los micrometeoritos golpean todo el tiempo lo que está en el espacio. Una base que dura meses recibe más golpes que una visita de días como Apollo.
-1087	Los micrometeoritos viajan a más de 20 km por segundo, por eso una piedrita puede hacer un agujero. Una base que dura meses recibe más golpes que una visita de días como Apollo.
-1088	Los micrometeoritos viajan a más de 20 km por segundo: pueden romper un panel o hacer un agujero por donde se escapa el aire.
-1089	Los micrometeoritos viajan a más de 20 km por segundo. Una base que dura meses recibe más golpes, por eso necesita paredes con varias capas o cubiertas de regolito.
-1090	Los micrometeoritos viajan en promedio a unos 20 km por segundo: por eso una piedrita puede hacer un agujero.
-1091	Los micrometeoritos viajan en promedio a unos 20 km por segundo.
-1092	Los números van en orden: la última es la del final.
-1093	Los paneles cargan bien
-1094	Los paneles con polvo se ven opacos y la barra de energía sube más lento. Si los tallas fuerte, quedan rayados para siempre.
-1095	Los paneles dan más energía con la luz de frente.
-1096	Los paneles de la Estación siguen al Sol para producir más.
-1097	Los paneles dejan de producir y la calefacción gasta energía para cuidar tu salud.
-1098	Los paneles no miran al Sol.
-1099	Los paneles producen más energía cuando la luz del Sol les llega de frente.
-1100	Los paneles producen más energía cuando la luz del Sol les llega de frente. En la Luna el Sol brilla unos 14 días seguidos y luego se oculta otros 14.
-1101	los paneles solares
-1102	Los rayos cósmicos no vienen solo del Sol: llegan de día y de noche.
-1103	Los sismómetros detectan un sismo lunar largo.
-1104	Los sismómetros detectan un sismo lunar que puede durar varios minutos. Hay cajas de comida en los estantes.
-1105	Los sismos lunares duran minutos: asegura las cosas.
-1106	Los sismos lunares más fuertes de poca profundidad fueron cerca del polo sur.
-1107	Los sismos lunares pueden durar varios minutos, más que muchos terremotos en la Tierra. Lo que no está asegurado se cae, como las cajas de comida de los estantes.
-1108	Luces de cultivo (gastan energía)
-1109	Luces de los pasillos
-1110	Luces del invernadero
-1111	Luego toca el del mismo color a la derecha.
-1112	Luz UV para gérmenes
-1113	Luz y la cantidad justa de agua
-1114	Manejar el rover siguiendo señales.
-1115	Manejar el rover usando un radar, sin luz.
-1116	MANIOBRA DE DESCENSO
-1117	Mantén ▲ MOTOR (o Espacio) para frenar y usa ← → para llegar a la plataforma. Toca el suelo despacio.
-1118	Mantén ▲ MOTOR (o Espacio) para frenar: gasta combustible.
-1119	Mantén la nave adentro hasta llenar la barra.
-1120	Mantener la calefacción
-1121	Mantener tres soportes en equilibrio al mismo tiempo.
-1122	Mantenla en la zona verde hasta llenar la barra.
-1123	MANUAL PARA EL SIGUIENTE CAPITÁN
-1124	MANUAL TERMINADO
-1125	Mañana empieza la noche lunar y faltan 5 días para el relevo.
-1126	Mañana empieza la noche lunar: unos 14 días sin Sol y cerca de -133 °C afuera. Tu energía está en amarillo y faltan 5 días para el relevo.
-1127	Mañana empieza la noche lunar: unos 14 días sin Sol. Los paneles solares dejan de producir.
-1128	Mañana se oculta el Sol y empieza la noche lunar.
-1129	Mañana se oculta el Sol y la noche dura días. ¿Cómo te preparas?
-1130	Mañana se oculta el Sol.
-1131	Mañana tienes una reparación difícil y hoy ya terminaste lo urgente. ¿Qué te conviene hacer esta noche?
-1132	Máquinas y almacén
-1133	Máquinas y almacén: el agua, la calefacción y la comida guardada.
-1134	Más alto que lo normal (entre 1.5 y 3 veces)
-1135	Más caliente: el hielo guarda el calor del día
-1136	Más caliente: unos 0 °C
-1137	Más frío: la NASA midió menos de -246 °C
-1138	Más hielo en sus cráteres
-1139	Más polvo en la superficie
-1140	mejor=alta: verde si valor >= verde, rojo si valor < rojo, fracaso en 0. mejor=baja: verde si valor <= verde, rojo si valor > rojo, fracaso en 100.
-1141	Menos de un segundo
-1142	Menos luz en el panel = menos energía.
-1143	Mensaje a la Tierra
-1144	Mensaje de la Tierra:
-1145	Mensaje especial de la Tierra
-1146	Mensaje recibido.
-1147	Menú
-1148	Micrometeorito
-1149	Micrometeorito en un panel
-1150	Micrometeoritos
-1151	Minijuego
-1152	MINIJUEGO
-1153	MINIJUEGO · ASÍ SE JUEGA
-1154	minijuego ganado
-1155	minijuego perdido
-1156	minijuegos {0}/{1} · música {2}
-1157	Mirando hacia el lado contrario al Sol
-1158	Misión especial: maneja el rover hasta un cráter oscuro y encuentra hielo.
-1159	Misión perfecta
-1160	Modo
-1161	Modo ahorro de energía
-1162	Modo ahorro: módulos apagados
-1163	Moho
-1164	Moho en el invernadero
-1165	Moho por exceso de agua
-1166	Moho: demasiada agua
-1167	Mojado como arena de playa
-1168	Mover interruptores para dar energía solo a los módulos importantes.
-1169	Moverlas al refugio
-1170	Mucha agua: entre más, mejor
-1171	Mucho calor
-1172	Mucho más alto (más de 3 veces)
-1173	Mueve el rover con las flechas.
-1174	Mueve la plataforma con ← → o tocando un carril.
-1175	Mueve la plataforma con ← → o tocando un carril. Atrapa cada {0}.
-1176	Muévete con las flechas o tocando una casilla vecina.
-1177	Muévete con las flechas. El radar dice si el hielo está cerca (gasta 1 de batería). En el cráter no hay Sol para recargar.
-1178	Música
-1179	muy fuerte
-1180	Nada: es igual al polvo de casa
-1181	Nada: toda llega en naves de carga
-1182	Narrador (leer en voz alta):
-1183	Narrador (voz)
-1184	Narrador activado. Voy a leer los textos del juego.
-1185	NASA
-1186	NASA – Comida espacial
-1187	NASA – Cómo duermen los astronautas
-1188	NASA – Cómo se fabrica el oxígeno en la Estación
-1189	NASA – Control de Misión
-1190	NASA – Cultivar plantas en el espacio
-1191	NASA – Efectos del polvo lunar en las misiones Apollo
-1192	NASA – El polvo lunar en los paneles solares
-1193	NASA – El polvo, un problema de otro mundo
-1194	NASA – Experimento Veggie
-1195	NASA – Fenómenos lunares
-1196	NASA – Guía Apollo para maestros (sismos lunares)
-1197	NASA – Hábitats lunares
-1198	NASA – Hielo lunar
-1199	NASA – Historia de Skylab
-1200	NASA – La noche lunar de 14 días sin Sol (LuSEE-Night)
-1201	NASA – La región del polo sur lunar
-1202	NASA – LRO ayuda a los astronautas a protegerse
-1203	NASA – Memorando técnico 102287 (micrometeoroides)
-1204	NASA – Micrometeoroides
-1205	NASA – Micrometeoroides y basura espacial (White Sands)
-1206	NASA – Misión LCROSS (agua en un cráter)
-1207	NASA – Misión LRO (instrumento CRaTER)
-1208	NASA – Misiones Apollo
-1209	NASA – Noche lunar
-1210	NASA – Paneles solares de la Estación Espacial
-1211	NASA – Por qué el polvo lunar es filoso (VIPER)
-1212	NASA – Producción de alimentos
-1213	NASA – Récord de reciclaje de agua en la Estación Espacial
-1214	NASA – Riesgo de errores por falta de sueño
-1215	NASA – Sismómetros Apollo
-1216	NASA – Sismos lunares cerca del polo sur
-1217	NASA – Soporte de vida de la ISS
-1218	NASA – Vida en la ISS
-1219	NASA DONKI
-1220	NASA DONKI – CME
-1221	NASA DONKI – SEP
-1222	NASA DONKI · últimos 30 días · {0}
-1223	NASA DONKI (muestra)
-1224	NASA DONKI + RadLab
-1225	NASA LRO – Temperatura de la Luna (día y noche de 14 días)
-1226	NASA NTRS – Escudos Whipple
-1227	NASA NTRS – Radiación en la superficie lunar
-1228	NASA OSDR · {5}
-1229	NASA RadLab · CRaTER
-1230	NASA Science – El clima en la Luna
-1231	NASA Science – Peligros del regolito lunar
-1232	NASA Science – Primera verdura comida en el espacio
-1233	NASA Science – Tormentas y llamaradas solares
-1234	Nave de rescate
-1235	Nave del nuevo equipo
-1236	Nave del relevo o de suministros
-1237	Necesita menos comida
-1238	Nitrógeno y oxígeno
-1239	Nivel 1 y 2: 3 opciones (la correcta, una plausible y una fácil de descartar del mismo tema). Nivel 3: 4 opciones. En el banco, la 1ª opción es la correcta, la 2ª la plausible, la 3ª la fácil y la 4ª otra plausible.
-1240	nivel inválido
-1241	no es una pregunta
-1242	No hacer nada
-1243	No hay alerta de tormenta
-1244	No hay charcos en el pasillo
-1245	No hay nada roto: es la noche lunar. Sin Sol no se carga, solo se ahorra.
-1246	No hay polvo en los paneles
-1247	No pases dos veces: ¡se raya!
-1248	No producen energía
-1249	No salió esta vez.
-1250	No se le pregunta la edad al niño. El nivel se ajusta solo según cómo le va, y el niño nunca lo ve.
-1251	No se pueden medir
-1252	No: aunque bajó, sigue mucho más alto de lo normal
-1253	No: el frío de la noche la frena
-1254	No: sin Sol no hay radiación
-1255	noche lunar
-1256	Noche lunar
-1257	Nube de material del Sol (CME) · {0}
-1258	nubes de material del Sol (CME)
-1259	NUEVA CARTA · INFORME
-1260	Nueva carta: {0}.
-1261	Nueva partida
-1262	NUEVO
-1263	Nuevo informe en tu bitácora: «{0}».
-1264	Nunca preguntar algo que el niño no pueda resolver con lo que ya vio en su partida. La explicación aparece solo si se equivoca, y en una línea.
-1265	Nunca: el Sol no llega a la Luna
-1266	Nunca: las CME no traen partículas
-1267	Oculta los textos de lectura para comparar aciertos con y sin leer (también con ?sintexto=1)
-1268	Ola de calor en la base
-1269	opción vacía o que no es texto
-1270	opciones inválidas
-1271	opciones repetidas
-1272	ORBITA LUNAR
-1273	Orientar los paneles solares
-1274	Oscuridad y frío
-1275	oxígeno
-1276	Oxígeno
-1277	Oxígeno y helio
-1278	Pan horneado en la estación
-1279	Panel golpeado por un micrometeorito
-1280	panel solar
-1281	Panel solar
-1282	panel tema-
-1283	Paneles al Sol
-1284	Paneles al Sol: cargan energía
-1285	Paneles con polvo: cargan más lento
-1286	paneles solares
-1287	Paneles solares
-1288	Paneles solares: con la luz del Sol hacen la energía de la base.
-1289	Pantalla completa:
-1290	Pantallas de la base
-1291	Pantallas extra
-1292	Para construir las paredes del refugio
-1293	Para enfriar los paneles solares
-1294	Para limpiar el polvo de los trajes
-1295	Para llegar al final de la noche hay que ahorrar. ¿Qué apagas?
-1296	Para qué sirve:
-1297	Para tener agua y fabricar oxígeno y combustible
-1298	Paredes gruesas de tierra lunar frenan la radiación.
-1299	Partículas con mucha energía que llegan del Sol y del espacio. Mucha radiación daña la salud.
-1300	Pasa el dedo o el ratón sobre el panel.
-1301	Pasar el día en el refugio sin dormir
-1302	Pasillo y refugio
-1303	Pasillo y refugio: si llega una tormenta solar, corre aquí.
-1304	Pasó una nube de regolito sobre la base y faltan 3 días para la noche lunar.
-1305	Pasó una nube de regolito sobre la base.
-1306	Pasó una nube gris sobre la base.
-1307	PAUSA
-1308	Pausa (Esc)
-1309	Pegajoso como lodo
-1310	Pequeño sismo lunar
-1311	Piedritas a 20 km por segundo: las capas frenan los golpes.
-1312	Piensa qué se puede fabricar con el agua del hielo.
-1313	Pintándolas de blanco
-1314	Pistas que apuntan directo a la causa.
-1315	Planear ayuda
-1316	PLANO DE LA BASE
-1317	Plano de la base (corte)
-1318	Plantar semillas en el invernadero
-1319	Plantas sanas: comida
-1320	Plataforma de aterrizaje
-1321	pocas opciones
-1322	Polvo en los paneles a 3 días de la noche lunar, que dura unos 14 días. Tu salud está en amarillo y limpiar cansa un poco.
-1323	Polvo lunar
-1324	Polvo lunar en los paneles
-1325	Polvo lunar encima
-1326	Polvo sobre los paneles
-1327	Pon los filtros del agua en orden
-1328	Poner la pieza nueva
-1329	Ponerlo sobre los paneles para limpiarlos
-1330	Ponte el traje: vas a salir de la base.
-1331	Por eso descansar también es parte de la misión.
-1332	Por eso hay que mantener el polvo fuera de la base.
-1333	Por exceso de agua
-1334	Por falta de luz
-1335	Por la radiación del Sol
-1336	Por qué pasó:
-1337	Por qué:
-1338	Por un agujero se escapa el aire, y un panel roto produce menos.
-1339	Porque ahí hay demasiado polvo
-1340	Porque ahí nunca da el Sol
-1341	Porque así los paneles cargan más rápido
-1342	Porque con el agua se fabrica el oxígeno
-1343	Porque cultivar no gasta nada
-1344	Porque de noche llegan más micrometeoritos
-1345	Porque de noche los paneles se llenan de polvo
-1346	Porque de noche no hay oxígeno
-1347	Porque dormir gasta menos agua
-1348	Porque dormir recarga los paneles
-1349	Porque el agua calienta el aire
-1350	Porque el agua de la Luna es salada
-1351	Porque el agua limpia el polvo del aire
-1352	Porque el agua reciclada pesa menos
-1353	Porque el agua también sirve para fabricar oxígeno
-1354	Porque el frío rompe los estantes
-1355	Porque el frío vacía las baterías de golpe
-1356	Porque el hielo descarga las baterías
-1357	Porque el sismo dura minutos y lo suelto se mueve
-1358	Porque el Sol se oculta unos 14 días seguidos
-1359	Porque el vapor apaga los paneles
-1360	Porque en los meses hay más tormentas solares
-1361	Porque es muy grande
-1362	Porque está muy caliente
-1363	Porque la base atrae piedras con su energía
-1364	Porque la calefacción también fabrica oxígeno
-1365	Porque la comida de la Tierra no sirve en la Luna
-1366	Porque la Luna no tiene gravedad
-1367	Porque la radiación apaga el rover
-1368	Porque las baterías dan más luz que el Sol
-1369	Porque las plantas dan energía a los paneles
-1370	Porque le llega menos luz
-1371	Porque los envíos de comida serán poco frecuentes
-1372	Porque los micrometeoritos buscan las bases
-1373	Porque los paneles se gastan cada día
-1374	Porque los paneles solo funcionan en la Tierra
-1375	Porque los sismos atraen el metal
-1376	Porque nadie las cosechó
-1377	Porque pasa más tiempo expuesta
-1378	Porque se calienta demasiado
-1379	Porque se descarga la batería
-1380	Porque se le mete polvo por dentro
-1381	Porque sin calefacción se caen las cajas de comida
-1382	Porque sin calefacción sube la radiación
-1383	Porque sin Sol los paneles no producen energía
-1384	Porque sirve
-1385	Porque trae radiación
-1386	Porque un astronauta cansado comete más errores
-1387	Porque viaja muy rápido
-1388	Pregunta de Control
-1389	PREGUNTA DE CONTROL DE MISIÓN
-1390	Pregunta de transferencia (le va muy bien en nivel 3).
-1391	Preguntas cortas sobre lo que pasó en los días anteriores.
-1392	Prender las luces
-1393	Prender las luces de cultivo baja tu ENERGÍA. ¿Por qué vale la pena?
-1394	Prender las luces del invernadero y regar lo justo
-1395	Prepararse para la noche
-1396	Primer error: se tacha la opción, se muestra la pista y cuesta 2 puntos de la barra del tema. Segundo error: se muestra la explicación, se cobra el costo normal (costoError) y se sigue. Nunca hay reintento gratis ni ilimitado.
-1397	Primero toca un cable de la izquierda.
-1398	Probar
-1399	Probar con luz
-1400	Producen la mitad de energía
-1401	Producen más porque descansan
-1402	Pronóstico
-1403	Pronóstico activo
-1404	Pronóstico del clima espacial
-1405	Pronto: puede llegar en unas 15 horas
-1406	Prueba de lectura (aciertos al primer intento):
-1407	Prueba: texto oculto
-1408	pueden romper un panel o hacer un agujero por donde se escapa el aire.
-1409	Puntos que pierde la barra del tema al equivocarse. Nunca baja una barra de 10 (ni sube la radiación de 90) por una pregunta.
-1410	Que apague las luces del rover
-1411	Que empiece a faltar aire para respirar
-1412	Que espere afuera a que salga el Sol
-1413	Que haya bajado no basta: importa cuánto marca hoy.
-1414	Que la base tiemble más
-1415	Que los paneles produzcan menos energía
-1416	Que produce lo que necesita, sin depender de que le manden cosas. Una base que cultiva su comida es más autosuficiente.
-1417	Que regrese al refugio ahora
-1418	Que se quede a la sombra del rover
-1419	Que suba la radiación
-1420	Qué tan largos son los textos (aviso y explicación). Baja junto con el reto, pero sube un ajuste después: primero sube el reto y, si le sigue yendo bien, sube la lectura. En lectura 1 la voz en off se enciende sola.
-1421	Quedarte afuera
-1422	Quedarte despierto practicando la reparación
-1423	Quedarte en el refugio
-1424	Quitar la pieza rota
-1425	Radar
-1426	Radar del rover
-1427	radiación
-1428	Radiación
-1429	RADIACIÓN
-1430	Radiación junto a la Luna
-1431	Radiación que llega de todas direcciones del espacio, de día y de noche.
-1432	Radiación y tormentas solares
-1433	RadLab – CRaTER
-1434	RadLab – CRaTER (LRO)
-1435	RadLab · CRaTER
-1436	Rayaste demasiado el panel: ahora produce menos.
-1437	rayos cósmicos
-1438	Rayos cósmicos
-1439	Reacomodar las cajas
-1440	Recarga
-1441	Recibiste demasiada radiación y los doctores pidieron que volvieras. El refugio es tu mejor amigo.
-1442	Reciclar agua y aire
-1443	Reciclar el agua
-1444	Reconecta la calefacción
-1445	Recorrido guiado por los módulos (tutorial): energía, invernadero, refugio y sala de control.
-1446	RECORRIDO POR LA BASE
-1447	Recuerda: en la Luna hay que cultivar y reciclar.
-1448	Recuerda: en una tormenta, ¡corre al refugio!
-1449	Recuerda: tarda de 1 a 3 días.
-1450	Reemplazar piezas del panel en orden.
-1451	Refugio
-1452	Refugio de regolito
-1453	Refugio: paredes gruesas
-1454	Regar el doble
-1455	Regar el doble para que crezcan más rápido
-1456	Regar el doble para que se recuperen
-1457	Regar lo justo
-1458	Regar menos las plantas
-1459	Regar menos y dejar que se seque un poco
-1460	Regolito
-1461	Regular válvulas de enfriamiento hasta llegar a la zona verde.
-1462	Rejilla para lo grande
-1463	Relevo
-1464	Relevo a salvo
-1465	Repara el panel en orden
-1466	Repara lo que causa el problema, no lo que se ve al final.
-1467	REPASO DE TU MISIÓN ANTERIOR
-1468	Repaso: en una misión pasada aprendiste sobre «{0}». ¿Qué te explicaron?
-1469	Reporte antes de la noche
-1470	REPORTE DE CONTROL DE MISIÓN
-1471	Reporte de Control de Misión.
-1472	Reporte de la semana
-1473	Resististe hasta que llegó el relevo. La próxima vez intenta dejar todo en verde.
-1474	Responder a la Tierra también cansa: el trabajo de un astronauta no es solo reparar. Control de Misión cuida tu descanso porque un astronauta cansado comete más errores.
-1475	Revela el evento de mañana. Si pierdes ese minijuego, el daño se reduce a la mitad.
-1476	Revisar la calefacción
-1477	Rojo
-1478	Rompecabezas de tuberías con filtros.
-1479	Rover
-1480	Saber más
-1481	Sacar las cajas al pasillo
-1482	Sala de control
-1483	Sala de control: aquí contestas las llamadas de Control de Misión.
-1484	Sala de máquinas y almacén
-1485	Salir ▸
-1486	Salir a trabajar normal
-1487	Salir a ver los micrometeoritos
-1488	Salir al menú
-1489	Salir del refugio
-1490	Salir solo un rato
-1491	Salón
-1492	salón {0}°
-1493	Saltar recorrido ⏭
-1494	Saltarte la comida para ahorrar
-1495	Salud
-1496	SALUD
-1497	Salud del astronauta
-1498	Se acabó el tiempo.
-1499	Se acabó la batería en la oscuridad.
-1500	Se acabó la batería.
-1501	Se acabó la comida y una nave de rescate te llevó a casa. En la Luna hay que cultivar y reciclar.
-1502	Se borró el progreso guardado en este dispositivo.
-1503	Se cayeron las cajas de comida
-1504	Se cubren de hielo y se rompen
-1505	Se escapó demasiado aire.
-1506	Se le congela la garganta
-1507	Se ocultó el Sol. Los paneles ya no cargan: la energía solo puede bajar.
-1508	Se ocultó el Sol. Los paneles ya no cargan.
-1509	Se rompieron demasiadas: {0}.
-1510	Secciones
-1511	Secuencia: regar, esperar, cosechar.
-1512	Seguir buscando hielo en la oscuridad
-1513	Seguir trabajando
-1514	Seguir tuberías y cerrar válvulas.
-1515	sí
-1516	SÍ
-1517	Si el polvo es como vidrio, ¿qué pasa si tallas fuerte?
-1518	Si la comida llega a 0
-1519	Si la energía llega a 0
-1520	Si la radiación llega a 100
-1521	Si la salud llega a 0
-1522	Si las 4 barras en verde
-1523	Si las 4 barras en verde y 3 o más tareas de Control de Misión
-1524	Si llegaste al día 14 sin evacuación
-1525	Si los paneles siguen chuecos, ¿qué barra cambia?
-1526	Si no hay repasos: el tema aprendido que menos ha salido.
-1527	Si no mira al Sol, le llega menos luz y produce menos energía.
-1528	Si no mira al Sol, le llega menos luz y produce menos.
-1529	Si prendes las luces del invernadero, ¿qué barra gastas?
-1530	Si se pierde agua, también falta para fabricar oxígeno, que se obtiene separando el agua.
-1531	Si se pierde agua, también falta para fabricar oxígeno.
-1532	Si se respira, el polvo lunar puede dañar los pulmones.
-1533	Si sigues sin descansar, ¿qué barra baja?
-1534	Si te sales, la barra baja.
-1535	Si un astronauta respira polvo lunar, ¿qué le puede pasar?
-1536	Si vas al refugio gastas energía hoy, pero mañana tendrás menos radiación.
-1537	Sí: hoy ya está como un día normal
-1538	Sí: los rayos cósmicos vienen de todas direcciones
-1539	Sigue la flecha de Control de Misión.
-1540	Sigue las flechas verdes.
-1541	Siguiente ▸
-1542	Silenciar música y efectos:
-1543	Simulación automática.
-1544	Simulación de 4,000 partidas por nivel de habilidad (probabilidad de ganar cada minijuego), con llamadas, averías y dificultad adaptativa. v0.4: más difícil para que se pueda perder. Hay que ajustar con niños reales.
-1545	Sin azar: la pregunta de un tema y nivel es variantes[(partida - 1 + indiceDelEvento) % variantes.length]. Si ya salió en esta partida, se toma la siguiente. El repaso usa una variante distinta de la que el niño vio.
-1546	sin cambios
-1547	sin descubrir
-1548	Sin luz del Sol, los paneles del rover no cargan.
-1549	Sin luz del Sol, los paneles no pueden hacer energía: solo queda la guardada.
-1550	Sin luz las plantas no crecen
-1551	Sin luz ni cuidados, las plantas se secaron.
-1552	Sin Sol el rover no recarga: si sigue, no puede volver.
-1553	Sin Sol los paneles no cargan: hay que guardar energía antes.
-1554	Sin Sol los paneles no producen energía ni hay calor.
-1555	Sin Sol los paneles no producen energía ni hay calor. La NASA dice que sobrevivir la noche lunar es clave para vivir en la Luna.
-1556	Sin Sol los paneles no producen energía, así que hay que cargar las baterías antes.
-1557	Sin Sol los paneles no producen energía.
-1558	Sin Sol, los paneles solares no cargan la batería...
-1559	Sin Sol, solo tienes {0} de energía por hora. Apaga lo que no sea necesario y confirma.
-1560	sismo lunar
-1561	Sismo lunar
-1562	Sismo lunar fuerte
-1563	sismómetro
-1564	Sismómetro
-1565	sismómetros
-1566	Sismómetros
-1567	sismos lunares
-1568	Sismos lunares
-1569	SISTEMAS
-1570	Sistemas de la base
-1571	Situación: {0}.
-1572	Skylab se sobrecalentó al perder su escudo y los astronautas abrieron una sombrilla gigante para taparla del Sol. El calor excesivo baja la salud.
-1573	Sobrevivir la noche lunar es uno de los mayores retos para vivir en la Luna: son unos 14 días sin energía solar.
-1574	Sol
-1575	Solo cuando ya se sienta el calor
-1576	Solo de las plantas
-1577	Solo el equipo lo ve:
-1578	Solo en nivel 3 (reto). Dentro de la misión, una llamada puede ser de transferencia si en los últimos 5 retos hubo 4 o más bien (la misma ventana del nivel adaptativo).
-1579	Solo si ese día hay una tormenta solar
-1580	Son piedritas muy pequeñas que viajan rapidísimo.
-1581	Soporte vital (aire y agua)
-1582	Suave como harina
-1583	Sube la calefacción a la zona verde
-1584	Subes a la nave con cuidado.
-1585	Subes a la nave rápido.
-1586	Subes a la nave.
-1587	Suena música en la sala de control.
-1588	Suma {0} de {1}.
-1589	suma {0} de {1}{2}.
-1590	Supuesto del simulador: cada nivel de reto arriba de 2 baja 8 puntos la probabilidad de acertar (y cada nivel abajo la sube 8), porque hay más opciones y pistas que distraen.
-1591	Sus granitos tienen orillas filosas, como pedacitos de vidrio.
-1592	Tabla 'Qué cambiar en cada nivel' del Miro: la fila Texto es la perilla de lectura y la fila Decisiones es la perilla de reto.
-1593	Tallando fuerte para terminar rápido
-1594	Tallar fuerte para terminar rápido
-1595	Tallar fuerte raya los paneles y producen menos.
-1596	Tan cansado que fue a la litera... ¡y se quedó dormido!
-1597	Tanque de agua limpia
-1598	Tanque de agua reciclada
-1599	Tapados
-1600	Tapar agujeros que aparecen en distintos lugares (reflejos).
-1601	Tapar los agujeros y dejar los paneles para después
-1602	Tapar los agujeros y revisar los paneles
-1603	TAREA
-1604	Tareas de Control de Misión:
-1605	Tareas de la Tierra
-1606	Te esperan en
-1607	Telescopios
-1608	Termina el minijuego para abrir la bitácora
-1609	Termómetros
-1610	Texto más largo con datos de la bitácora y términos técnicos.
-1611	Textos de una línea con íconos. En nivel 1, todo con voz en off. Nada de texto en medio de un minijuego.
-1612	Tienes energía extra hoy. ¿En qué la usas?
-1613	Toca cada agujero antes de que se escape el aire.
-1614	Toca cada agujero en cuanto aparezca.
-1615	Toca el suelo despacio: la velocidad debe estar en verde.
-1616	Toca en el plano el módulo que parpadea, o el botón.
-1617	Toca los pasos en el orden correcto.
-1618	Toca solo {0}.
-1619	Toca un cable de la izquierda y luego el del mismo color a la derecha.
-1620	Toca un cable de la izquierda.
-1621	Toca una carta para usarla. Escudo: frena la mitad del próximo daño a esa barra. Recurso: suma al instante.
-1622	Tocar las lechugas maduras (fácil).
-1623	Tocó el suelo fuera de la plataforma.
-1624	Todavía gastas {0}. Apaga algo más. Errores: {1} de {2}.
-1625	Todavía no aparece en tus informes.
-1626	Todavía no del todo: sigue más alto de lo normal, sal poco tiempo
-1627	Todavía no hay informes.
-1628	Todo asegurado
-1629	Todo en equilibrio
-1630	Todo un día
-1631	TODO verificar con NASA: «cubiertas de regolito» como protección contra micrometeoritos (informe N-D12a). No se usa en el banco.
-1632	TODO verificar con NASA: «naves de carga cada pocos meses» (informe R-D8). No se encontró una fuente NASA con esa frecuencia. Se quitó la pregunta Q2-carga.
-1633	TODO verificar con NASA: «Skylab se sobrecalentó y abrieron una sombrilla gigante» (informe N-D8b). No se usa en el banco.
-1634	Tomar el hielo que alcance y regresar a recargar
-1635	Tomar menos agua para no despertarte
-1636	Tormenta geomagnética más fuerte:
-1637	tormenta solar
-1638	Tormenta solar
-1639	Tormenta solar (aviso corto)
-1640	Tormenta solar (aviso largo)
-1641	Tormenta solar en la oscuridad
-1642	Tormenta solar en una hora. Tu radiación ya está alta y tu energía en amarillo. Cerrar las compuertas del refugio gasta energía, y en pocos días empieza la noche lunar.
-1643	Tormenta solar sorpresa
-1644	tormentas solares
-1645	Trabajaste demasiado
-1646	Trabajaste tanto que te agotaste y te llevaron a casa a descansar. Descansar también es parte de la misión.
-1647	Tranquilo, capitán. Te explicamos qué barra está en peligro y te mandamos ayuda.
-1648	Tras acertar, «¿Qué frase lo prueba?». Si la elige bien: +3 a la barra más débil. Si no, no pasa nada.
-1649	Tres
-1650	Tu base lunar
-1651	Tu carta {0} frenó la mitad del daño.
-1652	Tu carta {0} te ayuda a notar esto.
-1653	Tu comida está en amarillo y tu energía en verde. Faltan 6 días para el relevo y cada día comes algo. Las plantas necesitan luz y la cantidad justa de agua.
-1654	Tu comida está en amarillo y tu energía en verde. Faltan 6 días para el relevo.
-1655	Tú juegas
-1656	Tu salud está casi en rojo, tu comida en verde y tu energía en amarillo. Mañana hay una tarea difícil y faltan 4 días para el relevo.
-1657	Tu tarea de hoy es en
-1658	Tus cartas de la Luna
-1659	Tus plantas se ven tristes y la tierra está muy mojada. ¿Qué haces?
-1660	Tus sucesores revisan la base. ¿Cuántas estrellas ganaste?
-1661	Últimas llamaradas: {6}
-1662	Último día de Sol antes de la noche lunar y tus paneles quedaron chuecos. Tu salud y tu energía están en amarillo.
-1663	Último día de Sol antes de la noche lunar. Tu salud y tu energía están en amarillo, y girar los paneles cansa un poco.
-1664	últimos retos {0} · rama {1} · apoyo {2} ·
-1665	Un aparato que convierte la luz del Sol en energía. Produce más cuando la luz le llega de frente.
-1666	Un aparato que mide los temblores. Los astronautas de Apollo dejaron varios en la Luna.
-1667	Un astronauta cansado comete más errores, y los errores dañan la base.
-1668	Un astronauta cansado comete más errores.
-1669	Un campo magnético y una atmósfera gruesa
-1670	Un capitán descansado comete menos errores.
-1671	Un día más largo
-1672	Un equipo en la Tierra acompaña a los astronautas las 24 horas.
-1673	Un equipo en la Tierra acompaña a los astronautas las 24 horas. Pedir ayuda a tiempo y descansar son parte de una buena misión.
-1674	Un escudo invisible que tiene la Tierra y que la protege de la radiación. La Luna no tiene uno.
-1675	Un filtro de reciclaje se descompuso y la base pierde un poco de agua cada día. ¿Qué problema puede venir después?
-1676	Un gas. Si se separa el agua, sale hidrógeno y oxígeno.
-1677	Un hongo que crece cuando hay demasiada agua. Puede enfermar a las plantas.
-1678	Un hoyo grande en el suelo de la Luna. En los que nunca reciben Sol hay hielo.
-1679	Un instrumento de la NASA que mide la radiación cerca de la Luna desde 2009.
-1680	Un micrometeorito rompió el panel 3
-1681	Un micrometeorito rompió el panel 3. Limpiar no arregla un agujero.
-1682	Un panel dejó de cargar.
-1683	Un panel quedó chueco y ya no mira al Sol. ¿Por qué produce menos?
-1684	Un panel roto
-1685	Un panel roto antes de la noche significa menos energía guardada para 14 días.
-1686	Un panel solar convierte la luz del Sol en energía. Hoy tus paneles quedaron chuecos.
-1687	Un panel solar convierte la luz del Sol en energía. Si no mira al Sol, le llega menos luz y produce menos.
-1688	Un párrafo breve que introduce un término STEM.
-1689	Un pedazo de hielo de un cráter
-1690	Un sismo dañó los cables
-1691	Un sismo pequeño
-1692	Un sismómetro es un aparato que mide los temblores.
-1693	Un sismómetro mide los temblores.
-1694	Un temblor en la Luna. Algunos duran varios minutos.
-1695	Un vehículo para explorar la Luna. Sin Sol no puede recargar sus baterías.
-1696	Una
-1697	Una barra necesita atención. Control de Misión va a estar más cerca de ti estos días.
-1698	Una base de datos de la NASA donde se guarda cada tormenta del Sol.
-1699	Una base que dura meses recibe más golpes que una visita de días como Apollo.
-1700	Una base que dura meses recibe más golpes que una visita de días.
-1701	Una base que produce su comida depende menos de los envíos.
-1702	Una CME tarda de 1 a 3 días en llegar. ¿Cuándo debes tener listo el refugio?
-1703	Una eyección de masa coronal viaja hacia la Luna. Sin campo magnético, la superficie recibe la radiación directo.
-1704	Una frase corta con vocabulario simple.
-1705	Una fuga de agua
-1706	Una fuga en el pasillo
-1707	Una fuga hace bajar el medidor de agua cada hora hasta que cierras la válvula. Con menos agua, también baja el oxígeno.
-1708	Una lluvia de micrometeoritos golpea la base.
-1709	Una lluvia de micrometeoritos golpea la base. Viajan a más de 20 km por segundo.
-1710	Una nube de material del Sol (eyección de masa coronal) suele tardar de 1 a 3 días en llegar. Si la detectas a tiempo, puedes preparar el refugio antes.
-1711	Una nube de material del Sol puede tardar varios días en llegar.
-1712	Una nube de material que lanza el Sol. Suele tardar de 1 a 3 días en llegar.
-1713	Una nube de regolito, el polvo lunar, cubrió los paneles solares. El polvo lunar es filoso como vidrio.
-1714	Una pared con varias capas separadas
-1715	Una pared de vidrio, para ver afuera
-1716	Una pared delgada, para que pese poco
-1717	Una pequeña roca golpeó un panel. Repáralo antes de que vuelva a salir el Sol.
-1718	Una piedrita del espacio que viaja a más de 20 km por segundo: puede hacer un agujero.
-1719	Una piedrita del espacio que viaja muy rápido
-1720	Una piedrita muy rápida rompe paneles.
-1721	Una pista no tiene que ver: hay que descartarla.
-1722	Una pista parece apuntar a otra causa: hay que combinar las claves.
-1723	Una situación solo usa un tema que el niño vivió hace 2 días o más (o en una partida anterior, o que trae en su manual).
-1724	Una tormenta del Sol
-1725	Una tormenta solar
-1726	Una tormenta solar lanza partículas con mucha energía: eso es la radiación.
-1727	Una tormenta solar lanza partículas con mucha energía: eso es la radiación. Las paredes gruesas del refugio las frenan, pero solo con las compuertas cerradas.
-1728	Una tormenta solar lanza partículas con mucha energía. El refugio tiene paredes más gruesas.
-1729	Una tormenta solar llega en plena noche y con poca energía. Encuentra el refugio a oscuras.
-1730	Una tormenta solar llega en una hora. Lanza partículas con mucha energía: eso es la radiación.
-1731	Una tubería tenía una fuga. El agua del charco es la que faltaba.
-1732	Una tubería tiene una fuga
-1733	Unas {0} veces más
-1734	Unas 12 horas
-1735	Unas 12 horas, como en la Tierra
-1736	Unas 4 horas
-1737	Unas 6 horas
-1738	Unas 8 horas y media
-1739	Unos 14 días
-1740	Unos 14 días sin Sol en la Luna, con temperaturas de unos -133 °C.
-1741	Unos 14 días terrestres
-1742	Unos 28 días
-1743	Unos 28 días terrestres
-1744	Unos 3 días
-1745	Unos 7 días terrestres
-1746	Usa ← → para llegar a la plataforma verde.
-1747	Usa − y + (o ← →) para mover la aguja.
-1748	Usa − y + (o ← →). Mantén la aguja en la zona verde {0} segundos.
-1749	Usa la regla de la primera oración con el Sol bajito.
-1750	Usa la regla de los escudos Whipple para tu módulo.
-1751	Usa las flechas, WASD o toca una casilla vecina. Llega a R antes de que se acabe el tiempo.
-1752	USADA
-1753	Usar todo hoy: mañana los paneles vuelven a cargar
-1754	Usar tus cartas antes de que una barra llegue a rojo deja la base en verde.
-1755	use strict
-1756	Uso
-1757	Usó {0}: +{1} de {2}.
-1758	Van a construir una base cerca del polo sur de la Luna. ¿Qué harías con los estantes y el equipo?
-1759	Varias variables y consecuencias para el resto de la misión.
-1760	Varios minutos
-1761	Vas a diseñar un módulo nuevo para una base que durará años. ¿Qué pared eliges?
-1762	Vas bien. Sigue cuidando tus barras para dejarlas todas en verde.
-1763	Vas muy bien, capitán. Usa los datos del Sol para predecir si viene una tormenta.
-1764	Ve a
-1765	Ve mejor en la oscuridad
-1766	Velocidad
-1767	Velocidad de bajada:
-1768	Ver el estudio
-1769	Ver un final
-1770	Verde
-1771	Viene otra tormenta, pero te avisamos con tiempo. Ve al refugio.
-1772	Viene un sismo largo, de varios minutos. Tu comida está en amarillo, cada día comes algo y faltan 6 días para el relevo.
-1773	Viene un sismo largo. Tu comida está en amarillo y faltan 6 días para el relevo.
-1774	Volver a la base ▸
-1775	Volver al menú
-1776	Vuelve a leer el informe: dice qué se gasta o se daña primero.
-1777	Vuelve a leer el texto con calma.
-1778	Vuelve a leer esta pista: «{0}».
-1779	Y la comida guardada se acabó.
-1780	YYYYYYYYY
+144	. Falta que tu maestro te acepte.
+145	… PRIMERO CAMBIA {0}. ¿QUÉ BARRA CAMBIA DESPUÉS?
+146	.mj-opciones .op
+147	.mj-tiempo i
+148	· ajustes: {0}
+149	· BAJA = MEJOR
+150	· del {0} al {1}
+151	· Supabase: {0}
+152	(¡fuerte!)
+153	((( Llamada de Control de Misión )))
+154	({1}.° grado).
+155	({1}.° grado). Tu maestro ve cómo te va.
+156	(máximo
+157	(solo de día)
+158	) · Combustible:
+159	[G-NOSIS] no se guardó {0}:
+160	[G-NOSIS] no se guardó el nivel:
+161	[G-NOSIS] no se guardó la partida:
+162	[G-NOSIS] pregunta del banco omitida (
+163	[G-NOSIS] pregunta omitida (
+164	[G-NOSIS] pregunta omitida: opciones o respuesta inválidas
+165	[ON ]
+166	[sin texto]
+167	[Texto oculto: prueba sin lectura]
+168	{0} · partida {1} · reto {2} · lectura {3} ·
+169	{0} de {1} recomendaciones con buena razón
+170	{0} de {1} respuestas para la Tierra.
+171	{0} está lista: frenará la mitad del próximo daño a la {1}.
+172	{0} frenó la mitad del daño.
+173	{0} solo sirve cuando hay Sol.
+174	{0}: {1} de 100
+175	{0}: falta la fuente NASA
+176	{0}: falta una URL de nasa.gov
+177	{0}: id repetido
+178	{0}: la frase de evidencia no está en la lectura
+179	{0}: menos de 3 opciones
+180	{0}: tema desconocido {1}
+181	{0}: transferencia fuera del nivel 3
+182	// mision lunar
+183	#mj-ops .op.prim:not([disabled])
+184	#panel-cartas, #btn-cartas
+185	+{0} a la barra más débil
+186	+{0} tarea de Control
+187	+12 a la barra más débil, al instante.
+188	⏸ PAUSA
+189	▲ MOTOR
+190	▶ Continuar
+191	♪ Música
+192	♪ SONIDO: NO  [M]
+193	♪ SONIDO: SI  [M]
+194	♪ toca para activar el sonido
+195	✓ ¡Cuenta creada! Ya puedes jugar.
+196	✓ ¡Hola otra vez!
+197	✓ ¡Tu maestro te aceptó!
+198	✓ Cerraste sesión. Puedes seguir jugando sin cuenta.
+199	✓ Listo: tu maestro tiene que aceptarte.
+200	✓ Saliste de la clase.
+201	✓ Ya estás en esa clase.
+202	✦ Efectos
+203	🗣 Voz
+204	0% evacuación, 27% una estrella, 6% dos, 67% tres
+205	1 · ¿Cómo está la radiación hoy?
+206	1 · ¿CUÁL ES LA CAUSA?
+207	1 · PREDICE: ¿QUÉ BARRA CAMBIA PRIMERO?
+208	1. Aviso: Control de Misión describe la situación.
+209	1. Suena una alarma: una barra baja y no se dice por qué.
+210	14 días
+211	14 días sin Sol: carga antes de que oscurezca.
+212	15% evacuación, 83% una estrella, 2% dos, 1% tres
+213	1ª llamada: un repaso pendiente de la partida anterior, o un tema que aprendió en ella (retención diferida).
+214	2 · ¿QUÉ DATO DEL INFORME LO PRUEBA?
+215	2 · ¿QUÉ REPARAS?
+216	2. El niño recorre la base y encuentra pistas.
+217	2. Predecir: el niño toca la barra que cree que va a cambiar.
+218	20 km en un solo segundo: mucho más rápido que una bala.
+219	28 días
+220	2ª y 3ª llamada: un tema que falló en esta partida hace 2+ días (repaso).
+221	3 · ACTÚA
+222	3. Actuar: elige qué hacer (2, 3 o 4 acciones según el nivel).
+223	3. Elige la reparación. Si acierta al primer intento, repara rápido y gana +5 en esa barra.
+224	30% evacuación, 70% una estrella, 0% dos, 0% tres
+225	4 · MIRA QUÉ PASÓ
+226	4. Cada intento fallido: la barra baja 4 más, esa opción se tacha y la Dra. Ortiz manda una pista extra.
+227	4. Ver: las barras cambian frente a él. Si se equivocó, una línea explica por qué.
+228	5% evacuación, 76% una estrella, 6% dos, 13% tres
+229	53% evacuación, 47% una estrella, 0% dos, 0% tres
+230	59 días
+231	72% evacuación, 28% una estrella, 0% dos, 0% tres
+232	84 días
+233	A la Estación Espacial llegan naves de carga cada pocos meses. En la Luna serán menos frecuentes, así que no puedes depender solo de ellas: también hay que cultivar.
+234	A menos de -246 °C
+235	A unos -13 °C
+236	A unos -133 °C
+237	A unos 2 km por hora
+238	A unos 20 °C
+239	A unos 20 km por hora
+240	A unos 20 km por segundo
+241	A unos 20 metros por segundo
+242	ABCMX
+243	Abre tu bitácora en «Datos NASA». ¿Qué clase (letra y número) tuvo la llamarada solar más fuerte?
+244	Abre tu bitácora en «Datos NASA». ¿Qué día fue la llamarada solar más fuerte?
+245	Abre tu bitácora en «Datos NASA». En la peor tormenta, ¿cuánta radiación hubo comparada con un día normal?
+246	Abre tu bitácora en «Datos NASA». La llamarada más fuerte, ¿fue suave, fuerte o muy fuerte?
+247	Abre tu bitácora en «Lo aprendido» y busca ese título.
+248	Abrir la bitácora
+249	Abrir la bitácora ▸
+250	Aciertos a la primera
+251	Acostados, mirando hacia arriba
+252	Además, el oxígeno para respirar se obtiene separando el agua en hidrógeno y oxígeno.
+253	Afuera hay unos -133 °C y sin calor el cuerpo sufre
+254	Afuera te llegan las partículas. El refugio te protege.
+255	Agua de más
+256	Agua reciclada
+257	Agua y aire van juntos: por eso una fuga es tan grave.
+258	Agujero: se escapa el aire
+259	Ahí no hay luz, así que el rover no puede recargar sus baterías.
+260	Ahí nunca llega el Sol, así que es más frío que la noche cerca del ecuador.
+261	Ahora no hay conexión con el servidor ({0}). Puedes jugar sin cuenta: tu progreso queda en este dispositivo.
+262	Ahora ya lo sabes.
+263	Ahorrar: apagar las luces que no se necesitan
+264	Ahorras en lo que no importa y cuidas la calefacción para los días de frío.
+265	Ajusta el medidor
+266	Al amanecer en la Luna, el Sol sale muy bajo, cerca del horizonte. ¿Cómo pones los paneles?
+267	Al caer la noche la pantalla oscurece, los paneles se apagan y la energía solo puede bajar. Hace un frío que se nota en la salud si apagas la calefacción.
+268	Al girar los paneles hacia el Sol, la barra de energía sube más rápido. Chuecos, apenas cargan.
+269	al menos 1 barra en rojo
+270	Al separar el agua salen hidrógeno y oxígeno.
+271	Al separar el agua, ¿qué dos gases salen?
+272	Al terminar la partida (relevo o evacuación).
+273	ALARMA
+274	Alertas de {0}:
+275	Algo salió mal. Intenta otra vez.
+276	Alguien dejó una taza en la mesa.
+277	alguna barra está en rojo
+278	Algunas CME son rápidas: con el aviso, conviene preparar el refugio desde el principio.
+279	Algunas plantas se ven enfermas. Encuentra cuáles y ajusta la humedad.
+280	Algunos duran varios minutos, y los más fuertes de poca profundidad fueron cerca del polo sur.
+281	Algunos sismos lunares de poca profundidad duraron más de 10 minutos.
+282	Algunos sismos lunares duran varios minutos, más que muchos terremotos en la Tierra.
+283	Algunos sismos lunares duran varios minutos, más que muchos terremotos en la Tierra. Los sismómetros de Apollo los registraron. Asegurar los objetos evita perder comida y equipo.
+284	alias inválido
+285	Alinea la nave con la plataforma
+286	Alinear la nave con la plataforma usando las luces.
+287	Almacén de comida
+288	ALT  {0} km
+289	ALUNIZAJE COMPLETADO
+290	Ámbar
+291	Antes de la noche cuenta cada día de Sol: limpia ahora y descansa después.
+292	Antes de que empiece la noche lunar
+293	Antes de que tiemble
+294	Apaga lo que no necesitas.
+295	Apagar el panel
+296	Apagar la calefacción
+297	Apagar la calefacción ahorra energía, pero el frío baja tu salud.
+298	Apagar la calefacción para ahorrar
+299	Apagar la calefacción para tener energía de sobra
+300	Apagar las luces de los pasillos
+301	Apagar las luces del invernadero
+302	Apagar las luces para que descansen
+303	Apagar lo que no sea necesario y guardar energía para la calefacción
+304	Apagar los paneles
+305	Apagó la radio
+306	apagón
+307	Apagón: evacuación
+308	Aplica la regla de la segunda oración a la reparación de mañana.
+309	Aplica la segunda oración: ¿qué se fabrica con el agua?
+310	Arena para lo fino
+311	Arreglar cables con el tiempo corriendo.
+312	Asegurar las cajas de comida
+313	Atascó mecanismos y rasgó trajes
+314	Aterriza la nave del relevo
+315	atmósfera
+316	Atmósfera
+317	Atrapa cada {0} que cae.
+318	Atrapadas
+319	Atrapar objetos que caen de los estantes.
+320	Automático
+321	Autosuficiente
+322	Avería reparada.
+323	Avería: {0} Causa en {1} intento(s), reparación en {2}.
+324	Ayer bajó un poco el medidor de agua
+325	Ayer hubo un pequeño sismo
+326	Baja la temperatura a la zona verde
+327	Bajar la humedad y regar lo justo
+328	Bajó muy rápido: hay que frenar antes con el motor.
+329	barra inválida
+330	Base en verde
+331	Batería:
+332	Baterías
+333	Baterías llenas
+334	Baterías: de noche solo se gastan
+335	Bitácora
+336	Bitácora, «Lo aprendido»: {0}.
+337	Bitácora: lo que has descubierto
+338	bold 15px {0}
+339	bold 16px {0}
+340	bold 17px {0}
+341	bold 22px {0}
+342	bold 24px {0}
+343	bold 26px {0}
+344	bold 36px {0}
+345	bold 60px {0}
+346	BONUS · ¿QUÉ FRASE LO PRUEBA?
+347	Borrar progreso
+348	Buen descanso
+349	Busca «piedrita» en el texto.
+350	Busca cómo debe llegarle la luz al panel.
+351	Busca cómo debe llegarle la luz.
+352	Busca cómo son los escudos Whipple.
+353	Busca con qué lo compara el texto.
+354	Busca cuánto «duran».
+355	Busca cuánto duran los sismos lunares.
+356	Busca de dónde vienen los rayos cósmicos.
+357	Busca dónde fueron los sismos más fuertes.
+358	Busca el año 2015.
+359	Busca el año 2016.
+360	Busca el número con «%».
+361	Busca el tiempo más corto que dice el texto.
+362	Busca en el texto:
+363	Busca hielo con el rover
+364	Busca la oración que habla de Apollo.
+365	Busca la palabra «apuntar».
+366	Busca la palabra «envíos».
+367	Busca la palabra «oxígeno» en el texto.
+368	Busca la palabra «por eso».
+369	Busca la palabra «porque».
+370	Busca la palabra «rápidas».
+371	Busca la palabra «separando».
+372	Busca la primera oración.
+373	Busca la segunda oración.
+374	Busca la temperatura de la noche lunar.
+375	Busca la tubería que gotea (═💧═) y tócala. Las válvulas (═◘═) están bien: no las toques.
+376	Busca la tubería que gotea: ═💧═
+377	Busca las paredes más gruesas.
+378	Busca qué cosas no tiene la Luna.
+379	Busca qué dice el texto sobre los paneles sin Sol.
+380	Busca qué falta «si se pierde agua».
+381	Busca qué más se fabrica con el agua.
+382	Busca qué no hay en esos cráteres.
+383	Busca qué pasa «hoy» y qué pasa «en los próximos días».
+384	Busca qué pasa «si se respira».
+385	Busca qué pasa «sin Sol».
+386	Busca qué pasa cuando un astronauta está cansado.
+387	Busca qué pasa después de los 14 días de Sol.
+388	Busca qué tapa el polvo.
+389	Busca qué tiene el refugio que no tienen otros cuartos.
+390	Busca un año en la primera oración.
+391	Busca un lugar de la Luna en la primera oración.
+392	Busca un lugar de la Luna en la última oración.
+393	Busca un lugar donde nunca da el Sol.
+394	Busca un número de días en la primera oración.
+395	Busca un número de días en la segunda oración.
+396	Busca un número de horas.
+397	Busca y toca
+398	Buscar ▸
+399	Buscar hielo (con guía)
+400	Buscar hielo en el cráter
+401	button, input
+402	Cada aparato encendido gasta energía. En la noche lunar, de unos 14 días, no hay Sol para recargar los paneles, así que ahorrar es parte del trabajo.
+403	Cada barra es un día de radiación.
+404	Cada barra es un día. Rojo = tormenta solar: hasta {3} veces más radiación de lo normal.
+405	Cada carta bien emparejada empieza desbloqueada en la siguiente partida.
+406	Cada carta se usa una vez por partida, cuando el niño decida. Escudo: la próxima vez que esa barra empeore, empeora la mitad. Recurso: suma a esa barra al instante.
+407	Cada cuadro se limpia con una pasada.
+408	Cada evento de la misión deja un informe. Aquí se guardan todos.
+409	Cada golpe deja un agujero. Si no lo tapas, el aire se escapa y la barra de salud baja poco a poco.
+410	Cada gota sirve dos veces: para beber y para respirar.
+411	Cada tripulación cuidó la estación hasta que llegó la siguiente, como tú hasta el relevo.
+412	Cae la noche lunar
+413	Cae la noche: reparte la energía
+414	caja de comida
+415	Calefacción
+416	CALMA
+417	Calor: baja la salud
+418	Cambiar el panel 3
+419	Cambiar un panel
+420	Cambio de equipo: ¡te toca descansar!
+421	Camino al refugio con flechas y mucho tiempo.
+422	Campo de paneles solares
+423	campo magnético
+424	Campo magnético
+425	Cansado te equivocas más, y los errores dañan la base.
+426	Capas protectoras
+427	Capitán
+428	Capitán agotado: evacuación
+429	Capitán completo
+430	Carbón para olores
+431	Cargador del rover
+432	Cargar las baterías y apagar las luces que no se necesitan
+433	Cargar todas las baterías
+434	Cartas
+435	CARTAS
+436	Cartas · {0} de {1}
+437	Casi igual que un día normal (hasta 1.5 veces)
+438	Casi toda el agua se reutiliza, y con ella se hace oxígeno.
+439	Casi toda el agua se usa una y otra vez.
+440	Cayó la noche lunar.
+441	celda limpia
+442	celda raya
+443	Cerca del 50%
+444	Cerca del 9%
+445	Cerca del 98%
+446	Cerca del ecuador
+447	Cerca del ecuador, la noche lunar baja a unos -133 °C: mucho más frío que cualquier congelador.
+448	Cerca del ecuador, la noche lunar baja a unos -133 °C.
+449	Cerca del polo sur
+450	Cerrar ✕
+451	Cerrar cartas
+452	Cerrar la compuerta del refugio
+453	Cerrar la válvula de la fuga primero
+454	Cerrar la válvula de la tubería
+455	Cerrar la válvula del pasillo
+456	Cerrar sesión
+457	Chuecos les llega menos luz, y con menos luz producen menos.
+458	Cian
+459	Científica lunar de la NASA (personaje ficticio). Manda pistas en las averías y explica la causa al final.
+460	Cinco
+461	Clima espacial real
+462	CME
+463	CME (eyección de masa coronal)
+464	Código de tu clase
+465	Colgar ▸
+466	Comenzar la misión ▸
+467	Comer más
+468	Comete más errores
+469	Comida
+470	COMIDA
+471	Cómo aprende el niño sin que se sienta trivia: los conceptos son reglas del juego, las llamadas son situaciones (predecir → actuar → ver), las averías se diagnostican con pistas, la bitácora son cartas que se usan y al final se escribe un manual para el siguiente capitán.
+472	Como sea: el polvo lunar es suave
+473	Compara con la Tierra en la primera oración.
+474	Compara contra un día normal: hasta 1.5 veces es seguro, hasta 3 veces sal poco tiempo, más de 3 veces quédate en el refugio. Si bajó, fíjate en cuánto marca hoy.
+475	Compara cuánto tiempo dura cada misión.
+476	Compara los dos números del texto.
+477	Comparados con muchos terremotos de la Tierra, ¿cómo son algunos sismos lunares?
+478	Comparar alertas reales de DONKI y elegir el día más probable de la tormenta.
+479	Comprensión
+480	Compuerta abierta: entra al refugio
+481	Compuerta cerrada
+482	Con cuidado y sin tallar, para no rayarlo
+483	Con el agua también se fabrica oxígeno: si se pierde agua, falta para respirar.
+484	Con escudos de varias capas separadas
+485	Con ese frío, la calefacción gasta energía pero protege tu salud.
+486	Con imanes que los desvían
+487	Con la comida en amarillo, perder cajas te acerca al rojo antes del relevo.
+488	Con la compuerta abierta entran las partículas. Y la radiación llega aunque sea de noche.
+489	Con la luz de frente le llega más luz al panel, y produce más.
+490	Con la luz de frente, los paneles dan más energía.
+491	Con la radiación alta, gastar un poco de energía evita llegar al rojo.
+492	Con la salud baja, los minijuegos dan menos tiempo: el capitán cansado se equivoca más.
+493	Con lo que marca hoy, ¿qué haces?
+494	Con luces que los espantan
+495	Con luz y el agua justa, las plantas dan comida.
+496	con texto {0}/{1} ({2}) · sin texto {3}/{4} ({5})
+497	Con un trapo con arena, para pulirlo
+498	Conecta los cables
+499	Conecta los cables de los paneles
+500	Conectar cables del mismo color (estilo 'arreglar cables').
+501	Conectar los cables
+502	Confirmar
+503	Congeló los trajes
+504	Conocer la base ▸
+505	Consecuencia a dos pasos.
+506	Consecuencia directa e inmediata.
+507	CONSULTA TU BITÁCORA
+508	Contesta llamadas y repara averías para aprender.
+509	Continuar ▸
+510	Contraseña
+511	Control de Misión
+512	CONTROL DE MISIÓN
+513	Control de Misión cuida tu descanso porque un astronauta cansado comete más errores.
+514	Control de Misión revisa tus barras otra vez. Así empezará tu noche lunar.
+515	Control de Misión revisa tus barras y decide qué tan difíciles serán los próximos días.
+516	Control de Misión te ayuda
+517	Control de Misión te guía con una flecha.
+518	Control de Misión te guía paso a paso para encontrar hielo en un cráter.
+519	Control de Misión te llama desde
+520	Control de Misión te manda una gráfica real de radiación. ¿Es un día seguro para salir?
+521	Control de Misión vio una explosión en el Sol: lo que lanzó llega en una hora.
+522	Control de Misión vio una explosión en el Sol.
+523	Control de Misión:
+524	copia guardada
+525	Corre más rápido
+526	correcta con pista
+527	correcta fuera de rango
+528	Correr al refugio
+529	Cosecha en el invernadero
+530	Cosecha extra
+531	Cosecha las lechugas listas
+532	Cosecha paso a paso
+533	Cosecha rápida
+534	Cosechar
+535	cráter
+536	Cráter
+537	CRaTER (datos de muestra)
+538	Cráter oscuro
+539	CRaTER viaja en la nave LRO de la NASA, que llegó a la Luna en 2009.
+540	cráteres
+541	Crea una cuenta para guardar tus partidas y unirte a tu clase
+542	Crear cuenta
+543	Crear mi cuenta ▸
+544	cualquier otro caso
+545	Cualquiera: los micrometeoritos son muy pequeños
+546	Cuando Control de Misión o la Dra. Ortiz te explican algo, se guarda aquí.
+547	Cuando el Sol lanza partículas con mucha energía. Las más rápidas pueden llegar en menos de una hora.
+548	Cuando está a la sombra de la base
+549	Cuando estás muy cansado
+550	Cuando falta agua
+551	Cuando hay polvo en los paneles
+552	Cuando hay una fuga de agua
+553	Cuando la barra quede en verde, confirma.
+554	Cuando la comida está bajando
+555	Cuando la luz del Sol le llega de frente
+556	Cuando la luz le llega de lado
+557	Cuando tiene un poco de polvo encima
+558	Cuándo usarla:
+559	Cuando viene una tormenta solar
+560	Cuántas acciones hay en las llamadas, cuántas pistas y reparaciones en las averías y cuántas cartas van al manual.
+561	Cuenta cuántos números de días aparecen.
+562	Cuida tus cuatro barras durante 14 días. Si alguna llega al límite, tendrás que evacuar. ¡Yo te aviso cuando pase algo nuevo!
+563	Cuidaste las 4 barras a la vez y cumpliste lo que pidió la Tierra.
+564	Cultivar comida
+565	Cultivar gasta energía hoy y da comida después.
+566	Cultivar gasta energía hoy, pero da comida en los próximos días.
+567	Cultivar gasta energía hoy, pero da comida en los próximos días. En la Luna los envíos de comida serán poco frecuentes, por eso cultivar es clave.
+568	Da igual: la luz llega igual de todos lados
+569	datos en vivo
+570	Datos NASA
+571	Datos NASA (RadLab): hasta {0} veces más radiación de lo normal.
+572	Datos NASA: la más fuerte fue {0} ({1}) {2}.
+573	de {1} · se cayeron
+574	de {2} · escapes
+575	de {2} s
+576	de esta partida
+577	de la partida pasada
+578	De los paneles solares
+579	De noche no hay Sol: no cargan
+580	De noche, cerca del ecuador, la Luna baja a unos -133 °C. En los cráteres que nunca reciben Sol, la NASA midió menos de -246 °C.
+581	De separar el agua
+582	Debajo de los paneles solares
+583	Decide cuándo tener listo el refugio.
+584	DECISIÓN
+585	Dejar el hielo
+586	Dejar el polvo
+587	Dejar el rover en el cráter
+588	Dejar la fuga
+589	Dejarlo en el cráter: el hielo no sirve para respirar
+590	Dejarlos así
+591	Dejarlos sueltos: ahí casi no tiembla
+592	del {0} al {1}
+593	Del polvo lunar
+594	delta on
+595	Demasiada agua trae moho y las plantas se enferman.
+596	Demasiada radiación: evacuación
+597	Demasiadas conexiones equivocadas.
+598	Demasiados errores.
+599	Dentro de un mes
+600	Derretirlo y separar el agua para sacar oxígeno
+601	Descansar hoy y comer bien
+602	Descansar sube tu salud.
+603	Descansar también es parte de la misión.
+604	Descansar todo el día
+605	Descanso y comida caliente
+606	DESCENSO FINAL
+607	Descubre cartas jugando: cada evento te enseña algo nuevo.
+608	Descubriste {0} de {1} cartas de la Luna.
+609	Desde 1969
+610	Desde 1973
+611	Desde 2009
+612	Desde 2016
+613	Desde hace muchos años las naves usan escudos Whipple: varias capas separadas que las protegen de los micrometeoritos.
+614	Deslizar para limpiar el polvo sin pasar dos veces por el mismo lugar.
+615	Despensa vacía: evacuación
+616	Después de cada nodo, si una barra llega al límite (energía, comida o salud en 0, o radiación en 100) la partida salta al final FAIL-<barra> correspondiente.
+617	Detectamos una tormenta solar con mucha anticipación. Ve al refugio con calma.
+618	DÍA
+619	DÍA {0}
+620	Día {0} de 14
+621	Día {0} de 14 · tu partida sigue aquí.
+622	Día {0}.
+623	DÍA 13
+624	Día 13: la base aguanta... ¡un día más!
+625	DÍA 14 · ¡LO LOGRASTE!
+626	día normal (x1)
+627	Diccionario
+628	Diccionario · {0} palabras
+629	Donde aterrizó Apollo 11
+630	Dónde se juega
+631	DONKI
+632	DONKI: {0} · RadLab: {1} · OSDR: {2}
+633	DONKI: subir si hubo llamaradas fuertes (clase M o X) en la última semana real
+634	Dormir tus horas para no equivocarte mañana
+635	Dormir y descansar son parte del plan diario de los astronautas: un astronauta cansado comete más errores.
+636	Dos
+637	Dra. Ortiz
+638	DRA. ORTIZ
+639	Dra. Ortiz: era «{0}». {1}
+640	Dra. Valeria Ortiz
+641	Duran exactamente igual
+642	Duran más tiempo
+643	Duran menos tiempo
+644	Durante la noche lunar, de unos 14 días, la temperatura baja a unos -133 °C.
+645	Durante la noche lunar, de unos 14 días, la temperatura baja a unos -133 °C. Sin calefacción, la salud del capitán baja rápido.
+646	Durante los 14 días sin Sol, la energía sale de las baterías.
+647	Durante una lluvia de micrometeoritos
+648	Durante unos 14 días no hay Sol: la energía de la noche es la que guardaste antes.
+649	el {0} de {1}
+650	El agua de la base se recicla una y otra vez: la Estación Espacial recupera casi toda, cerca del 98%. Si se pierde agua, también falta para fabricar oxígeno, que se obtiene separando el agua.
+651	El agua de la base se recicla una y otra vez.
+652	El agua está hecha de hidrógeno y oxígeno.
+653	El agua se usa una y otra vez. Arma los filtros en el orden correcto.
+654	El agua y la comida bajan rápido.
+655	El alias o la contraseña no coinciden.
+656	El alias solo puede tener de 3 a 20 letras minúsculas, números o _.
+657	El alias: de 3 a 20 letras minúsculas, números o _. No uses tu nombre real. Apunta tu contraseña: si la olvidas, tu maestro tiene que ayudarte.
+658	El campo magnético de la Luna
+659	EL CAPITÁN ESTÁ CANSADO
+660	El capitán sube a la nave para descansar.
+661	El capitán trabajó y trabajó sin parar...
+662	el cráter de sombra
+663	El cuarto de la base con paredes más gruesas, que frenan las partículas del Sol.
+664	El cuarto de la base donde crecen las plantas con luz y la cantidad justa de agua.
+665	El enfriamiento está apagado
+666	El equipo que llega a reemplazarte para cuidar la base.
+667	el exterior de la base
+668	El frío de la noche lo endurece
+669	El gas que respiramos. En la base se obtiene separando el agua.
+670	El hielo es agua para la base.
+671	El informe se guardó en tu bitácora.
+672	El instrumento CRaTER mide la radiación cerca de la Luna desde 2009.
+673	El instrumento CRaTER mide la radiación cerca de la Luna desde 2009. La Luna no tiene campo magnético ni atmósfera gruesa que la proteja, por eso hay que vigilar la radiación y tener un refugio de paredes gruesas.
+674	el invernadero
+675	El maestro no aceptó esta solicitud.
+676	El maestro no aceptó tu solicitud anterior.
+677	el manual
+678	El niño elige cartas para dejarle consejos al siguiente capitán y empareja cada una con su momento ("Antes de que empiece la noche lunar").
+679	El niño nunca ve su nivel, su rama ni la palabra apoyo. Las estrellas premian la misión, no el nivel: en nivel 1 también se pueden ganar 3 estrellas. En modo educativo, el maestro ve el nivel de cada alumno en su panel.
+680	El nuevo equipo entra y tú subes a la nave.
+681	El orden no fue el correcto.
+682	El panel 3 hace un ruido raro
+683	el pasillo y el refugio
+684	el plano
+685	El polvo los calienta y se apagan
+686	El polvo los vuelve imanes
+687	El polvo lunar es filoso como vidrio porque en la Luna no hay viento ni agua que lo desgaste.
+688	El polvo lunar es filoso como vidrio porque en la Luna no hay viento ni agua que lo desgaste. En las misiones Apollo atascó mecanismos y rasgó trajes, y si se respira daña los pulmones.
+689	El polvo lunar es filoso como vidrio porque en la Luna no hay viento ni agua que lo desgaste. En las misiones Apollo atascó mecanismos y rasgó trajes, y si se respira puede dañar los pulmones.
+690	El polvo lunar es filoso: se limpia sin tallar.
+691	El polvo lunar tapa la luz que llega a los paneles: les llega menos luz y producen menos energía.
+692	El polvo tapa la luz que les llega
+693	El polvo tapa la luz: hay que limpiarlo.
+694	El polvo trae radiación
+695	El polvo y las piedritas que cubren la Luna. Es filoso como vidrio.
+696	El radar del rover solo marca hielo en las zonas que siempre están en sombra. Dentro del cráter, la batería del rover no se recarga.
+697	El radar te dice si el hielo está cerca.
+698	El refugio de paredes gruesas te protege de día y de noche.
+699	El refugio tiene paredes más gruesas que frenan esas partículas.
+700	El refugio tiene paredes más gruesas que frenan las partículas del Sol. En la Luna no hay campo magnético que te proteja como en la Tierra.
+701	El regolito tapa la luz que llega a los paneles.
+702	El regolito, el polvo lunar, es filoso como vidrio. Tapa la luz que llega a los paneles, y si se talla fuerte los raya y producen menos.
+703	El rover encontró hielo en un cráter oscuro, donde nunca da el Sol. Ahí sus baterías no se recargan.
+704	El rover encontró hielo en un cráter oscuro.
+705	El rover está estacionado afuera.
+706	El rover no recarga aquí
+707	El sismo de poca profundidad más fuerte que se registró fue en la región del polo sur.
+708	El sismo dura minutos: las cajas sueltas se caen y se rompen.
+709	El Sol
+710	El Sol está alto. Conecta los cables para que los paneles miren hacia él.
+711	El Sol lanzó una tormenta. Tienes algo de tiempo: llega al refugio.
+712	El Sol se esconde: llega la noche en la Luna.
+713	El Sol se ocultó. Los paneles ya no producen energía. Reparte la que tienes.
+714	El texto da un número con «°C».
+715	El visor de tu casco quedó lleno de polvo lunar. ¿Cómo lo limpias?
+716	Elige cuándo sirve.
+717	Elige una carta para recomendarle ({0} de {1}).
+718	email not confirmed
+719	Empieza con {0} carta(s) del manual del capitán anterior.
+720	Empieza por el primero.
+721	En 1973 tres tripulaciones vivieron en Skylab, una tras otra: 28, 59 y 84 días.
+722	En 1973 tres tripulaciones vivieron en Skylab, una tras otra: 28, 59 y 84 días. Cada una cuidó la estación hasta que llegó la siguiente. Igual que ellos, cuida la base y cuídate: un astronauta cansado comete más errores.
+723	En 1973 tres tripulaciones vivieron en Skylab, una tras otra.
+724	En 2015 los astronautas de la Estación Espacial comieron la primera lechuga cultivada en el espacio.
+725	En 2016 unas flores de la Estación Espacial se llenaron de moho por exceso de agua.
+726	En 2016, ¿por qué se llenaron de moho unas flores de la Estación Espacial?
+727	En cráteres donde nunca da el Sol
+728	En cráteres que nunca reciben Sol hay hielo, a menos de -198 °C. Con él se obtiene agua, y separándola, oxígeno para respirar y combustible para cohetes.
+729	En el centro de la cara que vemos
+730	En la bitácora, busca la línea que dice «la más fuerte fue».
+731	En la bitácora, mira la barra más alta de la gráfica.
+732	En la cima de las montañas
+733	En la Estación Espacial los paneles giran para apuntar al Sol.
+734	En la Estación Espacial, ¿hacia dónde giran los paneles solares?
+735	En la Estación Espacial, los paneles solares giran para apuntar al Sol: así producen más energía.
+736	En la fase 1, en la rama Rescate o si alguna barra ya está en rojo, una acción equivocada hace la mitad de daño y en las averías la Dra. Ortiz manda una pista extra desde el principio. Así el niño que va batallando aprende sin hundirse.
+737	En la Luna el día y la noche duran unos 14 días terrestres cada uno.
+738	En la Luna el Sol brilla unos 14 días seguidos y luego se oculta otros 14.
+739	En la Luna el Sol se oculta unos 14 días seguidos: hay que cargar las baterías antes.
+740	En la Luna los envíos de comida serán poco frecuentes, así que la base tendrá que cultivar para ser autosuficiente.
+741	En la Luna los envíos de comida serán poco frecuentes, así que la base tendrá que cultivar para ser autosuficiente. En 2015 los astronautas de la Estación Espacial comieron la primera lechuga cultivada en el espacio.
+742	En la Luna los envíos de comida serán poco frecuentes, por eso hay que cultivar. Una base que produce su comida es más autosuficiente.
+743	En la Luna los envíos de comida serán poco frecuentes.
+744	En la Luna no hay viento ni agua que lo desgaste
+745	En la noche lunar apagas la calefacción para ahorrar. ¿Por qué empeora tu SALUD?
+746	En la noche lunar, de unos 14 días, no hay Sol para recargar los paneles, así que ahorrar es parte del trabajo.
+747	En la zona:
+748	En las misiones Apollo atascó mecanismos y rasgó trajes, y si se respira puede dañar los pulmones.
+749	En las misiones Apollo el polvo atascó mecanismos y rasgó trajes.
+750	En las misiones Apollo, ¿qué hizo el polvo lunar?
+751	En los cráteres donde nunca da el Sol hay hielo: agua para la base. Ahí no hay luz, así que el rover no puede recargar sus baterías.
+752	En los cráteres que nunca reciben Sol, la NASA midió menos de -246 °C.
+753	En los cráteres siempre en sombra hace tanto frío que el hielo dura.
+754	En los cráteres sin Sol hay hielo: agua y oxígeno.
+755	En los próximos 1 a 3 días
+756	En menos de una hora
+757	EN SUPERFICIE
+758	En toda la superficie durante el día
+759	En un día con Sol
+760	En un mes: las CME son muy lentas
+761	En una avería, si el niño tiene la carta de ese tema, una de las pistas clave se resalta.
+762	En una base lejana, ¿por qué conviene recuperar casi toda el agua?
+763	En una semana
+764	En una tormenta solar la radiación puede subir cientos de veces. Por eso el refugio es clave.
+765	En unos 14 días
+766	En unos 3 días
+767	Encender el enfriamiento
+768	Encender todo para que la base guarde el calor
+769	Encontrar las plantas enfermas y bajar la humedad al nivel correcto.
+770	Encontraste hielo y en la base empieza a faltar oxígeno. ¿Qué te conviene hacer con el hielo?
+771	Encuentra la fuga
+772	Encuentra las plantas enfermas
+773	energía
+774	Energía
+775	ENERGÍA
+776	Energía solar
+777	Energía, comida, salud y radiación se cuidan al mismo tiempo.
+778	Enter
+779	ENTER / TOCA = saltar
+780	ENTER o toca = saltar
+781	ENTER o toca JUGAR  -  F pantalla completa  -  M silenciar
+782	ENTER o toca para continuar
+783	ENTRADA EN ORBITA
+784	Entrar
+785	Entrar ▸
+786	Entrega de la base
+787	Entregaste la base con todas las barras en verde. ¡Excelente trabajo!
+788	Era «{0}». {1}{2}
+789	Era el calor, como en Skylab. Trabajar cansa, pero hoy el problema era la temperatura.
+790	Era el polvo: tapaba la luz y los paneles casi no cargaban.
+791	Era moho por exceso de agua, como les pasó a unas flores en la Estación Espacial.
+792	Es de noche
+793	Es de noche y un astronauta está afuera manejando el rover. Suena la alerta de tormenta solar. ¿Qué le dices?
+794	Es de noche: no hay Sol
+795	Es un escudo para la {0}.
+796	Es una inversión: pierdes un poco hoy para tener comida después.
+797	Esa cuenta no es de alumno.
+798	Esa no. Errores: {0} de {1}.
+799	Esc, P o ⏸: pausa (en pantalla completa usa P o el botón) · M: silenciar · F: pantalla completa
+800	Escape
+801	Escribir el manual para el siguiente capitán ▸
+802	ESCUDO · {0}
+803	escudo: frena la mitad del próximo daño a la {0}.
+804	Ese alias ya existe. Elige otro.
+805	Ese código de clase no existe. Revísalo con tu maestro.
+806	ese código no existe
+807	Ese hielo es agua para beber y para fabricar oxígeno y combustible.
+808	Ese no es: busca el módulo que parpadea.
+809	Ese no es. Errores: {0} de {1}.
+810	Ese paso va después. Errores: {0} de {1}.
+811	Esperar a la noche para limpiar
+812	Esperar a que crezcan
+813	Esperar a que haya más Sol
+814	Esperar a que los paneles carguen con la luz de las estrellas
+815	Esperar a que los paneles carguen de noche
+816	Esperar al primer sismo para decidir
+817	Esta carta sirve {0}.
+818	Esta cuenta no es de maestro.
+819	Está oscuro: solo ves cerca de ti.
+820	Estabas preparado por el Pronóstico: el daño fue la mitad.
+821	Estás en la clase
+822	Estás muy cansado.
+823	Este dispositivo no tiene voz en este idioma. En Windows: Configuración › Hora e idioma › Voz › Agregar voces. En Chrome o Edge suele haber voces más claras.
+824	Este navegador no puede leer en voz alta. Prueba con Chrome o Edge.
+825	EVACUACIÓN
+826	EVENTO
+827	EVF
+828	Evidencia: «{0}» · {1}
+829	Exterior de la base
+830	eyección de masa coronal
+831	Falla en la calefacción
+832	Falta comida
+833	Falta desactivar «Confirm email» en Supabase (lo hace el equipo).
+834	falta supabase-js
+835	Faltan 10 días de noche lunar y tus baterías están a la mitad. ¿Qué plan funciona mejor?
+836	Faltan luces de cultivo
+837	FASE 1 · BIENVENIDA · SOL
+838	FASE 2 · CLIMA ESPACIAL · SOL
+839	FASE 3 · NOCHE LUNAR
+840	Fijarlos bien desde el principio
+841	Fíjate bien en la unidad: ¿por segundo o por hora?
+842	Filoso como vidrio
+843	Fin: {0} ({1} estrellas).
+844	Fin: {0}.
+845	Final desconocido:
+846	Finales
+847	Fresas traídas de la Luna
+848	frío
+849	Fue la primera verdura cultivada y comida en el espacio.
+850	Fuente: {0} · se guardó en tu bitácora.
+851	Fuga de agua
+852	Fuga de agua y, al mismo tiempo, una tarea de Control de Misión que da una estrella extra. Tu comida está en amarillo y tu salud en verde.
+853	Fuga: se pierde agua (y oxígeno)
+854	G-NOSIS // {0}
+855	G-NOSIS: la Luna y la base dibujadas en ASCII
+856	Gasta energía hoy, pero da comida en los próximos días
+857	Gastar la energía que queda
+858	Gastar toda la energía en el invernadero
+859	Gastar toda la energía te deja sin nada para la noche lunar.
+860	Girar los paneles hacia el Sol
+861	Girar perillas hasta la temperatura correcta.
+862	Girarlos cuando sea de noche
+863	Grupo de un maestro. El maestro elige el grado del grupo y puede cambiar el nivel inicial de cada alumno. Después el ajuste es el mismo.
+864	Guardar comida extra
+865	Guardar en el almacén
+866	Guardar la energía en las baterías
+867	Guardarlo congelado para enfriar la base
+868	Guardarlos solo en el refugio contra la radiación
+869	Guardaste {0}.
+870	Guía:
+871	GWOWWWG
+872	Habilidad
+873	hace 2 días
+874	Hace las llamadas de situación.
+875	Hace mucho frío. Ajusta la calefacción para que la base esté cómoda.
+876	Hace una semana
+877	Hacer la reparación de una vez, de noche
+878	Hacer la tarea primero y la fuga después
+879	Hacia el Sol
+880	Hacia la Luna
+881	Hacia la sombra, para no calentarse
+882	Hacia la Tierra
+883	Hay evidencia de hielo cerca del polo sur de la Luna.
+884	Hay evidencia de hielo en cráteres sombreados cerca del polo sur de la Luna, donde nunca da el Sol.
+885	Hay evidencia de hielo en cráteres sombreados cerca del polo sur de la Luna, donde nunca da el Sol. Ese hielo es agua para beber y para fabricar oxígeno y combustible.
+886	Hay mucho hielo en el cráter, pero el rover tiene poca energía. Tu comida está en amarillo y faltan 4 días para el relevo.
+887	Hay mucho hielo en un cráter oscuro, pero el rover tiene poca batería. Tu comida está en amarillo.
+888	Hay un charco en el pasillo y, al mismo tiempo, una tarea de Control que da una estrella extra. Tu comida está en amarillo.
+889	Hay un charco en el pasillo.
+890	Hay un poco de polvo en el suelo
+891	Hay una foto familiar junto a la litera.
+892	Hay una fuga de agua. Con el agua de la base también se fabrica oxígeno para respirar.
+893	Hazlo en orden
+894	herramientas del equipo
+895	hidrógeno
+896	Hidrógeno
+897	Hidrógeno y dióxido de carbono
+898	Hidrógeno y oxígeno
+899	Hielo del cráter
+900	Hielo en los cráteres
+901	Hielo: solo donde nunca da el Sol
+902	Hizo agujeros en la nave
+903	Hola, capitán. Así suena tu narrador.
+904	Hoy hubo x{0} de un día normal: {1}.{2}
+905	Hoy no pasa nada malo. Descansa y come algo caliente.
+906	Hoy salió del Sol una nube de material (una CME) hacia la Luna. ¿Cuándo debes tener listo el refugio?
+907	Hoy toca limpiar el pasillo.
+908	Hoy trabajaste mucho
+909	Hoy tus paneles quedaron chuecos.
+910	Hubo una explosión en el Sol y llega en una hora. Tu energía está en amarillo y en pocos días empieza la noche lunar.
+911	id, alias
+912	id, alias, grupo_id, nivel_inicial, nivel_reto, nivel_lectura
+913	id, alias, nivel_inicial, nivel_reto, nivel_lectura, creado_en
+914	id, alumno_id, estado, creada_en
+915	id, grupo_id, estado, creada_en
+916	id, nombre, escuela, grado, codigo, creado_en
+917	id, rol, nombre
+918	Igual que un día normal
+919	Igual: unos -133 °C
+920	Inclinados hacia el horizonte, de frente al Sol
+921	indiceCorrecto fuera de rango
+922	indiceCorrecto no es entero
+923	INFORME
+924	INFORME DE CONTROL
+925	INFORME FINAL · DÍA 14
+926	Informe guardado sin pantalla (tema ya leído): {0}.
+927	Informes
+928	Informes · {0}
+929	INICIO
+930	inset(0 {0}% 0 0)
+931	Interruptores de energía
+932	Invernadero
+933	Invernadero sin cosecha
+934	Invernadero: aquí crece tu comida
+935	Invernadero: aquí crece tu comida.
+936	Ir ▸
+937	Ir al refugio
+938	Ir al refugio con las compuertas abiertas
+939	Ir al refugio protege tu cuerpo ahora.
+940	Ir al refugio y cerrar las compuertas
+941	Juego en pausa
+942	Juego fuera del salón. No se pide edad ni grado. Empieza en nivel 2 y se calibra rápido con los primeros retos.
+943	JUGAR
+944	Jugar otra misión ▸
+945	Jugar sin cuenta ✕
+946	KKKKKKKKKKKKKK
+947	Kp {4}
+948	KRRKDGGGDKRRK
+949	KRRKGGWGGKRRK
+950	La base recicla casi toda su agua, como la Estación Espacial (cerca del 98%). Con el agua también se fabrica oxígeno: si se pierde agua, falta para respirar.
+951	La base se está calentando demasiado. Activa el enfriamiento.
+952	La base se quedó sin energía y una nave de rescate te llevó a casa. Aprendiste que sin Sol hay que ahorrar.
+953	la bitácora
+954	La calefacción a todo lo que da
+955	La calefacción está apagada
+956	La calefacción funciona
+957	La calefacción se apagó y afuera hay -133 °C. ¡Repárala rápido!
+958	La capa de aire que rodea a un planeta. La Luna no tiene una atmósfera gruesa que la proteja.
+959	La comida está bajando y las plantas del invernadero esperan.
+960	La comida está bajando.
+961	La comida está bajando. Las plantas del invernadero necesitan luz, y la luz gasta energía.
+962	La comida está en verde
+963	La compuerta del refugio está abierta
+964	La contraseña debe tener al menos 6 letras o números.
+965	La cosecha está saliendo mala.
+966	La energía baja aunque es de día.
+967	La energía baja y ningún panel carga.
+968	La energía no alcanzó.
+969	La Estación Espacial recicla cerca del 98% de su agua, incluso el sudor.
+970	La Estación Espacial recicla cerca del 98% de su agua, incluso el sudor. Además, el oxígeno para respirar se obtiene separando el agua en hidrógeno y oxígeno.
+971	La fuga tira el agua: hay que cerrarla.
+972	La humedad del invernadero está alta
+973	La leíste en: {0}.
+974	La Luna no tiene campo magnético ni atmósfera gruesa que la proteja, por eso hay que vigilar la radiación y tener un refugio de paredes gruesas.
+975	La Luna no tiene un campo magnético como la Tierra. Ir al refugio de paredes gruesas a tiempo es la mejor protección.
+976	La Luna no tiene un campo magnético que la proteja como a la Tierra. Con aviso a tiempo, llegar al refugio de paredes gruesas es fácil.
+977	La luz gasta energía hoy, y las plantas dan comida en los próximos días.
+978	La mejor era
+979	La misión LCROSS de la NASA encontró agua en un cráter cerca del polo sur.
+980	La NASA dice que sobrevivir la noche lunar es clave para vivir en la Luna.
+981	La NASA guarda cada tormenta del Sol en una base de datos llamada DONKI.
+982	La NASA lo estudia
+983	La NASA lo estudia de verdad: «{0}» ({1}{2}).
+984	La NASA vigila el Sol todos los días y guarda cada tormenta en una base de datos llamada DONKI. Aun sin aviso, el refugio de paredes gruesas te protege, porque la Luna no tiene campo magnético.
+985	La noche lunar
+986	La noche lunar dura unos 14 días terrestres y la temperatura baja a unos -133 °C.
+987	La noche lunar dura unos 14 días terrestres y la temperatura baja a unos -133 °C. Sin Sol los paneles no producen energía, así que hay que cargar las baterías antes.
+988	La noche lunar dura unos 14 días terrestres.
+989	La noche lunar dura unos 14 días y la temperatura baja a unos -133 °C. La calefacción gasta energía, pero protege tu salud.
+990	La noche lunar dura unos 14 días, sin Sol y a unos -133 °C. Los paneles dejan de producir y la calefacción gasta energía para cuidar tu salud.
+991	La primera lechuga cultivada en el espacio
+992	La primera pizza hecha en el espacio
+993	La próxima vez, ¡ahorra energía para la noche!
+994	La próxima vez, ¡intenta dejar todo en verde!
+995	La prueba era:
+996	La prueba está en el informe de esta llamada, no en otros.
+997	La radiación del Sol lo afila
+998	La radiación está alta
+999	La radiación está en verde
+1000	La radiación llega aunque sea de noche: los rayos cósmicos vienen de todas direcciones.
+1001	La radiación llega aunque sea de noche: los rayos cósmicos vienen de todas direcciones. El refugio de paredes gruesas te protege de día y de noche.
+1002	La radiación sube aunque estás en el refugio.
+1003	La radiación sube y sube... ¡suena la alarma!
+1004	La regla es «de frente al Sol». Si el Sol está bajo, el panel se inclina hacia él.
+1005	La regla está en la segunda oración. Piensa: ¿entra energía nueva de noche?
+1006	La regla: cansado te equivocas más. Para una tarea difícil, conviene llegar descansado.
+1007	La regla: cerca del polo sur hubo los sismos poco profundos más fuertes, y duran minutos. Hay que asegurar todo antes.
+1008	La regla: demasiada agua enferma a las plantas. Si la tierra está muy mojada, hay que regar menos.
+1009	La regla: el hielo es agua, y del agua se fabrica oxígeno.
+1010	La regla: el oxígeno sale del agua. Si se pierde agua, después puede faltar oxígeno para respirar.
+1011	La regla: el polvo es filoso como vidrio. Tallar fuerte raya el visor (en Apollo 17 un visor quedó tan rayado que no se veía).
+1012	La regla: la radiación llega de noche también, y lo que protege es el refugio, no la oscuridad.
+1013	La regla: las capas separadas protegen de los golpes. Una base de años recibe muchos golpes.
+1014	La regla: sin Sol no entra energía nueva. Si faltan muchos días, hay que repartir la que queda.
+1015	la sala de control
+1016	la sala de máquinas
+1017	La salud del capitán está bajando.
+1018	La salud es la barra en peligro y la comida aguanta: hoy toca descansar.
+1019	La siguiente misión empieza con:
+1020	La siguiente misión empieza sin cartas.
+1021	La Tierra se ve azul por la ventana.
+1022	La Tierra: ¡a casa!
+1023	La última es hoy: ¿es seguro salir?
+1024	La ventana muestra día, noche o tormenta
+1025	La zona verde se mueve: síguela con − y + (o ← →).
+1026	Laberinto a oscuras con linterna limitada.
+1027	Laberinto contra reloj: cerrar compuertas y llegar al refugio.
+1028	Laberinto hacia el refugio con tiempo moderado.
+1029	LAIKA
+1030	LAIKA · TU AYUDANTE
+1031	las 4 barras en verde
+1032	las 4 barras en verde y al menos 3 tareas de Control de Misión cumplidas
+1033	Las cajas de comida están completas
+1034	las cartas
+1035	Las dos contraseñas no son iguales.
+1036	Las enfermas tienen manchas blancas (@). Tócalas.
+1037	las fugas de agua
+1038	Las lechugas ya están listas. Cosecha todas las que puedas.
+1039	Las listas se ven grandes y redondas (o). Tócalas.
+1040	Las llamadas empiezan en la sala de control (el aviso) y la acción ocurre en el escenario de la situación. El plano de la base es el mapa para moverse entre escenarios.
+1041	Las luces de la base encendidas
+1042	Las luces del invernadero funcionan
+1043	Las luces frenan la radiación
+1044	Las luces también recargan las baterías
+1045	Las misiones Apollo reportaron trajes gastados y piezas atascadas por el polvo.
+1046	Las naves usan escudos Whipple de varias capas separadas.
+1047	Las paredes gruesas del refugio frenan las partículas del Sol.
+1048	Las paredes gruesas frenan la radiación, pero solo con las compuertas cerradas.
+1049	Las paredes más gruesas del refugio
+1050	Las partículas más rápidas de una tormenta solar pueden llegar en menos de una hora.
+1051	Las partículas más rápidas de una tormenta solar pueden llegar en menos de una hora. El refugio tiene paredes más gruesas que frenan esas partículas.
+1052	Las plantas crecen día a día solo si tienen luz y la cantidad justa de agua. Con demasiada agua les salen manchas de moho.
+1053	Las plantas crecieron. Riega y cosecha en el orden correcto.
+1054	Las plantas del invernadero necesitan luz y la cantidad justa de agua.
+1055	Las plantas del invernadero necesitan luz y la cantidad justa de agua. En 2016 unas flores de la Estación Espacial se llenaron de moho por exceso de agua.
+1056	Las plantas del invernadero necesitan luz y la cantidad justa de agua. La luz gasta energía hoy, y las plantas dan comida en los próximos días.
+1057	Las plantas del invernadero son tu comida...
+1058	Las plantas devuelven la energía esa misma noche
+1059	las plantas enfermas (@)
+1060	las plantas listas para cosechar
+1061	Las plantas necesitan luz y agua para dar comida.
+1062	Las plantas se ven sanas
+1063	Las plantas usan demasiada agua
+1064	las respuestas
+1065	Las tres tripulaciones se quedaron 28, 59 y 84 días: la última fue la más larga.
+1066	Las tripulaciones de Skylab se relevaban: cada grupo cuidaba la estación hasta que llegaba el siguiente. Fueron 3 tripulaciones: 28, 59 y 84 días.
+1067	Las válvulas ═◘═ están bien: no las toques.
+1068	Le da más energía
+1069	Le entregas la base al nuevo equipo.
+1070	Le puede dañar los pulmones
+1071	Lee el medidor de radiación
+1072	Lee la carta.
+1073	LEE LA REGLA Y ÚSALA EN ESTE CASO
+1074	Lee las alertas del Sol y decide cuándo tener listo el refugio.
+1075	Lee las alertas del Sol.
+1076	Lee las pistas: no todas tienen que ver.
+1077	Lee los datos del Sol
+1078	LEE Y BUSCA LA RESPUESTA
+1079	Leer el medidor de radiación
+1080	Leer una gráfica con datos reales y elegir: seguro / cuidado / peligro.
+1081	Les dieron demasiada agua y salió un hongo.
+1082	Letra grande:
+1083	Libre
+1084	Lila
+1085	Limpia el polvo
+1086	Limpiar los paneles
+1087	Limpiar los paneles con cuidado
+1088	Limpiar todos los paneles
+1089	Limpieza suave
+1090	LISTA
+1091	Listo ✕
+1092	Litera para descansar
+1093	LLAMADA · CONTROL DE MISIÓN
+1094	Llamada ({0}): predicción {1}, dato {2}, acción {3}{4}.
+1095	Llamada entrante de Control de Misión
+1096	Llamadas (acción correcta) y averías (resueltas al primer intento).
+1097	Llamadas resueltas bien: {0} de {1} · Averías al primer intento: {2} de {3} · Minijuegos ganados: {4} de {5} · Cartas usadas: {6}
+1098	Llamarada solar
+1099	llamaradas solares{2}
+1100	llave rechazada
+1101	Llega a la R antes de que se acabe el tiempo.
+1102	Llega la nave con el nuevo equipo.
+1103	Llega la nave del relevo
+1104	Llega una nave de rescate.
+1105	Llega una nave de suministros
+1106	LLEGADA
+1107	Llegada a la base
+1108	Llegan tan rápido que hay que ir al refugio en cuanto suena la alerta.
+1109	llegaste al día 14 sin que ninguna barra llegara al límite
+1110	LLEGÓ EL RELEVO
+1111	Llevas días trabajando sin parar, tu comida está en verde y mañana hay una tarea difícil.
+1112	Llevas varios días trabajando sin parar y casi sin dormir.
+1113	Llevas varios días trabajando sin parar.
+1114	Llevas varios días trabajando sin parar. Un astronauta cansado comete más errores.
+1115	Lluvia de micrometeoritos
+1116	Lluvia de micrometeoritos a 2 días de la noche lunar. Tu energía está en amarillo.
+1117	Lluvia de micrometeoritos a 2 días de la noche lunar. Un golpe puede romper un panel y otro puede hacer un agujero. Tu energía está en amarillo.
+1118	Lo aprendido
+1119	Lo aprendido · {0}
+1120	Lo leíste en: {0}.
+1121	Lo peligroso no es su tamaño sino su velocidad.
+1122	LO QUE APRENDISTE
+1123	lo que buscas
+1124	Lo que no está asegurado se cae, como las cajas de comida de los estantes.
+1125	Lo que no está asegurado se cae: por eso hay que sujetar las cosas.
+1126	Lo que no está asegurado se cae.
+1127	Los astronautas de Apollo dejaron sismómetros que registraron sismos lunares.
+1128	Los astronautas de Apollo dejaron sismómetros que registraron sismos lunares. Algunos duran varios minutos, y los más fuertes de poca profundidad fueron cerca del polo sur.
+1129	Los astronautas de Apollo dejaron sismómetros que registraron sismos lunares. Algunos duran varios minutos, y los más fuertes de poca profundidad fueron cerca del polo sur. Asegurar los objetos evita perder comida y equipo.
+1130	Los astronautas de la Estación Espacial tienen programadas unas 8 horas y media para dormir.
+1131	Los astronautas de la Estación Espacial tienen programadas unas 8 horas y media para dormir. Un astronauta cansado comete más errores.
+1132	Los astronautas de la Estación Espacial tienen programadas unas 8 horas y media para dormir. Un capitán descansado comete menos errores.
+1133	Los astronautas de la Estación tienen programadas unas 8 horas y media para dormir.
+1134	Los astronautas lo pisaron mucho
+1135	Los astronautas tienen unas 8 horas y media para dormir. Un astronauta cansado comete más errores, y los errores dañan la base.
+1136	Los científicos te cuentan una situación. ¿Qué carta es la mejor para ese momento?
+1137	Los científicos tienen preguntas sobre la base. Respóndelas para ganar puntos.
+1138	Los demás paneles están limpios
+1139	Los días {0} fueron muy altos, pero hoy bajó. ¿Ya es seguro salir?
+1140	Los doctores dicen: ¡es hora de volver!
+1141	Los errores dañan la base: descansar es parte del trabajo.
+1142	Los escudos Whipple tienen varias capas: la de afuera recibe el golpe primero.
+1143	Los golpes llegan todo el tiempo: entre más tiempo estés, más recibes.
+1144	Los micrometeoritos golpean todo el tiempo lo que está en el espacio. Una base que dura meses recibe más golpes que una visita de días como Apollo.
+1145	Los micrometeoritos viajan a más de 20 km por segundo, por eso una piedrita puede hacer un agujero. Una base que dura meses recibe más golpes que una visita de días como Apollo.
+1146	Los micrometeoritos viajan a más de 20 km por segundo: pueden romper un panel o hacer un agujero por donde se escapa el aire.
+1147	Los micrometeoritos viajan a más de 20 km por segundo. Una base que dura meses recibe más golpes, por eso necesita paredes con varias capas o cubiertas de regolito.
+1148	Los micrometeoritos viajan en promedio a unos 20 km por segundo: por eso una piedrita puede hacer un agujero.
+1149	Los micrometeoritos viajan en promedio a unos 20 km por segundo.
+1150	Los números van en orden: la última es la del final.
+1151	Los paneles cargan bien
+1152	Los paneles con polvo se ven opacos y la barra de energía sube más lento. Si los tallas fuerte, quedan rayados para siempre.
+1153	Los paneles dan más energía con la luz de frente.
+1154	Los paneles de la Estación siguen al Sol para producir más.
+1155	Los paneles dejan de producir y la calefacción gasta energía para cuidar tu salud.
+1156	Los paneles no miran al Sol.
+1157	Los paneles producen más energía cuando la luz del Sol les llega de frente.
+1158	Los paneles producen más energía cuando la luz del Sol les llega de frente. En la Luna el Sol brilla unos 14 días seguidos y luego se oculta otros 14.
+1159	los paneles solares
+1160	Los rayos cósmicos no vienen solo del Sol: llegan de día y de noche.
+1161	Los sismómetros detectan un sismo lunar largo.
+1162	Los sismómetros detectan un sismo lunar que puede durar varios minutos. Hay cajas de comida en los estantes.
+1163	Los sismos lunares duran minutos: asegura las cosas.
+1164	Los sismos lunares más fuertes de poca profundidad fueron cerca del polo sur.
+1165	Los sismos lunares pueden durar varios minutos, más que muchos terremotos en la Tierra. Lo que no está asegurado se cae, como las cajas de comida de los estantes.
+1166	Luces de cultivo (gastan energía)
+1167	Luces de los pasillos
+1168	Luces del invernadero
+1169	Luego toca el del mismo color a la derecha.
+1170	Luz UV para gérmenes
+1171	Luz y la cantidad justa de agua
+1172	Maestro
+1173	Manejar el rover siguiendo señales.
+1174	Manejar el rover usando un radar, sin luz.
+1175	MANIOBRA DE DESCENSO
+1176	Mantén ▲ MOTOR (o Espacio) para frenar y usa ← → para llegar a la plataforma. Toca el suelo despacio.
+1177	Mantén ▲ MOTOR (o Espacio) para frenar: gasta combustible.
+1178	Mantén la nave adentro hasta llenar la barra.
+1179	Mantener la calefacción
+1180	Mantener tres soportes en equilibrio al mismo tiempo.
+1181	Mantenla en la zona verde hasta llenar la barra.
+1182	MANUAL PARA EL SIGUIENTE CAPITÁN
+1183	MANUAL TERMINADO
+1184	Mañana empieza la noche lunar y faltan 5 días para el relevo.
+1185	Mañana empieza la noche lunar: unos 14 días sin Sol y cerca de -133 °C afuera. Tu energía está en amarillo y faltan 5 días para el relevo.
+1186	Mañana empieza la noche lunar: unos 14 días sin Sol. Los paneles solares dejan de producir.
+1187	Mañana se oculta el Sol y empieza la noche lunar.
+1188	Mañana se oculta el Sol y la noche dura días. ¿Cómo te preparas?
+1189	Mañana se oculta el Sol.
+1190	Mañana tienes una reparación difícil y hoy ya terminaste lo urgente. ¿Qué te conviene hacer esta noche?
+1191	Máquinas y almacén
+1192	Máquinas y almacén: el agua, la calefacción y la comida guardada.
+1193	Más alto que lo normal (entre 1.5 y 3 veces)
+1194	Más caliente: el hielo guarda el calor del día
+1195	Más caliente: unos 0 °C
+1196	Más frío: la NASA midió menos de -246 °C
+1197	Más hielo en sus cráteres
+1198	Más polvo en la superficie
+1199	Mejor base
+1200	mejor=alta: verde si valor >= verde, rojo si valor < rojo, fracaso en 0. mejor=baja: verde si valor <= verde, rojo si valor > rojo, fracaso en 100.
+1201	Mejores estrellas
+1202	Menos de un segundo
+1203	Menos luz en el panel = menos energía.
+1204	Mensaje a la Tierra
+1205	Mensaje de la Tierra:
+1206	Mensaje especial de la Tierra
+1207	Mensaje recibido.
+1208	Menú
+1209	Mi cuenta
+1210	Micrometeorito
+1211	Micrometeorito en un panel
+1212	Micrometeoritos
+1213	Minijuego
+1214	MINIJUEGO
+1215	MINIJUEGO · ASÍ SE JUEGA
+1216	minijuego ganado
+1217	minijuego perdido
+1218	minijuegos {0}/{1} · música {2}
+1219	Mirando hacia el lado contrario al Sol
+1220	Misión especial: maneja el rover hasta un cráter oscuro y encuentra hielo.
+1221	Misión perfecta
+1222	Misiones
+1223	Modo
+1224	Modo ahorro de energía
+1225	Modo ahorro: módulos apagados
+1226	Moho
+1227	Moho en el invernadero
+1228	Moho por exceso de agua
+1229	Moho: demasiada agua
+1230	Mojado como arena de playa
+1231	Mover interruptores para dar energía solo a los módulos importantes.
+1232	Moverlas al refugio
+1233	Mucha agua: entre más, mejor
+1234	Mucho calor
+1235	Mucho más alto (más de 3 veces)
+1236	Muchos intentos seguidos. Espera un minuto.
+1237	Mueve el rover con las flechas.
+1238	Mueve la plataforma con ← → o tocando un carril.
+1239	Mueve la plataforma con ← → o tocando un carril. Atrapa cada {0}.
+1240	Muévete con las flechas o tocando una casilla vecina.
+1241	Muévete con las flechas. El radar dice si el hielo está cerca (gasta 1 de batería). En el cráter no hay Sol para recargar.
+1242	Música
+1243	muy fuerte
+1244	Nada: es igual al polvo de casa
+1245	Nada: toda llega en naves de carga
+1246	Narrador (leer en voz alta):
+1247	Narrador (voz)
+1248	Narrador activado. Voy a leer los textos del juego.
+1249	NASA
+1250	NASA – Comida espacial
+1251	NASA – Cómo duermen los astronautas
+1252	NASA – Cómo se fabrica el oxígeno en la Estación
+1253	NASA – Control de Misión
+1254	NASA – Cultivar plantas en el espacio
+1255	NASA – Efectos del polvo lunar en las misiones Apollo
+1256	NASA – El polvo lunar en los paneles solares
+1257	NASA – El polvo, un problema de otro mundo
+1258	NASA – Experimento Veggie
+1259	NASA – Fenómenos lunares
+1260	NASA – Guía Apollo para maestros (sismos lunares)
+1261	NASA – Hábitats lunares
+1262	NASA – Hielo lunar
+1263	NASA – Historia de Skylab
+1264	NASA – La noche lunar de 14 días sin Sol (LuSEE-Night)
+1265	NASA – La región del polo sur lunar
+1266	NASA – LRO ayuda a los astronautas a protegerse
+1267	NASA – Memorando técnico 102287 (micrometeoroides)
+1268	NASA – Micrometeoroides
+1269	NASA – Micrometeoroides y basura espacial (White Sands)
+1270	NASA – Misión LCROSS (agua en un cráter)
+1271	NASA – Misión LRO (instrumento CRaTER)
+1272	NASA – Misiones Apollo
+1273	NASA – Noche lunar
+1274	NASA – Paneles solares de la Estación Espacial
+1275	NASA – Por qué el polvo lunar es filoso (VIPER)
+1276	NASA – Producción de alimentos
+1277	NASA – Récord de reciclaje de agua en la Estación Espacial
+1278	NASA – Riesgo de errores por falta de sueño
+1279	NASA – Sismómetros Apollo
+1280	NASA – Sismos lunares cerca del polo sur
+1281	NASA – Soporte de vida de la ISS
+1282	NASA – Vida en la ISS
+1283	NASA DONKI
+1284	NASA DONKI – CME
+1285	NASA DONKI – SEP
+1286	NASA DONKI · últimos 30 días · {0}
+1287	NASA DONKI (muestra)
+1288	NASA DONKI + RadLab
+1289	NASA LRO – Temperatura de la Luna (día y noche de 14 días)
+1290	NASA NTRS – Escudos Whipple
+1291	NASA NTRS – Radiación en la superficie lunar
+1292	NASA OSDR · {5}
+1293	NASA RadLab · CRaTER
+1294	NASA Science – El clima en la Luna
+1295	NASA Science – Peligros del regolito lunar
+1296	NASA Science – Primera verdura comida en el espacio
+1297	NASA Science – Tormentas y llamaradas solares
+1298	Nave de rescate
+1299	Nave del nuevo equipo
+1300	Nave del relevo o de suministros
+1301	Necesita menos comida
+1302	Nitrógeno y oxígeno
+1303	Nivel 1 y 2: 3 opciones (la correcta, una plausible y una fácil de descartar del mismo tema). Nivel 3: 4 opciones. En el banco, la 1ª opción es la correcta, la 2ª la plausible, la 3ª la fácil y la 4ª otra plausible.
+1304	nivel inválido
+1305	no es una pregunta
+1306	No hacer nada
+1307	No hay alerta de tormenta
+1308	No hay charcos en el pasillo
+1309	No hay conexión a internet.
+1310	No hay conexión con Supabase.
+1311	No hay nada roto: es la noche lunar. Sin Sol no se carga, solo se ahorra.
+1312	No hay polvo en los paneles
+1313	No pases dos veces: ¡se raya!
+1314	No producen energía
+1315	No salió esta vez.
+1316	No se le pregunta la edad al niño. El nivel se ajusta solo según cómo le va, y el niño nunca lo ve.
+1317	No se pueden medir
+1318	No: aunque bajó, sigue mucho más alto de lo normal
+1319	No: el frío de la noche la frena
+1320	No: sin Sol no hay radiación
+1321	noche lunar
+1322	Noche lunar
+1323	nombre, grado, escuela
+1324	Nube de material del Sol (CME) · {0}
+1325	nubes de material del Sol (CME)
+1326	NUEVA CARTA · INFORME
+1327	Nueva carta: {0}.
+1328	Nueva partida
+1329	NUEVO
+1330	Nuevo informe en tu bitácora: «{0}».
+1331	Nunca preguntar algo que el niño no pueda resolver con lo que ya vio en su partida. La explicación aparece solo si se equivoca, y en una línea.
+1332	Nunca: el Sol no llega a la Luna
+1333	Nunca: las CME no traen partículas
+1334	Oculta los textos de lectura para comparar aciertos con y sin leer (también con ?sintexto=1)
+1335	Ola de calor en la base
+1336	opción vacía o que no es texto
+1337	opciones inválidas
+1338	opciones repetidas
+1339	ORBITA LUNAR
+1340	Orientar los paneles solares
+1341	Oscuridad y frío
+1342	oxígeno
+1343	Oxígeno
+1344	Oxígeno y helio
+1345	Pan horneado en la estación
+1346	Panel golpeado por un micrometeorito
+1347	panel solar
+1348	Panel solar
+1349	panel tema-
+1350	Paneles al Sol
+1351	Paneles al Sol: cargan energía
+1352	Paneles con polvo: cargan más lento
+1353	paneles solares
+1354	Paneles solares
+1355	Paneles solares: con la luz del Sol hacen la energía de la base.
+1356	Pantalla completa:
+1357	Pantallas de la base
+1358	Pantallas extra
+1359	Para construir las paredes del refugio
+1360	Para enfriar los paneles solares
+1361	Para limpiar el polvo de los trajes
+1362	Para llegar al final de la noche hay que ahorrar. ¿Qué apagas?
+1363	Para qué sirve:
+1364	Para tener agua y fabricar oxígeno y combustible
+1365	Paredes gruesas de tierra lunar frenan la radiación.
+1366	Partículas con mucha energía que llegan del Sol y del espacio. Mucha radiación daña la salud.
+1367	Partida guardada en tu cuenta.
+1368	Pasa el dedo o el ratón sobre el panel.
+1369	Pasar el día en el refugio sin dormir
+1370	Pasillo y refugio
+1371	Pasillo y refugio: si llega una tormenta solar, corre aquí.
+1372	Pasó una nube de regolito sobre la base y faltan 3 días para la noche lunar.
+1373	Pasó una nube de regolito sobre la base.
+1374	Pasó una nube gris sobre la base.
+1375	password short
+1376	PAUSA
+1377	Pausa (Esc)
+1378	Pedir entrar a esta clase ▸
+1379	Pediste entrar a
+1380	Pegajoso como lodo
+1381	Pequeño sismo lunar
+1382	Piedritas a 20 km por segundo: las capas frenan los golpes.
+1383	Piensa qué se puede fabricar con el agua del hielo.
+1384	Pintándolas de blanco
+1385	Pistas que apuntan directo a la causa.
+1386	Planear ayuda
+1387	PLANO DE LA BASE
+1388	Plano de la base (corte)
+1389	Plantar semillas en el invernadero
+1390	Plantas sanas: comida
+1391	Plataforma de aterrizaje
+1392	pocas opciones
+1393	Polvo en los paneles a 3 días de la noche lunar, que dura unos 14 días. Tu salud está en amarillo y limpiar cansa un poco.
+1394	Polvo lunar
+1395	Polvo lunar en los paneles
+1396	Polvo lunar encima
+1397	Polvo sobre los paneles
+1398	Pon los filtros del agua en orden
+1399	Poner la pieza nueva
+1400	Ponerlo sobre los paneles para limpiarlos
+1401	Ponte el traje: vas a salir de la base.
+1402	Por eso descansar también es parte de la misión.
+1403	Por eso hay que mantener el polvo fuera de la base.
+1404	Por exceso de agua
+1405	Por falta de luz
+1406	Por la radiación del Sol
+1407	Por qué pasó:
+1408	Por qué:
+1409	Por un agujero se escapa el aire, y un panel roto produce menos.
+1410	Porque ahí hay demasiado polvo
+1411	Porque ahí nunca da el Sol
+1412	Porque así los paneles cargan más rápido
+1413	Porque con el agua se fabrica el oxígeno
+1414	Porque cultivar no gasta nada
+1415	Porque de noche llegan más micrometeoritos
+1416	Porque de noche los paneles se llenan de polvo
+1417	Porque de noche no hay oxígeno
+1418	Porque dormir gasta menos agua
+1419	Porque dormir recarga los paneles
+1420	Porque el agua calienta el aire
+1421	Porque el agua de la Luna es salada
+1422	Porque el agua limpia el polvo del aire
+1423	Porque el agua reciclada pesa menos
+1424	Porque el agua también sirve para fabricar oxígeno
+1425	Porque el frío rompe los estantes
+1426	Porque el frío vacía las baterías de golpe
+1427	Porque el hielo descarga las baterías
+1428	Porque el sismo dura minutos y lo suelto se mueve
+1429	Porque el Sol se oculta unos 14 días seguidos
+1430	Porque el vapor apaga los paneles
+1431	Porque en los meses hay más tormentas solares
+1432	Porque es muy grande
+1433	Porque está muy caliente
+1434	Porque la base atrae piedras con su energía
+1435	Porque la calefacción también fabrica oxígeno
+1436	Porque la comida de la Tierra no sirve en la Luna
+1437	Porque la Luna no tiene gravedad
+1438	Porque la radiación apaga el rover
+1439	Porque las baterías dan más luz que el Sol
+1440	Porque las plantas dan energía a los paneles
+1441	Porque le llega menos luz
+1442	Porque los envíos de comida serán poco frecuentes
+1443	Porque los micrometeoritos buscan las bases
+1444	Porque los paneles se gastan cada día
+1445	Porque los paneles solo funcionan en la Tierra
+1446	Porque los sismos atraen el metal
+1447	Porque nadie las cosechó
+1448	Porque pasa más tiempo expuesta
+1449	Porque se calienta demasiado
+1450	Porque se descarga la batería
+1451	Porque se le mete polvo por dentro
+1452	Porque sin calefacción se caen las cajas de comida
+1453	Porque sin calefacción sube la radiación
+1454	Porque sin Sol los paneles no producen energía
+1455	Porque sirve
+1456	Porque trae radiación
+1457	Porque un astronauta cansado comete más errores
+1458	Porque viaja muy rápido
+1459	Pregunta de Control
+1460	PREGUNTA DE CONTROL DE MISIÓN
+1461	Pregunta de transferencia (le va muy bien en nivel 3).
+1462	Preguntas cortas sobre lo que pasó en los días anteriores.
+1463	Prender las luces
+1464	Prender las luces de cultivo baja tu ENERGÍA. ¿Por qué vale la pena?
+1465	Prender las luces del invernadero y regar lo justo
+1466	Prepararse para la noche
+1467	Primer error: se tacha la opción, se muestra la pista y cuesta 2 puntos de la barra del tema. Segundo error: se muestra la explicación, se cobra el costo normal (costoError) y se sigue. Nunca hay reintento gratis ni ilimitado.
+1468	Primero toca un cable de la izquierda.
+1469	Probar
+1470	Probar con luz
+1471	Producen la mitad de energía
+1472	Producen más porque descansan
+1473	Pronóstico
+1474	Pronóstico activo
+1475	Pronóstico del clima espacial
+1476	Pronto: puede llegar en unas 15 horas
+1477	Prueba de lectura (aciertos al primer intento):
+1478	Prueba: texto oculto
+1479	pueden romper un panel o hacer un agujero por donde se escapa el aire.
+1480	Puntos que pierde la barra del tema al equivocarse. Nunca baja una barra de 10 (ni sube la radiación de 90) por una pregunta.
+1481	Que apague las luces del rover
+1482	Que empiece a faltar aire para respirar
+1483	Que espere afuera a que salga el Sol
+1484	Que haya bajado no basta: importa cuánto marca hoy.
+1485	Que la base tiemble más
+1486	Que los paneles produzcan menos energía
+1487	Que produce lo que necesita, sin depender de que le manden cosas. Una base que cultiva su comida es más autosuficiente.
+1488	Que regrese al refugio ahora
+1489	Que se quede a la sombra del rover
+1490	Que suba la radiación
+1491	Qué tan largos son los textos (aviso y explicación). Baja junto con el reto, pero sube un ajuste después: primero sube el reto y, si le sigue yendo bien, sube la lectura. En lectura 1 la voz en off se enciende sola.
+1492	Quedarte afuera
+1493	Quedarte despierto practicando la reparación
+1494	Quedarte en el refugio
+1495	Quitar la pieza rota
+1496	Radar
+1497	Radar del rover
+1498	radiación
+1499	Radiación
+1500	RADIACIÓN
+1501	Radiación junto a la Luna
+1502	Radiación que llega de todas direcciones del espacio, de día y de noche.
+1503	Radiación y tormentas solares
+1504	RadLab – CRaTER
+1505	RadLab – CRaTER (LRO)
+1506	RadLab · CRaTER
+1507	Rayaste demasiado el panel: ahora produce menos.
+1508	rayos cósmicos
+1509	Rayos cósmicos
+1510	Reacomodar las cajas
+1511	Recarga
+1512	Recibiste demasiada radiación y los doctores pidieron que volvieras. El refugio es tu mejor amigo.
+1513	Reciclar agua y aire
+1514	Reciclar el agua
+1515	Reconecta la calefacción
+1516	Recorrido guiado por los módulos (tutorial): energía, invernadero, refugio y sala de control.
+1517	RECORRIDO POR LA BASE
+1518	Recuerda: en la Luna hay que cultivar y reciclar.
+1519	Recuerda: en una tormenta, ¡corre al refugio!
+1520	Recuerda: tarda de 1 a 3 días.
+1521	Reemplazar piezas del panel en orden.
+1522	Refugio
+1523	Refugio de regolito
+1524	Refugio: paredes gruesas
+1525	Regar el doble
+1526	Regar el doble para que crezcan más rápido
+1527	Regar el doble para que se recuperen
+1528	Regar lo justo
+1529	Regar menos las plantas
+1530	Regar menos y dejar que se seque un poco
+1531	Regolito
+1532	Regular válvulas de enfriamiento hasta llegar a la zona verde.
+1533	Rejilla para lo grande
+1534	Relevo
+1535	Relevo a salvo
+1536	Repara el panel en orden
+1537	Repara lo que causa el problema, no lo que se ve al final.
+1538	REPASO DE TU MISIÓN ANTERIOR
+1539	Repaso: en una misión pasada aprendiste sobre «{0}». ¿Qué te explicaron?
+1540	Repite la contraseña
+1541	Reporte antes de la noche
+1542	REPORTE DE CONTROL DE MISIÓN
+1543	Reporte de Control de Misión.
+1544	Reporte de la semana
+1545	Resististe hasta que llegó el relevo. La próxima vez intenta dejar todo en verde.
+1546	Responder a la Tierra también cansa: el trabajo de un astronauta no es solo reparar. Control de Misión cuida tu descanso porque un astronauta cansado comete más errores.
+1547	Revela el evento de mañana. Si pierdes ese minijuego, el daño se reduce a la mitad.
+1548	Revisar la calefacción
+1549	Revisar otra vez ↻
+1550	Rojo
+1551	Rompecabezas de tuberías con filtros.
+1552	Rover
+1553	Saber más
+1554	Sacar las cajas al pasillo
+1555	Sala de control
+1556	Sala de control: aquí contestas las llamadas de Control de Misión.
+1557	Sala de máquinas y almacén
+1558	Salir ▸
+1559	Salir a trabajar normal
+1560	Salir a ver los micrometeoritos
+1561	Salir al menú
+1562	Salir de la clase
+1563	Salir del refugio
+1564	Salir solo un rato
+1565	Salón
+1566	salón {0}°
+1567	Saltar recorrido ⏭
+1568	Saltarte la comida para ahorrar
+1569	Salud
+1570	SALUD
+1571	Salud del astronauta
+1572	Se acabó el tiempo.
+1573	Se acabó la batería en la oscuridad.
+1574	Se acabó la batería.
+1575	Se acabó la comida y una nave de rescate te llevó a casa. En la Luna hay que cultivar y reciclar.
+1576	Se borró el progreso guardado en este dispositivo.
+1577	Se cayeron las cajas de comida
+1578	Se cubren de hielo y se rompen
+1579	Se escapó demasiado aire.
+1580	Se le congela la garganta
+1581	Se ocultó el Sol. Los paneles ya no cargan: la energía solo puede bajar.
+1582	Se ocultó el Sol. Los paneles ya no cargan.
+1583	Se rompieron demasiadas: {0}.
+1584	Secciones
+1585	Secuencia: regar, esperar, cosechar.
+1586	Seguir buscando hielo en la oscuridad
+1587	Seguir trabajando
+1588	Seguir tuberías y cerrar válvulas.
+1589	sí
+1590	SÍ
+1591	Si el polvo es como vidrio, ¿qué pasa si tallas fuerte?
+1592	Si la comida llega a 0
+1593	Si la energía llega a 0
+1594	Si la radiación llega a 100
+1595	Si la salud llega a 0
+1596	Si las 4 barras en verde
+1597	Si las 4 barras en verde y 3 o más tareas de Control de Misión
+1598	Si llegaste al día 14 sin evacuación
+1599	Si los paneles siguen chuecos, ¿qué barra cambia?
+1600	Si no hay repasos: el tema aprendido que menos ha salido.
+1601	Si no mira al Sol, le llega menos luz y produce menos energía.
+1602	Si no mira al Sol, le llega menos luz y produce menos.
+1603	Si prendes las luces del invernadero, ¿qué barra gastas?
+1604	Si se pierde agua, también falta para fabricar oxígeno, que se obtiene separando el agua.
+1605	Si se pierde agua, también falta para fabricar oxígeno.
+1606	Si se respira, el polvo lunar puede dañar los pulmones.
+1607	Si sigues sin descansar, ¿qué barra baja?
+1608	Si te sales, la barra baja.
+1609	Si un astronauta respira polvo lunar, ¿qué le puede pasar?
+1610	Si vas al refugio gastas energía hoy, pero mañana tendrás menos radiación.
+1611	Sí: hoy ya está como un día normal
+1612	Sí: los rayos cósmicos vienen de todas direcciones
+1613	Sigue la flecha de Control de Misión.
+1614	Sigue las flechas verdes.
+1615	Siguiente ▸
+1616	Silenciar música y efectos:
+1617	Simulación automática.
+1618	Simulación de 4,000 partidas por nivel de habilidad (probabilidad de ganar cada minijuego), con llamadas, averías y dificultad adaptativa. v0.4: más difícil para que se pueda perder. Hay que ajustar con niños reales.
+1619	Sin azar: la pregunta de un tema y nivel es variantes[(partida - 1 + indiceDelEvento) % variantes.length]. Si ya salió en esta partida, se toma la siguiente. El repaso usa una variante distinta de la que el niño vio.
+1620	sin cambios
+1621	sin conexión
+1622	sin configurar
+1623	Sin cuenta también puedes jugar: tu progreso queda en este dispositivo.
+1624	sin descubrir
+1625	Sin luz del Sol, los paneles del rover no cargan.
+1626	Sin luz del Sol, los paneles no pueden hacer energía: solo queda la guardada.
+1627	Sin luz las plantas no crecen
+1628	Sin luz ni cuidados, las plantas se secaron.
+1629	Sin Sol el rover no recarga: si sigue, no puede volver.
+1630	Sin Sol los paneles no cargan: hay que guardar energía antes.
+1631	Sin Sol los paneles no producen energía ni hay calor.
+1632	Sin Sol los paneles no producen energía ni hay calor. La NASA dice que sobrevivir la noche lunar es clave para vivir en la Luna.
+1633	Sin Sol los paneles no producen energía, así que hay que cargar las baterías antes.
+1634	Sin Sol los paneles no producen energía.
+1635	Sin Sol, los paneles solares no cargan la batería...
+1636	Sin Sol, solo tienes {0} de energía por hora. Apaga lo que no sea necesario y confirma.
+1637	sismo lunar
+1638	Sismo lunar
+1639	Sismo lunar fuerte
+1640	sismómetro
+1641	Sismómetro
+1642	sismómetros
+1643	Sismómetros
+1644	sismos lunares
+1645	Sismos lunares
+1646	SISTEMAS
+1647	Sistemas de la base
+1648	Situación: {0}.
+1649	Skylab se sobrecalentó al perder su escudo y los astronautas abrieron una sombrilla gigante para taparla del Sol. El calor excesivo baja la salud.
+1650	Sobrevivir la noche lunar es uno de los mayores retos para vivir en la Luna: son unos 14 días sin energía solar.
+1651	Sol
+1652	Solo cuando ya se sienta el calor
+1653	Solo de las plantas
+1654	Solo el equipo lo ve:
+1655	Solo en nivel 3 (reto). Dentro de la misión, una llamada puede ser de transferencia si en los últimos 5 retos hubo 4 o más bien (la misma ventana del nivel adaptativo).
+1656	Solo si ese día hay una tormenta solar
+1657	Son piedritas muy pequeñas que viajan rapidísimo.
+1658	Soporte vital (aire y agua)
+1659	Suave como harina
+1660	Sube la calefacción a la zona verde
+1661	Subes a la nave con cuidado.
+1662	Subes a la nave rápido.
+1663	Subes a la nave.
+1664	Suena música en la sala de control.
+1665	Suma {0} de {1}.
+1666	suma {0} de {1}{2}.
+1667	Supuesto del simulador: cada nivel de reto arriba de 2 baja 8 puntos la probabilidad de acertar (y cada nivel abajo la sube 8), porque hay más opciones y pistas que distraen.
+1668	Sus granitos tienen orillas filosas, como pedacitos de vidrio.
+1669	Tabla 'Qué cambiar en cada nivel' del Miro: la fila Texto es la perilla de lectura y la fila Decisiones es la perilla de reto.
+1670	Tallando fuerte para terminar rápido
+1671	Tallar fuerte para terminar rápido
+1672	Tallar fuerte raya los paneles y producen menos.
+1673	Tan cansado que fue a la litera... ¡y se quedó dormido!
+1674	Tanque de agua limpia
+1675	Tanque de agua reciclada
+1676	Tapados
+1677	Tapar agujeros que aparecen en distintos lugares (reflejos).
+1678	Tapar los agujeros y dejar los paneles para después
+1679	Tapar los agujeros y revisar los paneles
+1680	TAREA
+1681	Tareas de Control de Misión:
+1682	Tareas de la Tierra
+1683	Te esperan en
+1684	Telescopios
+1685	Termina el minijuego para abrir la bitácora
+1686	Termómetros
+1687	Texto más largo con datos de la bitácora y términos técnicos.
+1688	Textos de una línea con íconos. En nivel 1, todo con voz en off. Nada de texto en medio de un minijuego.
+1689	Tienes energía extra hoy. ¿En qué la usas?
+1690	Toca cada agujero antes de que se escape el aire.
+1691	Toca cada agujero en cuanto aparezca.
+1692	Toca el suelo despacio: la velocidad debe estar en verde.
+1693	Toca en el plano el módulo que parpadea, o el botón.
+1694	Toca los pasos en el orden correcto.
+1695	Toca solo {0}.
+1696	Toca un cable de la izquierda y luego el del mismo color a la derecha.
+1697	Toca un cable de la izquierda.
+1698	Toca una carta para usarla. Escudo: frena la mitad del próximo daño a esa barra. Recurso: suma al instante.
+1699	Tocar las lechugas maduras (fácil).
+1700	Tocó el suelo fuera de la plataforma.
+1701	Todavía gastas {0}. Apaga algo más. Errores: {1} de {2}.
+1702	Todavía no aparece en tus informes.
+1703	Todavía no del todo: sigue más alto de lo normal, sal poco tiempo
+1704	Todavía no hay informes.
+1705	Todavía no te acepta. Intenta más tarde.
+1706	Todo asegurado
+1707	Todo en equilibrio
+1708	Todo un día
+1709	TODO verificar con NASA: «cubiertas de regolito» como protección contra micrometeoritos (informe N-D12a). No se usa en el banco.
+1710	TODO verificar con NASA: «naves de carga cada pocos meses» (informe R-D8). No se encontró una fuente NASA con esa frecuencia. Se quitó la pregunta Q2-carga.
+1711	TODO verificar con NASA: «Skylab se sobrecalentó y abrieron una sombrilla gigante» (informe N-D8b). No se usa en el banco.
+1712	Tomar el hielo que alcance y regresar a recargar
+1713	Tomar menos agua para no despertarte
+1714	Tormenta geomagnética más fuerte:
+1715	tormenta solar
+1716	Tormenta solar
+1717	Tormenta solar (aviso corto)
+1718	Tormenta solar (aviso largo)
+1719	Tormenta solar en la oscuridad
+1720	Tormenta solar en una hora. Tu radiación ya está alta y tu energía en amarillo. Cerrar las compuertas del refugio gasta energía, y en pocos días empieza la noche lunar.
+1721	Tormenta solar sorpresa
+1722	tormentas solares
+1723	Trabajaste demasiado
+1724	Trabajaste tanto que te agotaste y te llevaron a casa a descansar. Descansar también es parte de la misión.
+1725	Tranquilo, capitán. Te explicamos qué barra está en peligro y te mandamos ayuda.
+1726	Tras acertar, «¿Qué frase lo prueba?». Si la elige bien: +3 a la barra más débil. Si no, no pasa nada.
+1727	Tres
+1728	Tu alias
+1729	Tu base lunar
+1730	Tu carta {0} frenó la mitad del daño.
+1731	Tu carta {0} te ayuda a notar esto.
+1732	Tu clase
+1733	Tu comida está en amarillo y tu energía en verde. Faltan 6 días para el relevo y cada día comes algo. Las plantas necesitan luz y la cantidad justa de agua.
+1734	Tu comida está en amarillo y tu energía en verde. Faltan 6 días para el relevo.
+1735	Tu cuenta: tus partidas se guardan
+1736	Tú juegas
+1737	Tu salud está casi en rojo, tu comida en verde y tu energía en amarillo. Mañana hay una tarea difícil y faltan 4 días para el relevo.
+1738	Tu tarea de hoy es en
+1739	Tus cartas de la Luna
+1740	Tus partidas y tu nivel se guardan en tu cuenta.
+1741	Tus plantas se ven tristes y la tierra está muy mojada. ¿Qué haces?
+1742	Tus sucesores revisan la base. ¿Cuántas estrellas ganaste?
+1743	Últimas llamaradas: {6}
+1744	Último día de Sol antes de la noche lunar y tus paneles quedaron chuecos. Tu salud y tu energía están en amarillo.
+1745	Último día de Sol antes de la noche lunar. Tu salud y tu energía están en amarillo, y girar los paneles cansa un poco.
+1746	últimos retos {0} · rama {1} · apoyo {2} ·
+1747	Un aparato que convierte la luz del Sol en energía. Produce más cuando la luz le llega de frente.
+1748	Un aparato que mide los temblores. Los astronautas de Apollo dejaron varios en la Luna.
+1749	Un astronauta cansado comete más errores, y los errores dañan la base.
+1750	Un astronauta cansado comete más errores.
+1751	Un campo magnético y una atmósfera gruesa
+1752	Un capitán descansado comete menos errores.
+1753	Un día más largo
+1754	Un equipo en la Tierra acompaña a los astronautas las 24 horas.
+1755	Un equipo en la Tierra acompaña a los astronautas las 24 horas. Pedir ayuda a tiempo y descansar son parte de una buena misión.
+1756	Un escudo invisible que tiene la Tierra y que la protege de la radiación. La Luna no tiene uno.
+1757	Un filtro de reciclaje se descompuso y la base pierde un poco de agua cada día. ¿Qué problema puede venir después?
+1758	Un gas. Si se separa el agua, sale hidrógeno y oxígeno.
+1759	Un hongo que crece cuando hay demasiada agua. Puede enfermar a las plantas.
+1760	Un hoyo grande en el suelo de la Luna. En los que nunca reciben Sol hay hielo.
+1761	Un instrumento de la NASA que mide la radiación cerca de la Luna desde 2009.
+1762	Un micrometeorito rompió el panel 3
+1763	Un micrometeorito rompió el panel 3. Limpiar no arregla un agujero.
+1764	Un panel dejó de cargar.
+1765	Un panel quedó chueco y ya no mira al Sol. ¿Por qué produce menos?
+1766	Un panel roto
+1767	Un panel roto antes de la noche significa menos energía guardada para 14 días.
+1768	Un panel solar convierte la luz del Sol en energía. Hoy tus paneles quedaron chuecos.
+1769	Un panel solar convierte la luz del Sol en energía. Si no mira al Sol, le llega menos luz y produce menos.
+1770	Un párrafo breve que introduce un término STEM.
+1771	Un pedazo de hielo de un cráter
+1772	Un sismo dañó los cables
+1773	Un sismo pequeño
+1774	Un sismómetro es un aparato que mide los temblores.
+1775	Un sismómetro mide los temblores.
+1776	Un temblor en la Luna. Algunos duran varios minutos.
+1777	Un vehículo para explorar la Luna. Sin Sol no puede recargar sus baterías.
+1778	Una
+1779	Una barra necesita atención. Control de Misión va a estar más cerca de ti estos días.
+1780	Una base de datos de la NASA donde se guarda cada tormenta del Sol.
+1781	Una base que dura meses recibe más golpes que una visita de días como Apollo.
+1782	Una base que dura meses recibe más golpes que una visita de días.
+1783	Una base que produce su comida depende menos de los envíos.
+1784	una clase
+1785	Una CME tarda de 1 a 3 días en llegar. ¿Cuándo debes tener listo el refugio?
+1786	Una eyección de masa coronal viaja hacia la Luna. Sin campo magnético, la superficie recibe la radiación directo.
+1787	Una frase corta con vocabulario simple.
+1788	Una fuga de agua
+1789	Una fuga en el pasillo
+1790	Una fuga hace bajar el medidor de agua cada hora hasta que cierras la válvula. Con menos agua, también baja el oxígeno.
+1791	Una lluvia de micrometeoritos golpea la base.
+1792	Una lluvia de micrometeoritos golpea la base. Viajan a más de 20 km por segundo.
+1793	Una nube de material del Sol (eyección de masa coronal) suele tardar de 1 a 3 días en llegar. Si la detectas a tiempo, puedes preparar el refugio antes.
+1794	Una nube de material del Sol puede tardar varios días en llegar.
+1795	Una nube de material que lanza el Sol. Suele tardar de 1 a 3 días en llegar.
+1796	Una nube de regolito, el polvo lunar, cubrió los paneles solares. El polvo lunar es filoso como vidrio.
+1797	Una pared con varias capas separadas
+1798	Una pared de vidrio, para ver afuera
+1799	Una pared delgada, para que pese poco
+1800	Una pequeña roca golpeó un panel. Repáralo antes de que vuelva a salir el Sol.
+1801	Una piedrita del espacio que viaja a más de 20 km por segundo: puede hacer un agujero.
+1802	Una piedrita del espacio que viaja muy rápido
+1803	Una piedrita muy rápida rompe paneles.
+1804	Una pista no tiene que ver: hay que descartarla.
+1805	Una pista parece apuntar a otra causa: hay que combinar las claves.
+1806	Una situación solo usa un tema que el niño vivió hace 2 días o más (o en una partida anterior, o que trae en su manual).
+1807	Una tormenta del Sol
+1808	Una tormenta solar
+1809	Una tormenta solar lanza partículas con mucha energía: eso es la radiación.
+1810	Una tormenta solar lanza partículas con mucha energía: eso es la radiación. Las paredes gruesas del refugio las frenan, pero solo con las compuertas cerradas.
+1811	Una tormenta solar lanza partículas con mucha energía. El refugio tiene paredes más gruesas.
+1812	Una tormenta solar llega en plena noche y con poca energía. Encuentra el refugio a oscuras.
+1813	Una tormenta solar llega en una hora. Lanza partículas con mucha energía: eso es la radiación.
+1814	Una tubería tenía una fuga. El agua del charco es la que faltaba.
+1815	Una tubería tiene una fuga
+1816	Unas {0} veces más
+1817	Unas 12 horas
+1818	Unas 12 horas, como en la Tierra
+1819	Unas 4 horas
+1820	Unas 6 horas
+1821	Unas 8 horas y media
+1822	Unos 14 días
+1823	Unos 14 días sin Sol en la Luna, con temperaturas de unos -133 °C.
+1824	Unos 14 días terrestres
+1825	Unos 28 días
+1826	Unos 28 días terrestres
+1827	Unos 3 días
+1828	Unos 7 días terrestres
+1829	Usa ← → para llegar a la plataforma verde.
+1830	Usa − y + (o ← →) para mover la aguja.
+1831	Usa − y + (o ← →). Mantén la aguja en la zona verde {0} segundos.
+1832	Usa la regla de la primera oración con el Sol bajito.
+1833	Usa la regla de los escudos Whipple para tu módulo.
+1834	Usa las flechas, WASD o toca una casilla vecina. Llega a R antes de que se acabe el tiempo.
+1835	USADA
+1836	Usar todo hoy: mañana los paneles vuelven a cargar
+1837	Usar tus cartas antes de que una barra llegue a rojo deja la base en verde.
+1838	use strict
+1839	Uso
+1840	Usó {0}: +{1} de {2}.
+1841	Van a construir una base cerca del polo sur de la Luna. ¿Qué harías con los estantes y el equipo?
+1842	Varias variables y consecuencias para el resto de la misión.
+1843	Varios minutos
+1844	Vas a diseñar un módulo nuevo para una base que durará años. ¿Qué pared eliges?
+1845	Vas bien. Sigue cuidando tus barras para dejarlas todas en verde.
+1846	Vas muy bien, capitán. Usa los datos del Sol para predecir si viene una tormenta.
+1847	Ve a
+1848	Ve mejor en la oscuridad
+1849	Velocidad
+1850	Velocidad de bajada:
+1851	Ver el estudio
+1852	Ver un final
+1853	Verde
+1854	Viene otra tormenta, pero te avisamos con tiempo. Ve al refugio.
+1855	Viene un sismo largo, de varios minutos. Tu comida está en amarillo, cada día comes algo y faltan 6 días para el relevo.
+1856	Viene un sismo largo. Tu comida está en amarillo y faltan 6 días para el relevo.
+1857	Volver a la base ▸
+1858	Volver al menú
+1859	Vuelve a leer el informe: dice qué se gasta o se daña primero.
+1860	Vuelve a leer el texto con calma.
+1861	Vuelve a leer esta pista: «{0}».
+1862	Y la comida guardada se acabó.
+1863	Ya estás en una clase: primero sal de ella.
+1864	YYYYYYYYY

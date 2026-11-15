@@ -57,7 +57,7 @@ function analizar(src) {
   }
   codigo(false);
 }
-for (const f of ["juego.js", "minijuegos.js", "finales.js", "escenas.js", "bitacora.js", "musica.js", "nave.js", "preguntas.js"]) analizar(readFileSync(join(raiz, "public", "js", f), "utf8"));
+for (const f of ["juego.js", "minijuegos.js", "finales.js", "escenas.js", "bitacora.js", "musica.js", "nave.js", "preguntas.js", "cuenta.js", "supabase.js"]) analizar(readFileSync(join(raiz, "public", "js", f), "utf8"));
 
 // textos fijos de index.html (interfaz, pausa, bitácora, herramientas)
 const html = readFileSync(join(raiz, "public", "index.html"), "utf8").replace(/<style[\s\S]*?<\/style>|<script[\s\S]*?<\/script>/g, "");

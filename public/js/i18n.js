@@ -22,6 +22,7 @@
   // palabras sueltas del panel del equipo que el extractor no alcanza a ver (vienen de claves internas)
   // y frases con «;» (el extractor las salta porque parecen código)
   const EXTRA = { despensa: "pantry", agotado: "exhausted", "Datos:": "Data:", fuerte: "strong", suave: "mild",
+    "Hola, {0}": "Hello, {0}", "Clase:": "Class:", "Tu clase": "Your class",
     conectado: "connected", "sin configurar": "not set up", "llave rechazada": "key rejected", "sin conexión": "offline", "revisando…": "checking…",
     "La Tierra tiene un escudo invisible (su campo magnético) y aire grueso; la Luna no.": "Earth has an invisible shield (its magnetic field) and thick air; the Moon doesn't.",
     "Una nube de material del Sol (CME) puede llegar en apenas unas 15 horas; las más lentas tardan varios días. Si la detectas a tiempo, puedes preparar el refugio antes.": "A cloud of material from the Sun (CME) can arrive in as little as 15 hours; the slowest take several days. If you detect it in time, you can get the shelter ready first.",

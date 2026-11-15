@@ -17,11 +17,14 @@ Parámetros de prueba: `?auto=1&vel=4` juega solo; `?final=apagon` abre un final
 1. El dueño del repo (dienunez162-afk) entra a vercel.com/new, conecta su GitHub e importa Hackathon2026 (o lo agrega al equipo DAW). Solo el dueño puede darle a Vercel acceso al repo. `vercel.json` ya define el build (`node scripts/generar-datos.mjs`) y la carpeta `public`.
 2. En Settings > Environment Variables, pon las variables de `.env.example`.
 
-## Supabase (modo Salón)
-- La URL del proyecto, la publishable key (`sb_publishable_...`, pública por diseño) y `DOMINIO_ALUMNOS` ya vienen en `api/config.js`: no hay que configurar nada en Vercel. Si se definen las variables `SUPABASE_URL`, `SUPABASE_ANON_KEY` o `DOMINIO_ALUMNOS` en Vercel, esas ganan.
-- El juego las lee en `/api/config` (`api/config.js`), que solo publica la URL y la llave pública; si alguien pone la llave secreta por error, se niega a mandarla.
-- `public/js/supabase.js` prueba la conexión al cargar. El estado se ve en «herramientas del equipo» › Datos: `Supabase: conectado`, `sin configurar` o `llave rechazada`.
-- La secret / service role key y la contraseña de la base nunca van en Vercel ni en el repo.
+## Supabase (cuentas, clases y panel del maestro)
+- **Base lista:** migraciones `supabase/migrations/0001` y `0002` corridas en el proyecto; «Confirm email» desactivado (el correo de los niños es inventado: `<alias>@alumnos.g-nosis.local`).
+- **Niños:** en el menú principal, «Mi cuenta» (debajo del idioma): crear cuenta con alias + contraseña (sin correo ni nombre real), entrar, poner el código de su clase y pedir entrar, ver sus récords. Sin cuenta se juega igual (todo queda en el dispositivo).
+- **Qué se guarda con cuenta:** el nivel (se usa en cualquier compu), y al terminar cada misión: la partida, las respuestas de llamadas/averías/manual, las cartas usadas y los informes leídos.
+- **Maestros:** `/maestro` (maestro.html): crear cuenta con correo, crear clases (cada una con su código), aceptar o rechazar alumnos y ver su avance (nivel, récords, predicción, acción, diagnóstico, manual y los temas que más cuestan).
+- **Llave:** la URL y la publishable key vienen en `api/config.js` (pública por diseño); si se definen `SUPABASE_URL`, `SUPABASE_ANON_KEY` o `DOMINIO_ALUMNOS` en Vercel, esas ganan. La secret key y la contraseña de la base nunca van en el repo.
+- **Prueba:** `supabase/pruebas/prueba_flujo.sql` en el SQL Editor recorre todo el flujo con la RLS real (alta, clase, solicitud, aceptar, partida, récords, panel) y no guarda nada.
+- Si un niño olvida su contraseña no hay recuperación por correo: hay que restablecerla desde Supabase (Authentication › Users).
 
 ## APIs de la NASA
 El navegador llama a `/api/*` (funciones de Vercel) y nunca directo a la NASA. Las llaves, si las hay, solo viven en variables de entorno.
