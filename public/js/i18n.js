@@ -20,8 +20,19 @@
 
   // ---------- diccionario ----------
   // palabras sueltas del panel del equipo que el extractor no alcanza a ver (vienen de claves internas)
-  const EXTRA = { despensa: "pantry", agotado: "exhausted", "Datos:": "Data:", conectado: "connected", "sin configurar": "not set up",
-    "llave rechazada": "key rejected", "sin conexión": "offline", "revisando…": "checking…" };
+  // y frases con «;» (el extractor las salta porque parecen código)
+  const EXTRA = { despensa: "pantry", agotado: "exhausted", "Datos:": "Data:", fuerte: "strong", suave: "mild",
+    conectado: "connected", "sin configurar": "not set up", "llave rechazada": "key rejected", "sin conexión": "offline", "revisando…": "checking…",
+    "La Tierra tiene un escudo invisible (su campo magnético) y aire grueso; la Luna no.": "Earth has an invisible shield (its magnetic field) and thick air; the Moon doesn't.",
+    "Una nube de material del Sol (CME) puede llegar en apenas unas 15 horas; las más lentas tardan varios días. Si la detectas a tiempo, puedes preparar el refugio antes.": "A cloud of material from the Sun (CME) can arrive in as little as 15 hours; the slowest take several days. If you detect it in time, you can get the shelter ready first.",
+    "Una nube de material del Sol (CME) puede llegar en apenas unas 15 horas; las más lentas tardan varios días.": "A cloud of material from the Sun (CME) can arrive in as little as 15 hours; the slowest take several days.",
+    "La regla está en el texto; aplícala a alguien que está afuera de noche.": "The rule is in the text; apply it to someone who is outside at night.",
+    "Con el hielo se obtiene agua; separándola, oxígeno y combustible para cohetes.": "Ice gives water; by splitting it, you get oxygen and rocket fuel.",
+    "En la Tierra el viento y el agua redondean los granos; en la Luna no.": "On Earth wind and water round the grains; on the Moon they don't.",
+    "El agua se separa en hidrógeno y oxígeno; el oxígeno se respira.": "Water splits into hydrogen and oxygen; the oxygen is breathed.",
+    "En la Tierra muchas vibraciones se apagan en medio minuto; en la Luna siguen minutos.": "On Earth many vibrations die out in half a minute; on the Moon they go on for minutes.",
+    "En 2016 unas flores de la Estación Espacial se llenaron de moho por exceso de agua. Las plantas necesitan la cantidad justa de agua; cultivar bien hace a la base menos dependiente de los envíos.": "In 2016 some flowers on the Space Station got moldy from too much water. Plants need just the right amount of water; growing food well makes the base less dependent on deliveries.",
+  };
   const D = Object.assign({}, EXTRA, window.I18N_EN || {});
   const exacto = new Map(), patrones = [], fragmentos = [], palabras = new Map();
   const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
