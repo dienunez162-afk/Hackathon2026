@@ -446,6 +446,7 @@
       cartas: {}, aprendidos: {}, repasos: [], pasados: ((historial && historial.repasos) || []).slice(), diferidos: [],
       preguntados: {}, preparado: false, log: [], marcas: {}, hechasL: new Set(), hechasA: new Set(),
       cuenta: { ll: 0, llOk: 0, av: 0, avOk: 0, usos: 0, mj: 0, mjOk: 0, pq: 0, pq1: 0 },
+      sol: null,            // un dato que cambia el día: se calcula al empezar el día 1, cuando ya llegaron los datos de la NASA
       registro: [], pasos: [], guardada: null,      // lo que el niño decidió y los nodos que visitó (se mandan a Supabase al terminar)
     };
     for (const b of BARRAS) J.st[b] = G.barras[b].inicio;
@@ -840,12 +841,48 @@
     }
   }
 
+  // ---------- un dato que cambia el día ----------
+  const hoyISO = () => (/^\d{4}-\d{2}-\d{2}$/.test(qs.get("hoy") || "") ? qs.get("hoy") : new Date().toISOString().slice(0, 10));
+  const enIng = () => !!(window.I18N && window.I18N.idioma === "en");
+  const Tx = (es, en) => (enIng() ? en : es);
+  function textoDato(v, ef) {
+    const fecha = PQ.fechaCorta(v.fecha, enIng());
+    const que = v.clase ? Tx(`llamarada ${v.clase} (${PQ.fuerzaDe(v.clase)})`, `flare ${v.clase} (${PQ.fuerzaDe(v.clase, true)})`)
+      : v.cmes ? Tx("nube de material del Sol (CME)", "cloud of material from the Sun (CME)") : Tx("Sol tranquilo", "quiet Sun");
+    return `NASA · ${fecha}: ${que}${ef && ef.radiacion ? Tx(` · radiación +${ef.radiacion}`, ` · radiation +${ef.radiacion}`) : ""}`;
+  }
+  // el menú ☰ del inicio: lo que pasa hoy en el Sol y qué significa para la próxima misión
+  function pintarDatoMenu() {
+    const el = $("menu-dato"); if (!el) return;
+    const donki = APIS.datos && APIS.datos.donki; if (!donki) return;
+    const v = PQ.ventanaReal(donki, hoyISO()), hoy = v[13], ult = v.slice().reverse().find((x) => x.nivel > 0);
+    const dias = v.filter((x) => PQ.efectoDelDia(v, x.dia).radiacion > 0).length;
+    const que = dias
+      ? Tx(`En tu próxima misión habrá ${dias} ${dias === 1 ? "día" : "días"} de tormenta solar: los mismos que vivió la NASA en los últimos 14 días.`, `Your next mission will have ${dias} ${dias === 1 ? "day" : "days"} of solar storm: the same ones NASA saw in the last 14 days.`)
+      : Tx("En tu próxima misión el Sol estará tranquilo, como estuvo estos 14 días.", "In your next mission the Sun will be quiet, as it was these last 14 days.");
+    el.innerHTML = `<h3 class="menu-tit">${Tx("EL SOL HOY", "THE SUN TODAY")}</h3><p class="dato-hoy">${esc(textoDato(hoy))}</p>` +
+      (ult && ult !== hoy ? `<p class="cta-nota">${Tx("Última alerta fuerte", "Latest strong alert")}: ${esc(textoDato(ult).replace(/^NASA · /, ""))}</p>` : "") +
+      `<p class="cta-nota">${que}</p>` + (donki.muestra ? `<p class="cta-nota">(${Tx("datos de muestra: sin conexión", "sample data: offline")})</p>` : "");
+    const av = $("menu-aviso"); if (av) av.hidden = !v.slice(-2).some((x) => x.nivel > 0);   // hubo una llamarada fuerte hoy o ayer
+  }
+  function pintarDatoHud() {
+    const v = J && J.sol && J.sol[J.dia - 1];
+    $("h-dato").textContent = v && J.dia >= 1 ? textoDato(v, PQ.efectoDelDia(J.sol, J.dia)) : "";
+  }
   async function bannerDia() {
+    if (!J.sol) {
+      try { await Promise.race([APIS.cargar(), new Promise((res) => setTimeout(res, 2500))]); } catch (e) { /* sin conexión: datos de muestra */ }
+      J.sol = PQ.ventanaReal(APIS.datos && APIS.datos.donki, hoyISO());
+    }
     pintarTrack();
     const noche = J.dia === 11;
     if (noche) J.noche = true;
+    pintarDatoHud();
+    const vSol = J.sol && J.sol[J.dia - 1], efSol = vSol ? PQ.efectoDelDia(J.sol, J.dia) : null;
+    if (efSol && efSol.radiacion) { aplicar({ radiacion: efSol.radiacion }); log(textoDato(vSol, efSol) + "."); }
     escena("plano", {});
     pantalla(`<div class="grande">DÍA ${String(J.dia).padStart(2, "0")}</div><p class="sub" style="text-align:center">${faseTxt(J.dia)}</p>` +
+      (vSol ? `<p class="sub" data-sin-traducir style="text-align:center;color:var(--ambar)">${esc(textoDato(vSol, efSol))}</p>` : "") +
       (noche ? `<p class="txt" style="text-align:center">Se ocultó el Sol. Los paneles ya no cargan: la energía solo puede bajar.</p>` : ""));
     voz(`Día ${J.dia}.` + (noche ? " Se ocultó el Sol. Los paneles ya no cargan." : ""));
     if (noche) log("Cayó la noche lunar.");
@@ -1385,7 +1422,7 @@
       voz("¿Por qué recomiendas " + k2.nombre + "?");
       const ok = await elegirRespuesta(c.querySelector("#ops"), rz.opciones, rz.correcta, 1900);
       if (ok) bien.push(tt);
-      c.querySelector("#res").innerHTML = `<div class="res ${ok ? "ok" : "ko"}">${ok ? "¡Buen consejo!" : `Esta carta sirve ${esc(k2.momento.charAt(0).toLowerCase() + k2.momento.slice(1))}.`} ${esc(k2.frase)}</div><div class="ops" id="ops2"></div>`;
+      c.querySelector("#res").innerHTML = `<div class="res ${ok ? "ok" : "ko"}"><span>${ok ? "¡Buen consejo!" : `Esta carta sirve ${esc(k2.momento.charAt(0).toLowerCase() + k2.momento.slice(1))}.`}</span> ${esc(k2.frase)}</div><div class="ops" id="ops2"></div>`;
       await continuar(c.querySelector("#ops2"), "Siguiente ▸", 1800);
     }
     anotar("manual", { accion_correcta: bien.length === kk, aciertos: bien.length, total: kk });
@@ -1407,7 +1444,9 @@
 
   // ---------- arranque ----------
   pintarCtl(); ajustar();
-  APIS.cargar().then(() => { pintarCtl(); }).catch(() => {});
+  APIS.cargar().then(() => { pintarCtl(); pintarDatoMenu(); }).catch(() => {});
+  pintarDatoMenu();
+  if ($("btn-menu")) $("btn-menu").addEventListener("click", pintarDatoMenu);
   (async () => {
     try {
       await Promise.race([

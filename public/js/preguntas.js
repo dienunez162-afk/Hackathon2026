@@ -239,6 +239,32 @@
     return t.replace(/\u0001(\d+)\u0002/g, (m, i) => botones[+i]);
   }
 
+  // ---------- un dato que cambia el día ----------
+  // Cada día del juego (1 a 14) es un día real reciente de la NASA: el día 14 es hoy y el día 1 fue hace 13 días.
+  // Si ese día el Sol tuvo una llamarada fuerte (M) o muy fuerte (X), en el juego la base recibe un poco más de radiación.
+  const iso10 = (f) => String(f || "").slice(0, 10);
+  const sumarDias = (f, k) => new Date(Date.parse(f + "T12:00:00Z") + k * 86400000).toISOString().slice(0, 10);
+  // intensidad de un día real: 0 = calma (A, B, C o nada), 1 = fuerte (M), 2 = muy fuerte (X)
+  function intensidadDia(donki, fecha) {
+    const fl = ((donki && donki.llamaradas) || []).filter((f) => iso10(f.fecha) === fecha && f.clase);
+    const cmes = ((donki && donki.cmes) || []).filter((c) => iso10(c.fecha) === fecha).length;
+    const mayor = fl.reduce((m, f) => (claseNum(f.clase) > claseNum(m) ? f.clase : m), "");
+    const L = String(mayor).charAt(0).toUpperCase();
+    return { fecha, nivel: L === "X" ? 2 : L === "M" ? 1 : 0, clase: mayor || null, cmes, llamaradas: fl.length };
+  }
+  function ventanaReal(donki, hoy) {
+    return Array.from({ length: 14 }, (_, i) => Object.assign({ dia: i + 1 }, intensidadDia(donki, sumarDias(hoy, i - 13))));
+  }
+  // M: +3 de radiación; X: +6. Como máximo 3 días por misión (los más fuertes), para que nunca sea injusto.
+  function efectoDelDia(ventana, dia, maxDias = 3) {
+    const fuertes = ventana.filter((d) => d.nivel > 0).sort((a, b) => b.nivel - a.nivel || b.cmes - a.cmes || a.dia - b.dia).slice(0, maxDias).map((d) => d.dia);
+    const d = ventana[dia - 1];
+    if (!d || !fuertes.includes(dia)) return { radiacion: 0 };
+    return { radiacion: d.nivel === 2 ? 6 : 3 };
+  }
+  // «8 de noviembre» / «November 8»
+  const fechaCorta = (f, en) => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(f || "")); return m ? (en ? `${MESES_EN[+m[2] - 1]} ${+m[3]}` : `${+m[3]} de ${MESES[+m[2] - 1]}`) : String(f || "").slice(0, 10); };
+
   // costo visible de una acción, según el nivel de reto (el nivel baja las ayudas poco a poco):
   //   nivel 1: cada barra con su número (+8 energía)     nivel 2: solo la dirección (▲ energía)     nivel 3: nada, hay que deducirlo
   // "bueno" es lo que le conviene a la base: que la radiación suba es malo, que las demás suban es bueno.
@@ -272,7 +298,7 @@
 
   return {
     BARRAS, barajarConCorrecta, barajarFijo, semilla, recortarOpciones, opcionesPorNivel, elegirPregunta, costoError, diasDeLlamada,
-    respuestaAuto, describirEfectos, zonaRadiacion, tendencia, preguntaBitacora, preguntaRepaso, validarPregunta, validarBanco,
+    respuestaAuto, describirEfectos, intensidadDia, ventanaReal, efectoDelDia, fechaCorta, zonaRadiacion, tendencia, preguntaBitacora, preguntaRepaso, validarPregunta, validarBanco,
     variantes, rotar, preguntaParaInforme, preguntaLlamada, transferenciaPermitida, claseNum, fuerzaDe, fechaTxt, marcarPalabras,
   };
 });

@@ -76,7 +76,44 @@ try {
     await ctx.close();
   }
 
-  // ---------- 2. una misión completa en automático ----------
+  // ---------- 2. jugar a mano: el tutorial y los avisos de Laika, con clics de ratón reales ----------
+  console.log("
+2. Tutorial y avisos de Laika con clics reales");
+  {
+    const ctx = await navegador.newContext({ viewport: { width: 1280, height: 720 } });
+    const page = await ctx.newPage();
+    const problemas = vigilar(page, "a mano", base);
+    await page.goto(base + "/?semilla=3", { waitUntil: "load" });
+    await page.waitForFunction(() => window.GNOSIS && GNOSIS.estado().estado === "menu", null, { timeout: 30000 });
+    await page.keyboard.press("Enter");
+    let clics = 0, entendidos = 0, atorados = [];
+    const t0 = Date.now();
+    while (Date.now() - t0 < 60000 && entendidos < 2) {
+      const st = await page.evaluate(() => GNOSIS.estado().estado);
+      if (st === "aterrizaje") { await page.keyboard.press("Enter"); await page.waitForTimeout(300); continue; }
+      const boton = await page.evaluateHandle(() => {
+        const l = [...document.querySelectorAll("#consola .op:not([disabled])")].filter((b) => b.offsetParent && b.getBoundingClientRect().width > 0);
+        return l.find((b) => b.classList.contains("prim")) || l[0] || null;
+      });
+      const el = boton.asElement();
+      if (!el) { await page.waitForTimeout(200); continue; }
+      const texto = (await el.innerText()).trim();
+      const caja = await el.boundingBox();
+      if (!caja) { await page.waitForTimeout(200); continue; }
+      await page.mouse.click(caja.x + caja.width / 2, caja.y + caja.height / 2);       // clic real, no .click() del DOM
+      clics++;
+      try { await page.waitForFunction((b) => b.disabled || !b.isConnected, el, { timeout: 2500 }); }
+      catch (e) { atorados.push(texto); }
+      if (/Entendido|Got it/i.test(texto)) entendidos++;
+      if ((await page.evaluate(() => !document.getElementById("mj").hidden))) break;      // llegó al primer minijuego
+    }
+    ok("los botones del tutorial responden a un clic real", clics >= 8 && atorados.length === 0, atorados.length ? "no respondieron: " + atorados.join(", ") : clics + " clics");
+    ok("los avisos «¡Entendido!» de Laika responden", entendidos >= 2, entendidos + " avisos");
+    ok("sin errores jugando a mano", problemas.length === 0, problemas.slice(0, 3).join(" | "));
+    await ctx.close();
+  }
+
+  // ---------- 3. una misión completa en automático ----------
   console.log("\n2. Una misión completa (modo automático 4×)");
   {
     const ctx = await navegador.newContext({ viewport: { width: 1280, height: 720 } });
