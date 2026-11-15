@@ -618,7 +618,7 @@
     else renderCeldas(ctx, esc, t, st);
     ctx.save(); ctx.scale(FC, FC); ctx.imageSmoothingEnabled = false;
     if (encima) encima();
-    if (esc.sprites) esc.sprites(ctx, t, st);
+    if (esc.sprites && !st.sinAstro) esc.sprites(ctx, t, st);   // los finales dibujan su propio astronauta
     if (st.etiquetas !== false && esc.etiquetas) for (const e of esc.etiquetas(st)) if (e) dibujarEtiqueta(ctx, { txt: e[0], x: e[1], y: e[2], col: rgb(e[3]), lado: e[4], a: 1 });
     ctx.restore();
   }

@@ -873,12 +873,10 @@
     MUSICA_BASE.modo("calma", { noche: !ex });
     await verCinematica(FINAL_DE[n.id] || (ex ? "relevo" : "apagon"));
     escena("exterior", { nave: !!ex });
-    // lo que aprendiste: el concepto del final, como carta
-    const t = n.informe && n.informe.tema, k = t && R.temas[t] && R.temas[t].carta;
+    // "lo que aprendiste" ya va en la tarjeta de la cinemática (finales.js)
     let c = pantalla((ex ? `<span class="tag">LLEGÓ EL RELEVO</span><div class="estrellas">${"★".repeat(n.estrellas)}${"☆".repeat(3 - n.estrellas)}</div>` : `<span class="tag alarma">EVACUACIÓN</span>`) +
       `<h2 class="titulo">${esc(n.titulo)}</h2><p class="txt">${esc(n.mensaje)}</p>` +
-      (k ? `<div class="res"><span class="paso">LO QUE APRENDISTE</span><br><b>${esc(k.nombre)}</b>: ${esc(k.frase)}</div>` :
-        `<div class="res"><span class="paso">LO QUE APRENDISTE</span><br>Descubriste ${Object.keys(J.cartas).length} de ${Object.keys(R.temas).length} cartas de la Luna.</div>`) +
+      `<div class="res">Descubriste ${Object.keys(J.cartas).length} de ${Object.keys(R.temas).length} cartas de la Luna.</div>` +
       `<p class="sub">Llamadas resueltas bien: ${J.cuenta.llOk} de ${J.cuenta.ll} · Averías al primer intento: ${J.cuenta.avOk} de ${J.cuenta.av} · Minijuegos ganados: ${J.cuenta.mjOk} de ${J.cuenta.mj} · Cartas usadas: ${J.cuenta.usos}</p><div class="ops" id="ops"></div>`);
     await continuar(c.querySelector("#ops"), "Escribir el manual para el siguiente capitán ▸", 3000);
 

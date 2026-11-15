@@ -21,13 +21,17 @@ Lista revisada el 15 de noviembre de 2026, después del primer despliegue en Ver
 
 ## Contenido (opcional)
 - [ ] **Voz en off para el niño.** Hoy solo se activa desde las herramientas del equipo. Ayudaría a 1° y 2° como botón visible.
-- [ ] **Ajustes a los finales.** Corte al invernadero en "Despensa vacía", compuerta abierta en "Radiación" y litera en "Capitán agotado".
 - [ ] **Minijuego del día 12 (E-D12a).** El grafo dice "mantener tres soportes en equilibrio", pero el juego usa "atrapar piezas".
+
+- [ ] **Escuchar la música nueva** y decir si el volumen y el estilo les gustan (no se pudo oír en las pruebas).
+- [ ] **Probar la dificultad con niños.** El balance sale del simulador; hay que ver si con niños reales se siente justo.
 
 ## Para Space Apps
 - [ ] Revisar en la página del reto qué piden exactamente (normalmente un video corto de demo, la descripción del proyecto y qué datos de la NASA se usan). La tabla de APIs del README sirve para esto último.
 
 ## Hecho
+- [x] **Dificultad.** Ya se puede perder: con 50% de habilidad, 30% de las partidas terminan en evacuación (antes 5%). Tabla completa en `balance` de `datos/grafo-mision-lunar.json`.
+- [x] **Finales.** Corte al invernadero apagado en "Despensa vacía", compuerta del refugio abierta en "Radiación", el capitán en la litera en "Capitán agotado" y la tarjeta "Lo que aprendiste" en los 7 finales.
 - [x] Juego completo en `public/` (intro, 8 escenarios, 12 minijuegos, llamadas, averías, cartas, manual y dificultad adaptativa).
 - [x] APIs conectadas: DONKI, RadLab (CRaTER) y OSDR, con copia guardada si no hay conexión.
 - [x] Desplegado en Vercel por el dueño del repo.

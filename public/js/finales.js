@@ -15,38 +15,64 @@ const FINALES = {
     titulo: "Misión perfecta", estrellas: 3, gana: true,
     texto: "¡Base impecable y todas las tareas de la Tierra cumplidas! Eres un capitán de verdad.",
     cond: "Si las 4 barras en verde y 3 o más tareas de Control de Misión",
+    aprende: ["Capitán completo", "Cuidaste las 4 barras a la vez y cumpliste lo que pidió la Tierra."],
   },
   verde: {
     titulo: "Base en verde", estrellas: 2, gana: true,
     texto: "Entregaste la base con todas las barras en verde. ¡Excelente trabajo!",
     cond: "Si las 4 barras en verde",
+    aprende: ["Todo en equilibrio", "Energía, comida, salud y radiación se cuidan al mismo tiempo."],
   },
   relevo: {
     titulo: "Relevo a salvo", estrellas: 1, gana: true,
     texto: "Resististe hasta que llegó el relevo. La próxima vez intenta dejar todo en verde.",
     cond: "Si llegaste al día 14 sin evacuación",
+    aprende: ["Planear ayuda", "Usar tus cartas antes de que una barra llegue a rojo deja la base en verde."],
   },
+  // en los finales malos, "Lo que aprendiste" es la carta del concepto (retos-mision-lunar.json)
   apagon: {
     titulo: "Apagón: evacuación", estrellas: 0, gana: false,
     texto: "La base se quedó sin energía y una nave de rescate te llevó a casa. Aprendiste que sin Sol hay que ahorrar.",
-    cond: "Si la energía llega a 0",
+    cond: "Si la energía llega a 0", tema: "noche_lunar",
   },
   despensa: {
     titulo: "Despensa vacía: evacuación", estrellas: 0, gana: false,
     texto: "Se acabó la comida y una nave de rescate te llevó a casa. En la Luna hay que cultivar y reciclar.",
-    cond: "Si la comida llega a 0",
+    cond: "Si la comida llega a 0", tema: "invernadero",
   },
   radiacion: {
     titulo: "Demasiada radiación: evacuación", estrellas: 0, gana: false,
     texto: "Recibiste demasiada radiación y los doctores pidieron que volvieras. El refugio es tu mejor amigo.",
-    cond: "Si la radiación llega a 100",
+    cond: "Si la radiación llega a 100", tema: "radiacion",
   },
   agotado: {
     titulo: "Capitán agotado: evacuación", estrellas: 0, gana: false,
     texto: "Trabajaste tanto que te agotaste y te llevaron a casa a descansar. Descansar también es parte de la misión.",
-    cond: "Si la salud llega a 0",
+    cond: "Si la salud llega a 0", tema: "salud_astronauta",
   },
 };
+// [nombre, frase] de lo que aprendiste: la carta del tema si los datos del juego están cargados
+function aprendizaje(tipo) {
+  const f = FINALES[tipo], R = typeof window !== "undefined" && window.RETOS;
+  const c = f.tema && R && R.temas && R.temas[f.tema] && R.temas[f.tema].carta;
+  if (c) return [c.nombre, c.frase];
+  return f.aprende || null;
+}
+
+// ---------------- tomas dentro de la base (antes del exterior) ----------------
+// Usan las escenas del juego (escenas.js) para que el final conecte con lo que el niño vio:
+//   despensa  -> invernadero apagándose      radiacion -> compuerta del refugio abierta
+//   agotado   -> el capitán en la sala de control y luego dormido en la litera
+const CORTE = { despensa: 3.0, radiacion: 2.6, agotado: 4.2 };
+const LITERA = { x: -555, y: -270 };   // la litera de la sala de control (escenas.js)
+function insercion(tipo, t) {
+  if (!(tipo in CORTE) || t >= CORTE[tipo] || typeof window === "undefined" || !window.GNOSIS_ESCENAS) return null;
+  if (tipo === "despensa") return { id: "invernadero", st: { sinLuz: t > 0.9, moho: t > 1.6 } };
+  if (tipo === "radiacion") return { id: "pasillo", st: { compuerta: true, alarma: true, sinAstro: true } };
+  return { id: "control", st: { noche: true, sinAstro: t > 2.2 } };
+}
+// fundido a negro en el corte (0 = nada, 1 = negro)
+const fundidoCorte = (tipo, t) => (tipo in CORTE ? 1 - smooth(Math.abs(t - CORTE[tipo]) / 0.35) : 0);
 const ORDEN_FINALES = ["perfecta", "verde", "relevo", "apagon", "despensa", "radiacion", "agotado"];
 
 // ---------------- rejilla de alta resolucion ----------------
@@ -507,21 +533,22 @@ const NARRACION = {
     [6, 8, "¡Una nave de rescate viene a buscarte!"],
     [8, 10, "Subes a la nave con cuidado."],
     [10, 13, "La próxima vez, ¡ahorra energía para la noche!"]],
-  despensa: [[0, 2.2, "Las plantas del invernadero son tu comida..."],
-    [2.2, 4.6, "Las plantas se secaron y la comida se acabó."],
+  despensa: [[0, 1.6, "Las plantas del invernadero son tu comida..."],
+    [1.6, 3.0, "Sin luz ni cuidados, las plantas se secaron."],
+    [3.0, 4.6, "Y la comida guardada se acabó."],
     [4.6, 6, "¡La despensa está vacía!"],
     [6, 8, "¡Una nave de rescate viene a buscarte!"],
     [8, 10, "Subes a la nave."],
     [10, 13, "Recuerda: en la Luna hay que cultivar y reciclar."]],
-  radiacion: [[0, 2.2, "¡Cuidado! Viene una tormenta solar."],
-    [2.2, 4.6, "La radiación sube y sube... ¡suena la alarma!"],
+  radiacion: [[0, 2.6, "¡Tormenta solar! Y la compuerta del refugio quedó abierta..."],
+    [2.6, 4.6, "La radiación sube y sube... ¡suena la alarma!"],
     [4.6, 6, "Los doctores dicen: ¡es hora de volver!"],
     [6, 8, "Llega una nave de rescate."],
     [8, 10, "Subes a la nave rápido."],
     [10, 13, "Recuerda: en una tormenta, ¡corre al refugio!"]],
-  agotado: [[0, 3.2, "El capitán trabajó y trabajó sin parar..."],
-    [3.2, 5, "Está tan cansado... ¡que se quedó dormido!"],
-    [5, 8.6, "¡Una nave de rescate viene a ayudar!"],
+  agotado: [[0, 2.2, "El capitán trabajó y trabajó sin parar..."],
+    [2.2, 4.2, "Tan cansado que fue a la litera... ¡y se quedó dormido!"],
+    [4.2, 8.6, "¡Una nave de rescate viene a ayudar!"],
     [8.6, 10.8, "El capitán sube a la nave para descansar."],
     [10.8, 13.5, "Descansar también es parte de la misión."]],
 };
@@ -530,12 +557,21 @@ const NARRACION = {
 function etiquetas(tipo, t, T, nave) {
   const gana = FINALES[tipo].gana, out = [];
   const add = (t0, t1, txt, x, y, col, lado = 1) => { if (t >= t0 && t < t1) out.push({ txt, x, y, col, lado, a: smooth((t - t0) / 0.3) * (1 - smooth((t - t1 + 0.3) / 0.3)) }); };
-  if (tipo !== "despensa") add(0.2, 2.4, "Tu base lunar", BX + 405, GY + 80, "rgb(235,240,255)", -1);
+  if (!(tipo in CORTE)) add(0.2, 2.4, "Tu base lunar", BX + 405, GY + 80, "rgb(235,240,255)", -1);
   if (tipo === "apagon") { add(0.2, 2.2, "Sol", SOL.x + 40, SOL.y - 30, "rgb(255,220,110)"); add(2.2, 4.6, "Paneles solares", -95, GY + 40, "rgb(120,170,255)", -1); }
-  if (tipo === "despensa") add(0.3, 4.8, "Invernadero (aquí crece tu comida)", BX + 268, GY + 55, "rgb(140,230,140)", -1);
-  if (tipo === "radiacion") add(0.5, 3, "Tormenta solar", -330, 170, "rgb(255,190,90)");
+  if (tipo === "despensa") {
+    add(0.3, 2.7, "Invernadero: aquí crece tu comida", 0, -60, "rgb(140,230,140)", 1);
+    add(3.2, 4.8, "Invernadero sin cosecha", BX + 268, GY + 55, "rgb(140,230,140)", -1);
+  }
+  if (tipo === "radiacion") {
+    add(0.3, 2.4, "¡La compuerta del refugio quedó abierta!", 0, 30, "rgb(255,190,90)", 1);
+    add(2.8, 4.4, "Tormenta solar", -330, 170, "rgb(255,190,90)");
+  }
   if (tipo === "perfecta") add(4.2, 7.5, "Mensaje a la Tierra", ANTENA.x - 20, ANTENA.y + 90, "rgb(140,240,255)", -1);
-  if (tipo === "agotado") add(0.6, 4.4, "Capitán", lerp(PUERTA_X, CAIDA_X, (t - 0.5) / 2.7), GY + 40, "rgb(235,240,255)", -1);
+  if (tipo === "agotado") {
+    add(0.3, 2.1, "Capitán", -300, -150, "rgb(235,240,255)", 1);
+    add(2.4, 4.0, "Litera para descansar", LITERA.x, LITERA.y + 20, "rgb(190,200,255)", 1);
+  }
   if (nave.ve) add(T.baja0 + 1.2, T.camina1, gana ? "Nave del nuevo equipo" : "Nave de rescate", nave.x, nave.y + 40, gana ? "rgb(140,240,160)" : "rgb(255,140,120)", -1);
   add(T.despega + 0.3, T.tarjeta, "La Tierra: ¡a casa!", TIERRA.x, TIERRA.y - TIERRA.r, "rgb(140,200,255)", -1);
   return out;
@@ -607,31 +643,40 @@ function cajaRedonda(ctx, x, y, w, h, r) { ctx.beginPath(); if (ctx.roundRect) c
 function dibujarFinal(ctx, t) {
   const { tipo } = finalActual, info = FINALES[tipo];
   const { st, T, barras, aviso, tareas } = guion(tipo, t);
-  escenaFinal(t, st);
-  stampF(ctx);
+  const ins = insercion(tipo, t);
+  if (ins) window.GNOSIS_ESCENAS.render(ctx, ins.id, t, Object.assign({ etiquetas: false }, ins.st));   // toma dentro de la base
+  else { escenaFinal(t, st); stampF(ctx); }
+  const negro = fundidoCorte(tipo, t);
+  if (negro > 0) { ctx.fillStyle = `rgba(0,0,0,${negro})`; ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height); }
   ctx.save();
   ctx.scale(FC, FC);
   ctx.imageSmoothingEnabled = false;
 
   // ---- astronautas ----
   const paso = Math.floor(t / 0.15) % 2 ? "a" : "b";
+  const zzz = (x, y) => {                     // Zzz grandes que suben
+    ctx.font = `bold 24px ${FONT_FAMILY}`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    const [zx, zy] = aPantalla(x, y);
+    for (let k = 0; k < 3; k++) {
+      const f = (t * 0.6 + k / 3) % 1;
+      ctx.globalAlpha = 1 - f; ctx.fillStyle = "rgb(190,200,255)";
+      ctx.fillText(k % 2 ? "Z" : "z", zx + 12 + f * 30, zy - f * 55);
+    }
+    ctx.globalAlpha = 1;
+  };
   if (tipo === "agotado") {
     const lento = Math.floor(t / 0.4) % 2 ? "a" : "b";
-    const xLev = k => lerp(CAIDA_X, PAD_X + 14, k);
-    if (t > 0.5 && t < 3.2) dibujarAstro(ctx, lerp(PUERTA_X, CAIDA_X, (t - 0.5) / 2.7), lento, true);
-    else if (t >= 3.2 && t < 4.2) dibujarAstro(ctx, CAIDA_X, "s");
-    else if (t >= 4.2 && t < T.camina0) dibujarAstro(ctx, CAIDA_X, "a", false, true);
-    else if (t >= T.camina0 && t < T.camina1) dibujarAstro(ctx, xLev((t - T.camina0) / (T.camina1 - T.camina0)), lento, true);
-    if (t > 3.6 && t < T.camina1) {           // Zzz grandes
-      ctx.font = `bold 24px ${FONT_FAMILY}`; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      const zxs = t < T.camina0 ? CAIDA_X - 10 : xLev((t - T.camina0) / (T.camina1 - T.camina0));
-      const [zx, zy] = aPantalla(zxs, GY + 30);
-      for (let k = 0; k < 3; k++) {
-        const f = (t * 0.6 + k / 3) % 1;
-        ctx.globalAlpha = 1 - f; ctx.fillStyle = "rgb(190,200,255)";
-        ctx.fillText(k % 2 ? "Z" : "z", zx + 12 + f * 30, zy - f * 55);
-      }
-      ctx.globalAlpha = 1;
+    if (t >= 2.2 && t < CORTE.agotado) {
+      // dormido en la litera de la sala de control
+      // acostado sobre el colchón: girado 90°, con la cabeza hacia la izquierda
+      const spr = spriteAstro("a"), w = spr.width * PIX_ASTRO, h = spr.height * PIX_ASTRO, [sx, sy] = aPantalla(LITERA.x - h / 2, LITERA.y);
+      ctx.save(); ctx.translate(sx, sy); ctx.rotate(-Math.PI / 2); ctx.drawImage(spr, 0, 0, w, h); ctx.restore();
+      if (t > 2.6) zzz(LITERA.x + 30, LITERA.y + 40);
+    } else if (t >= T.camina0 && t < T.camina1) {
+      // la nave de rescate llega y el capitán sale de la base medio dormido
+      const x = lerp(PUERTA_X, PAD_X + 14, (t - T.camina0) / (T.camina1 - T.camina0));
+      dibujarAstro(ctx, x, lento, true);
+      zzz(x, GY + 30);
     }
   } else if (t >= T.camina0 && t < T.camina1) {
     const k = (t - T.camina0) / (T.camina1 - T.camina0);
@@ -720,7 +765,8 @@ function dibujarFinal(ctx, t) {
     const a = smooth((t - tc) / 0.8);
     ctx.fillStyle = `rgba(4,6,14,${0.6 * a})`;
     ctx.fillRect(0, 0, W, H);
-    const pw = 880, ph = 330, px = (W - pw) / 2, py = (H - ph) / 2 - 10 + (1 - a) * 20;
+    const apr = aprendizaje(tipo);
+    const pw = 880, ph = apr ? 450 : 330, px = (W - pw) / 2, py = (H - ph) / 2 - 10 + (1 - a) * 20;
     ctx.globalAlpha = a;
     ctx.fillStyle = "rgb(16,21,33)"; ctx.strokeStyle = info.gana ? "rgb(245,197,66)" : "rgb(235,100,80)"; ctx.lineWidth = 3;
     cajaRedonda(ctx, px, py, pw, ph, 18); ctx.fill(); ctx.stroke();
@@ -749,8 +795,23 @@ function dibujarFinal(ctx, t) {
       ctx.fillStyle = "rgb(232,236,245)";
       ctx.fillText(parte, px + 40, py + 108 + k * 36);
     });
+    // ---- lo que aprendiste: la carta del concepto ----
+    if (apr && nChars > info.texto.length) {
+      const b = smooth((nChars - info.texto.length) / 25), bx = px + 40, by = py + 222, bw = pw - 80, bh = 112;
+      ctx.globalAlpha = a * b;
+      ctx.fillStyle = "rgba(120,245,255,0.07)"; ctx.strokeStyle = "rgba(120,245,255,0.55)"; ctx.lineWidth = 2;
+      cajaRedonda(ctx, bx, by, bw, bh, 12); ctx.fill(); ctx.stroke();
+      ctx.textAlign = "left"; ctx.textBaseline = "top";
+      ctx.font = `bold 15px ${FONT_FAMILY}`; ctx.fillStyle = "rgb(120,245,255)";
+      ctx.fillText("LO QUE APRENDISTE", bx + 18, by + 14);
+      ctx.font = `bold 22px ${FONT_FAMILY}`; ctx.fillStyle = "rgb(250,245,230)";
+      ctx.fillText(apr[0], bx + 18, by + 38);
+      ctx.font = `19px ${FONT_FAMILY}`; ctx.fillStyle = "rgb(225,232,245)";
+      envolver(ctx, apr[1], bw - 36).slice(0, 2).forEach((l, k) => ctx.fillText(l, bx + 18, by + 66 + k * 22));
+      ctx.globalAlpha = a;
+    }
     if (nChars > info.texto.length) {
-      ctx.font = `18px ${FONT_FAMILY}`; ctx.fillStyle = "rgb(145,155,178)";
+      ctx.font = `18px ${FONT_FAMILY}`; ctx.textBaseline = "top"; ctx.fillStyle = "rgb(145,155,178)";
       ctx.fillText(info.cond, px + 40, py + ph - 72);
       if (Math.sin(t * 4) > -0.3) {
         ctx.font = `bold 16px ${FONT_FAMILY}`; ctx.textAlign = "right"; ctx.fillStyle = "rgb(170,178,200)";
