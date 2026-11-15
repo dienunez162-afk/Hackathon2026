@@ -231,6 +231,14 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 #menu-idioma .i-ban { font-size: 0.75em; padding: 0.05em 0.35em; border: 1px solid currentColor; }
 .cta-input { display: block; width: 100%; box-sizing: border-box; margin-top: 3px; padding: 6px 8px; font: 14px var(--mono); color: var(--ink); background: rgb(14, 16, 34); border: 2px solid var(--borde); }
 .cta-input:focus { outline: 2px solid var(--crema); }
+#confirmar { position: absolute; right: 0; top: 0; width: 1280px; height: 720px; z-index: 9; background: rgba(2, 3, 10, 0.72); display: grid; place-items: center; }
+#confirmar[hidden] { display: none; }
+#confirmar .p-caja { width: 440px; }
+#confirmar .txt { font-size: 15px; line-height: 1.45; }
+.cta-adulto input[type="checkbox"] { -webkit-appearance: none; appearance: none; flex: none; width: 18px; height: 18px; margin: 2px 0 0; padding: 0; display: grid; place-items: center; background: rgb(14, 16, 34); border: 2px solid var(--borde); cursor: pointer; }
+.cta-adulto input[type="checkbox"]:checked { background: rgb(30, 32, 70); border-color: var(--crema); box-shadow: inset 2px 2px 0 rgba(198, 190, 250, 0.28), inset -2px -3px 0 rgba(6, 6, 20, 0.55); }
+.cta-adulto input[type="checkbox"]:checked::after { content: ""; width: 9px; height: 9px; background: var(--crema); clip-path: polygon(0 55%, 18% 38%, 38% 60%, 80% 10%, 100% 28%, 38% 100%); }
+.cta-adulto input[type="checkbox"]:focus-visible { outline: 2px solid var(--crema); outline-offset: 2px; }
 .cta-clave { position: relative; display: block; }
 .cta-clave .cta-input { padding-right: 44px; margin-top: 3px; }
 .cta-ojo { position: absolute; right: 3px; top: 6px; height: 26px; width: 36px; display: grid; place-items: center; padding: 0; color: var(--dim); background: rgb(30, 32, 70); border: 2px solid rgb(14, 13, 34); box-shadow: inset 2px 2px 0 rgba(198, 190, 250, 0.28), inset -2px -3px 0 rgba(6, 6, 20, 0.55); cursor: pointer; }
@@ -395,6 +403,13 @@ details.saber[open] summary { color: var(--ink); }
         <div id="menu-idioma" data-sin-traducir role="group" aria-label="Idioma / Language"></div>
         <div id="menu-cuenta" data-sin-traducir></div>
       </aside>
+      <section id="confirmar" hidden role="alertdialog" aria-modal="true" aria-labelledby="conf-tit" data-sin-traducir>
+        <div class="p-caja">
+          <span class="tag" id="conf-tit">¿SEGURO?</span>
+          <p class="txt" id="conf-txt"></p>
+          <div class="ops"><button type="button" class="op prim" id="conf-si"></button><button type="button" class="op" id="conf-no"></button></div>
+        </div>
+      </section>
     </div>
 
     <div id="hud" hidden>

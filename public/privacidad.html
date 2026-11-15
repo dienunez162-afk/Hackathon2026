@@ -4,11 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Aviso de privacidad · G-NOSIS</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap">
 <style>
-  body { margin: 0; background: #05060f; color: #ebf0ff; font: 17px/1.6 system-ui, sans-serif; }
-  main { max-width: 46rem; margin: 0 auto; padding: 2rem 1.2rem 4rem; }
-  h1 { color: #78f5ff; font-size: 1.7rem; } h2 { color: #a8a2e8; margin-top: 2rem; font-size: 1.15rem; }
-  a { color: #78f5ff; } li { margin: .3rem 0; } .nota { color: #969cb9; font-size: .9rem; }
+  :root { --ink: rgb(235, 240, 255); --dim: rgb(150, 156, 185); --crema: rgb(255, 246, 225); --lila: rgb(168, 162, 232); --cian: rgb(120, 245, 255); }
+  body { margin: 0; background: #000; color: var(--ink); font: 16px/1.6 'JetBrains Mono', Consolas, monospace; }
+  main { max-width: 46rem; margin: 24px auto; box-sizing: border-box; padding: 8px 22px 24px; border: 16px solid transparent; border-image: url(img/dialogo/panel-normal.png) 32 fill / 32px / 0 stretch; image-rendering: pixelated; }
+  h1 { color: var(--crema); font-size: 1.5rem; margin: 6px 0 4px; }
+  h2 { color: var(--lila); margin-top: 1.8rem; font-size: 0.95rem; letter-spacing: 0.12em; text-transform: uppercase; }
+  a { color: var(--cian); } li { margin: .3rem 0; } .nota { color: var(--dim); font-size: .85rem; }
+  hr { border: 0; border-top: 1px dashed rgba(168, 162, 232, 0.3); margin: 2rem 0 1rem; }
+  .volver { display: inline-flex; align-items: center; height: 28px; box-sizing: border-box; padding: 0 4px 3px; border-style: solid; border-color: transparent; border-width: 0 12px; border-image: url(img/dialogo/boton.png) 0 12 fill / 0 12px / 0 stretch; image-rendering: pixelated; color: rgb(24, 22, 58); font-weight: 700; text-decoration: none; }
+  .volver:hover { border-image-source: url(img/dialogo/boton-hover.png); }
 </style>
 </head>
 <body>
@@ -59,7 +65,7 @@
 
 <hr>
 <p class="nota"><b>English summary:</b> You can play without an account. With an account we only store an invented alias, an encrypted password and your game results; no real name or email. Only you and, if they accept you, your teacher can see them. You can delete your account in the ☰ menu. Draft notice, to be reviewed before use with real classes.</p>
-<p><a href="./">← Volver al juego</a></p>
+<p><a class="volver" href="./">← Volver al juego</a></p>
 </main>
 </body>
 </html>

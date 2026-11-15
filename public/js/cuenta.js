@@ -127,6 +127,23 @@
   }
 
   // ---------- menú desplegable (hamburguesa arriba a la derecha del menú principal) ----------
+  // cuadro de confirmación con el arte del juego (en vez del cuadro estándar del navegador)
+  function confirmar(texto, { si, no, peligro } = {}) {
+    const d = $("confirmar"); if (!d) return Promise.resolve(window.confirm(texto));
+    return new Promise((res) => {
+      const bSi = $("conf-si"), bNo = $("conf-no"), tag = $("conf-tit");
+      $("conf-txt").textContent = texto;
+      bSi.textContent = si || t("Sí", "Yes"); bNo.textContent = no || t("Cancelar", "Cancel");
+      tag.textContent = peligro ? t("¡CUIDADO!", "CAREFUL!") : t("¿SEGURO?", "SURE?");
+      tag.classList.toggle("alarma", !!peligro);
+      const previo = document.activeElement;
+      const cerrar = (v) => { d.hidden = true; d.removeEventListener("keydown", tecla); bSi.onclick = bNo.onclick = null; if (previo && previo.focus) previo.focus(); res(v); };
+      const tecla = (e) => { if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); cerrar(false); } else if (e.key === "Tab") { e.preventDefault(); (document.activeElement === bSi ? bNo : bSi).focus(); } };
+      bSi.onclick = () => cerrar(true); bNo.onclick = () => cerrar(false);
+      d.addEventListener("keydown", tecla);
+      d.hidden = false; bNo.focus();          // lo primero que se enfoca es «Cancelar»: borrar nunca pasa por accidente
+    });
+  }
   function abierto() { const p = $("menu-caja"); return !!p && !p.hidden; }
   function abrir(si) {
     const p = $("menu-caja"), b = $("btn-menu"); if (!p || !b) return;
@@ -199,7 +216,10 @@
       } else if (x.dataset.v) { vista = x.dataset.v; mensaje = null; pintar(); }
       else if (x.id === "cta-cerrar-sesion" || x.id === "cta-salir") accion(async () => { await salir(); mensaje = { ok: t("Cerraste sesión.", "You logged out.") }; });
       else if (x.id === "cta-salir-clase") accion(salirDeClase);
-      else if (x.id === "cta-borrar") { if (window.confirm(t("¿Seguro? Se borra tu cuenta y todas tus partidas guardadas. No se puede deshacer.", "Are you sure? Your account and all saved games will be deleted. This cannot be undone."))) accion(async () => { await borrarCuenta(); mensaje = { ok: t("Tu cuenta se borró.", "Your account was deleted.") }; }); }
+      else if (x.id === "cta-borrar") {
+        confirmar(t("Se borra tu cuenta y todas tus partidas guardadas. No se puede deshacer.", "Your account and all saved games will be deleted. This cannot be undone."), { si: t("Sí, borrar", "Yes, delete"), no: t("Cancelar", "Cancel"), peligro: true })
+          .then((ok) => { if (ok) accion(async () => { await borrarCuenta(); mensaje = { ok: t("Tu cuenta se borró.", "Your account was deleted.") }; }); });
+      }
     });
     p.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -212,7 +232,7 @@
         accion(async () => {
           const c = await buscarClase(codigo);
           if (!c) throw new Error("ese código no existe");
-          if (!window.confirm(t(`¿Quieres unirte a la clase «${c.nombre}»?`, `Do you want to join the class "${c.nombre}"?`))) return;
+          if (!(await confirmar(t(`¿Quieres unirte a la clase «${c.nombre}»?`, `Do you want to join the class "${c.nombre}"?`), { si: t("Sí, unirme", "Yes, join"), no: t("Cancelar", "Cancel") }))) return;
           await pedirUnirme(codigo);
           mensaje = { ok: t("Listo. Ahora tu maestro te tiene que aceptar.", "Done. Now your teacher has to accept you.") };
         });
