@@ -252,6 +252,12 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 .bt-pestanas { position: absolute; top: -34px; left: 6%; display: flex; gap: 6px; }
 .bt-pestanas button { font: 700 13px var(--mono); padding: 7px 12px 9px; border: 2px solid rgb(30, 28, 70); border-bottom: 0; background: rgb(48, 44, 110); color: var(--casco); cursor: pointer; }
 .bt-pestanas button[aria-pressed="true"] { background: rgb(253, 246, 226); color: rgb(60, 40, 120); }
+.bt-nuevo { font-style: normal; font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; background: rgb(214, 60, 80); color: #fff; padding: 1px 5px; margin-right: 6px; border-radius: 2px; }
+.bt-n { display: inline-grid; place-items: center; min-width: 16px; height: 16px; border-radius: 8px; background: rgb(214, 60, 80); color: #fff; font-size: 10px; margin-left: 4px; }
+.bt-pestanas button { padding: 7px 9px 9px; }
+/* palabras del diccionario dentro de los textos: se tocan para ver qué significan */
+button.palabra { all: unset; cursor: help; border-bottom: 2px dotted var(--cian); color: inherit; }
+button.palabra:hover, button.palabra:focus-visible { color: var(--cian); }
 #bt-cerrar { position: absolute; top: -34px; right: 4%; font: 700 13px var(--mono); padding: 7px 12px; background: var(--crema); color: var(--negro); border: 0; cursor: pointer; }
 /* ===== cuadros de texto pixel art (img/dialogo; se generan con herramientas/generar-sprites-dialogo.py) =====
    Mismo estilo que las barras: marco biselado, pantalla hundida y tornillos. El color cambia con la tensión:
@@ -308,6 +314,10 @@ details.saber[open] summary { color: var(--ink); }
 #consola { left: 522px; top: 470px; bottom: auto; width: 748px; height: 246px; max-height: none; gap: 8px; scrollbar-width: thin; scrollbar-color: var(--tema, var(--lila)) transparent; }
 #consola .titulo { font-size: 20px; }
 #toast { bottom: 270px; }
+#mj { left: 522px; top: 64px; width: 748px; max-height: 652px; }
+.fuga .b-c { font-size: 15px; letter-spacing: -1px; }
+.mj-aterrizar { width: 100%; max-width: 560px; justify-self: center; image-rendering: pixelated; border: 2px solid var(--borde); }
+.mj-botones .motor { min-width: 140px; background: rgb(60, 40, 20); border-color: var(--ambar); color: var(--ambar); font-weight: 700; touch-action: none; }
 /* ===== menú de pausa ===== */
 #btn-pausa { position: absolute; right: 196px; top: 96px; height: 28px; box-sizing: border-box; border-style: solid; border-color: transparent; border-width: 0 20px; border-image: url(img/dialogo/etiqueta-normal.png) 0 20 fill / 0 20px / 0 stretch; image-rendering: pixelated; background: none; padding: 0 2px 3px 6px; font: 700 12px var(--mono); letter-spacing: 0.12em; color: rgb(24, 22, 58); cursor: pointer; }
 #btn-pausa:hover, #btn-pausa:focus-visible { filter: brightness(1.12); outline: none; }
@@ -355,7 +365,7 @@ details.saber[open] summary { color: var(--ink); }
       <section id="bitacora" hidden aria-label="Bitácora">
         <div class="bt-libro">
           <div class="bt-pestanas" role="group" aria-label="Secciones">
-            <button type="button" data-sec="cartas">Cartas</button><button type="button" data-sec="informes">Informes</button><button type="button" data-sec="datos">Datos NASA</button><button type="button" data-sec="aprendido">Lo aprendido</button>
+            <button type="button" data-sec="cartas">Cartas</button><button type="button" data-sec="informes">Informes</button><button type="button" data-sec="datos">Datos NASA</button><button type="button" data-sec="aprendido">Lo aprendido</button><button type="button" data-sec="diccionario">Diccionario</button>
           </div>
           <button type="button" id="bt-cerrar">Cerrar ✕</button>
           <div class="bt-pag izq-p" id="bt-izq"></div>
@@ -374,12 +384,12 @@ details.saber[open] summary { color: var(--ink); }
           <label class="p-fila" for="p-efectos"><span>✦ Efectos</span><input id="p-efectos" type="range" min="0" max="100" step="5"><output id="o-efectos"></output></label>
           <div class="p-botones">
             <button type="button" class="op" id="p-silencio" aria-pressed="false">Silenciar todo: <b>NO</b></button>
-            <button type="button" class="op" id="p-voz" aria-pressed="false">Leer en voz alta: <b>NO</b></button>
+            <button type="button" class="op" id="p-voz" aria-pressed="true">Narrador (leer en voz alta): <b>SÍ</b></button>
             <button type="button" class="op" id="p-texto" aria-pressed="false">Letra grande: <b>NO</b></button>
             <button type="button" class="op" id="p-pantalla" aria-pressed="false">Pantalla completa: <b>NO</b></button>
           </div>
           <button type="button" class="op p-salir" id="p-salir"><span>Salir al menú</span></button>
-          <p class="sub">Esc o P: pausa · M: silenciar · F: pantalla completa</p>
+          <p class="sub">Esc, P o ⏸: pausa (en pantalla completa usa P o el botón) · M: silenciar · F: pantalla completa</p>
         </div>
       </section>
     </div>
@@ -396,7 +406,7 @@ details.saber[open] summary { color: var(--ink); }
         <button type="button" data-vel="1">1×</button><button type="button" data-vel="2">2×</button><button type="button" data-vel="4">4×</button></div>
       <label class="ctl" for="c-hab">Habilidad <input id="c-hab" type="range" min="10" max="100" step="5" value="70"><output id="o-hab">70%</output></label>
       <label class="ctl" for="c-comp">Comprensión <input id="c-comp" type="range" min="10" max="100" step="5" value="65"><output id="o-comp">65%</output></label>
-      <div class="ctl"><button type="button" id="c-voz" aria-pressed="false">Voz en off (lectura 1)</button></div>
+      <div class="ctl"><button type="button" id="c-voz" aria-pressed="true">Narrador (voz)</button></div>
       <div class="ctl"><button type="button" id="c-sintexto" aria-pressed="false" title="Oculta los textos de lectura para comparar aciertos con y sin leer (también con ?sintexto=1)">Prueba: texto oculto</button></div>
       <div class="ctl ancho"><span>Prueba de lectura (aciertos al primer intento):</span><output id="c-lectura">—</output></div>
       <div class="ctl"><button type="button" id="c-reiniciar">Nueva partida</button><button type="button" id="c-menu">Menú</button><button type="button" id="c-borrar">Borrar progreso</button></div>

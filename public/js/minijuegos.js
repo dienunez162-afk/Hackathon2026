@@ -283,12 +283,13 @@
     const [C, F] = porNivel(op.nivel, [[6, 4], [7, 5], [8, 5]]);
     const tipo = { enfermas: { n: [3, 4, 5], bien: "%", mal: "@", tit: "Encuentra las plantas enfermas", ins: "Las enfermas tienen manchas blancas (@). Tócalas." },
       maduras: { n: [3, 4, 5], bien: "o", mal: "%", tit: "Cosecha las lechugas listas", ins: "Las listas se ven grandes y redondas (o). Tócalas." },
-      fuga: { n: [1, 2, 2], bien: "≈", mal: "═", tit: "Encuentra la fuga", ins: "Sigue las tuberías: la que gotea se ve así ≈. Tócala." } }[op.objetivo || "enfermas"];
+      fuga: { n: [1, 2, 2], bien: "═💧═", mal: "═══", tit: "Encuentra la fuga", ins: "Busca la tubería que gotea (═💧═) y tócala. Las válvulas (═◘═) están bien: no las toques." } }[op.objetivo || "enfermas"];
     const meta = porNivel(op.nivel, tipo.n), maxErr = porNivel(op.nivel, [3, 2, 1]);
     const ui = marco(op, op.titulo || tipo.tit, tipo.ins);
     const objetivos = new Set(barajar([...Array(C * F).keys()]).slice(0, meta));
-    const otro = op.objetivo === "maduras" ? "%" : op.objetivo === "fuga" ? "═" : "%";
-    ui.cuerpo.innerHTML = `<div class="mj-buscar ${op.objetivo || "enfermas"}" style="grid-template-columns:repeat(${C},1fr)">${Array.from({ length: C * F }, (_, i) => `<button type="button" class="b-c" data-i="${i}">${objetivos.has(i) ? (op.objetivo === "enfermas" ? "@" : op.objetivo === "maduras" ? "o" : "≈") : otro}</button>`).join("")}</div>`;
+    // en la fuga: tubos normales, algunas válvulas (para distraer) y la que gotea con una gota
+    const otro = (i) => (op.objetivo === "fuga" ? (i % 5 === 2 ? "═◘═" : "═══") : "%");
+    ui.cuerpo.innerHTML = `<div class="mj-buscar ${op.objetivo || "enfermas"}" style="grid-template-columns:repeat(${C},1fr)">${Array.from({ length: C * F }, (_, i) => `<button type="button" class="b-c" data-i="${i}">${objetivos.has(i) ? (op.objetivo === "enfermas" ? "@" : op.objetivo === "maduras" ? "o" : "═💧═") : otro(i)}</button>`).join("")}</div>`;
     const s = sesion(op, ui, tiempoBase(op, 22));
     let ok = 0, err = 0;
     ui.cuerpo.addEventListener("click", (e) => {
@@ -460,7 +461,66 @@
     return s.promesa;
   }
 
-  const JUEGOS = { cables, limpiar, atrapar, laberinto, tapar, secuencia, ajustar, buscar, grafica, rover, energia, quiz };
+  // ---------- 13. aterrizar la nave del relevo (misión final) ----------
+  // La nave cae por la gravedad: mantener el MOTOR frena (gasta combustible) y ← → la mueven.
+  // Gana si toca la plataforma despacio. Fijo: la plataforma siempre está en el mismo lugar.
+  function aterrizar(op) {
+    const ui = marco(op, op.titulo || "Aterriza la nave del relevo", "Mantén ▲ MOTOR (o Espacio) para frenar y usa ← → para llegar a la plataforma. Toca el suelo despacio.");
+    const AN = 440, AL = 250, PISO = 226;
+    ui.cuerpo.innerHTML = `<canvas class="mj-aterrizar" width="${AN}" height="${AL}"></canvas>
+      <div class="mj-botones"><button type="button" data-m="-1">←</button><button type="button" data-motor="1" class="motor">▲ MOTOR</button><button type="button" data-m="1">→</button></div>
+      <p class="mj-ins">Velocidad de bajada: <b class="vel">0</b> (máximo <b class="lim"></b>) · Combustible: <b class="comb">100</b>%</p>`;
+    const cv = ui.cuerpo.querySelector("canvas"), g = cv.getContext("2d");
+    const grav = porNivel(op.nivel, [20, 26, 32]), EMPUJE = 62, LATERAL = 80;
+    const anchoPad = porNivel(op.nivel, [96, 74, 56]), padX = Math.round(AN * 0.62);
+    const limite = porNivel(op.nivel, [46, 38, 32]);
+    ui.cuerpo.querySelector(".lim").textContent = limite;
+    let x = AN * 0.18, y = 18, vx = 0, vy = 8, comb = 100, motor = false, dir = 0, ultimo = ahora();
+    const s = sesion(op, ui, tiempoBase(op, 32));
+    const btns = ui.cuerpo.querySelector(".mj-botones");
+    const soltar = () => { motor = false; dir = 0; };
+    btns.addEventListener("pointerdown", (e) => { const b = e.target.closest("button"); if (!b) return; e.preventDefault(); if (b.dataset.motor) motor = true; else dir = +b.dataset.m; });
+    ["pointerup", "pointerleave", "pointercancel"].forEach((ev) => btns.addEventListener(ev, soltar));
+    const kd = (e) => { if (!s.vivo() || enPausa()) return; if ([" ", "ArrowUp", "w"].includes(e.key)) { motor = true; e.preventDefault(); } if (["ArrowLeft", "a"].includes(e.key)) dir = -1; if (["ArrowRight", "d"].includes(e.key)) dir = 1; };
+    const ku = (e) => { if ([" ", "ArrowUp", "w"].includes(e.key)) motor = false; if (["ArrowLeft", "a", "ArrowRight", "d"].includes(e.key)) dir = 0; };
+    window.addEventListener("keydown", kd); window.addEventListener("keyup", ku); window.addEventListener("pointerup", soltar);
+    s.promesa.then(() => { window.removeEventListener("keydown", kd); window.removeEventListener("keyup", ku); window.removeEventListener("pointerup", soltar); });
+    const estrellas = Array.from({ length: 40 }, (_, k) => [(k * 97) % AN, (k * 53) % (PISO - 30)]);
+    function dibujar(fuego) {
+      g.fillStyle = "#070914"; g.fillRect(0, 0, AN, AL);
+      g.fillStyle = "#8a90b8"; for (const [ex, ey] of estrellas) g.fillRect(ex, ey, 2, 2);
+      g.fillStyle = "#3a3870"; g.fillRect(0, PISO, AN, AL - PISO);
+      g.fillStyle = "#5ad27a"; g.fillRect(padX, PISO - 4, anchoPad, 6);
+      g.fillStyle = "#fff6e1"; for (let k = 0; k < 3; k++) g.fillRect(padX + 6 + k * ((anchoPad - 16) / 2), PISO - 8, 4, 4);
+      const spr = window.spriteNave ? spriteNave(Math.floor(ahora() / 300) % 2 === 0, fuego ? 1 : 0) : null;
+      g.imageSmoothingEnabled = false;
+      if (spr) { const e = 2; g.drawImage(spr, Math.round(x - spr.width * e / 2), Math.round(y - spr.height * e / 2 - 18), spr.width * e, spr.height * e); }
+      else { g.fillStyle = "#e8ecf8"; g.fillRect(x - 6, y - 24, 12, 22); }
+      const v = Math.round(vy);
+      const bv = ui.cuerpo.querySelector(".vel"); bv.textContent = v; bv.style.color = v > limite ? "var(--rojo)" : "var(--verde)";
+      ui.cuerpo.querySelector(".comb").textContent = Math.round(comb);
+    }
+    s.cada(40, () => {
+      const t = ahora(), dt = Math.min(0.08, (t - ultimo) / 1000); ultimo = t;
+      const enciende = motor && comb > 0;
+      if (enciende) { vy -= EMPUJE * dt; comb = Math.max(0, comb - 16 * dt); }
+      vy += grav * dt;
+      vx = (vx + dir * LATERAL * dt) * 0.97;
+      x = Math.max(16, Math.min(AN - 16, x + vx * dt)); y = Math.max(10, y + vy * dt);
+      if (y >= PISO) {
+        y = PISO; const enPad = x > padX && x < padX + anchoPad;
+        dibujar(false);
+        if (enPad && vy <= limite) { sfx("aterrizaje"); s.fin(true, "¡Aterrizaje suave en la plataforma!"); }
+        else { sfx("caer"); s.fin(false, enPad ? "Bajó muy rápido: hay que frenar antes con el motor." : "Tocó el suelo fuera de la plataforma."); }
+        return;
+      }
+      dibujar(enciende);
+    });
+    dibujar(false);
+    return s.promesa;
+  }
+
+  const JUEGOS = { cables, limpiar, atrapar, laberinto, tapar, secuencia, ajustar, buscar, grafica, rover, energia, quiz, aterrizar };
   window.MJ = {
     jugar(tipo, op) {
       const f = JUEGOS[tipo];

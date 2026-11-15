@@ -305,6 +305,38 @@ def ajustar_movil():
     return cuadros
 
 
+# ---------------- 13. aterrizar la nave del relevo ----------------
+def aterrizar():
+    cuadros = []; x, y, vy = 30.0, 10.0, 0.0
+    pad0, pad1, piso = 96, 132, 80
+
+    def pintar(fuego, boton=None):
+        img, d = lienzo()
+        d.rectangle((0, piso, W, H), fill=(58, 56, 112))
+        d.rectangle((pad0, piso - 2, pad1, piso), fill=VERDE)
+        X, Y = int(x), int(y)
+        d.rectangle((X - 3, Y - 10, X + 3, Y), fill=TINTA); d.point((X, Y - 11), fill=TINTA)
+        d.rectangle((X - 1, Y - 7, X + 1, Y - 5), fill=AZUL)
+        d.point((X - 4, Y), fill=ROJO); d.point((X + 4, Y), fill=ROJO)
+        if fuego:
+            d.rectangle((X - 1, Y + 1, X + 1, Y + 3), fill=AMBAR); d.point((X, Y + 4), fill=ROJO)
+        for k, s_ in enumerate("<^>"):
+            on = boton == k
+            caja(d, 40 + k * 28, 84, 60 + k * 28, 94, CREMA if on else PANEL)
+            texto(d, 48 + k * 28, 87, s_, OSCURO if on else TINTA)
+        return img
+    for k in range(70):
+        fuego = y > 38 and vy > 6
+        boton = 1 if fuego else (2 if x < 112 and k % 3 == 0 else None)
+        if fuego: vy -= 1.2
+        vy += 0.5; y = min(piso, y + vy * 0.25)
+        if x < 112: x += 1.3
+        cuadros.append(pintar(fuego, boton))
+        if y >= piso: break
+    cuadros += [pintar(False)] * 10
+    return cuadros
+
+
 # ---------------- 8. buscar ----------------
 def buscar():
     C, F, cw, ch, x0, y0 = 8, 4, 16, 16, 16, 12
@@ -445,6 +477,6 @@ def quiz():
 if __name__ == "__main__":
     random.seed(7)
     for nombre, fn in [("cables", cables), ("limpiar", limpiar), ("atrapar", atrapar), ("laberinto", laberinto),
-                       ("tapar", tapar), ("secuencia", secuencia), ("ajustar", ajustar), ("ajustar-movil", ajustar_movil), ("buscar", buscar),
+                       ("tapar", tapar), ("secuencia", secuencia), ("ajustar", ajustar), ("ajustar-movil", ajustar_movil), ("aterrizar", aterrizar), ("buscar", buscar),
                        ("grafica", grafica), ("rover", rover), ("energia", energia), ("quiz", quiz)]:
         guardar(nombre, fn())
