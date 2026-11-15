@@ -51,7 +51,7 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 #h-dia .luna { position: absolute; left: 14.5%; top: 24%; width: 24%; height: 50%; background: rgb(14, 16, 40); display: none; }
 #h-dia .luna::after { content: ""; position: absolute; left: 22%; top: 18%; width: 56%; height: 64%; border-radius: 50%; background: radial-gradient(circle at 35% 35%, rgb(235, 238, 255), rgb(170, 175, 215) 60%, rgb(120, 125, 175)); box-shadow: inset -6px -2px 0 rgba(14, 16, 40, 0.55); }
 #h-dia.noche .luna { display: block; }
-#h-fase { position: absolute; left: 174px; top: 56px; font-size: 10.5px; color: var(--dim); letter-spacing: 0.05em; white-space: nowrap; }
+#h-fase { position: absolute; left: 16px; top: 88px; font-size: 10.5px; color: var(--dim); letter-spacing: 0.05em; white-space: nowrap; }
 /* botón del libro (bitácora) */
 #btn-bitacora { position: relative; flex: none; width: 66px; padding: 0; background: none; border: 0; cursor: pointer; }
 #btn-bitacora img { display: block; width: 100%; height: auto; image-rendering: pixelated; transition: transform 0.15s; }
@@ -63,7 +63,8 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 .panel h3 { margin: 0 0 8px; font-size: 11px; letter-spacing: 0.16em; color: var(--dim); font-weight: 400; display: flex; justify-content: space-between; }
 
 /* sistemas (arriba a la izquierda) */
-.izq { position: absolute; left: 16px; top: 96px; width: 262px; padding: 10px 6px; box-sizing: border-box; }
+/* abajo a la izquierda, para dejar libre la vista de la base */
+.izq { position: absolute; left: 16px; bottom: 14px; width: 262px; padding: 8px 6px; box-sizing: border-box; }
 .izq h3 { padding: 0 6px; }
 /* barra = sprite de 760x160 (img/hud/barra-*.png); 10 segmentos de 10 puntos.
    Debajo la barra vacía y encima la llena, recortada con clip-path en el hueco entre segmentos (juego.js) */
