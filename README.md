@@ -4,14 +4,14 @@ Juego educativo de supervivencia en una base lunar durante 14 días, para niños
 
 ## Correr en local
 ```
-npm run dev          # genera public/js/datos.js y sirve public/ en http://localhost:3000
+npm run dev          # genera public/js/datos.js y sirve public/ + las funciones de /api en http://localhost:3000 (sin dependencias)
 npm run dev:vercel   # igual, pero con las funciones de /api (requiere: npm i -g vercel)
 npm run check        # revisa la sintaxis de todo
 ```
 Parámetros de prueba: `?auto=1&vel=4` juega solo; `?final=apagon` abre un final.
 
 ## Desplegar en Vercel
-1. Sube el repo a GitHub e impórtalo en Vercel. `vercel.json` ya define el build (`node scripts/generar-datos.mjs`) y la carpeta `public`.
+1. El dueño del repo (dienunez162-afk) entra a vercel.com/new, conecta su GitHub e importa Hackathon2026 (o lo agrega al equipo DAW). Solo el dueño puede darle a Vercel acceso al repo. `vercel.json` ya define el build (`node scripts/generar-datos.mjs`) y la carpeta `public`.
 2. En Settings > Environment Variables, pon las variables de `.env.example`.
 
 ## APIs de la NASA

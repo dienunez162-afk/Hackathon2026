@@ -6,10 +6,12 @@
   "type": "commonjs",
   "scripts": {
     "datos": "node scripts/generar-datos.mjs",
-    "dev": "npm run datos && npx --yes serve public -l 3000",
+    "dev": "npm run datos && node scripts/servidor-local.js 3000",
     "dev:vercel": "npm run datos && vercel dev",
     "check": "node scripts/generar-datos.mjs && node --check public/js/juego.js && node --check public/js/minijuegos.js && node --check public/js/escenas.js && node --check public/js/apis.js && node --check api/donki.js && node --check api/radlab.js && node --check api/osdr.js",
     "simular": "node herramientas/simulador-mision.js"
   },
-  "engines": { "node": ">=18" }
+  "engines": {
+    "node": ">=18"
+  }
 }
