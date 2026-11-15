@@ -1,79 +1,63 @@
 /* =========================================================
-   G-NOSIS  -  música de la base
-   - Fondo: acordes sostenidos que se encadenan sin cortes, generados
-     aquí con Web Audio (original del proyecto, sin archivos). Sin ritmo
-     ni percusión. De noche (días 11-14) la progresión baja a tono menor.
-   - Pistas del equipo (public/audio/) que reemplazan al fondo en momentos clave:
-       alarma-emergencia.mp3  eventos fuertes (tormentas, impactos, sismo fuerte,
-                              calefacción rota) y averías; se repite mientras dure
-       final-bueno.mp3        finales con relevo (1, 2 o 3 estrellas)
-       final-malo.mp3         finales con evacuación
-   El soundtrack de la intro sigue en musica.js.
-   API: MUSICA_BASE.activar(), .detener(), .modo("calma"|"alerta"|"peligro", { noche }),
-        .pista("final-bueno"|"final-malo"|"alarma-emergencia"|null)
+   G-NOSIS  -  control de la música
+   Un solo lugar decide qué suena. Cada 150 ms (y en cada cambio de
+   escena) pregunta al juego qué debería sonar (MUSICA_BASE.deseado)
+   y acerca cada fuente a su volumen objetivo. Así, aunque se cambie
+   de escena muy rápido, nunca quedan dos músicas encimadas.
+
+   Fuentes:
+     intro   audio/soundtrack.mp3          menú y alunizaje
+     base    acordes generados aquí        dentro de la base (Web Audio, sin ritmo)
+     alarma  audio/alarma-emergencia.mp3   eventos fuertes y averías (se repite)
+     bueno   audio/final-bueno.mp3         finales con relevo, hasta el manual
+     malo    audio/final-malo.mp3          finales con evacuación, hasta el manual
+   Mientras suena una pista (alarma o final), la intro y los acordes se callan.
    ========================================================= */
 (() => {
   "use strict";
-  const VOL = 0.28, VOL_PISTA = 0.6;
-  const COMPAS = 2.6;                     // segundos por acorde (lento y constante)
+  const VOL_BASE = 0.28, VOL_PISTA = 0.6;
+  const COMPAS = 2.6;                     // segundos por acorde
   // 8 acordes por vuelta. Día: La menor luminoso; noche: Re menor, más grave.
   const ACORDES = {
     dia: [
-      [45, 57, 60, 64, 67, 71],   // Am9
-      [41, 57, 60, 64, 69],       // Fmaj7
-      [48, 55, 59, 64, 67],       // Cmaj7
-      [43, 55, 59, 62, 64, 69],   // G6/9
-      [38, 53, 57, 60, 64],       // Dm9
-      [41, 53, 57, 60, 65, 67],   // Fmaj9
-      [45, 57, 60, 64, 71],       // Am(add9)
-      [40, 52, 57, 59, 64],       // Esus4
-    ],
+      [45, 57, 60, 64, 67, 71], [41, 57, 60, 64, 69], [48, 55, 59, 64, 67], [43, 55, 59, 62, 64, 69],
+      [38, 53, 57, 60, 64], [41, 53, 57, 60, 65, 67], [45, 57, 60, 64, 71], [40, 52, 57, 59, 64],
+    ],   // Am9, Fmaj7, Cmaj7, G6/9, Dm9, Fmaj9, Am(add9), Esus4
     noche: [
-      [38, 50, 53, 57, 60, 64],   // Dm9
-      [34, 50, 53, 57, 62],       // Bbmaj7
-      [43, 50, 53, 58, 62],       // Gm9
-      [45, 52, 57, 59, 64],       // Asus2
-      [41, 53, 57, 60, 64],       // Fmaj7
-      [36, 52, 55, 60, 62],       // Cadd9
-      [34, 50, 53, 57, 60, 62],   // Bbmaj9
-      [45, 52, 57, 61, 64],       // A
-    ],
+      [38, 50, 53, 57, 60, 64], [34, 50, 53, 57, 62], [43, 50, 53, 58, 62], [45, 52, 57, 59, 64],
+      [41, 53, 57, 60, 64], [36, 52, 55, 60, 62], [34, 50, 53, 57, 60, 62], [45, 52, 57, 61, 64],
+    ],   // Dm9, Bbmaj7, Gm9, Asus2, Fmaj7, Cadd9, Bbmaj9, A
   };
   const hz = (m) => 440 * Math.pow(2, (m - 69) / 12);
   const silenciadoAhora = () => (typeof silenciado !== "undefined" && silenciado);
+  const gestoHecho = () => (typeof musicaIniciada !== "undefined" && musicaIniciada);
 
-  let ac = null, master, salida, activo = false, reloj = null, siguiente = 0, k = 0, noche = false;
-  let apagando = null, silencioPrevio = null, modoActual = "calma";
-
+  // ---------- acordes de fondo (Web Audio) ----------
+  let ac = null, master, siguiente = 0, k = 0, noche = false, baseSonando = false;
   function crear() {
     if (ac) return true;
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return false;
     ac = new AC();
     master = ac.createGain(); master.gain.value = 0;
-    salida = ac.createGain(); salida.gain.value = 1;          // baja a 0 cuando suena una pista
-    const comp = ac.createDynamicsCompressor();
-    comp.threshold.value = -20; comp.ratio.value = 3;
-    // reverberación generada: da el "espacio" de la base
+    const comp = ac.createDynamicsCompressor(); comp.threshold.value = -20; comp.ratio.value = 3;
     const rev = ac.createConvolver(), largo = Math.floor(ac.sampleRate * 3.6), imp = ac.createBuffer(2, largo, ac.sampleRate);
     for (let c = 0; c < 2; c++) { const d = imp.getChannelData(c); for (let i = 0; i < largo; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / largo, 2.4); }
     rev.buffer = imp;
     const revG = ac.createGain(); revG.gain.value = 0.5;
-    master.connect(salida); salida.connect(comp); comp.connect(ac.destination);
-    master.connect(rev); rev.connect(revG); revG.connect(salida);
+    master.connect(comp); master.connect(rev); rev.connect(revG); revG.connect(comp); comp.connect(ac.destination);
     return true;
   }
   const despertar = () => { if (ac && ac.state === "suspended") ac.resume().catch(() => {}); };
   window.addEventListener("pointerdown", despertar, true);
   window.addEventListener("keydown", despertar, true);
-  const rampa = (param, valor, seg) => { const t = ac.currentTime; param.cancelScheduledValues(t); param.setValueAtTime(param.value, t); param.linearRampToValueAtTime(valor, t + seg); };
 
-  // un acorde sostenido: entra suave y se encima con el siguiente, así nunca hay silencio
+  // un acorde sostenido que entra suave y se encima con el siguiente: nunca hay silencio
   function acorde(notas, t) {
     const dur = COMPAS * 2.2;
     const f = ac.createBiquadFilter(); f.type = "lowpass"; f.Q.value = 0.3;
     f.frequency.setValueAtTime(noche ? 650 : 900, t);
-    f.frequency.linearRampToValueAtTime(noche ? 800 : 1150, t + COMPAS);      // se abre un poco: "respira"
+    f.frequency.linearRampToValueAtTime(noche ? 800 : 1150, t + COMPAS);
     const g = ac.createGain();
     g.gain.setValueAtTime(0, t);
     g.gain.linearRampToValueAtTime(0.5 / notas.length, t + COMPAS * 0.6);
@@ -84,81 +68,90 @@
       const grave = i === 0;
       for (const det of grave ? [0] : [-6, 5]) {
         const o = ac.createOscillator();
-        o.type = grave ? "sine" : "sawtooth";
-        o.frequency.value = hz(n); o.detune.value = det;
+        o.type = grave ? "sine" : "sawtooth"; o.frequency.value = hz(n); o.detune.value = det;
         if (grave) { const gg = ac.createGain(); gg.gain.value = 2.2; o.connect(gg); gg.connect(f); } else o.connect(f);
         o.start(t); o.stop(t + dur + 0.1);
       }
     });
   }
-  function tick() {
-    if (!ac) return;
-    const sil = silenciadoAhora();
-    if (sil !== silencioPrevio && activo && !apagando) { silencioPrevio = sil; rampa(master.gain, sil ? 0 : VOL, 0.3); }
-    if (pistaActual) pistaActual.muted = sil;
-    if (ac.state !== "running") { siguiente = ac.currentTime + 0.1; return; }
+  function programarAcordes() {
+    if (!ac || ac.state !== "running" || !baseSonando) return;
     if (siguiente < ac.currentTime) siguiente = ac.currentTime + 0.05;
-    while (siguiente < ac.currentTime + 0.3) {
-      acorde((noche ? ACORDES.noche : ACORDES.dia)[k % 8], siguiente);
-      siguiente += COMPAS; k++;
-    }
+    while (siguiente < ac.currentTime + 0.3) { acorde((noche ? ACORDES.noche : ACORDES.dia)[k % 8], siguiente); siguiente += COMPAS; k++; }
+  }
+  let objetivoBase = -1;
+  function volumenBase(v) {
+    if (!ac || v === objetivoBase) return;
+    objetivoBase = v;
+    const t = ac.currentTime;
+    master.gain.cancelScheduledValues(t); master.gain.setValueAtTime(master.gain.value, t);
+    master.gain.linearRampToValueAtTime(v, t + (v > 0 ? 2 : 0.8));
   }
 
-  // ---------- pistas del equipo (mp3) ----------
+  // ---------- pistas mp3 con volumen objetivo ----------
   const PISTAS = {};
   for (const [n, loop] of [["alarma-emergencia", true], ["final-bueno", false], ["final-malo", false]]) {
     const a = new Audio(`audio/${n}.mp3`); a.preload = "auto"; a.loop = loop; a.volume = 0;
-    PISTAS[n] = a;
+    PISTAS[n] = { audio: a, objetivo: 0, velocidad: 0.04 };
   }
-  let pistaActual = null, nombreActual = null;
-  function fundir(a, objetivo, ms, alFinal) {
-    clearInterval(a._fade);
-    const desde = a.volume, t0 = performance.now();
-    a._fade = setInterval(() => {
-      const u = Math.min(1, (performance.now() - t0) / ms);
-      a.volume = desde + (objetivo - desde) * u;
-      if (u >= 1) { clearInterval(a._fade); if (alFinal) alFinal(); }
-    }, 40);
-  }
-  function pista(nombre) {
-    if (nombre === nombreActual) return;
-    if (pistaActual) { const vieja = pistaActual; fundir(vieja, 0, 900, () => { if (vieja !== pistaActual) vieja.pause(); }); }
-    nombreActual = nombre || null;
-    pistaActual = nombre ? PISTAS[nombre] : null;
-    if (pistaActual) {
-      pistaActual.currentTime = 0; pistaActual.muted = silenciadoAhora();
-      const p = pistaActual.play(); if (p) p.catch(() => {});
-      fundir(pistaActual, VOL_PISTA, nombre === "alarma-emergencia" ? 400 : 1500);
+  // el soundtrack de la intro (musica.js) entra al mismo control como "__intro"
+  function reproducir(a) { if (a.paused) { const p = a.play(); if (p) p.catch(() => {}); } }
+
+  let pistaPrevia = null;
+  function sincronizar() {
+    const d = typeof window.MUSICA_BASE.deseado === "function" ? window.MUSICA_BASE.deseado() : { intro: true, base: false, pista: null };
+    const sil = silenciadoAhora(), gesto = gestoHecho();
+    noche = !!d.noche;
+
+    // pista nueva: empieza desde el principio
+    if (d.pista !== pistaPrevia) {
+      if (d.pista && PISTAS[d.pista] && PISTAS[d.pista].audio.volume < 0.05) PISTAS[d.pista].audio.currentTime = 0;
+      pistaPrevia = d.pista;
     }
-    // el fondo se calla mientras suena una pista
-    if (ac) rampa(salida.gain, pistaActual ? 0 : 1, pistaActual ? 0.6 : 2.5);
+    for (const n of Object.keys(PISTAS)) {
+      if (n === "__intro") continue;
+      const p = PISTAS[n], on = gesto && d.pista === n;
+      p.audio.muted = sil;
+      p.objetivo = on ? VOL_PISTA : 0;
+      p.velocidad = on ? (n === "alarma-emergencia" ? 0.08 : 0.03) : 0.06;
+      if (on) reproducir(p.audio);
+    }
+    // intro: solo en el menú y sin pista encima
+    if (typeof musica !== "undefined") {
+      const intro = PISTAS.__intro || (PISTAS.__intro = { objetivo: 0, velocidad: 0.03 });
+      intro.audio = musica;
+      const on = gesto && d.intro && !d.pista;
+      musica.muted = sil;
+      intro.objetivo = on ? MUSICA_VOL : 0;
+      intro.velocidad = on ? 0.02 : 0.05;
+      if (on) reproducir(musica);
+    }
+    // acordes de la base: dentro del juego y sin pista encima
+    const baseOn = gesto && d.base && !d.pista && !sil;
+    if (d.base && gesto && crear()) { despertar(); baseSonando = true; }
+    if (!d.base) baseSonando = false;
+    volumenBase(baseOn ? VOL_BASE : 0);
+    programarAcordes();
   }
+  // acerca cada audio a su volumen objetivo; al llegar a 0 lo pausa
+  setInterval(() => {
+    for (const p of Object.values(PISTAS)) {
+      if (!p.audio) continue;
+      const a = p.audio, v = a.volume, o = p.objetivo;
+      if (Math.abs(v - o) <= p.velocidad) a.volume = o; else a.volume = v + Math.sign(o - v) * p.velocidad;
+      if (o === 0 && a.volume === 0 && !a.paused) a.pause();
+    }
+  }, 50);
+  setInterval(() => { if (window.MUSICA_BASE) sincronizar(); }, 150);
 
   window.MUSICA_BASE = {
-    activar() {
-      if (!crear()) return;
-      despertar();
-      clearTimeout(apagando); apagando = null;
-      if (!activo) { activo = true; k = 0; siguiente = ac.currentTime + 0.1; reloj = setInterval(tick, 50); }
-      silencioPrevio = silenciadoAhora();
-      rampa(master.gain, silencioPrevio ? 0 : VOL, 2.5);
-      pista(null);
+    // el juego (juego.js) reemplaza esta función: devuelve { intro, base, pista, noche }
+    deseado: null,
+    sincronizar,
+    sonando: () => {
+      const s = Object.entries(PISTAS).filter(([, p]) => p.audio && !p.audio.paused && p.audio.volume > 0.01).map(([n]) => (n === "__intro" ? "intro" : n));
+      if (ac && master.gain.value > 0.01) s.push("acordes");
+      return s;
     },
-    detener() {
-      pista(null);
-      if (!ac || !activo) return;
-      rampa(master.gain, 0, 1.2);
-      clearTimeout(apagando);
-      apagando = setTimeout(() => { clearInterval(reloj); activo = false; apagando = null; }, 1500);
-    },
-    // "peligro" pone la alarma; "calma" y "alerta" dejan los acordes de fondo
-    modo(m, op) {
-      if (op && typeof op.noche === "boolean") noche = op.noche;
-      modoActual = m;
-      if (m === "peligro") pista("alarma-emergencia");
-      else if (nombreActual === "alarma-emergencia") pista(null);
-    },
-    pista,
-    actual: () => nombreActual || modoActual,
   };
 })();

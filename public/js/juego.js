@@ -97,10 +97,13 @@
     else if (b.dataset.modo) ui.modo = b.dataset.modo;
     else if (b.dataset.vel) ui.vel = +b.dataset.vel;
     else if (b.id === "c-voz") ui.voz = !ui.voz;
-    else if (b.id === "c-reiniciar") { if (estado === "menu") elegir("JUGAR"); else { estado = "juego"; nuevaPartida(); } }
+    else if (b.id === "c-reiniciar") {
+      if (estado === "menu") elegir("JUGAR");
+      else { abortar(); if (typeof finalActual !== "undefined") finalActual = null; entrarJuego(); }   // también desde un final o el alunizaje
+    }
     else if (b.id === "c-menu") volverAlMenu();
     else if (b.id === "c-borrar") { historial = null; partidas = 0; try { localStorage.removeItem(CLAVE); } catch (e2) { /* nada */ } toast("Se borró el progreso guardado en este dispositivo."); if (J) pintarEquipo(); }
-    else if (b.dataset.final) { abortar(); hud.hidden = true; estado = "final"; iniciarFinal(b.dataset.final, () => volverAlMenu()); }
+    else if (b.dataset.final) { abortar(); hud.hidden = true; estado = "final"; iniciarFinal(b.dataset.final, () => volverAlMenu()); MUSICA_BASE.sincronizar(); }
     pintarCtl();
   });
   $("c-hab").addEventListener("input", (e) => { ui.hab = +e.target.value / 100; pintarCtl(); });
@@ -188,12 +191,12 @@
     seq = new Aterrizaje(moonRadius());
   }
   function terminarAterrizaje() { estado = "fundido"; fadeStart = performance.now(); }
-  function entrarJuego() { estado = "juego"; juegoT0 = performance.now(); ultimaEscena = 0; hud.hidden = false; salirIntro(); MUSICA_BASE.activar(); nuevaPartida(); }
+  function entrarJuego() { estado = "juego"; juegoT0 = performance.now(); ultimaEscena = 0; hud.hidden = false; nuevaPartida(); MUSICA_BASE.sincronizar(); }
   function volverAlMenu() {
     abortar(); hud.hidden = true; $mj.hidden = true; stage.classList.remove("tiembla");
     if (typeof finalActual !== "undefined") finalActual = null;
     estado = "menu"; menuStart = performance.now() - 2500;
-    MUSICA_BASE.detener(); volverIntro();
+    MUSICA_BASE.sincronizar();
   }
 
   function frame(now) {
@@ -354,7 +357,6 @@
 
   function nuevaPartida() {
     abortar();
-    MUSICA_BASE.pista(null);          // termina la música del final anterior
     partidas++;
     // nivel adaptativo: dos perillas (reto y lectura) que el niño nunca ve
     const AD = R.reglas.adaptacion, hn = historial && historial.niveles;
@@ -523,8 +525,17 @@
   function animo(m) {
     if (m === "calma" && conteo(J.st).rojo > 0) m = "alerta";
     J.animo = m;
-    MUSICA_BASE.modo(m, { noche: J.noche });
+    MUSICA_BASE.sincronizar();
   }
+  // lo que debe sonar ahora; musica-base.js lo pregunta cada 150 ms y en cada cambio
+  MUSICA_BASE.deseado = () => {
+    const enMenu = estado === "menu" || estado === "aterrizaje" || estado === "fundido";
+    let pista = null;
+    if (estado === "final" && typeof finalActual !== "undefined" && finalActual) pista = FINALES[finalActual.tipo].gana ? "final-bueno" : "final-malo";
+    else if (estado === "juego" && J && J.musicaFinal) pista = J.musicaFinal;          // sigue durante el manual
+    else if (estado === "juego" && J && J.animo === "peligro") pista = "alarma-emergencia";
+    return { intro: enMenu, base: estado === "juego", pista, noche: !!(J && J.noche) };
+  };
 
   // ---------- escenas: plano de la base y cambio de módulo ----------
   function escena(id, estados) { J.escena = id; J.est = Object.assign({}, estados || {}); }
@@ -871,7 +882,7 @@
     pintarTrack();
     const ex = n.exito;
     log(ex ? `Fin: ${n.titulo} (${n.estrellas} estrellas).` : `Fin: ${n.titulo}.`);
-    MUSICA_BASE.modo("calma", { noche: !ex });
+    J.musicaFinal = ex ? "final-bueno" : "final-malo";
     await verCinematica(FINAL_DE[n.id] || (ex ? "relevo" : "apagon"));
     escena("exterior", { nave: !!ex });
     // "lo que aprendiste" ya va en la tarjeta de la cinemática (finales.js)
