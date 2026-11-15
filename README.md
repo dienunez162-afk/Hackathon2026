@@ -43,6 +43,11 @@ Notas (noviembre de 2026):
 - `public/privacidad.html`: aviso de privacidad (borrador).
 - `herramientas/simulador-mision.js`: simulador para balancear.
 
+## Pruebas
+- `npm test`: pruebas de funciones sueltas (rápidas).
+- `npm run check`: revisa la sintaxis y corre `npm test`.
+- `npm run humo`: **prueba de humo**. Abre el juego en Chrome, lo juega solo (una misión completa a 4×, unos 2 minutos) y falla si hay errores en consola, si se omiten preguntas, si no se anotan las decisiones o si el menú no abre. `HUMO_URL=https://gnosis-kappa.vercel.app npm run humo` prueba un sitio ya publicado. Corre sola en cada pull request (`.github/workflows/humo.yml`). Con `?semilla=N` el azar del juego sale igual cada vez.
+
 ## Música
 | Archivo | Cuándo suena |
 |---|---|
