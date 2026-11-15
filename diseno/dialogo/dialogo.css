@@ -1,0 +1,93 @@
+/* =========================================================
+   G-NOSIS - cuadro de dialogo pixel art
+   Usa los sprites de /sprites (a escala 4x) como "9-slice" con
+   border-image: el marco se estira a cualquier tamano sin
+   deformar las esquinas.
+   ========================================================= */
+
+:root {
+  --gn-texto: #f2f0ff;
+  --gn-titulo: #fff3d6;
+  --gn-tenue: #9b97c8;
+  --gn-tinta: #18163a;
+  --gn-fuente: "JetBrains Mono", "Press Start 2P", Consolas, monospace;
+}
+
+.gn-dialogo,
+.gn-dialogo * { box-sizing: border-box; image-rendering: pixelated; }
+
+/* ---------- panel ---------- */
+.gn-dialogo {
+  position: relative;
+  max-width: 920px;
+  /* el borde real es de 32 px (marco); la imagen dibuja 64 px de esquina */
+  border: 32px solid transparent;
+  border-image: url("sprites/dialogo_panel.png") 64 fill / 64px / 0 stretch;
+  padding: 22px 28px 20px;
+  color: var(--gn-texto);
+  font-family: var(--gn-fuente);
+}
+
+/* con retrato a la izquierda */
+.gn-dialogo.con-icono { display: grid; grid-template-columns: 120px 1fr; gap: 26px; align-items: start; }
+.gn-icono {
+  width: 120px; height: 120px;
+  background: url("sprites/marco_icono.png") center / 120px 120px no-repeat;
+  display: grid; place-items: center;
+}
+.gn-icono img { width: 56px; height: 56px; image-rendering: pixelated; }
+
+/* ---------- etiqueta de categoria (LLEGADA) ---------- */
+.gn-etiqueta {
+  display: inline-flex; align-items: center;
+  height: 48px; min-width: 160px;
+  border-style: solid; border-color: transparent; border-width: 0 40px;
+  border-image: url("sprites/dialogo_etiqueta.png") 0 40 fill / 0 40px / 0 stretch;
+  padding: 0 4px 2px 10px;
+  color: var(--gn-tinta);
+  font: 700 15px/1 var(--gn-fuente);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin: -6px 0 10px -8px;
+}
+
+/* ---------- titulo y texto ---------- */
+.gn-titulo { margin: 0 0 10px; color: var(--gn-titulo); font: 700 30px/1.2 var(--gn-fuente); }
+.gn-texto { margin: 0 0 22px; font: 400 21px/1.55 var(--gn-fuente); min-height: 3.1em; }
+
+/* indicador "continuar" que rebota abajo a la derecha */
+.gn-continuar {
+  position: absolute; right: 14px; bottom: 6px;
+  width: 32px; height: 24px;
+  background: url("sprites/indicador_continuar.png") 0 0 / 64px 24px no-repeat;
+  animation: gn-paso 0.6s steps(1) infinite;
+}
+@keyframes gn-paso { 50% { background-position: -32px 0; } }
+
+/* ---------- boton ---------- */
+.gn-boton {
+  display: inline-flex; align-items: center; gap: 14px;
+  height: 56px; padding: 0 6px 6px 8px;
+  border-style: solid; border-color: transparent; border-width: 0 24px;
+  border-image: url("sprites/boton_normal.png") 0 24 fill / 0 24px / 0 stretch;
+  background: none;
+  color: var(--gn-tinta);
+  font: 700 20px/1 var(--gn-fuente);
+  cursor: pointer;
+}
+.gn-boton:hover, .gn-boton:focus-visible { border-image-source: url("sprites/boton_hover.png"); outline: none; }
+.gn-boton:active { border-image-source: url("sprites/boton_presionado.png"); padding-top: 6px; padding-bottom: 0; }
+.gn-boton .gn-flecha {
+  width: 24px; height: 28px; flex: none;
+  background: url("sprites/flecha_boton.png") 0 0 / 48px 28px no-repeat;
+  animation: gn-paso-flecha 0.8s steps(1) infinite;
+}
+@keyframes gn-paso-flecha { 50% { background-position: -24px 0; } }
+
+/* pantallas pequenas: el mismo pixel art a 2x */
+@media (max-width: 600px) {
+  .gn-dialogo { border-width: 16px; border-image-width: 32px; padding: 14px 16px; }
+  .gn-dialogo.con-icono { grid-template-columns: 1fr; }
+  .gn-titulo { font-size: 22px; }
+  .gn-texto { font-size: 17px; }
+}

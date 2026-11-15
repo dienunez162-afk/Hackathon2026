@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>G-NOSIS dialogos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="dialogo.css">
+  <style>
+    body { margin: 0; min-height: 100vh; background: #07080f; display: grid; gap: 36px; place-content: center; padding: 40px 16px; }
+    canvas { image-rendering: pixelated; max-width: 100%; }
+    h2 { margin: 0; color: #6f6b99; font: 700 13px/1 "JetBrains Mono", monospace; letter-spacing: .2em; }
+  </style>
+</head>
+<body>
+  <h2>HTML + CSS</h2>
+  <div class="gn-dialogo" id="d1">
+    <span class="gn-etiqueta">Llegada</span>
+    <h3 class="gn-titulo">Llegada a la base</h3>
+    <p class="gn-texto"></p>
+    <button class="gn-boton"><span class="gn-txt">Conocer la base</span><span class="gn-flecha"></span></button>
+    <span class="gn-continuar"></span>
+  </div>
+
+  <div class="gn-dialogo con-icono" id="d2">
+    <div class="gn-icono"><img src="sprites/icono_capitan.png" alt=""></div>
+    <div>
+      <span class="gn-etiqueta">Control de Misión</span>
+      <h3 class="gn-titulo">Mensaje de la Tierra</h3>
+      <p class="gn-texto"></p>
+      <button class="gn-boton"><span class="gn-txt">Entendido</span><span class="gn-flecha"></span></button>
+    </div>
+  </div>
+
+  <h2>CANVAS</h2>
+  <canvas id="lienzo" width="900" height="250"></canvas>
+
+  <script src="dialogo.js"></script>
+  <script>
+    mostrarDialogo(document.getElementById("d1"), {
+      etiqueta: "Llegada", titulo: "Llegada a la base",
+      texto: "¡Bienvenido, capitán! La base está en perfectas condiciones. Tu relevo llega en 14 días. Cuida las cuatro barras hasta entonces.",
+      boton: "Conocer la base", alPulsar: () => alert("¡A explorar!"),
+    });
+    mostrarDialogo(document.getElementById("d2"), {
+      etiqueta: "Control de Misión", titulo: "Mensaje de la Tierra",
+      texto: "Hoy hay tormenta solar. Si la radiación sube, ¡corre al refugio!",
+      boton: "Entendido",
+    });
+
+    // el mismo panel dibujado en un canvas con dibujarPanel9
+    const ctx = document.getElementById("lienzo").getContext("2d");
+    const cargar = s => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = s; });
+    Promise.all([cargar("sprites/dialogo_panel_1x.png"), cargar("sprites/boton_normal_1x.png"), document.fonts.ready]).then(([panel, boton]) => {
+      dibujarPanel9(ctx, panel, 0, 0, 900, 250, 16, 4);
+      ctx.fillStyle = "#fff3d6"; ctx.font = "700 28px 'JetBrains Mono', monospace";
+      ctx.fillText("Panel en canvas", 56, 92);
+      ctx.fillStyle = "#f2f0ff"; ctx.font = "20px 'JetBrains Mono', monospace";
+      ctx.fillText("Se estira a cualquier tamaño sin deformar las esquinas.", 56, 132);
+      dibujarPanel9(ctx, boton, 56, 160, 260, 56, 6, 4);
+      ctx.fillStyle = "#18163a"; ctx.font = "700 20px 'JetBrains Mono', monospace";
+      ctx.fillText("Continuar ▸", 92, 194);
+    });
+  </script>
+</body>
+</html>

@@ -61,6 +61,22 @@ Los originales están en `diseno/sprites/`. `herramientas/recortar-sprites.ps1` 
 | `bitacora-libro.png` | Fondo de la bitácora abierta |
 | `img/personajes/cientifica.jpg`, `control-mision.jpg` | Retratos de la Dra. Ortiz y Control de Misión; alternan los dos cuadros mientras hablan |
 
+## Cuadros de texto, eventos y misiones
+El cuadro de texto (`#consola`), la ventana de minijuegos (`#mj`) y los avisos usan sprites pixel art con el mismo estilo que las barras: marco biselado, pantalla hundida, tornillos y las rayas "//". Se dibujan con `border-image` (9-slice), así que se estiran a cualquier tamaño sin deformar las esquinas.
+
+El color cambia según la tensión del momento. `pantalla()` en `public/js/juego.js` elige el tema y la ventana del minijuego lo hereda:
+
+| Tema | Color | Cuándo |
+|---|---|---|
+| `tema-normal` | Lavanda, rayas naranjas | Llegada, tareas, decisiones, cartas, manual |
+| `tema-llamada` | Turquesa, ondas de radio | Llamadas, misiones y reportes de Control de Misión (calma) |
+| `tema-alerta` | Ámbar | Eventos sin alarma (polvo, moho, noche...) |
+| `tema-catastrofe` | Rojo con franjas de peligro, el marco late | Eventos con alarma (tormentas, micrometeoritos, sismo fuerte), averías y evacuación |
+
+- Sprites del juego (a 2x): `public/img/dialogo/` (`panel-<tema>.png`, `etiqueta-<tema>.png`, `boton*.png`).
+- Kit para reutilizar fuera del juego (1x y 4x, demo, CSS y ayuda para canvas): `diseno/dialogo/`. Abre `diseno/dialogo/demo.html`.
+- Para cambiar colores o crear un tema: edita `TEMAS` en `herramientas/generar-sprites-dialogo.py` y corre `python herramientas/generar-sprites-dialogo.py` (requiere `pip install pillow`).
+
 ## Bitácora
 `public/js/bitacora.js`. Se llena sola y se guarda entre misiones (en el dispositivo):
 - **Cartas:** las 10, con su frase, para qué sirve, cuándo usarla y dónde se leyó.
