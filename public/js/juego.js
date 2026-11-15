@@ -77,7 +77,7 @@
   const guardadoUso = leerLS("gnosis-uso") || {};
   const ui = {
     uso: guardadoUso.uso || "libre", grado: guardadoUso.grado || 4,
-    modo: qs.get("auto") ? "auto" : "manual", vel: +qs.get("vel") || 1, hab: 0.7, comp: 0.65, voz: false,
+    modo: qs.get("auto") ? "auto" : "manual", vel: +qs.get("vel") || 1, hab: 0.7, comp: 0.65, voz: false, textoGrande: false,
     // prueba de lectura (solo equipo): oculta los textos para comparar aciertos con y sin leer
     sinTexto: qs.get("sintexto") === "1", lecturaStats: { con: { ok: 0, n: 0 }, sin: { ok: 0, n: 0 } },
   };
@@ -231,6 +231,7 @@
   function terminarAterrizaje() { estado = "fundido"; fadeStart = performance.now(); if (window.SFX) SFX.parar("aterrizaje"); }
   function entrarJuego() { estado = "juego"; juegoT0 = performance.now(); ultimaEscena = 0; hud.hidden = false; nuevaPartida(); MUSICA_BASE.sincronizar(); }
   function volverAlMenu() {
+    if (PAUSA.activa) { PAUSA.poner(false); $("pausa").hidden = true; }
     abortar(); hud.hidden = true; $mj.hidden = true; stage.classList.remove("tiembla");
     if (typeof finalActual !== "undefined") finalActual = null;
     estado = "menu"; menuStart = performance.now() - 2500;
@@ -288,6 +289,9 @@
     if (ev.key === "m" || ev.key === "M") return alternarSilencio();
     iniciarMusica();
     if ((ev.key === "f" || ev.key === "F") && !(J && J.enMinijuego)) return fullscreen();
+    // en la partida (también en un minijuego), Escape abre o cierra la pausa: ya no se pierde la partida por accidente
+    if (estado === "juego" && (ev.key === "Escape" || ev.key === "p" || ev.key === "P")) { ev.preventDefault(); return abrirPausa(!PAUSA.activa); }
+    if (PAUSA.activa) return;
     if (estado === "menu") {
       if (ev.key === "ArrowUp" || ev.key === "w") selected = (selected - 1 + MENU.length) % MENU.length;
       else if (ev.key === "ArrowDown" || ev.key === "s") selected = (selected + 1) % MENU.length;
@@ -297,8 +301,7 @@
     } else if (estado === "final") {
       if (["Enter", " ", "Escape"].includes(ev.key)) avanzarFinal();
     } else if (estado === "juego" && !(J && J.enMinijuego)) {
-      if (ev.key === "Escape") volverAlMenu();
-      else if (ev.key === "Enter" && !enCampo) {
+      if (ev.key === "Enter" && !enCampo) {
         const b = $c.querySelector(".op.prim:not([disabled])") || (() => { const v = $c.querySelectorAll(".op:not([disabled])"); return v.length === 1 ? v[0] : null; })();
         if (b) b.click();
       }
@@ -518,6 +521,40 @@
     }
     pintarEquipo();
   }
+  // ---------- menú de pausa ----------
+  // Escape, P o el botón ⏸ detienen la partida (y el tiempo de los minijuegos) sin perderla.
+  function abrirPausa(on) {
+    if (on && estado !== "juego") return;
+    PAUSA.poner(on);
+    $("pausa").hidden = !on;
+    $("btn-pausa").setAttribute("aria-expanded", String(on));
+    if (on) { abrirCartas(false); pintarPausa(); $("p-continuar").focus(); }
+    if (!on) $("p-salir").dataset.confirma = "";
+  }
+  function pintarPausa() {
+    $("p-musica").value = Math.round(AJUSTES_AUDIO.musica * 100); $("o-musica").textContent = $("p-musica").value + "%";
+    $("p-efectos").value = Math.round(AJUSTES_AUDIO.efectos * 100); $("o-efectos").textContent = $("p-efectos").value + "%";
+    const marca = (id, v) => { $(id).setAttribute("aria-pressed", String(v)); $(id).querySelector("b").textContent = v ? "SÍ" : "NO"; };
+    marca("p-silencio", silenciado); marca("p-voz", ui.voz); marca("p-texto", ui.textoGrande);
+    marca("p-pantalla", !!document.fullscreenElement);
+    $("p-dia").textContent = J ? `Día ${J.dia} de 14 · tu partida sigue aquí.` : "";
+  }
+  $("btn-pausa").addEventListener("click", () => abrirPausa(true));
+  $("p-continuar").addEventListener("click", () => abrirPausa(false));
+  $("p-musica").addEventListener("input", (e) => { AJUSTES_AUDIO.musica = +e.target.value / 100; $("o-musica").textContent = e.target.value + "%"; guardarAudio(); });
+  $("p-efectos").addEventListener("input", (e) => { AJUSTES_AUDIO.efectos = +e.target.value / 100; $("o-efectos").textContent = e.target.value + "%"; guardarAudio(); });
+  $("p-efectos").addEventListener("change", () => { if (window.SFX) SFX.play("acierto"); });   // para oír el volumen nuevo
+  $("p-silencio").addEventListener("click", () => { alternarSilencio(); pintarPausa(); });
+  $("p-voz").addEventListener("click", () => { ui.voz = !ui.voz; guardarLS("gnosis-pref", { voz: ui.voz, textoGrande: ui.textoGrande }); pintarPausa(); pintarCtl(); });
+  $("p-texto").addEventListener("click", () => { ui.textoGrande = !ui.textoGrande; app.classList.toggle("texto-grande", ui.textoGrande); guardarLS("gnosis-pref", { voz: ui.voz, textoGrande: ui.textoGrande }); pintarPausa(); });
+  $("p-pantalla").addEventListener("click", () => { fullscreen(); setTimeout(pintarPausa, 300); });
+  $("p-salir").addEventListener("click", (e) => {
+    const b = e.currentTarget;
+    if (b.dataset.confirma !== "1") { b.dataset.confirma = "1"; b.querySelector("span").textContent = "¿Seguro? Toca otra vez: se pierde esta partida (tu bitácora se guarda)"; return; }
+    abrirPausa(false); volverAlMenu();
+  });
+  { const pref = leerLS("gnosis-pref"); if (pref) { ui.voz = !!pref.voz; ui.textoGrande = !!pref.textoGrande; app.classList.toggle("texto-grande", ui.textoGrande); } }
+
   // menú de cartas retráctil: un botón arriba a la derecha lo abre y lo cierra
   function abrirCartas(abrir) {
     const p = $("panel-cartas"), b = $("btn-cartas");

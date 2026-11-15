@@ -13,6 +13,9 @@
   const pick = (a) => a[Math.floor(Math.random() * a.length)];
   const porNivel = (n, a) => a[Math.max(0, Math.min(2, n - 1))];
   const sfx = (nombre) => { if (window.SFX) SFX.play(nombre); };   // efectos de sonido (sfx.js)
+  // reloj que se detiene en el menú de pausa (musica.js)
+  const enPausa = () => !!(window.PAUSA && PAUSA.activa);
+  const ahora = () => performance.now() - (window.PAUSA ? PAUSA.pausado() : 0);
 
   // ---------- armazón comun: título, instrucciones, tiempo y cierre ----------
   function marco(op, titulo, instr) {
@@ -24,10 +27,10 @@
   function sesion(op, ui, segundos, alTerminar) {
     let vivo = true, restante = segundos * 1000;
     const limpiezas = [];
-    const t0 = performance.now();
+    const t0 = ahora();
     const id = setInterval(() => {
-      if (!vivo) return;
-      restante = segundos * 1000 - (performance.now() - t0);
+      if (!vivo || enPausa()) return;
+      restante = segundos * 1000 - (ahora() - t0);
       ui.barra.style.width = Math.max(0, 100 * restante / (segundos * 1000)) + "%";
       if (restante <= 0) fin(false, "Se acabó el tiempo.");
     }, 100);
@@ -46,8 +49,8 @@
     if (op.auto) setTimeout(() => fin(Math.random() < op.hab, "Simulación automática."), 1500 / (op.vel || 1));
     return {
       promesa, fin, vivo: () => vivo, estado: (t) => { ui.estado.textContent = t; ui.estado.className = "mj-estado"; },
-      teclas(fn) { const h = (e) => { if (vivo) fn(e); }; window.addEventListener("keydown", h); limpiezas.push(() => window.removeEventListener("keydown", h)); },
-      cada(ms, fn) { const i = setInterval(() => { if (vivo) fn(); }, ms); limpiezas.push(() => clearInterval(i)); },
+      teclas(fn) { const h = (e) => { if (vivo && !enPausa()) fn(e); }; window.addEventListener("keydown", h); limpiezas.push(() => window.removeEventListener("keydown", h)); },
+      cada(ms, fn) { const i = setInterval(() => { if (vivo && !enPausa()) fn(); }, ms); limpiezas.push(() => clearInterval(i)); },
       segundos: () => restante / 1000,
     };
   }
@@ -254,10 +257,10 @@
     window.addEventListener("pointerup", soltar);
     s.teclas((e) => { if (e.key === "ArrowLeft" || e.key === "-") { sfx("perilla"); mover(-6); } if (e.key === "ArrowRight" || e.key === "+") { sfx("perilla"); mover(6); } });
     // zona móvil: dos ondas mezcladas + cambios de rumbo al azar, más rápida en niveles altos
-    const vel = porNivel(op.nivel, [0.7, 1.0, 1.35]), t0 = performance.now(), fase = Math.random() * 6.28;
+    const vel = porNivel(op.nivel, [0.7, 1.0, 1.35]), t0 = ahora(), fase = Math.random() * 6.28;
     let empuje = 0;
     const moverZona = () => {
-      const t = (performance.now() - t0) / 1000;
+      const t = (ahora() - t0) / 1000;
       if (Math.random() < 0.02) empuje = (Math.random() - 0.5) * 30;          // de vez en cuando cambia de rumbo
       const centro = 50 + 28 * Math.sin(t * vel + fase) + 12 * Math.sin(t * vel * 2.3 + fase * 2) + empuje * Math.sin(t * 0.5);
       zona0 = Math.max(0, Math.min(100 - ancho, centro - ancho / 2));

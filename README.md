@@ -94,6 +94,7 @@ El color cambia según la tensión del momento. `pantalla()` en `public/js/juego
 - Para cambiar colores o crear un tema: edita `TEMAS` en `herramientas/generar-sprites-dialogo.py` y corre `python herramientas/generar-sprites-dialogo.py` (requiere `pip install pillow`).
 
 ## Cartas y minijuegos en pantalla
+- **Pausa:** Esc, P o el botón ⏸ PAUSA detienen la partida sin perderla, también dentro de un minijuego: su tiempo no corre (`PAUSA` en `musica.js`). Trae volumen de música y de efectos, silenciar, leer en voz alta, letra grande y pantalla completa; se guardan en el dispositivo. «Salir al menú» pide confirmar.
 - **Pantalla:** durante la partida todo va en 16:9 (2560x1440 a pantalla completa); la franja de 256 px de abajo lleva con el panel de sistemas (barras en 2 × 2) y el cuadro de texto. Si una pantalla no cabe (llamadas con varios pasos), el cuadro se desplaza solo hasta la pregunta que toca responder. En el menú y los finales no hay franja.
 - **Cartas:** el botón `CARTAS n / 10` (arriba a la derecha) abre y cierra el panel. Se cierra con ✕, con Esc o tocando fuera. Brilla cuando llega una carta nueva y avisa "ESCUDO LISTO" si hay un escudo armado.
 - **Minijuegos:** antes de empezar se muestra "Así se juega": 2 o 3 pasos cortos y una demo animada (`public/img/minijuegos/<tipo>.gif`) donde una manita juega una ronda. El tiempo corre solo después de tocar "¡Empezar!" (o Enter). Los textos están en `COMO_SE_JUEGA` de `public/js/juego.js`; las demos se generan con `python herramientas/generar-demos-minijuegos.py`.

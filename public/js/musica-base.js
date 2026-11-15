@@ -112,7 +112,7 @@
       if (n === "__intro") continue;
       const p = PISTAS[n], on = gesto && d.pista === n;
       p.audio.muted = sil;
-      p.objetivo = on ? VOL_PISTA : 0;
+      p.objetivo = on ? VOL_PISTA * AJUSTES_AUDIO.musica : 0;
       p.velocidad = on ? (n === "alarma-emergencia" ? 0.08 : 0.03) : 0.06;
       if (on) reproducir(p.audio);
     }
@@ -122,7 +122,7 @@
       intro.audio = musica;
       const on = gesto && d.intro && !d.pista;
       musica.muted = sil;
-      intro.objetivo = on ? MUSICA_VOL : 0;
+      intro.objetivo = on ? MUSICA_VOL * AJUSTES_AUDIO.musica : 0;
       intro.velocidad = on ? 0.02 : 0.05;
       if (on) reproducir(musica);
     }
@@ -130,7 +130,7 @@
     const baseOn = gesto && d.base && !d.pista && !sil;
     if (d.base && gesto && crear()) { despertar(); baseSonando = true; }
     if (!d.base) baseSonando = false;
-    volumenBase(baseOn ? VOL_BASE : 0);
+    volumenBase(baseOn ? VOL_BASE * AJUSTES_AUDIO.musica : 0);
     programarAcordes();
   }
   // acerca cada audio a su volumen objetivo; al llegar a 0 lo pausa

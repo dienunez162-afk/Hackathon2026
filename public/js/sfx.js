@@ -30,6 +30,7 @@
   };
   const turno = {};
   const VOL = 0.55;
+  const efectos = () => (typeof AJUSTES_AUDIO !== "undefined" ? AJUSTES_AUDIO.efectos : 1);   // volumen del menú de pausa
   const VOLUMEN = { despegue: 0.7, aterrizaje: 0.6, sismo: 0.5, "rover-mover": 0.35 };   // los demás: VOL
 
   const listo = () => typeof musicaIniciada === "undefined" || musicaIniciada;   // el navegador pide un toque antes de sonar
@@ -62,7 +63,7 @@
     const c = ctx(), buf = buffers[nombre], tomas = TOMAS[nombre];
     if (!c || !buf) return false;
     const k = cual != null ? cual % tomas.length : (turno[nombre] = ((turno[nombre] ?? -1) + 1) % tomas.length), [ini, fin] = tomas[k];
-    const s = c.createBufferSource(), g = c.createGain(), dur = fin - ini, v = VOLUMEN[nombre] ?? VOL;
+    const s = c.createBufferSource(), g = c.createGain(), dur = fin - ini, v = (VOLUMEN[nombre] ?? VOL) * efectos();
     s.buffer = buf; s.connect(g); g.connect(c.destination);
     const t = c.currentTime + 0.01;
     g.gain.setValueAtTime(v, t); g.gain.setValueAtTime(v, t + Math.max(0, dur - 0.25)); g.gain.linearRampToValueAtTime(0.0001, t + dur);   // sin cortes bruscos
@@ -71,12 +72,14 @@
     return true;
   }
   function tono(c, t, f0, f1, dur, tipo, vol) {
+    vol *= efectos();
     const o = c.createOscillator(), g = c.createGain();
     o.type = tipo; o.frequency.setValueAtTime(f0, t); if (f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, t + dur);
     g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
     o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.02);
   }
   function ruido(c, t, dur, corte, vol) {
+    vol *= efectos();
     const b = c.createBuffer(1, Math.floor(c.sampleRate * dur), c.sampleRate), d = b.getChannelData(0);
     for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
     const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
@@ -115,7 +118,7 @@
       if (TOMAS[nombre]) { if (tocarToma(nombre, cual)) return; }   // una sola toma del archivo
       const a = TOMAS[nombre] ? null : audios[nombre];
       if (a) {
-        const c = a.paused ? a : a.cloneNode(); c.volume = VOL; c.currentTime = 0;
+        const c = a.paused ? a : a.cloneNode(); c.volume = VOL * efectos(); c.currentTime = 0;
         const p = c.play(); if (p) p.catch(() => {});
         return;
       }
@@ -126,7 +129,7 @@
     bucle(nombre, on) {
       const a = audios[nombre];
       if (!a) { if (on && !bucles[nombre]) { this.play(nombre); bucles[nombre] = setInterval(() => this.play(nombre), 260); } else if (!on) { clearInterval(bucles[nombre]); bucles[nombre] = null; } return; }
-      if (on && listo() && !mudo()) { a.loop = true; a.volume = VOL; if (a.paused) { const p = a.play(); if (p) p.catch(() => {}); } }
+      if (on && listo() && !mudo()) { a.loop = true; a.volume = VOL * efectos(); if (a.paused) { const p = a.play(); if (p) p.catch(() => {}); } }
       else if (!on && !a.paused) a.pause();
     },
     // corta un sonido largo (p. ej. el alunizaje si se salta la secuencia)
