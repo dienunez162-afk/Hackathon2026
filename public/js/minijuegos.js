@@ -287,25 +287,49 @@
       ui.cuerpo.querySelector(".mj-opciones").addEventListener("click", (e) => { const b = e.target.closest("[data-i]"); if (!b || !s.vivo()) return; const ok = opciones[+b.dataset.i][1]; b.classList.add(ok ? "ok" : "mal"); s.fin(ok, ok ? "¡Buen pronóstico!" : "Recuerda: tarda de 1 a 3 días."); });
       return s.promesa;
     }
-    // radiación: 7 días de dosis
-    // 7 días reales de CRaTER (RadLab). Se compara cada día contra un día tranquilo ("base"):
-    // hasta 1.5 veces = seguro, hasta 3 veces = cuidado, más = peligro (tormenta solar).
+    // radiación: 7 días reales de CRaTER (RadLab). Sin colores que den la respuesta: cada barra dice
+    // cuántas veces más radiación hubo que en un día normal, con una línea de "día normal" y otra de "x3".
+    // Paso 1: ¿cómo está hoy? Paso 2: tendencia (si hubo días muy altos y hoy bajó) o qué hacer hoy.
+    const PQ = window.PREGUNTAS;
     const sem = op.semana || { fuente: "CRaTER (datos de muestra)", base: 5, dias: [5, 5.1, 5, 5.2, 5.1, 5, Math.random() < 0.5 ? 5.3 : 220].map((v, k) => ({ fecha: "d" + (k + 1), dosis: v })) };
     const serie = sem.dias, base = sem.base || Math.min(...serie.map((x) => x.dosis));
-    const rel = (x) => x.dosis / base, zona = (x) => (rel(x) > 3 ? "peligro" : rel(x) > 1.5 ? "cuidado" : "seguro");
-    const alto = (x) => Math.round(Math.min(100, 22 + 26 * Math.log10(Math.max(0.6, rel(x)))));   // escala que crece despacio: las tormentas son cientos de veces mayores
-    const TXT = { seguro: "Seguro para salir", cuidado: "Cuidado: sal poco tiempo", peligro: "Peligro: mejor no salir" };
-    const COL = { seguro: "var(--verde)", cuidado: "var(--ambar)", peligro: "var(--rojo)" };
-    const correcta = TXT[zona(serie[serie.length - 1])];
-    const todas = Object.values(TXT);
-    const opciones = barajar(op.nivel === 1 ? [correcta, correcta === TXT.peligro ? TXT.seguro : TXT.peligro] : todas);
+    const veces = serie.map((x) => x.dosis / base);
+    const alto = (v) => Math.round(Math.min(100, 22 + 26 * Math.log10(Math.max(0.6, v))));
+    const fmt = (v) => (v < 10 ? String(Math.round(v * 10) / 10) : String(Math.round(v)));
+    const zonaHoy = PQ.zonaRadiacion(veces[veces.length - 1]), t = PQ.tendencia(veces);
+    const P1 = { seguro: "Casi igual que un día normal (hasta 1.5 veces)", cuidado: "Más alto que lo normal (entre 1.5 y 3 veces)", peligro: "Mucho más alto (más de 3 veces)" };
+    const P2 = t.bajo
+      ? { pregunta: `Los días ${t.picos.map((i) => "d" + (i + 1)).join(" y ")} fueron muy altos, pero hoy bajó. ¿Ya es seguro salir?`,
+        seguro: "Sí: hoy ya está como un día normal", cuidado: "Todavía no del todo: sigue más alto de lo normal, sal poco tiempo", peligro: "No: aunque bajó, sigue mucho más alto de lo normal" }
+      : { pregunta: "Con lo que marca hoy, ¿qué haces?", seguro: "Salir a trabajar normal", cuidado: "Salir solo un rato", peligro: "Quedarte en el refugio" };
+    // nivel 1: 2 opciones; niveles 2 y 3: las 3
+    const opcionesDe = (mapa) => { const z = ["seguro", "cuidado", "peligro"]; const sel = op.nivel === 1 ? [zonaHoy, zonaHoy === "peligro" ? "seguro" : "peligro"] : z; return barajar(sel).map((k) => ({ k, t: mapa[k] })); };
+    const o1 = opcionesDe(P1), o2 = opcionesDe(P2);
     const f0 = String(serie[0].fecha), f1 = String(serie[serie.length - 1].fecha);
-    const ui = marco(op, "Lee el medidor de radiación", "Cada barra es un día de radiación medida de verdad junto a la Luna. La última es hoy. ¿Es un día seguro para salir?");
-    ui.cuerpo.innerHTML = `<div class="mj-datos"><p class="mj-ins">Fuente: ${esc(sem.fuente)}${/^\d{4}/.test(f0) ? ` · del ${esc(f0)} al ${esc(f1)}` : ""}</p><div class="mj-barras">${serie.map((x, k) => `<div class="mb"><i style="height:${alto(x)}%;background:${COL[zona(x)]}"></i><span>${k === serie.length - 1 ? "hoy" : "d" + (k + 1)}</span></div>`).join("")}</div>
-      <p class="mj-ins">Verde: como un día normal · Ámbar: hasta 3 veces más · Rojo: mucho más (tormenta solar)</p></div>
-      <div class="mj-opciones">${opciones.map((t, i) => `<button type="button" class="op" data-i="${i}">${esc(t)}</button>`).join("")}</div>`;
-    const s = sesion(op, ui, tiempoBase(op, 25));
-    ui.cuerpo.querySelector(".mj-opciones").addEventListener("click", (e) => { const b = e.target.closest("[data-i]"); if (!b || !s.vivo()) return; const ok = opciones[+b.dataset.i] === correcta; b.classList.add(ok ? "ok" : "mal"); s.fin(ok, ok ? "¡Bien leído!" : `Hoy era: ${correcta}.`); });
+    const ui = marco(op, "Lee el medidor de radiación", "Cada barra es un día de radiación medida de verdad junto a la Luna; el número dice cuántas veces más que un día normal. La última es hoy.");
+    ui.cuerpo.innerHTML = `<div class="mj-datos"><p class="mj-ins">Fuente: ${esc(sem.fuente)}${/^\d{4}/.test(f0) ? ` · del ${esc(f0)} al ${esc(f1)}` : ""}</p>
+      <div class="mj-barras" style="position:relative">
+        <span style="position:absolute;left:0;right:0;bottom:${alto(1)}%;border-top:2px dashed var(--casco);opacity:.6"></span><span style="position:absolute;right:0;bottom:calc(${alto(1)}% + 2px);font-size:10px;color:var(--casco)">día normal (x1)</span>
+        <span style="position:absolute;left:0;right:0;bottom:${alto(3)}%;border-top:1px dotted var(--dim)"></span><span style="position:absolute;left:0;bottom:calc(${alto(3)}% + 2px);font-size:10px;color:var(--dim)">x3</span>
+        ${veces.map((v, k) => `<div class="mb"><b style="font-size:11px;color:var(--ink)">x${fmt(v)}</b><i style="height:${alto(v)}%;background:var(--lila)"></i><span>${k === veces.length - 1 ? "hoy" : "d" + (k + 1)}</span></div>`).join("")}
+      </div></div>
+      <p class="mj-tit2" style="font-size:15px">1 · ¿Cómo está la radiación hoy?</p><div class="mj-opciones col" id="r1">${o1.map((o, i) => `<button type="button" class="op" data-i="${i}">${esc(o.t)}</button>`).join("")}</div>
+      <div id="r2"></div>`;
+    const s = sesion(op, ui, tiempoBase(op, 35));
+    let ok1 = null;
+    ui.cuerpo.querySelector("#r1").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-i]"); if (!b || !s.vivo() || ok1 !== null) return;
+      ok1 = o1[+b.dataset.i].k === zonaHoy; b.classList.add(ok1 ? "ok" : "mal"); sfx(ok1 ? "acierto" : "error");
+      const r2 = ui.cuerpo.querySelector("#r2");
+      r2.innerHTML = `<p class="mj-tit2" style="font-size:15px">2 · ${esc(P2.pregunta)}</p><div class="mj-opciones col">${o2.map((o, i) => `<button type="button" class="op" data-i="${i}">${esc(o.t)}</button>`).join("")}</div>`;
+      r2.querySelector(".mj-opciones").addEventListener("click", (e2) => {
+        const b2 = e2.target.closest("[data-i]"); if (!b2 || !s.vivo()) return;
+        const ok2 = o2[+b2.dataset.i].k === zonaHoy; b2.classList.add(ok2 ? "ok" : "mal");
+        const explica = `Hoy hubo x${fmt(veces[veces.length - 1])} de un día normal: ${P1[zonaHoy].toLowerCase()}.${t.bajo ? " Que haya bajado no basta: importa cuánto marca hoy." : ""}`;
+        if (window.BITACORA) BITACORA.registrar("aprendido", "mj-radiacion", { titulo: "Leer el medidor de radiación", texto: "Compara contra un día normal: hasta 1.5 veces es seguro, hasta 3 veces sal poco tiempo, más de 3 veces quédate en el refugio. Si bajó, fíjate en cuánto marca hoy.", quien: "Control de Misión", tema: "radiacion" });
+        s.fin(ok1 && ok2, ok1 && ok2 ? "¡Bien leído! " + explica : explica);
+      });
+    });
     return s.promesa;
   }
 
@@ -377,24 +401,31 @@
     return s.promesa;
   }
 
-  // ---------- 12. preguntas de la Tierra (con las cartas que ya tiene) ----------
+  // ---------- 12. Mensaje de la Tierra: una situación y eliges la carta ----------
+  // No se muestra la descripción de la carta: hay que recordarla. Los distractores son cartas
+  // que también sirven para la misma barra, pero no son las mejores para esa situación.
   function quiz(op) {
-    const cartas = op.cartas || [];
-    const todas = op.todasCartas || [];
-    const ui = marco(op, "Mensaje especial de la Tierra", "Los científicos quieren saber qué aprendiste. ¿Cuándo sirve cada carta?");
+    const cartas = op.cartas || [], todas = op.todasCartas || [];
+    const ui = marco(op, "Mensaje especial de la Tierra", "Los científicos te cuentan una situación. ¿Qué carta es la mejor para ese momento?");
     const qs = barajar(cartas).slice(0, 2);
     if (!qs.length) { const s = sesion(op, ui, 5); setTimeout(() => s.fin(true, "Mensaje recibido."), 800); return s.promesa; }
     const s = sesion(op, ui, tiempoBase(op, 30) * qs.length);
     let k = 0, bien = 0;
     const siguiente = () => {
-      const c = qs[k], otros = barajar(todas.filter((x) => x.momento !== c.momento)).slice(0, op.nivel).map((x) => x.momento);
-      const opciones = barajar([c.momento, ...otros]);
-      ui.cuerpo.innerHTML = `<p class="mj-tit2">${esc(c.nombre)}</p><p class="mj-ins">${esc(c.frase)}</p><div class="mj-opciones col">${opciones.map((o, i) => `<button type="button" class="op" data-i="${i}">${esc(o)}</button>`).join("")}</div>`;
+      const c = qs[k];
+      const misma = barajar(todas.filter((x) => x.nombre !== c.nombre && x.uso && c.uso && x.uso.barra === c.uso.barra));
+      const resto = barajar(todas.filter((x) => x.nombre !== c.nombre && !(x.uso && c.uso && x.uso.barra === c.uso.barra)));
+      const otros = [...misma, ...resto].slice(0, Math.max(1, op.nivel)).map((x) => x.nombre);
+      const opciones = barajar([c.nombre, ...otros]);
+      ui.cuerpo.innerHTML = `<p class="mj-tit2">Situación: ${esc(c.momento)}.</p><p class="mj-ins">¿Qué carta usas? (${k + 1} de ${qs.length})</p><div class="mj-opciones col">${opciones.map((o, i) => `<button type="button" class="op" data-i="${i}">${esc(o)}</button>`).join("")}</div><p class="mj-ins" id="por-que"></p>`;
       ui.cuerpo.querySelector(".mj-opciones").onclick = (e) => {
-        const b = e.target.closest("[data-i]"); if (!b || !s.vivo()) return;
-        const ok = opciones[+b.dataset.i] === c.momento; b.classList.add(ok ? "ok" : "mal"); sfx(ok ? "acierto" : "error"); if (ok) bien++;
+        const b = e.target.closest("[data-i]"); if (!b || !s.vivo() || b.disabled) return;
+        ui.cuerpo.querySelectorAll(".mj-opciones .op").forEach((x) => (x.disabled = true));
+        const ok = opciones[+b.dataset.i] === c.nombre; b.classList.add(ok ? "ok" : "mal"); sfx(ok ? "acierto" : "error"); if (ok) bien++;
+        ui.cuerpo.querySelector("#por-que").textContent = `${ok ? "¡Sí!" : "La mejor era " + c.nombre + "."} ${c.nombre}: ${c.frase}`;
+        if (window.BITACORA) BITACORA.registrar("aprendido", "tierra-" + c.nombre, { titulo: "Mensaje de la Tierra: " + c.nombre, texto: `${c.momento}: ${c.nombre}. ${c.frase}`, quien: "Control de Misión" });
         k++;
-        setTimeout(() => { if (k < qs.length) siguiente(); else s.fin(bien >= Math.ceil(qs.length / 2), `${bien} de ${qs.length} respuestas para la Tierra.`); }, 500);
+        setTimeout(() => { if (k < qs.length) siguiente(); else s.fin(bien >= Math.ceil(qs.length / 2), `${bien} de ${qs.length} respuestas para la Tierra.`); }, 1500);
       };
     };
     siguiente();

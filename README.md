@@ -10,6 +10,9 @@ npm run check        # revisa la sintaxis de todo
 ```
 Parámetros de prueba: `?auto=1&vel=4` juega solo; `?final=apagon` abre un final.
 
+## Caché del navegador
+`vercel.json` pide revalidar `js/` e `img/` en cada visita, y el build (`scripts/generar-datos.mjs`) le pone la versión del despliegue a cada script (`js/juego.js?v=…`). Antes, el navegador guardaba `js/` una hora y mezclaba un `index.html` nuevo con un `juego.js` viejo: eso dejaba la bitácora en 0 y encimaba el HUD.
+
 ## Desplegar en Vercel
 1. El dueño del repo (dienunez162-afk) entra a vercel.com/new, conecta su GitHub e importa Hackathon2026 (o lo agrega al equipo DAW). Solo el dueño puede darle a Vercel acceso al repo. `vercel.json` ya define el build (`node scripts/generar-datos.mjs`) y la carpeta `public`.
 2. En Settings > Environment Variables, pon las variables de `.env.example`.
@@ -60,6 +63,20 @@ Los originales están en `diseno/sprites/`. `herramientas/recortar-sprites.ps1` 
 | `bitacora-icono.png` | Botón de la bitácora, con contador de cosas nuevas |
 | `bitacora-libro.png` | Fondo de la bitácora abierta |
 | `img/personajes/cientifica.jpg`, `control-mision.jpg` | Retratos de la Dra. Ortiz y Control de Misión; alternan los dos cuadros mientras hablan |
+
+## Llamadas y preguntas
+`datos/preguntas-mision-lunar.json` + `public/js/preguntas.js` (lógica sin pantalla, probada con `npm test`).
+- **Una llamada cada 2 o 3 días** (días 2 a 13). Se alternan:
+  - **Situación** (sin dar la respuesta): 1) predice qué barra cambia primero y cuál después; 2) ¿qué dato lo prueba?; 3) actúa; 4) mira qué pasó + informe de Control (se guarda en la bitácora).
+  - **Pregunta del banco** (esquema `{ id, nivel, tipo, enunciado, opciones, indiceCorrecto, fraseEvidencia, explicacion, fuente }` + `tema` y `barra`), elegida según el nivel del niño y de temas que ya leyó.
+  - **Consulta la bitácora** (una por partida): la respuesta está en «Datos NASA» (la llamarada más fuerte o la peor tormenta de RadLab).
+- **Repaso**: al empezar una misión nueva, una pregunta sobre algo guardado en «Lo aprendido».
+- **Costo por error**: la barra del tema baja 3 / 5 / 8 puntos (nivel 1 / 2 / 3), nunca por debajo de 10 (ni la radiación arriba de 90) por una pregunta.
+- **Avería**: pistas con irrelevantes; pide la causa y luego la reparación, 2 intentos cada una; cada error cuesta y al final se explica por qué pasó.
+- **Mensaje de la Tierra**: una situación y eliges la carta (sin ver su descripción); los distractores son cartas de la misma barra.
+- **Medidor de radiación**: sin colores; cada barra dice "xN" de un día normal; pregunta de tendencia si hubo días altos y hoy bajó.
+- **Manual**: 2 cartas recomendadas y el porqué.
+- **Informes**: se muestran siempre (son la evidencia de las preguntas).
 
 ## Bitácora
 `public/js/bitacora.js`. Se llena sola y se guarda entre misiones (en el dispositivo):

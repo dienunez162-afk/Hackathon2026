@@ -139,6 +139,9 @@
   window.BITACORA = {
     registrar, abrir, cerrar,
     abierta: () => !!$("bitacora") && !$("bitacora").hidden,
+    // lo guardado en «Lo aprendido» (para el repaso al empezar otra misión)
+    aprendidos: () => Object.entries(B.aprendido).map(([clave, a]) => Object.assign({ clave }, a)),
+    cuenta: () => ({ cartas: Object.keys(B.cartas).length, informes: Object.keys(B.informes).length, aprendido: Object.keys(B.aprendido).length }),
     borrar() { B = { cartas: {}, informes: {}, aprendido: {}, vistos: 0 }; guardar(); badge(); },
   };
 })();
