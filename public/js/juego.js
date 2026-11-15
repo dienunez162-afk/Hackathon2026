@@ -1059,7 +1059,10 @@
   //   1.er error: se tacha la opción, aparece la pista y cuesta un poco (cobrarPista);
   //   2.º error: se muestra la respuesta y la explicación, se cobra el costo normal y se sigue.
   async function preguntar(cont, q, { delay = 2000, pAuto = ui.comp } = {}) {
-    const invalida = PQ.validarPregunta(q);
+    // aquí llegan solo { opciones, correcta, pista, ... }: se revisa ESO (el esquema completo del banco
+    // se revisa antes, en responderBanco). Antes se pedía id/enunciado/fuente y TODAS se omitían.
+    const invalida = !q || !Array.isArray(q.opciones) || q.opciones.length < 2 || !q.opciones.every((o) => typeof o === "string" && o.trim()) ? "opciones inválidas"
+      : !(Number.isInteger(q.correcta) && q.correcta >= 0 && q.correcta < q.opciones.length) ? "correcta fuera de rango" : null;
     if (invalida) { console.error("[G-NOSIS] pregunta omitida (" + (q && q.id) + "): " + invalida); if (cont) cont.innerHTML = ""; return { ok: true, intentos: 0, omitida: true }; }
     const { opciones, correcta } = q, tachadas = new Set();
     let aviso = cont.nextElementSibling;
@@ -1117,6 +1120,8 @@
   // contesta una pregunta del banco ya pintada en la pantalla c (opciones en #ops): reintento con pista,
   // y la explicación y la evidencia SOLO después de contestar
   async function responderBanco(c, q, tag) {
+    const mal = PQ.validarPregunta(q);
+    if (mal) { console.error("[G-NOSIS] pregunta del banco omitida (" + (q && q.id) + "): " + mal); return { ok: true, intentos: 0, omitida: true }; }
     const fija = q.tipo === "bitacora" || q.tipo === "repaso" && q.id.startsWith("R-") && !PD.banco.some((p) => "R-" + p.id === q.id);
     const base = fija ? { opciones: q.opciones.slice(0, Math.max(2, PQ.opcionesPorNivel(J.reto))), indiceCorrecto: q.indiceCorrecto } : PQ.recortarOpciones(q.opciones, q.indiceCorrecto, PQ.opcionesPorNivel(J.reto));
     const bj = PQ.barajarFijo(base.opciones, base.indiceCorrecto, q.id);
