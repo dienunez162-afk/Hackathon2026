@@ -4,8 +4,8 @@ Revisada el 15 de noviembre de 2026 (rama `correcciones-pendientes`). Probado en
 
 ## Solo Diego puede hacerlo (Supabase)
 Estado del proyecto `tsidieehhdwspeomdixs` el 15-nov (probado de punta a punta): **ya funciona** el registro con alias, el inicio de sesión desde el juego, guardar partidas, los récords, pedir unirse a una clase, aceptar al alumno y que el maestro vea o deje de ver sus partidas, y el aislamiento entre alumnos. «Confirm email» ya está desactivado y Supabase acepta el dominio `alumnos.g-nosis.local`. Falta:
-- [ ] Correr `0004_borrar_cuenta.sql` y luego `0005_permisos_funciones.sql` (comprobado hoy: ninguno de los dos está corrido; el botón «Borrar mi cuenta» no funciona hasta el 0004).
-- [ ] **Subir esta rama a main** y poner en Vercel `SUPABASE_URL`, `SUPABASE_ANON_KEY` y `DOMINIO_ALUMNOS` (los valores están en `space apps/supabase-sql/LEEME.md`); luego redeploy. Hoy producción corre un `main` sin el menú de cuentas y sin `config.js`.
+- [x] `0004_borrar_cuenta.sql` y `0005_permisos_funciones.sql` corridos el 15-nov (comprobado: existe `borrar_mi_cuenta` y ninguna función se puede llamar sin sesión).
+- [x] **Ya no hace falta poner variables en Vercel:** `scripts/generar-datos.mjs` escribe `config.js` con la URL y la publishable key del proyecto (públicas por diseño). Si se ponen `SUPABASE_URL`, `SUPABASE_ANON_KEY` o `DOMINIO_ALUMNOS` en Vercel, esas ganan. Basta con fusionar la rama `supabase-sin-vercel` y Vercel redepliega solo.
 - [ ] **Borrar las cuentas de prueba** que dejé en el proyecto (Authentication > Users): alumnos `prueba_claude_090534` (3 partidas, pidió unirse a la clase E30F48), `prueba_b_090936`; maestro `maestro.prueba.claude@example.com` y su grupo «4B prueba». Con el 0004 corrido, el alumno se puede borrar desde el juego (contraseña de prueba `Prueba-123456`).
 - [ ] Crear el maestro y el grupo reales (`0003_datos_de_prueba.sql` sirve de plantilla).
 
