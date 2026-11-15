@@ -347,7 +347,14 @@
   }
   // quien: "control" (Control de Misión) o "cientifica" (Dra. Ortiz): su retrato habla mientras se lee el texto
   const NOMBRE_RETRATO = { control: "CONTROL DE MISIÓN", cientifica: "DRA. ORTIZ" };
-  function pantalla(html, quien) {
+  // tema del cuadro de texto (sprites de img/dialogo): cambia el color según la tensión del momento
+  //   normal (lavanda): tareas, decisiones, cartas · llamada (turquesa): Control de Misión, calma
+  //   alerta (ámbar): eventos sin alarma · catastrofe (rojo): eventos con alarma, averías y evacuación
+  let temaActual = "normal";
+  const temaDeHtml = (html) => (/class="tag alarma/.test(html) ? "catastrofe" : /class="tag llamada/.test(html) ? "llamada" : "normal");
+  function pantalla(html, quien, tema) {
+    temaActual = tema || temaDeHtml(html);
+    $c.className = "panel tema-" + temaActual;
     $c.hidden = false;
     $c.innerHTML = quien ? `<div class="con-retrato"><div><div class="retrato ${quien}" role="img" aria-label="${NOMBRE_RETRATO[quien]}"></div><div class="retrato-nombre">${NOMBRE_RETRATO[quien]}</div></div><div class="cuerpo">${html}</div></div>` : html;
     $c.scrollTop = 0;
@@ -572,8 +579,9 @@
     if (destino === J.escena && !motivo) { escena(destino, estados); return; }
     escena("plano", { resaltar: mod || null, alarma: !!(estados && estados.alarma) });
     const fuera = destino === "exterior" || destino === "crater";
+    const tema = estados && estados.alarma ? "catastrofe" : estados && estados.llamada || motivo === MOTIVO.control_mision ? "llamada" : motivo === MOTIVO.evento ? "alerta" : "normal";
     const c = pantalla(`<span class="tag">PLANO DE LA BASE</span><p class="txt">${motivo ? esc(motivo) + " " : ""}<b>${esc(NOMBRE_ESC[destino] || destino)}</b>.</p>` +
-      `<p class="sub">${mod ? "Toca en el plano el módulo que parpadea, o el botón." : fuera ? "Ponte el traje: vas a salir de la base." : ""}</p><div class="ops" id="ops"></div>`);
+      `<p class="sub">${mod ? "Toca en el plano el módulo que parpadea, o el botón." : fuera ? "Ponte el traje: vas a salir de la base." : ""}</p><div class="ops" id="ops"></div>`, null, tema);
     J.esperaModulo = mod || null;
     try { await continuar(c.querySelector("#ops"), fuera ? "Salir ▸" : "Ir ▸", 1300); } finally { J.esperaModulo = null; }
     escena(destino, estados);
@@ -583,6 +591,7 @@
   async function minijuego(n, spec) {
     const t = tok;
     J.enMinijuego = true; $c.hidden = true; $mj.hidden = false;
+    $mj.className = "panel tema-" + temaActual;
     const todas = Object.values(R.temas).map((x) => x.carta);
     let r;
     try {
@@ -658,7 +667,8 @@
     await irA(n.escenario || "control", ESTADO_NODO[n.id] || {}, MOTIVO[n.tipo]);
     const texto = n.niveles ? n.niveles["nivel" + J.lectura].texto : n.mensaje;
     const r = n.resultado || {};
-    const c = pantalla(`<span class="tag ${(ESTADO_NODO[n.id] || {}).alarma ? "alarma" : ""}">${TIPO[n.tipo]}</span><h2 class="titulo">${esc(n.titulo)}</h2><p class="txt">${esc(texto)}</p><div class="ops" id="ops"></div><div id="res"></div>`, n.tipo === "control_mision" || n.tipo === "calma" ? "control" : null);
+    const tema = peligroDe(n) === "peligro" ? "catastrofe" : n.tipo === "evento" ? "alerta" : n.tipo === "control_mision" || n.tipo === "calma" ? "llamada" : "normal";
+    const c = pantalla(`<span class="tag ${(ESTADO_NODO[n.id] || {}).alarma ? "alarma" : ""}">${TIPO[n.tipo]}</span><h2 class="titulo">${esc(n.titulo)}</h2><p class="txt">${esc(texto)}</p><div class="ops" id="ops"></div><div id="res"></div>`, n.tipo === "control_mision" || n.tipo === "calma" ? "control" : null, tema);
     voz(texto);
     const ops = c.querySelector("#ops"), res = c.querySelector("#res");
     if (r.exito || r.fallo) {
@@ -720,7 +730,7 @@
     animo("calma");
     const c = pantalla(`<span class="tag">${TIPO.evaluacion}</span><h2 class="titulo">${esc(n.titulo)}</h2>` +
       `<p class="txt">${BARRAS.map((b) => `<span class="z-${zona(b, J.st[b])}">${MAYUS[b]} ${J.st[b]}</span>`).join(" · ")}</p>` +
-      `<div class="res ok">${MSG[rama]}</div><div class="ops" id="ops"></div>`, "control");
+      `<div class="res ok">${MSG[rama]}</div><div class="ops" id="ops"></div>`, "control", "llamada");
     log("Reporte de Control de Misión.");
     await continuar(c.querySelector("#ops"), "Continuar ▸", 2200);
   }

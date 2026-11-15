@@ -241,7 +241,40 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 .bt-pestanas button { font: 700 13px var(--mono); padding: 7px 12px 9px; border: 2px solid rgb(30, 28, 70); border-bottom: 0; background: rgb(48, 44, 110); color: var(--casco); cursor: pointer; }
 .bt-pestanas button[aria-pressed="true"] { background: rgb(253, 246, 226); color: rgb(60, 40, 120); }
 #bt-cerrar { position: absolute; top: -34px; right: 4%; font: 700 13px var(--mono); padding: 7px 12px; background: var(--crema); color: var(--negro); border: 0; cursor: pointer; }
-@media (prefers-reduced-motion: reduce) { .tag.alarma, .carta.nueva, .barra.pulsa .ascii, #stage.tiembla, .cable.mal { animation: none; } }
+/* ===== cuadros de texto pixel art (img/dialogo; se generan con herramientas/generar-sprites-dialogo.py) =====
+   Mismo estilo que las barras: marco biselado, pantalla hundida y tornillos. El color cambia con la tensión:
+   tema-normal (lavanda) · tema-llamada (turquesa, calma) · tema-alerta (ámbar) · tema-catastrofe (rojo, late). */
+#consola, #mj, #toast { background: none; border: 16px solid transparent; border-image: url(img/dialogo/panel-normal.png) 32 fill / 32px / 0 stretch; image-rendering: pixelated; --tema: rgb(152, 142, 224); }
+#consola { padding: 6px 12px 8px; }
+#mj { padding: 6px 12px 10px; }
+#toast { padding: 0 4px 2px; }
+#consola.tema-llamada, #mj.tema-llamada { border-image-source: url(img/dialogo/panel-llamada.png); --tema: rgb(84, 196, 212); }
+#consola.tema-alerta, #mj.tema-alerta { border-image-source: url(img/dialogo/panel-alerta.png); --tema: rgb(238, 170, 62); }
+#consola.tema-catastrofe, #mj.tema-catastrofe { border-image-source: url(img/dialogo/panel-catastrofe.png); --tema: rgb(222, 62, 62); animation: latido 1.1s ease-in-out infinite; }
+@keyframes latido { 50% { filter: drop-shadow(0 0 12px rgba(255, 60, 50, 0.6)); } }
+.tema-catastrofe .titulo { color: rgb(255, 214, 200); }
+.tema-llamada .titulo { color: var(--hielo); }
+/* etiqueta (LLEGADA, EVENTO, LLAMADA...) como placa pixel art */
+.tag { align-self: flex-start; display: inline-flex; align-items: center; height: 24px; box-sizing: border-box; border-style: solid; border-color: transparent; border-width: 0 20px; border-image: url(img/dialogo/etiqueta-normal.png) 0 20 fill / 0 20px / 0 stretch; image-rendering: pixelated; padding: 0 2px 2px 6px; font-weight: 700; color: rgb(24, 22, 58); white-space: nowrap; }
+.tema-llamada .tag, .tag.llamada { border-image-source: url(img/dialogo/etiqueta-llamada.png); color: rgb(10, 40, 60); }
+.tema-alerta .tag { border-image-source: url(img/dialogo/etiqueta-alerta.png); color: rgb(50, 26, 8); }
+.tema-catastrofe .tag, .tag.alarma { border-image-source: url(img/dialogo/etiqueta-catastrofe.png); color: rgb(255, 240, 232); padding-left: 14px; }
+.tag.alarma { animation: parpadeo-tag 0.9s steps(2) infinite; }
+@keyframes parpadeo-tag { 50% { filter: brightness(1.45); } }
+/* botón principal crema (como "Conocer la base") */
+.op.prim { background: none; border-style: solid; border-color: transparent; border-width: 0 12px; border-image: url(img/dialogo/boton.png) 0 12 fill / 0 12px / 0 stretch; image-rendering: pixelated; height: 28px; padding: 0 4px 3px; display: inline-flex; align-items: center; white-space: nowrap; color: rgb(24, 22, 58); }
+.op.prim:hover:not([disabled]) { border-color: transparent; border-image-source: url(img/dialogo/boton-hover.png); }
+.op.prim:active:not([disabled]) { border-image-source: url(img/dialogo/boton-presionado.png); padding: 3px 4px 0; }
+/* opciones: botón oscuro con bisel de pixel; al pasar el mouse toma el color del tema */
+.op:not(.prim) { background: rgb(30, 32, 70); border: 2px solid rgb(14, 13, 34); box-shadow: inset 2px 2px 0 rgba(198, 190, 250, 0.28), inset -2px -3px 0 rgba(6, 6, 20, 0.55); }
+.op:not(.prim):hover:not([disabled]) { border-color: var(--tema, var(--crema)); }
+.op.ok { border-color: var(--verde) !important; } .op.ko, .op.mal { border-color: var(--rojo) !important; }
+.res { border-width: 2px; box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.06); }
+/* retrato con el marco del color del tema */
+.retrato { border: 3px solid var(--tema, var(--lila)); box-shadow: 0 0 0 2px rgb(24, 22, 52); }
+.retrato-nombre { color: var(--tema, var(--dim)); font-weight: 700; }
+.mj-tag { color: var(--tema, var(--ambar)); }
+@media (prefers-reduced-motion: reduce) { #consola.tema-catastrofe, #mj.tema-catastrofe, .tag.alarma, .carta.nueva, .barra.pulsa .ascii, #stage.tiembla, .cable.mal { animation: none; } }
 </style>
 </head>
 <body>
