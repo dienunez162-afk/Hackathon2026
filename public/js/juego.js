@@ -897,6 +897,39 @@
     return ok;
   }
 
+  // costo pequeño del primer error (se ve al instante): radiación sube, las demás bajan; nunca pasa de 10 / 90
+  function cobrarPista(barra) {
+    const b = barra || masDebil(J.st), n = (PD.reglas && PD.reglas.costoPista) || 2;
+    const d = b === "radiacion" ? lim(Math.min(n, 90 - J.st[b]), 0, n) : -lim(Math.min(n, J.st[b] - 10), 0, n);
+    if (d) { const antes = { ...J.st }; J.st[b] = lim(J.st[b] + d, 0, 100); mostrarDeltas(antes); }
+    return d ? ` <span class="malo">${d > 0 ? "+" : ""}${d} ${MINUS[b]}</span>` : "";
+  }
+  // pregunta con UN reintento que cuesta (nunca gratis ni ilimitado):
+  //   1.er error: se tacha la opción, aparece la pista y cuesta un poco (cobrarPista);
+  //   2.º error: se muestra la respuesta y la explicación, se cobra el costo normal y se sigue.
+  async function preguntar(cont, q, { delay = 2000, pAuto = ui.comp } = {}) {
+    const { opciones, correcta } = q, tachadas = new Set();
+    let aviso = cont.nextElementSibling;
+    if (!aviso || !aviso.classList.contains("aviso-pista")) { aviso = document.createElement("div"); aviso.className = "aviso-pista"; cont.after(aviso); }
+    for (let intento = 1; intento <= 2; intento++) {
+      const libres = opciones.map((_, i) => i).filter((i) => i !== correcta && !tachadas.has(i));
+      const pa = intento === 1 ? pAuto : pAuto + (1 - pAuto) / 2;
+      const i = await botones(cont, opciones.map((o, k) => ({ html: esc(o), dis: tachadas.has(k) })), { auto: () => (Math.random() < pa || !libres.length ? correcta : libres[Math.floor(Math.random() * libres.length)]), delay });
+      if (i === correcta) { marcar(cont, i, "ok"); if (window.SFX) SFX.play("acierto"); aviso.innerHTML = ""; return { ok: true, intentos: intento }; }
+      if (window.SFX) SFX.play("error");
+      tachadas.add(i);
+      if (intento === 1) {
+        aviso.innerHTML = `<p class="pista-txt"><b>Pista:</b> ${esc(q.pista || "Vuelve a leer el texto con calma.")}${cobrarPista(q.barra)}</p>`;
+        hablar(30);
+      } else {
+        marcar(cont, i, "ko"); marcar(cont, correcta, "ok");
+        aviso.innerHTML = `<div class="res ko">Era «${esc(opciones[correcta])}». ${esc(q.explicacion || "")}${cobrarError(q.barra)}</div>`;
+        hablar((q.explicacion || "").length + 20);
+        return { ok: false, intentos: 2 };
+      }
+    }
+  }
+
   async function llamada(n, idx) {
     // se alternan: situación (predice, evidencia, actúa) y pregunta; la tercera es de «consulta la bitácora»
     const tipo = idx === 2 ? "bitacora" : idx % 2 === 0 ? "situacion" : "pregunta";
@@ -923,16 +956,16 @@
       `<div class="ops col" id="ops"></div><div id="res"></div>`, "control");
     voz(q.enunciado);
     if (q.tipo === "bitacora") c.querySelector("#abrir-bt").addEventListener("click", () => window.BITACORA && BITACORA.abrir("datos"));
-    const ok = await elegirRespuesta(c.querySelector("#ops"), bj.opciones, bj.correcta, 2300);
+    const r = await preguntar(c.querySelector("#ops"), { opciones: bj.opciones, correcta: bj.correcta, pista: q.pista, explicacion: q.explicacion, barra: q.barra }, { delay: 2300 });
+    const ok = r.ok;
     if (window.BITACORA && BITACORA.abierta()) BITACORA.cerrar();
-    const costo = ok ? "" : cobrarError(q.barra);
-    J.cuenta.ll++; if (ok) J.cuenta.llOk++;
-    c.querySelector("#res").innerHTML = `<div class="res ${ok ? "ok" : "ko"}">${ok ? "¡Correcto!" : `La respuesta era: <b>${esc(bj.opciones[bj.correcta])}</b>.`}${costo}<br>${esc(q.explicacion)}` +
+    J.cuenta.ll++; if (ok && r.intentos === 1) J.cuenta.llOk++;
+    c.querySelector("#res").innerHTML = `<div class="res ${ok ? "ok" : "ko"}">${ok ? (r.intentos === 1 ? "¡Correcto!" : "¡Correcto, con pista!") : "Esta vez no."}<br>${esc(q.explicacion)}` +
       `<br><span class="sub">Evidencia: «${esc(q.fraseEvidencia)}» · ${esc(q.fuente)}</span></div><div class="ops" id="ops2"></div>`;
     hablar(q.explicacion.length);
     aprender("q-" + q.id.replace(/^R-/, ""), q.tema && R.temas[q.tema] ? R.temas[q.tema].nombre : "Pregunta de Control", q.explicacion + " " + q.fraseEvidencia, "Control de Misión", q.tema);
-    log(`${tag} (${q.id}): ${ok ? "correcta" : "incorrecta"}.`);
-    registrarReto(ok);
+    log(`${tag} (${q.id}): ${ok ? (r.intentos === 1 ? "correcta" : "correcta con pista") : "incorrecta"}.`);
+    registrarReto(ok && r.intentos === 1);
     await continuar(c.querySelector("#ops2"), "Colgar ▸", 2600);
   }
 
@@ -945,18 +978,15 @@
     const c = pantalla(`<span class="tag llamada">LLAMADA · CONTROL DE MISIÓN</span><p class="txt">${esc(x.situacion[nv])}</p>` +
       `<span class="paso">1 · PREDICE: ¿QUÉ BARRA CAMBIA PRIMERO?</span><div class="ops" id="p1"></div><div id="p2w"></div><div id="p3w"></div><div id="act"></div><div id="res"></div>`, "control");
     voz(x.situacion[nv]);
-    const ok1 = await elegirRespuesta(c.querySelector("#p1"), BARRAS.map((b) => MAYUS[b]), BARRAS.indexOf(x.cadena[0]), 1900);
+    const ok1 = (await preguntar(c.querySelector("#p1"), { opciones: BARRAS.map((b) => MAYUS[b]), correcta: BARRAS.indexOf(x.cadena[0]), pista: x.pista, explicacion: x.porQue, barra: s.prediccion.barra }, { delay: 1900 })).ok;
     const resto = BARRAS.filter((b) => b !== x.cadena[0]);
     c.querySelector("#p2w").innerHTML = `<span class="paso">… ¿Y QUÉ BARRA CAMBIA DESPUÉS?</span><div class="ops" id="p2"></div>`;
-    const ok2 = await elegirRespuesta(c.querySelector("#p2"), resto.map((b) => MAYUS[b]), resto.indexOf(x.cadena[1]), 1900);
+    const ok2 = (await preguntar(c.querySelector("#p2"), { opciones: resto.map((b) => MAYUS[b]), correcta: resto.indexOf(x.cadena[1]), pista: x.pista, explicacion: x.porQue, barra: s.prediccion.barra }, { delay: 1900 })).ok;
     const predOk = ok1 && ok2;
-    const costoPred = predOk ? "" : cobrarError(s.prediccion.barra);
-    c.querySelector("#p2w").insertAdjacentHTML("beforeend", `<p class="sub">${esc(x.porQue)}${costoPred}</p>`);
     // evidencia
     const ev = PQ.barajarConCorrecta([x.evidencia.correcta, ...x.evidencia.distractores.slice(0, PQ.opcionesPorNivel(J.reto) - 1)], 0);
     c.querySelector("#p3w").innerHTML = `<span class="paso">2 · ¿QUÉ DATO LO PRUEBA?</span><div class="ops col" id="p3"></div>`;
-    const evOk = await elegirRespuesta(c.querySelector("#p3"), ev.opciones, ev.correcta, 2100);
-    const costoEv = evOk ? "" : cobrarError(s.prediccion.barra);
+    const evOk = (await preguntar(c.querySelector("#p3"), { opciones: ev.opciones, correcta: ev.correcta, pista: "La prueba está en el informe de esta llamada, no en otros.", explicacion: "La prueba era: " + x.evidencia.correcta, barra: s.prediccion.barra }, { delay: 2100 })).ok;
     // actúa
     const acc = barajar(s.acciones.slice(0, J.reto + 1).map((a, i) => ({ ...a, i })));
     c.querySelector("#act").innerHTML = `<span class="paso">3 · ACTÚA</span><div class="ops col" id="accs"></div>`;
@@ -966,7 +996,7 @@
     const ef = !accOk && conApoyo() ? suavizar(elegida.efectos) : elegida.efectos;
     aplicar(ef);
     J.cuenta.ll++; if (accOk) J.cuenta.llOk++;
-    let html = `<span class="paso">4 · MIRA QUÉ PASÓ</span><div class="res ${accOk ? "ok" : "ko"}">${efectosTxt(ef)}${costoEv ? ` · por el dato equivocado:${costoEv}` : ""}`;
+    let html = `<span class="paso">4 · MIRA QUÉ PASÓ</span><div class="res ${accOk ? "ok" : "ko"}">${efectosTxt(ef)}`;
     if (accOk && predOk && evOk) {
       const b = masDebil(J.st);
       if (zona(b, J.st[b]) !== "verde") { aplicar({ barraMasBaja: R.powerups.recarga.valor }); html += `<br>¡Bien, capitán! Ganaste <b>Recarga</b>: +${R.powerups.recarga.valor} de ${MINUS[b]}.`; }
@@ -991,7 +1021,7 @@
     const conCarta = pool.filter((a) => a.temas.some((t) => J.cartas[t]));
     const a = pick(conCarta.length ? conCarta : pool);
     const carta = a.temas.find((t) => J.cartas[t]);
-    const A = R.reglas.averias, NV = A.niveles[nv], b = a.barra, INT = PD.reglas.intentosAveria || 2;
+    const A = R.reglas.averias, NV = A.niveles[nv], b = a.barra, INT = 2;   // un reintento con pista y costo (sin reintento gratis)
     const dano = (v) => ({ [b]: b === "radiacion" ? v : -v });
     marca("av");
     animo("peligro");
@@ -1016,7 +1046,7 @@
     }
     const apoyo = conApoyo(), porError = apoyo ? Math.round(A.danoPorError / 2) : A.danoPorError;
     // un paso con intentos limitados: cada error cuesta; al acabarse, la Dra. Ortiz da la respuesta
-    async function paso(caja, titulo, opciones, correcta) {
+    async function paso(caja, titulo, opciones, correcta, pista) {
       caja.innerHTML = `<span class="paso">${titulo}</span><div class="ops col"></div><div class="aviso-int"></div>`;
       const ops = caja.querySelector(".ops"), aviso = caja.querySelector(".aviso-int"), tachadas = new Set();
       for (let intento = 1; intento <= INT; intento++) {
@@ -1025,21 +1055,27 @@
         const i = await botones(ops, opciones.map((o, k) => ({ html: esc(o), dis: tachadas.has(k) })), { auto: () => (Math.random() < pAuto || !libres.length ? correcta : pick(libres)), delay: 2000 });
         if (i === correcta) { marcar(ops, i, "ok"); if (window.SFX) SFX.play("acierto"); return intento; }
         tachadas.add(i); marcar(ops, i, "ko"); if (window.SFX) SFX.play("error");
-        aplicar(dano(porError));
-        aviso.innerHTML = intento < INT ? `<p class="sub">No es eso. Te queda ${INT - intento} intento. Vuelve a leer las pistas.</p>` : "";
-        hablar(30);
+        if (intento < INT) {
+          // primer error: pista corta y costo pequeño, visible al instante
+          const pc = Math.max(1, Math.round(porError / 2));
+          aplicar(dano(pc));
+          aviso.innerHTML = `<p class="pista-txt"><b>Pista:</b> ${esc(pista)} <span class="malo">${b === "radiacion" ? "+" : "−"}${pc} ${MINUS[b]}</span></p>`;
+          hablar(30);
+        }
       }
+      // segundo error: explicación, costo normal y se sigue (el niño nunca se queda atascado)
       aplicar(dano(porError));
-      ops.innerHTML = `<div class="res ko">Se acabaron los intentos. Dra. Ortiz: era «${esc(opciones[correcta])}». La avería tardó más y costó más.</div>`;
-      hablar(opciones[correcta].length + 40);
-      await espera(1200);
+      ops.innerHTML = `<div class="res ko">Dra. Ortiz: era «${esc(opciones[correcta])}». ${esc(a.explicacion)} <span class="malo">${b === "radiacion" ? "+" : "−"}${porError} ${MINUS[b]}</span></div>`;
+      aviso.innerHTML = "";
+      hablar(opciones[correcta].length + a.explicacion.length);
+      await espera(1600);
       return INT + 1;
     }
     const causas = PQ.recortarOpciones(PD.averias.causas[a.id], 0, PQ.opcionesPorNivel(J.reto));
     const bc = PQ.barajarConCorrecta(causas.opciones, 0);
-    const iCausa = await paso(c.querySelector("#causa"), "1 · ¿CUÁL ES LA CAUSA?", bc.opciones, bc.correcta);
+    const iCausa = await paso(c.querySelector("#causa"), "1 · ¿CUÁL ES LA CAUSA?", bc.opciones, bc.correcta, `Vuelve a leer esta pista: «${a.pistas.clave[0]}».`);
     const ops = barajar(a.acciones.slice(0, NV.acciones).map((t, i) => ({ t, i })));
-    const iRep = await paso(c.querySelector("#rep"), "2 · ¿QUÉ REPARAS?", ops.map((o) => o.t), ops.findIndex((o) => o.i === a.correcta));
+    const iRep = await paso(c.querySelector("#rep"), "2 · ¿QUÉ REPARAS?", ops.map((o) => o.t), ops.findIndex((o) => o.i === a.correcta), "Repara lo que causa el problema, no lo que se ve al final.");
     J.est = Object.assign({}, J.est, { alarma: false });
     animo("calma");
     J.cuenta.av++;
