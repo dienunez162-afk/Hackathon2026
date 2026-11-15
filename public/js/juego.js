@@ -1081,7 +1081,10 @@
     toast("((( Llamada de Control de Misión )))");
     if (tipo === "situacion") { const sel = elegirTema(idx); if (sel) return llamadaSituacion(sel); }
     if (tipo === "bitacora" && !J.bitacoraHecha) { const q = PQ.preguntaBitacora(APIS.datos, J.partida); if (q) { J.bitacoraHecha = true; return preguntaCtrl(q, "CONSULTA TU BITÁCORA"); } }
-    const q = PQ.preguntaLlamada(PD.banco, Object.keys(J.aprendidos), J.reto, J.partida, idx, J.usadas, false);
+    // transferencia: solo nivel 3 y con 4 o más bien en los últimos 5 retos (la ventana del nivel adaptativo)
+    const AD = R.reglas.adaptacion, conT = PQ.transferenciaPermitida(J.ventana, J.reto, AD.ventana, AD.sube);
+    const q = PQ.preguntaLlamada(PD.banco, Object.keys(J.aprendidos), J.reto, J.partida, idx, J.usadas, conT);
+    if (q && q.tipo === "transferencia") log("Pregunta de transferencia (le va muy bien en nivel 3).");
     if (q) { J.usadas.push(q.id); return preguntaCtrl(q, "PREGUNTA DE CONTROL DE MISIÓN"); }
     const sel = elegirTema(idx); if (sel) return llamadaSituacion(sel);
   }
@@ -1091,7 +1094,7 @@
   async function preguntaCtrl(q, tag) {
     const enBitacora = q.tipo === "bitacora" ? "datos" : q.tipo === "repaso" ? "aprendido" : null;
     const c = pantalla(`<span class="tag llamada">${esc(tag)}</span><p class="txt pregunta-antes">${esc(q.enunciado)}</p>` +
-      (enBitacora ? `<p><button type="button" class="op" id="abrir-bt">Abrir la bitácora ▸</button></p>` : q.lectura ? lectura(q.lectura) : "") +
+      (enBitacora ? `<p><button type="button" class="op" id="abrir-bt">Abrir la bitácora ▸</button></p>` : q.lectura ? lectura(q.lectura, "", q.tipo === "transferencia" ? "LEE LA REGLA Y ÚSALA EN ESTE CASO" : undefined) : "") +
       `<div class="ops col" id="ops"></div><div id="res"></div>`, "control");
     voz(q.enunciado + (q.lectura && !enBitacora && !ui.sinTexto ? " " + q.lectura : ""));
     if (enBitacora) c.querySelector("#abrir-bt").addEventListener("click", () => window.BITACORA && BITACORA.abrir(enBitacora));
