@@ -138,6 +138,9 @@
   // el menú completo (botón + panel) solo se ve en el menú principal
   function visible(si) { const m = $("menu-inicio"); if (!m || m.hidden === !si) return; m.hidden = !si; if (!si) abrir(false); }
 
+  // ojo en pixel art para mostrar u ocultar la contraseña
+  const OJO = '<svg viewBox="0 0 14 7" width="20" height="10" shape-rendering="crispEdges" fill="currentColor" aria-hidden="true"><rect x="4" y="0" width="6" height="1"/><rect x="2" y="1" width="2" height="1"/><rect x="10" y="1" width="2" height="1"/><rect x="1" y="2" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="0" y="3" width="1" height="1"/><rect x="13" y="3" width="1" height="1"/><rect x="1" y="4" width="1" height="1"/><rect x="12" y="4" width="1" height="1"/><rect x="2" y="5" width="2" height="1"/><rect x="10" y="5" width="2" height="1"/><rect x="4" y="6" width="6" height="1"/><rect x="5" y="2" width="4" height="3"/></svg>';
+  const OJO_TACHADO = OJO.replace("</svg>", '<rect x="1" y="5" width="2" height="1"/><rect x="3" y="4" width="2" height="1"/><rect x="9" y="2" width="2" height="1"/><rect x="11" y="1" width="2" height="1"/></svg>').replace('<rect x="5" y="2" width="4" height="3"/>', '<rect x="5" y="2" width="4" height="3"/><rect x="5" y="3" width="4" height="1" fill="#0e1022"/>');
   const fmtRecord = (v, suf) => (v == null ? "—" : v + (suf || ""));
   function pintar() {
     const p = $("menu-cuenta"); if (!p) return;
@@ -153,7 +156,7 @@
         `<div class="cta-tabs" role="tablist"><button type="button" role="tab" class="op${nueva ? "" : " elegida"}" data-v="entrar" aria-selected="${!nueva}">${t("Entrar", "Log in")}</button><button type="button" role="tab" class="op${nueva ? " elegida" : ""}" data-v="crear" aria-selected="${nueva}">${t("Crear cuenta", "Create account")}</button></div>
         <form id="cta-form" autocomplete="off">
           <label>${t("Tu alias", "Your alias")}<input class="cta-input" id="cta-alias" maxlength="20" autocapitalize="none" autocorrect="off" spellcheck="false" value="${esc(ultimoAlias)}" required></label>
-          <label>${t("Contraseña", "Password")}<input class="cta-input" id="cta-clave" type="password" minlength="6" autocomplete="${nueva ? "new-password" : "current-password"}" required></label>
+          <label>${t("Contraseña", "Password")}<span class="cta-clave"><input class="cta-input" id="cta-clave" type="password" minlength="6" autocomplete="${nueva ? "new-password" : "current-password"}" required><button type="button" class="cta-ojo" id="cta-ojo" aria-pressed="false" aria-label="${t("Mostrar contraseña", "Show password")}" title="${t("Mostrar contraseña", "Show password")}">${OJO}</button></span></label>
           ${nueva ? `<label class="cta-adulto"><input type="checkbox" id="cta-adulto" required> <span>${t('Un adulto leyó conmigo el <a href="privacidad.html" target="_blank" rel="noopener">aviso de privacidad</a>', 'An adult read the <a href="privacidad.html" target="_blank" rel="noopener">privacy notice</a> with me')}</span></label><p class="cta-nota">${t("Elige un alias inventado, <b>no tu nombre</b>. Usa letras minúsculas, números o _ . Anota tu contraseña: si la olvidas, tu maestro o un adulto tendrá que ayudarte.", "Pick an invented alias, <b>not your name</b>. Use lowercase letters, numbers or _ . Write your password down: if you forget it, your teacher or an adult will have to help.")}</p>` : ""}
           <button type="submit" class="op prim">${nueva ? t("Crear cuenta", "Create account") : t("Entrar", "Log in")}</button>
         </form>${msg}`;
@@ -186,7 +189,14 @@
     p.addEventListener("keydown", (e) => { if (e.key === "Escape") { e.stopPropagation(); abrir(false); } });
     p.addEventListener("click", (e) => {
       const x = e.target.closest("button"); if (!x) return;
-      if (x.dataset.v) { vista = x.dataset.v; mensaje = null; pintar(); }
+      if (x.id === "cta-ojo") {
+        const campo = $("cta-clave"), ver = campo.type === "password";
+        campo.type = ver ? "text" : "password";
+        x.setAttribute("aria-pressed", String(ver));
+        const txt = ver ? t("Ocultar contraseña", "Hide password") : t("Mostrar contraseña", "Show password");
+        x.setAttribute("aria-label", txt); x.title = txt; x.innerHTML = ver ? OJO_TACHADO : OJO;
+        campo.focus();
+      } else if (x.dataset.v) { vista = x.dataset.v; mensaje = null; pintar(); }
       else if (x.id === "cta-cerrar-sesion" || x.id === "cta-salir") accion(async () => { await salir(); mensaje = { ok: t("Cerraste sesión.", "You logged out.") }; });
       else if (x.id === "cta-salir-clase") accion(salirDeClase);
       else if (x.id === "cta-borrar") { if (window.confirm(t("¿Seguro? Se borra tu cuenta y todas tus partidas guardadas. No se puede deshacer.", "Are you sure? Your account and all saved games will be deleted. This cannot be undone."))) accion(async () => { await borrarCuenta(); mensaje = { ok: t("Tu cuenta se borró.", "Your account was deleted.") }; }); }

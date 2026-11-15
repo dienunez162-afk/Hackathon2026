@@ -231,6 +231,11 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 #menu-idioma .i-ban { font-size: 0.75em; padding: 0.05em 0.35em; border: 1px solid currentColor; }
 .cta-input { display: block; width: 100%; box-sizing: border-box; margin-top: 3px; padding: 6px 8px; font: 14px var(--mono); color: var(--ink); background: rgb(14, 16, 34); border: 2px solid var(--borde); }
 .cta-input:focus { outline: 2px solid var(--crema); }
+.cta-clave { position: relative; display: block; }
+.cta-clave .cta-input { padding-right: 44px; margin-top: 3px; }
+.cta-ojo { position: absolute; right: 3px; top: 6px; height: 26px; width: 36px; display: grid; place-items: center; padding: 0; color: var(--dim); background: rgb(30, 32, 70); border: 2px solid rgb(14, 13, 34); box-shadow: inset 2px 2px 0 rgba(198, 190, 250, 0.28), inset -2px -3px 0 rgba(6, 6, 20, 0.55); cursor: pointer; }
+.cta-ojo:hover, .cta-ojo:focus-visible { color: var(--crema); border-color: var(--crema); outline: none; }
+.cta-ojo[aria-pressed="true"] { color: var(--crema); }
 .cta-adulto { display: flex !important; gap: 8px; align-items: flex-start; color: var(--ink) !important; }
 .cta-adulto input { margin-top: 3px; }
 .cta-nota { font-size: 12px; color: var(--dim); }
