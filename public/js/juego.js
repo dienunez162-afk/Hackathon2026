@@ -1127,7 +1127,7 @@
     const bj = PQ.barajarFijo(base.opciones, base.indiceCorrecto, q.id);
     const r = await preguntar(c.querySelector("#ops"), { opciones: bj.opciones, correcta: bj.correcta, pista: q.pista, explicacion: q.explicacion, barra: q.barra }, { delay: 2300 });
     if (window.BITACORA && BITACORA.abierta()) BITACORA.cerrar();
-    c.querySelector("#res").innerHTML = `<div class="res ${r.ok ? "ok" : "ko"}">${r.ok ? (r.intentos === 1 ? "¡Correcto!" : "¡Correcto, con pista!") + " " + esc(q.explicacion) : "Ahora ya lo sabes."}` +
+    c.querySelector("#res").innerHTML = `<div class="res ${r.ok ? "ok" : "ko"}">${r.ok ? "<b>" + (r.intentos === 1 ? "¡Correcto!" : "¡Correcto, con pista!") + "</b> " + esc(q.explicacion) : "Ahora ya lo sabes."}` +
       `<br><span class="sub">Evidencia: «${esc(q.fraseEvidencia)}» · ${esc(q.fuente)}</span></div><div id="frase"></div><div class="ops" id="ops2"></div>`;
     hablar(q.explicacion.length);
     if (r.ok && q.lectura && q.tipo !== "repaso") await fraseQueLoPrueba(c.querySelector("#frase"), q);
