@@ -987,11 +987,27 @@
     c.querySelector("#res").innerHTML = `<div class="res ${r.ok ? "ok" : "ko"}">${r.ok ? (r.intentos === 1 ? "¡Correcto!" : "¡Correcto, con pista!") + " " + esc(q.explicacion) : "Ahora ya lo sabes."}` +
       `<br><span class="sub">Evidencia: «${esc(q.fraseEvidencia)}» · ${esc(q.fuente)}</span></div><div id="frase"></div><div class="ops" id="ops2"></div>`;
     hablar(q.explicacion.length);
+    if (r.ok && q.lectura && q.tipo !== "repaso") await fraseQueLoPrueba(c.querySelector("#frase"), q);
     aprender("q-" + q.id.replace(/^R-/, ""), q.tema && R.temas[q.tema] ? R.temas[q.tema].nombre : "Pregunta de Control", q.explicacion + " " + q.fraseEvidencia, "Control de Misión", q.tema);
     log(`${tag} (${q.id}): ${r.ok ? (r.intentos === 1 ? "correcta" : "correcta con pista") : "incorrecta"}${ui.sinTexto ? " [sin texto]" : ""}.`);
     registrarReto(r.ok && r.intentos === 1);
     await continuar(c.querySelector("#ops2"), tag === "INFORME" ? "Continuar ▸" : "Colgar ▸", 2600);
     return r;
+  }
+
+  // tras acertar: «¿Qué frase lo prueba?» con 3 o 4 frases (las del texto y, si faltan, de otros informes).
+  // Acertar da un bonus pequeño (+3 a la barra más débil); fallar no cuesta nada. Fijo por pregunta.
+  const oraciones = (t) => String(t).split(/(?<=[.!?])\s+/).filter((x) => x.length > 8);
+  async function fraseQueLoPrueba(caja, q) {
+    const propias = oraciones(q.lectura), correcta = propias.find((o) => o.includes(q.fraseEvidencia) || q.fraseEvidencia.includes(o)) || q.fraseEvidencia;
+    const otras = propias.filter((o) => o !== correcta);
+    for (const p of PD.banco) { if (otras.length >= 3) break; if (p.id !== q.id && p.tema !== q.tema && !otras.includes(p.fraseEvidencia)) otras.push(p.fraseEvidencia); }
+    const bj = PQ.barajarFijo([correcta, ...otras.slice(0, 3)], 0, q.id + "-frase");
+    caja.innerHTML = `<span class="paso">BONUS · ¿QUÉ FRASE LO PRUEBA?</span><div class="ops col" id="fr"></div><div id="fr-res"></div>`;
+    const ok = await elegirRespuesta(caja.querySelector("#fr"), bj.opciones, bj.correcta, 2000);
+    const bonus = (PD.reglas.bonusFrase && PD.reglas.bonusFrase.valor) || 3, b = masDebil(J.st);
+    if (ok) { aplicar({ barraMasBaja: bonus }); J.cuenta.frases = (J.cuenta.frases || 0) + 1; }
+    caja.querySelector("#fr-res").innerHTML = `<p class="sub">${ok ? `¡Bien leído! +${bonus} de ${MINUS[b]}.` : "Esa no era; la de arriba en verde lo prueba. No pasa nada."}</p>`;
   }
 
   // situación: un paso por pantalla (cabe en la franja). Primero la pregunta, luego el informe de Control,
