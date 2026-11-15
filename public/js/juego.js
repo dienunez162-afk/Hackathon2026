@@ -245,7 +245,7 @@
   function frame(now) {
     const dt = Math.min(0.1, (now - (last || now)) / 1000); last = now;
     let menuLike = true;
-    if (estado !== estadoVisto) { estadoVisto = estado; if (window.I18N) I18N.enMenu(estado === "menu"); }   // selector de idioma: solo en el menú
+    if (estado !== estadoVisto) { estadoVisto = estado; if (window.I18N) I18N.enMenu(estado === "menu"); if (window.CUENTA) CUENTA.enMenu(estado === "menu"); }   // selector de idioma: solo en el menú
     if (estado === "menu") drawMenu(Math.max(0, (now - menuStart) / 1000));
     else if (estado === "aterrizaje") {
       const s = (now - seqStart) / 1000;
@@ -436,18 +436,22 @@
     partidas++;
     // nivel adaptativo: dos perillas (reto y lectura) que el niño nunca ve
     const AD = R.reglas.adaptacion, hn = historial && historial.niveles;
-    const inicial = hn ? hn.reto : ui.uso === "educativo" ? AD.modos.educativo.nivelPorGrado[String(ui.grado)] : AD.modos.libre.nivelInicial;
+    const SB = window.GNOSIS_SUPABASE, cta = SB && SB.alumno;          // con cuenta: el nivel vive en Supabase (sirve en cualquier compu)
+    const inicial = cta ? cta.nivel_reto : hn ? hn.reto : ui.uso === "educativo" ? AD.modos.educativo.nivelPorGrado[String(ui.grado)] : AD.modos.libre.nivelInicial;
     J = {
-      partida: partidas, reto: inicial, lectura: hn ? hn.lectura : inicial,
+      partida: partidas, reto: inicial, lectura: cta ? Math.min(cta.nivel_lectura, inicial) : hn ? hn.lectura : inicial,
       ventana: hn ? hn.ventana.slice() : [], desdeCambio: hn ? AD.enfriamiento : 0,
-      calibrar: !hn && ui.uso !== "educativo", ajustes: hn ? hn.ajustes.slice() : [],
+      calibrar: !hn && !cta && ui.uso !== "educativo", ajustes: hn ? hn.ajustes.slice() : [],
       st: { mision: 0 }, dia: 0, rama: null, noche: false, escena: "exterior", est: {}, esperaModulo: null, enMinijuego: false,
       cartas: {}, aprendidos: {}, repasos: [], pasados: ((historial && historial.repasos) || []).slice(), diferidos: [],
       preguntados: {}, preparado: false, log: [], marcas: {}, hechasL: new Set(), hechasA: new Set(),
       cuenta: { ll: 0, llOk: 0, av: 0, avOk: 0, usos: 0, mj: 0, mjOk: 0 },
+      // lo que se manda a Supabase al terminar (si hay cuenta)
+      nube: { respuestas: [], cartas: [], informes: new Set(), pregTotal: 0, pregPrimera: 0 },
     };
     for (const b of BARRAS) J.st[b] = G.barras[b].inicio;
     for (const t of (historial && historial.cartas) || []) { J.cartas[t] = { usada: false, armada: false }; J.aprendidos[t] = -99; }
+    J.retoInicio = J.reto; J.lecturaInicio = J.lectura; J.cartasIniciales = Object.keys(J.cartas);
     J.diasLlamada = PQ.diasDeLlamada();          // una llamada cada 2 o 3 días
     J.usadas = []; J.bitacoraHecha = false; J.inicio = Date.now();
     J.diasAveria = R.reglas.averias.ventanas.map((v) => { const l = v.dias.filter((d) => !J.diasLlamada.includes(d)); return pick(l.length ? l : v.dias); });
@@ -524,11 +528,20 @@
       else { if (J.reto > 1) J.reto--; J.lectura = Math.min(J.lectura, J.reto); }
       if (antes.reto !== J.reto || antes.lectura !== J.lectura) {
         J.ajustes.push({ dia: J.dia, accion, de: antes, a: { reto: J.reto, lectura: J.lectura } });
+        if (window.GNOSIS_SUPABASE) GNOSIS_SUPABASE.ajustarNivel(J.dia, accion, J.reto, J.lectura);
         J.ventana = []; J.desdeCambio = 0;
       }
     }
     pintarEquipo();
   }
+  // ---------- lo que se guarda en Supabase (solo con cuenta de alumno) ----------
+  const ORIGEN_NUBE = { "de esta partida": "esta_partida", "de la partida pasada": "partida_pasada", repaso: "repaso" };
+  function nubeRespuesta(x) {
+    if (!J || !J.nube) return;
+    J.nube.respuestas.push(Object.assign({ nivel_reto: J.reto, nivel_lectura: J.lectura, dia: lim(J.dia, 0, 14),
+      rama: ["experto", "normal", "rescate"].includes(J.rama) ? J.rama : null, con_apoyo: !!conApoyo() }, x));
+  }
+  function nubeCarta(t, tipo) { if (J && J.nube) J.nube.cartas.push({ carta_id: "C-" + t, tema: t, tipo, dia: J.dia }); }
   // ---------- menú de pausa ----------
   // Escape, P o el botón ⏸ detienen la partida (y el tiempo de los minijuegos) sin perderla.
   function abrirPausa(on) {
@@ -625,7 +638,7 @@
       if (u.soloDeDia && J.dia > 10) { toast(`${k.nombre} solo sirve cuando hay Sol.`); return; }
       const antes = { ...J.st };
       J.st[u.barra] = lim(J.st[u.barra] + mejora(u.barra, u.valor), 0, 100);
-      c.usada = true; J.cuenta.usos++;
+      c.usada = true; J.cuenta.usos++; nubeCarta(t, "recurso");
       mostrarDeltas(antes);
       log(`Usó ${k.nombre}: +${u.valor} de ${MINUS[u.barra]}.`);
     }
@@ -665,7 +678,7 @@
           const c = J.cartas[t], u = R.temas[t].carta.uso;
           return !c.usada && u.tipo === "escudo" && u.barra === k && (c.armada || (ui.modo === "auto" && Math.random() < ui.comp));
         });
-        if (t) { val = Math.round(v / 2); J.cartas[t].usada = true; J.cartas[t].armada = false; J.cuenta.usos++; frenos.push(t); }
+        if (t) { val = Math.round(v / 2); J.cartas[t].usada = true; J.cartas[t].armada = false; J.cuenta.usos++; nubeCarta(t, "escudo"); frenos.push(t); }
       }
       J.st[k] = lim(J.st[k] + val, 0, 100);
     }
@@ -948,6 +961,7 @@
     const t = n.informe.tema;
     if (J.aprendidos[t] == null || J.aprendidos[t] < 0) J.aprendidos[t] = J.aprendidos[t] == null ? n.dia : J.aprendidos[t];
     if (window.BITACORA) BITACORA.registrar("informe", n.id, { titulo: n.titulo, texto: n.informe.texto, fuente: n.informe.fuente, tema: t });
+    J.nube.informes.add(n.id + "|" + t);
     const nueva = !J.cartas[t];
     const k = R.temas[t].carta;
     // en el invernadero, un estudio real de NASA OSDR sobre plantas en el espacio (va en «Saber más»)
@@ -1136,6 +1150,7 @@
     aprender("q-" + q.id.replace(/^R-/, ""), q.tema && R.temas[q.tema] ? R.temas[q.tema].nombre : "Pregunta de Control", q.explicacion + " " + q.fraseEvidencia, "Control de Misión", q.tema);
     log(`${tag} (${q.id}): ${r.ok ? (r.intentos === 1 ? "correcta" : "correcta con pista") : "incorrecta"}${ui.sinTexto ? " [sin texto]" : ""}.`);
     registrarReto(r.ok && r.intentos === 1);
+    if (!r.omitida) { J.nube.pregTotal++; if (r.ok && r.intentos === 1) J.nube.pregPrimera++; }
     if (q.lectura && q.tipo !== "repaso" && q.tipo !== "bitacora") contarLectura(r.ok && r.intentos === 1);
     await continuar(c.querySelector("#ops2"), tag === "INFORME" ? "Continuar ▸" : "Colgar ▸", 2600);
     return r;
@@ -1194,6 +1209,8 @@
     const ef = !accOk && conApoyo() ? suavizar(elegida.efectos) : elegida.efectos;
     aplicar(ef);
     J.cuenta.ll++; if (accOk) J.cuenta.llOk++;
+    nubeRespuesta({ tipo: "situacion", reto_id: s.id, tema: s.tema, origen: ORIGEN_NUBE[sel.origen] || null, prediccion_correcta: predOk, accion_correcta: accOk, accion: elegida.texto,
+      dias_desde_aprendido: J.aprendidos[s.tema] >= 0 ? J.dia - J.aprendidos[s.tema] : null });
     // 4 · mira qué pasó: ahora sí, el porqué
     let html = `<span class="paso">4 · MIRA QUÉ PASÓ</span><div class="res ${accOk ? "ok" : "ko"}">${efectosTxt(ef)}`;
     if (accOk && predOk && evOk) {
@@ -1280,6 +1297,7 @@
     animo("calma");
     J.cuenta.av++;
     const primera = iCausa === 1 && iRep === 1;
+    nubeRespuesta({ tipo: "averia", reto_id: a.id, tema: a.temas[0], accion_correcta: primera, intentos: Math.min(3, Math.max(1, iCausa, iRep)) });
     if (primera) { J.cuenta.avOk++; aplicar({ [b]: mejora(b, A.bonusPrimerIntento) }); }
     else if (!J.repasos.some((r) => r.tema === a.temas[0])) J.repasos.push({ tema: a.temas[0], disponible: J.dia + 2, intentos: 1 });
     c.querySelector("#res").innerHTML = `<div class="res ${primera ? "ok" : ""}">${primera ? `¡Causa y reparación al primer intento! +${A.bonusPrimerIntento} de ${MINUS[b]}.` : "Avería reparada."}<br><b>Por qué pasó:</b> ${esc(a.explicacion)}</div><div class="ops" id="ops"></div>`;
@@ -1351,6 +1369,19 @@
     };
     // progreso local (modo libre: no sale del dispositivo). En modo salón, aquí se mandaría a Supabase.
     guardarLS(CLAVE, { historial, partidas, fecha: new Date().toISOString() });
+    // con cuenta de alumno: la partida, sus respuestas, cartas e informes van a Supabase (sin bloquear el juego)
+    nubeRespuesta({ tipo: "manual", accion_correcta: kk > 0 && bien.length === kk, aciertos: bien.length, total: kk });
+    if (window.GNOSIS_SUPABASE && GNOSIS_SUPABASE.alumno) {
+      GNOSIS_SUPABASE.guardarPartida({
+        version: G.version, nivelReto: J.retoInicio, nivelLectura: J.lecturaInicio, final: n.id, estrellas: n.exito ? n.estrellas : 0,
+        dia: lim(J.dia, 0, 14), barras: { radiacion: J.st.radiacion, energia: J.st.energia, comida: J.st.comida, salud: J.st.salud },
+        tareas: J.st.mision || 0, pregTotal: J.nube.pregTotal, pregPrimera: Math.min(J.nube.pregPrimera, J.nube.pregTotal),
+      }, {
+        respuestas: J.nube.respuestas, cartas: J.nube.cartas,
+        bitacora: [...J.nube.informes].map((x) => { const [entrada_id, tema] = x.split("|"); return { entrada_id, tema, dia: null }; }),
+        manual: { iniciales: (J.cartasIniciales || []), final: bien, rama: ["experto", "normal", "rescate"].includes(J.rama) ? J.rama : null },
+      }).then((id) => { if (id) { log("Partida guardada en tu cuenta."); toast("Partida guardada en tu cuenta."); } });
+    }
     c = pantalla(`<span class="tag">MANUAL TERMINADO</span><h2 class="titulo">${bien.length} de ${kk} recomendaciones con buena razón</h2>` +
       `<p class="txt">${bien.length ? "La siguiente misión empieza con: " + bien.map((x) => esc(R.temas[x].carta.nombre)).join(", ") + "." : "La siguiente misión empieza sin cartas."}</p>` +
       `<div class="ops" id="ops"></div>`);

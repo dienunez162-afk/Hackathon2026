@@ -342,6 +342,29 @@ details.saber[open] summary { color: var(--ink); }
 #idioma button:hover, #idioma button:focus-visible { color: rgb(255, 246, 225); border-color: rgb(150, 170, 220); outline: none; }
 #idioma button[aria-pressed="true"] { color: rgb(255, 246, 225); border-color: rgb(255, 246, 225); background: rgba(40, 44, 80, 0.85); }
 #idioma .i-ban { font-size: 0.75em; padding: 0.1em 0.4em; border: 1px solid currentColor; }
+/* «Mi cuenta» (menú principal, debajo del idioma) y su ventana */
+#btn-cuenta { position: absolute; right: calc(var(--k, 1) * 80px); top: calc(50% + var(--k, 1) * 118px); z-index: 4; min-width: calc(var(--k, 1) * 178px); padding: 0.55em 1em; font: 700 calc(var(--k, 1) * 15px) var(--mono); color: rgb(170, 178, 200); background: rgba(10, 12, 28, 0.72); border: 2px dashed rgb(60, 66, 100); cursor: pointer; text-align: left; }
+#btn-cuenta:hover, #btn-cuenta:focus-visible { color: rgb(255, 246, 225); border-color: rgb(150, 170, 220); outline: none; }
+#btn-cuenta[hidden] { display: none; }
+#btn-cuenta .c-ico { color: var(--verde, #5ad27a); }
+#cuenta { position: absolute; inset: 0; z-index: 9; background: rgba(2, 3, 10, 0.72); display: grid; place-items: center; font-family: var(--mono); }
+#cuenta[hidden] { display: none; }
+#cuenta .c-caja { width: calc(var(--k, 1) * 560px); max-height: 92%; overflow: auto; box-sizing: border-box; border: 16px solid transparent; border-image: url(img/dialogo/panel-normal.png) 32 fill / 32px / 0 stretch; image-rendering: pixelated; padding: 8px 18px 14px; display: grid; gap: 10px; font-size: calc(var(--k, 1) * 15px); color: var(--ink); }
+#cuenta .titulo { margin: 0; }
+#cuenta .c-sub { margin: 4px 0 0; font-size: 1em; color: var(--crema, #fff6e1); letter-spacing: 0.08em; }
+#cuenta .c-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+#cuenta .c-form { display: grid; gap: 8px; }
+#cuenta .c-form label { display: grid; gap: 4px; }
+#cuenta .c-fila { grid-template-columns: 1fr auto; align-items: end; }
+#cuenta input { font: inherit; padding: 6px 8px; color: var(--ink); background: rgb(14, 16, 34); border: 2px solid var(--borde); }
+#cuenta input:focus { outline: none; border-color: var(--crema, #fff6e1); }
+#cuenta .op { font-size: 1em; }
+#cuenta .c-msg { margin: 0; color: rgb(255, 170, 150); }
+#cuenta .c-msg.ok { color: var(--verde, #5ad27a); }
+#cuenta .c-rec { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+#cuenta .c-rec span { display: grid; gap: 2px; padding: 6px; border: 1px solid var(--borde); font-size: 0.8em; color: var(--dim); }
+#cuenta .c-rec b { font-size: 1.25em; color: var(--ink); }
+@media (max-width: 700px) { #cuenta .c-rec { grid-template-columns: repeat(2, 1fr); } }
 .p-salir { justify-self: start; border-color: rgb(120, 40, 40) !important; color: rgb(255, 160, 150); }
 /* letra grande (opción del menú de pausa) */
 #app.texto-grande #consola .txt, #app.texto-grande #consola .op, #app.texto-grande #mj .op, #app.texto-grande .mj-pasos { font-size: 18.5px; }
@@ -446,7 +469,9 @@ details.saber[open] summary { color: var(--ink); }
 <script src="js/datos.js"></script>
 <script src="js/escenas.js"></script>
 <script src="js/apis.js"></script>
+<script src="js/vendor/supabase.min.js"></script>
 <script src="js/supabase.js"></script>
+<script src="js/cuenta.js"></script>
 <script src="js/preguntas.js"></script>
 <script src="js/minijuegos.js"></script>
 <script src="js/bitacora.js"></script>
