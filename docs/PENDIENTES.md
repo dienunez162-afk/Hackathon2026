@@ -27,12 +27,17 @@ Lista revisada el 15 de noviembre de 2026, después del primer despliegue en Ver
 
 - [ ] **Grabar los efectos de sonido** que faltan (lista en el README, sección "Efectos de sonido"). Ya están `limpiar-panel` y `cable-conectar`.
 
+- [ ] **Rebalancear con las llamadas nuevas.** Ahora hay ~6 llamadas con costo por error; el simulador (`herramientas/simulador-mision.js`) todavía no las modela, así que la tabla de evacuación del balance es de antes.
+- [ ] **Revisar con un docente las 16 preguntas** y los textos de las situaciones (lenguaje para 7-12 años).
+
 ## Para Space Apps
 - [ ] Revisar en la página del reto qué piden exactamente (normalmente un video corto de demo, la descripción del proyecto y qué datos de la NASA se usan). La tabla de APIs del README sirve para esto último.
 
 ## Hecho
 - [x] **Pendientes del equipo (PDF).** Menú de cartas retráctil, "Así se juega" con demo animada antes de cada minijuego, sin la tira de días y barras sin rayitas en los segmentos apagados.
 - [x] **Cuadros de texto pixel art** con colores según la tensión (normal, llamada, alerta, catástrofe).
+- [x] **Bitácora en 0 / HUD encimado**: era el caché del navegador (index.html nuevo con juego.js viejo). Ahora los scripts llevan versión y se revalidan.
+- [x] **Preguntas**: llamadas cada 2-3 días, situación en pasos (predice en dos pasos, evidencia, actúa), banco de 16 preguntas en 3 niveles, consulta la bitácora, repaso, costo por error, avería con causa y reparación, Mensaje de la Tierra por situación, medidor sin colores, manual con porqué.
 - [x] **Sprites del HUD.** Barras de 10 segmentos, panel de día con luna de noche, botón de bitácora y retratos que hablan.
 - [x] **Bitácora.** Cartas, informes, datos reales de la NASA y lo aprendido; se guarda entre misiones.
 - [x] **Dificultad.** Ya se puede perder: con 50% de habilidad, 30% de las partidas terminan en evacuación (antes 5%). Tabla completa en `balance` de `datos/grafo-mision-lunar.json`.
