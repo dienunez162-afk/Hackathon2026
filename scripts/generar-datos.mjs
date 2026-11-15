@@ -16,6 +16,26 @@ const js = "/* generado por scripts/generar-datos.mjs: no editar a mano, edita d
 writeFileSync(join(raiz, "public", "js", "datos.js"), js);
 console.log("public/js/datos.js listo (" + js.length + " bytes)");
 
+// 3. Diccionario español -> inglés (datos/i18n/textos-es.txt y textos-en.txt, misma numeración)
+const lineas = (f) => {
+  const m = new Map();
+  for (const l of readFileSync(join(raiz, "datos", "i18n", f), "utf8").split(/\r?\n/)) {
+    const k = l.match(/^(\d+)[\t=](.*)$/);
+    if (k && k[2]) m.set(k[1], k[2].replace(/\\n/g, "\n"));
+  }
+  return m;
+};
+const es = lineas("textos-es.txt"), en = lineas("textos-en.txt"), dic = {};
+const marcas = (s) => (s.match(/\{\d+\}/g) || []).sort().join();
+for (const [n, t] of en) {
+  if (!es.has(n)) continue;
+  if (marcas(es.get(n)) !== marcas(t)) console.warn(`i18n: la línea ${n} no tiene los mismos {n} en los dos idiomas`);
+  dic[es.get(n)] = t;
+}
+writeFileSync(join(raiz, "public", "js", "i18n-en.js"), "/* generado por scripts/generar-datos.mjs desde datos/i18n/: no editar a mano */\n" +
+  `window.I18N_EN = ${JSON.stringify(dic)};\n`);
+console.log(`public/js/i18n-en.js listo (${Object.keys(dic).length} de ${es.size} textos traducidos)`);
+
 const pedirVersion = process.argv.includes("--version");
 if (process.env.VERCEL || pedirVersion) {
   const version = (process.env.VERCEL_GIT_COMMIT_SHA || Date.now().toString(36)).slice(0, 10);

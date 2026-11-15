@@ -10,7 +10,7 @@
     "dev:vercel": "npm run datos && vercel dev",
     "check": "node scripts/generar-datos.mjs && node --check public/js/juego.js && node --check public/js/minijuegos.js && node --check public/js/escenas.js && node --check public/js/apis.js && node --check public/js/preguntas.js && node --check public/js/bitacora.js && node --check public/js/cuenta.js && node --check api/donki.js && node --check api/radlab.js && node --check api/osdr.js && npm test",
     "simular": "node herramientas/simulador-mision.js",
-    "test": "node --test pruebas/preguntas.test.js"
+    "test": "node --test pruebas/preguntas.test.js pruebas/texto.test.js pruebas/banco.test.js"
   },
   "engines": {
     "node": ">=18"

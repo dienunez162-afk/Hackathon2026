@@ -27,12 +27,13 @@
     for (let i = orden.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [orden[i], orden[j]] = [orden[j], orden[i]]; }
     return { opciones: orden.map((i) => opciones[i]), correcta: orden.indexOf(indiceCorrecto) };
   }
-  // deja la correcta y los primeros distractores, según el nivel (2, 3 o 4 opciones)
+  // deja la correcta y los primeros distractores, según el nivel (3, 3 o 4 opciones).
+  // En el banco la 2ª opción es la plausible y la 3ª la fácil de descartar (del mismo tema).
   function recortarOpciones(opciones, indiceCorrecto, cuantas) {
     const correcta = opciones[indiceCorrecto], otras = opciones.filter((_, i) => i !== indiceCorrecto).slice(0, Math.max(1, cuantas - 1));
     return { opciones: [correcta, ...otras], indiceCorrecto: 0 };
   }
-  const opcionesPorNivel = (nivel) => ({ 1: 2, 2: 3, 3: 4 })[lim(nivel | 0, 1, 3)];
+  const opcionesPorNivel = (nivel) => ({ 1: 3, 2: 3, 3: 4 })[lim(nivel | 0, 1, 3)];
   // orden fijo por pregunta: misma pregunta, mismo orden de opciones en cada partida
   const barajarFijo = (opciones, indiceCorrecto, clave) => barajarConCorrecta(opciones, indiceCorrecto, semilla(clave));
 
@@ -92,22 +93,34 @@
   const fuerzaDe = (c) => ({ X: "muy fuerte", M: "fuerte", C: "suave", B: "suave", A: "suave" })[String(c || "").charAt(0).toUpperCase()] || "";
   const MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
   const fechaTxt = (f) => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(f || "")); return m ? `el ${+m[3]} de ${MESES[+m[2] - 1]}` : String(f || "").slice(0, 10); };
-  function preguntaBitacora(datos) {
+  // tres variantes, siempre con el dato en vivo de DONKI; cuál sale depende del número de partida (sin azar)
+  const VARIANTES_BITACORA = ["dia", "letra", "fuerza"];
+  function preguntaBitacora(datos, partida = 1) {
     const fl = ((datos && datos.donki && datos.donki.llamaradas) || []).filter((f) => f.clase && f.fecha);
-    // se pregunta el DÍA de la más fuerte: hay que abrir la bitácora y leer el dato (la letra sola no basta)
     const dias = [...new Map(fl.map((f) => [fechaTxt(f.fecha), f])).values()];
     if (dias.length >= 2) {
       const fuerte = fl.reduce((m, f) => (claseNum(f.clase) > claseNum(m.clase) ? f : m));
-      const otras = dias.filter((f) => fechaTxt(f.fecha) !== fechaTxt(fuerte.fecha)).sort((a, b) => claseNum(b.clase) - claseNum(a.clase));
-      const ops = [fuerte, ...otras.slice(0, 3)].map((f) => fechaTxt(f.fecha));
-      return {
-        id: "B-llamarada", nivel: 2, tipo: "bitacora", tema: "radiacion", barra: "radiacion",
-        enunciado: "Abre tu bitácora en «Datos NASA». ¿Qué día fue la llamarada solar más fuerte?",
-        opciones: ops, indiceCorrecto: 0,
+      const base = {
+        nivel: 2, tipo: "bitacora", tema: "radiacion", barra: "radiacion", indiceCorrecto: 0,
         fraseEvidencia: `Datos NASA: la más fuerte fue ${fuerte.clase} (${fuerzaDe(fuerte.clase)}) ${fechaTxt(fuerte.fecha)}.`,
         explicacion: `La letra dice qué tan fuerte es: A, B y C son suaves; M y X son fuertes. ${fuerte.clase} es ${fuerzaDe(fuerte.clase)}.`,
-        fuente: "NASA DONKI", pista: "En la bitácora, busca la línea que dice «la más fuerte fue».",
+        fuente: "NASA DONKI", url: "https://ccmc.gsfc.nasa.gov/DONKI-API/get/", pista: "En la bitácora, busca la línea que dice «la más fuerte fue».",
       };
+      const cual = VARIANTES_BITACORA[((partida - 1) % 3 + 3) % 3];
+      if (cual === "letra") {
+        const letras = [...new Set(fl.map((f) => f.clase))].filter((c) => c !== fuerte.clase).sort((a, b) => claseNum(b) - claseNum(a));
+        if (letras.length >= 2) return Object.assign(base, { id: "B-llamarada-letra", opciones: [fuerte.clase, ...letras.slice(0, 3)],
+          enunciado: "Abre tu bitácora en «Datos NASA». ¿Qué clase (letra y número) tuvo la llamarada solar más fuerte?" });
+      }
+      if (cual === "fuerza") {
+        const f = fuerzaDe(fuerte.clase);
+        return Object.assign(base, { id: "B-llamarada-fuerza", opciones: [f, ...["muy fuerte", "fuerte", "suave"].filter((x) => x !== f)],
+          enunciado: "Abre tu bitácora en «Datos NASA». La llamarada más fuerte, ¿fue suave, fuerte o muy fuerte?" });
+      }
+      // «dia» (y respaldo de «letra» si no hay suficientes clases distintas)
+      const otras = dias.filter((f) => fechaTxt(f.fecha) !== fechaTxt(fuerte.fecha)).sort((a, b) => claseNum(b.clase) - claseNum(a.clase));
+      return Object.assign(base, { id: "B-llamarada-dia", opciones: [fuerte, ...otras.slice(0, 3)].map((f) => fechaTxt(f.fecha)),
+        enunciado: "Abre tu bitácora en «Datos NASA». ¿Qué día fue la llamarada solar más fuerte?" });
     }
     const serie = (datos && datos.radlab && datos.radlab.serie) || [], base = (datos && datos.radlab && datos.radlab.base) || 0;
     if (serie.length && base) {
@@ -119,21 +132,64 @@
         opciones: ops, indiceCorrecto: 0,
         fraseEvidencia: `Datos NASA (RadLab): hasta ${r} veces más radiación de lo normal.`,
         explicacion: "En una tormenta solar la radiación puede subir cientos de veces. Por eso el refugio es clave.",
-        fuente: "NASA RadLab · CRaTER", pista: "En la bitácora, mira la barra más alta de la gráfica.",
+        fuente: "NASA RadLab · CRaTER", url: "https://visualization.osdr.nasa.gov/radlab/", pista: "En la bitácora, mira la barra más alta de la gráfica.",
       };
     }
     return null;
   }
 
+  // ---------- rotación determinista (sin azar) ----------
+  // Variantes de un tema y nivel. Si hay menos de 2 en ese nivel, se suman las del nivel de abajo
+  // (nunca las de arriba). La transferencia va aparte: solo nivel 3 y solo si se pide.
+  function variantes(banco, tema, nivel, { transferencia = false, filtro = null } = {}) {
+    const de = (n) => banco.filter((q) => q.tema === tema && q.nivel === n && (q.tipo === "transferencia") === transferencia && (!filtro || filtro(q)));
+    if (transferencia) return nivel >= 3 ? de(3) : [];
+    let v = de(lim(nivel | 0, 1, 3));
+    for (let n = lim(nivel | 0, 1, 3) - 1; v.length < 2 && n >= 1; n--) v = v.concat(de(n));
+    return v;
+  }
+  // la regla: variantes[(partida - 1 + indiceDelEvento) % variantes.length]; si ya salió en esta partida
+  // (o hay que evitarla), la siguiente. Con 2 o más variantes, la partida siguiente no repite la de esta.
+  function rotar(v, partida, indiceEvento = 0, usados = [], evitar = []) {
+    if (!v || !v.length) return null;
+    const k0 = (((partida | 0) - 1 + (indiceEvento | 0)) % v.length + v.length) % v.length;
+    for (let d = 0; d < v.length; d++) { const q = v[(k0 + d) % v.length]; if (!usados.includes(q.id) && !evitar.includes(q.id)) return q; }
+    return null;
+  }
+  // informe: solo preguntas cuya frase de evidencia está en el texto del informe (se contesta leyéndolo)
+  function preguntaParaInforme(banco, tema, texto, nivel, partida, indiceEvento = 0, usados = []) {
+    return rotar(variantes(banco, tema, nivel, { filtro: (q) => String(texto || "").includes(q.fraseEvidencia) }), partida, indiceEvento, usados);
+  }
+  // transferencia dentro de la misión: nivel 3 y, en los últimos 5 retos, 4 o más bien (ventana del nivel adaptativo)
+  function transferenciaPermitida(ventana, nivel, tam = 5, minimo = 4) {
+    const ult = (ventana || []).slice(-tam);
+    return (nivel | 0) >= 3 && ult.length >= tam && ult.filter(Boolean).length >= minimo;
+  }
+  // pregunta de Control en una llamada: el tema rota entre los que el niño ya leyó (en orden), y la
+  // variante con la misma regla. Si se permite, primero una de transferencia de ese tema.
+  function preguntaLlamada(banco, temas, nivel, partida, indiceEvento = 0, usados = [], conTransferencia = false) {
+    const lista = temas && temas.length ? temas : [...new Set(banco.map((q) => q.tema))];
+    const k0 = (((partida | 0) - 1 + (indiceEvento | 0)) % lista.length + lista.length) % lista.length;
+    for (let d = 0; d < lista.length; d++) {
+      const tema = lista[(k0 + d) % lista.length];
+      if (conTransferencia) { const t = rotar(variantes(banco, tema, nivel, { transferencia: true }), partida, indiceEvento, usados); if (t) return t; }
+      const q = rotar(variantes(banco, tema, nivel), partida, indiceEvento, usados);
+      if (q) return q;
+    }
+    return elegirPregunta(banco.filter((q) => q.tipo !== "transferencia"), nivel, usados, null);
+  }
+
   // ---------- repaso: algo guardado en «Lo aprendido» de una misión anterior ----------
-  // usa una pregunta del banco del mismo tema si hay; si no, «¿qué aprendiste sobre…?»
-  // determinista: repasa lo más reciente
-  function preguntaRepaso(aprendidos, banco, nivel, otrasExplicaciones = []) {
+  // MISMO tema, pero una variante DISTINTA de las que el niño ya contestó (quedan en «Lo aprendido» como q-<id>).
+  // Determinista: repasa lo más reciente y la variante depende del número de partida.
+  function preguntaRepaso(aprendidos, banco, nivel, otrasExplicaciones = [], partida = 1) {
     if (!aprendidos.length) return null;
     const a = aprendidos[aprendidos.length - 1];
-    const delTema = banco.filter((p) => p.tema && p.tema === a.tema);
-    if (delTema.length) {
-      const p = elegirPregunta(delTema, nivel, [], null);
+    const v = a.tema ? variantes(banco, a.tema, nivel) : [];
+    if (v.length) {
+      const vistas = aprendidos.filter((x) => x.tema === a.tema && /^q-/.test(x.clave || "")).map((x) => x.clave.slice(2));
+      const ultima = /^q-/.test(a.clave || "") ? [a.clave.slice(2)] : [];
+      const p = rotar(v, partida, 1, [], vistas) || rotar(v, partida, 1, [], ultima) || v[0];
       return Object.assign({}, p, { id: "R-" + p.id, tipo: "repaso", recuerdo: a });
     }
     const otras = [...new Set(otrasExplicaciones.filter((t) => t && t !== a.texto))].slice(0, 3);
@@ -145,6 +201,41 @@
       fraseEvidencia: `Bitácora, «Lo aprendido»: ${a.titulo}.`, explicacion: a.texto, fuente: a.quien || "Bitácora",
       pista: "Abre tu bitácora en «Lo aprendido» y busca ese título.",
     };
+  }
+
+  // ---------- validar el banco completo (lo usa el test) ----------
+  function validarBanco(banco, temas = null) {
+    const errores = [], ids = new Set();
+    for (const q of banco || []) {
+      const id = q && q.id;
+      if (ids.has(id)) errores.push(`${id}: id repetido`); ids.add(id);
+      const e = validarPregunta(q); if (e) errores.push(`${id}: ${e}`);
+      if (!Array.isArray(q.opciones) || q.opciones.length < 3) errores.push(`${id}: menos de 3 opciones`);
+      if (!q.fuente || !/NASA/i.test(q.fuente)) errores.push(`${id}: falta la fuente NASA`);
+      if (!/^https:\/\/([a-z0-9-]+\.)*nasa\.gov\//.test(q.url || "")) errores.push(`${id}: falta una URL de nasa.gov`);
+      if (!q.lectura || !q.lectura.includes(q.fraseEvidencia)) errores.push(`${id}: la frase de evidencia no está en la lectura`);
+      if (q.tipo === "transferencia" && q.nivel !== 3) errores.push(`${id}: transferencia fuera del nivel 3`);
+      if (temas && !temas.includes(q.tema)) errores.push(`${id}: tema desconocido ${q.tema}`);
+    }
+    return errores;
+  }
+
+  // ---------- diccionario: marca las palabras difíciles de un texto YA escapado ----------
+  // Antes se reemplazaba sobre el HTML que se iba armando: si la definición de una palabra (en su title)
+  // tenía otra palabra del glosario, la segunda se metía DENTRO del atributo y rompía el texto
+  // (salía «...desde 2009.">CRaTER mide...»). Ahora: primero se ponen marcas que no son letras,
+  // solo en el texto, y al final se cambian por los botones. Una vez cada palabra.
+  const escAttr = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  function marcarPalabras(textoEsc, glosario) {
+    if (!glosario || !textoEsc) return textoEsc;
+    let t = String(textoEsc); const botones = [];
+    for (const g of glosario) for (const f of g.formas) {
+      const re = new RegExp(`(^|[^\\p{L}])(${f.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})(?![\\p{L}])`, "iu");
+      if (!re.test(t)) continue;
+      t = t.replace(re, (m, a, b) => { botones.push(`<button type="button" class="palabra" data-palabra="${escAttr(g.palabra)}" title="${escAttr(g.def)}">${b}</button>`); return `${a}\u0001${botones.length - 1}\u0002`; });
+      break;
+    }
+    return t.replace(/\u0001(\d+)\u0002/g, (m, i) => botones[+i]);
   }
 
   // valida que una pregunta tenga el esquema completo
@@ -165,6 +256,7 @@
 
   return {
     BARRAS, barajarConCorrecta, barajarFijo, semilla, recortarOpciones, opcionesPorNivel, elegirPregunta, costoError, diasDeLlamada,
-    respuestaAuto, zonaRadiacion, tendencia, preguntaBitacora, preguntaRepaso, validarPregunta, claseNum, fuerzaDe, fechaTxt,
+    respuestaAuto, zonaRadiacion, tendencia, preguntaBitacora, preguntaRepaso, validarPregunta, validarBanco,
+    variantes, rotar, preguntaParaInforme, preguntaLlamada, transferenciaPermitida, claseNum, fuerzaDe, fechaTxt, marcarPalabras,
   };
 });

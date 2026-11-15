@@ -94,7 +94,7 @@ El color cambia según la tensión del momento. `pantalla()` en `public/js/juego
 - Para cambiar colores o crear un tema: edita `TEMAS` en `herramientas/generar-sprites-dialogo.py` y corre `python herramientas/generar-sprites-dialogo.py` (requiere `pip install pillow`).
 
 ## Cartas y minijuegos en pantalla
-- **Narrador:** activo por defecto en todos los niveles; lee los textos con voz en español (se apaga en la pausa o con Silenciar todo).
+- **Narrador:** activo por defecto en todos los niveles (`public/js/narrador.js`). Usa la voz del navegador en el idioma del juego y elige la más clara (las "Natural"/"Online" de Edge, las de Google en Chrome o la del sistema). Parte los textos en frases para que Chrome no los corte. La tecla M solo silencia música y efectos: el narrador se apaga con su propio botón en la pausa, donde también se elige y se prueba la voz. Si el dispositivo no tiene voz en ese idioma, la pausa explica cómo agregar una (Windows: Configuración › Hora e idioma › Voz).
 - **Bitácora:** sin textos repetidos, marca NUEVO en lo no leído (con contador por pestaña) y pestaña **Diccionario** (24 palabras). En las lecturas, las palabras del diccionario se subrayan y se pueden tocar.
 - **Menos repetición:** las llamadas empiezan sin pantalla de «Contestar», y un informe de un tema ya leído (sin pregunta ni carta) se guarda en la bitácora con un aviso, sin pantalla.
 - **Misión final:** aterrizar la nave del relevo (motor para frenar, ← → para llegar a la plataforma).
@@ -102,6 +102,11 @@ El color cambia según la tensión del momento. `pantalla()` en `public/js/juego
 - **Pantalla:** durante la partida todo va en 16:9 (2560x1440 a pantalla completa); la franja de 256 px de abajo lleva con el panel de sistemas (barras en 2 × 2) y el cuadro de texto. Si una pantalla no cabe (llamadas con varios pasos), el cuadro se desplaza solo hasta la pregunta que toca responder. En el menú y los finales no hay franja.
 - **Cartas:** el botón `CARTAS n / 10` (arriba a la derecha) abre y cierra el panel. Se cierra con ✕, con Esc o tocando fuera. Brilla cuando llega una carta nueva y avisa "ESCUDO LISTO" si hay un escudo armado.
 - **Minijuegos:** antes de empezar se muestra "Así se juega": 2 o 3 pasos cortos y una demo animada (`public/img/minijuegos/<tipo>.gif`) donde una manita juega una ronda. El tiempo corre solo después de tocar "¡Empezar!" (o Enter). Los textos están en `COMO_SE_JUEGA` de `public/js/juego.js`; las demos se generan con `python herramientas/generar-demos-minijuegos.py`.
+
+## Idioma (español / inglés)
+- En el menú principal, a la derecha de la Luna, se elige **Español** o **English** (se guarda en `gnosis-idioma`; también `?lang=en`).
+- El juego está escrito en español; `public/js/i18n.js` traduce lo que se ve (HTML y canvas) y lo que lee el narrador, sin tocar la lógica.
+- Textos: `datos/i18n/textos-es.txt` y `textos-en.txt` (misma numeración). Si cambias textos del juego, corre `node herramientas/i18n-extraer.mjs` (conserva las traducciones que ya había y dice cuántas faltan), traduce las nuevas en `textos-en.txt` y corre `npm run datos`.
 
 ## Bitácora
 `public/js/bitacora.js`. Se llena sola y se guarda entre misiones (en el dispositivo):
