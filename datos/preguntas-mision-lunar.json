@@ -1189,20 +1189,20 @@
       "tipo": "transferencia",
       "tema": "agua_reciclaje",
       "barra": "salud",
-      "enunciado": "Un filtro de reciclaje se descompuso y la base pierde un poco de agua cada día. ¿Qué gas para respirar puede empezar a faltar?",
+      "enunciado": "Un filtro de reciclaje se descompuso y la base pierde un poco de agua cada día. ¿Qué problema puede venir después?",
       "opciones": [
-        "Oxígeno",
-        "Nitrógeno",
-        "Helio",
-        "Dióxido de carbono"
+        "Que empiece a faltar aire para respirar",
+        "Que suba la radiación",
+        "Que los paneles produzcan menos energía",
+        "Que la base tiemble más"
       ],
       "indiceCorrecto": 0,
       "lectura": "La Estación Espacial recicla cerca del 98% de su agua, incluso el sudor. Además, el oxígeno para respirar se obtiene separando el agua en hidrógeno y oxígeno.",
       "fraseEvidencia": "Además, el oxígeno para respirar se obtiene separando el agua en hidrógeno y oxígeno.",
-      "explicacion": "La regla: el oxígeno sale del agua. Si se pierde agua, después falta oxígeno.",
+      "explicacion": "La regla: el oxígeno sale del agua. Si se pierde agua, después puede faltar oxígeno para respirar.",
       "fuente": "NASA – Cómo se fabrica el oxígeno en la Estación",
       "url": "https://www.nasa.gov/podcasts/houston-we-have-a-podcast/advanced-oxygen-generation/",
-      "pista": "Aplica la segunda oración: ¿qué sale del agua?"
+      "pista": "Aplica la segunda oración: ¿qué se fabrica con el agua?"
     },
     {
       "id": "SI1-dura",

@@ -889,7 +889,7 @@
     const previos = window.BITACORA ? BITACORA.aprendidos().filter((a) => a.fecha < J.inicio) : [];
     if (previos.length) {
       const otras = R.situaciones.flatMap((s) => Object.values(s.explicacion)).concat(PD.banco.map((p) => p.explicacion));
-      const q = PQ.preguntaRepaso(previos, PD.banco, J.reto, otras);
+      const q = PQ.preguntaRepaso(previos, PD.banco, J.reto, otras, J.partida);   // mismo tema, otra variante
       if (q) { if (window.SFX) SFX.play("llamada"); await preguntaCtrl(q, "REPASO DE TU MISIÓN ANTERIOR"); }
     }
   }
@@ -921,11 +921,13 @@
     return `<div class="lectura"><span class="paso">${titulo}</span><p class="txt">${conPalabras(esc(texto))}</p>` +
       (extra ? `<details class="saber"><summary>Saber más</summary>${extra}</details>` : "") + `</div>`;
   }
-  // pregunta del banco ligada a un informe: fija (la primera sin usar, la más cercana al nivel); transferencia solo en nivel 3
-  function preguntaDeInforme(id) {
-    const ok = PD.banco.filter((q) => (q.informes || []).includes(id) && !J.usadas.includes(q.id) && (q.tipo !== "transferencia" || J.reto >= 3));
-    ok.sort((x, y) => Math.abs(x.nivel - J.reto) - Math.abs(y.nivel - J.reto) || x.nivel - y.nivel);
-    return ok[0] || null;
+  // pregunta del banco ligada a un informe: rota sin azar según la partida y cuántos informes de ese tema van
+  // (variantes[(partida - 1 + indiceDelEvento) % n]); solo las que se contestan con el texto del informe
+  function preguntaDeInforme(n) {
+    J.eventosTema = J.eventosTema || {};
+    const t = n.informe.tema, k = J.eventosTema[t] || 0;
+    J.eventosTema[t] = k + 1;
+    return PQ.preguntaParaInforme(PD.banco, t, n.informe.texto, J.reto, J.partida, k, J.usadas);
   }
   async function informe(n) {
     const t = n.informe.tema;
@@ -948,7 +950,7 @@
       log(`Nueva carta: ${k.nombre}.`);
     } else cab = `<span class="tag">INFORME</span><h2 class="titulo">${esc(n.titulo)}</h2>`;
     if (nueva && Object.keys(J.cartas).length === 1) J.laikaCarta = true;   // primera carta: Laika explica al terminar
-    const q = preguntaDeInforme(n.id);
+    const q = preguntaDeInforme(n);
     J.temasLeidos = J.temasLeidos || {};
     const repetido = !q && !nueva && J.temasLeidos[t];
     J.temasLeidos[t] = true;
@@ -1078,8 +1080,8 @@
     if (window.SFX) SFX.play("llamada");
     toast("((( Llamada de Control de Misión )))");
     if (tipo === "situacion") { const sel = elegirTema(idx); if (sel) return llamadaSituacion(sel); }
-    if (tipo === "bitacora" && !J.bitacoraHecha) { const q = PQ.preguntaBitacora(APIS.datos); if (q) { J.bitacoraHecha = true; return preguntaCtrl(q, "CONSULTA TU BITÁCORA"); } }
-    const q = PQ.elegirPregunta(PD.banco, J.reto, J.usadas, Object.keys(J.aprendidos));
+    if (tipo === "bitacora" && !J.bitacoraHecha) { const q = PQ.preguntaBitacora(APIS.datos, J.partida); if (q) { J.bitacoraHecha = true; return preguntaCtrl(q, "CONSULTA TU BITÁCORA"); } }
+    const q = PQ.preguntaLlamada(PD.banco, Object.keys(J.aprendidos), J.reto, J.partida, idx, J.usadas, false);
     if (q) { J.usadas.push(q.id); return preguntaCtrl(q, "PREGUNTA DE CONTROL DE MISIÓN"); }
     const sel = elegirTema(idx); if (sel) return llamadaSituacion(sel);
   }
