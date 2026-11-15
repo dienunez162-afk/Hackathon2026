@@ -8,7 +8,7 @@ npm run dev          # genera public/js/datos.js y sirve public/ + las funciones
 npm run dev:vercel   # igual, pero con las funciones de /api (requiere: npm i -g vercel)
 npm run check        # revisa la sintaxis de todo
 ```
-Parámetros de prueba (las «herramientas del equipo» están ocultas para los niños y solo salen con ellos): `?equipo=1` las muestra; `?auto=1&vel=4` juega solo; `?final=apagon` abre un final.
+Parámetros de prueba (las «herramientas del equipo» están ocultas para los niños y solo salen con ellos): `?equipo=1` las muestra; `?auto=1&vel=4` juega solo (agrega `&guardar=1` para que guarde la partida en la cuenta con sesión iniciada); `?final=apagon` abre un final.
 
 ## Caché del navegador
 `vercel.json` pide revalidar `js/` e `img/` en cada visita, y el build (`scripts/generar-datos.mjs`) le pone la versión del despliegue a cada script (`js/juego.js?v=…`). Antes, el navegador guardaba `js/` una hora y mezclaba un `index.html` nuevo con un `juego.js` viejo: eso dejaba la bitácora en 0 y encimaba el HUD.

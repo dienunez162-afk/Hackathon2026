@@ -3,18 +3,17 @@
 Revisada el 15 de noviembre de 2026 (rama `correcciones-pendientes`). Probado en local y en `gnosis-kappa.vercel.app`: JUGAR arranca y varias misiones seguidas en modo automático 4× terminan sin errores en consola.
 
 ## Solo Diego puede hacerlo (Supabase)
-Estado del proyecto `tsidieehhdwspeomdixs` el 15-nov: las tablas de `0001` ya existen; **faltan `0002` y `0004`** (no existen `solicitudes_clase`, `v_records` ni las funciones `buscar_clase`, `pedir_unirme`, `registrar_partida`, `borrar_mi_cuenta`) y **«Confirm email» sigue activado**. Los SQL están listos en `supabase/migrations/` (copia con instrucciones en `space apps/supabase-sql/`).
-- [ ] Correr `0002_cuentas_y_clases.sql` y `0004_borrar_cuenta.sql` en el SQL Editor, en ese orden.
-- [ ] Authentication > Providers > Email: **desactivar «Confirm email»** (el correo del alias es inventado; con esto activado nadie puede crear cuenta).
-- [ ] Poner en Vercel `SUPABASE_URL`, `SUPABASE_ANON_KEY` y `DOMINIO_ALUMNOS`, y hacer redeploy (hoy `public/js/config.js` sale vacío en producción: el menú ☰ dice «cuentas no activas»).
-- [ ] Probar que Supabase acepta el dominio `alumnos.g-nosis.local`; si lo rechaza, usar uno propio.
-- [ ] Crear un maestro y un grupo de prueba (`0003_datos_de_prueba.sql`) y pasarme el código de la clase.
+Estado del proyecto `tsidieehhdwspeomdixs` el 15-nov (probado de punta a punta): **ya funciona** el registro con alias, el inicio de sesión desde el juego, guardar partidas, los récords, pedir unirse a una clase, aceptar al alumno y que el maestro vea o deje de ver sus partidas, y el aislamiento entre alumnos. «Confirm email» ya está desactivado y Supabase acepta el dominio `alumnos.g-nosis.local`. Falta:
+- [ ] Correr `0004_borrar_cuenta.sql` y luego `0005_permisos_funciones.sql` (el botón «Borrar mi cuenta» no funciona hasta el 0004).
+- [ ] **Subir esta rama a main** y poner en Vercel `SUPABASE_URL`, `SUPABASE_ANON_KEY` y `DOMINIO_ALUMNOS` (los valores están en `space apps/supabase-sql/LEEME.md`); luego redeploy. Hoy producción corre un `main` sin el menú de cuentas y sin `config.js`.
+- [ ] **Borrar las cuentas de prueba** que dejé en el proyecto (Authentication > Users): alumnos `prueba_claude_090534` (3 partidas, pidió unirse a la clase E30F48), `prueba_b_090936`; maestro `maestro.prueba.claude@example.com` y su grupo «4B prueba». Con el 0004 corrido, el alumno se puede borrar desde el juego (contraseña de prueba `Prueba-123456`).
+- [ ] Crear el maestro y el grupo reales (`0003_datos_de_prueba.sql` sirve de plantilla).
 
-## Código que sigue pendiente (depende de lo de arriba)
-- [ ] **Probar con cuentas reales** el registro, el inicio de sesión, pedir unirse, borrar cuenta y que las reglas de acceso (RLS) impidan leer datos de otros.
-- [ ] **Panel del maestro**: aceptar o rechazar solicitudes (`resolver_solicitud`), crear grupos y mostrar el código. Hoy solo existe la maqueta `diseno/panel-maestro`.
+## Código que sigue pendiente
+- [ ] **Panel del maestro**: aceptar o rechazar solicitudes (`resolver_solicitud`), crear grupos y mostrar el código. Hoy solo existe la maqueta `diseno/panel-maestro`. Las funciones y los permisos ya están probados.
 - [ ] Guardar también `respuestas` y `pasos` (hoy se guarda solo el resumen de la partida) para que el panel tenga datos de aprendizaje.
 - [ ] Restablecer la contraseña de un alumno desde el panel (Edge Function): sin correo no hay otra forma.
+- [ ] Limitar los intentos al escribir un código de clase (hoy se puede probar muchas veces) y activar protección de contraseñas filtradas y límite de registros en Supabase.
 
 ## Necesita personas (no se puede automatizar)
 - [ ] **Prueba a mano con dedo y mouse**, sobre todo «limpiar el panel» (arrastrar) y el laberinto en tablet. Solo se probó en modo automático y con el navegador emulando celular.
@@ -28,6 +27,7 @@ Estado del proyecto `tsidieehhdwspeomdixs` el 15-nov: las tablas de `0001` ya ex
 - [ ] Elegir 2-3 diferenciadores para la demo (ver `docs/propuestas-diferenciadores.docx`).
 
 ## Hecho
+- [x] **Supabase probado de punta a punta** (15-nov): cuenta de alumno, sesión en el juego (también tras refrescar), partidas y récords (la misión guardada desde el juego sube el contador), maestro con grupo y código, solicitud pendiente, aceptación, visibilidad del maestro solo tras aceptar y tras salir de la clase, un alumno no ve ni escribe datos de otro, errores de alias en español. Para probar el guardado jugando en automático: `?auto=1&vel=4&guardar=1`.
 - [x] **Herramientas del equipo ocultas.** Solo salen con `?equipo=1` (o `?auto=1`, `?final=...`).
 - [x] **Celulares.** En vertical aparece «Gira tu dispositivo para jugar»; en horizontal el juego se escala y se lee.
 - [x] **Aviso de privacidad y consentimiento.** Página `privacidad.html`, casilla «un adulto leyó el aviso» al crear cuenta, enlace en el menú ☰ y botón «Borrar mi cuenta» (`0004_borrar_cuenta.sql`).

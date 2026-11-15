@@ -1316,7 +1316,7 @@
     log(ex ? `Fin: ${n.titulo} (${n.estrellas} estrellas).` : `Fin: ${n.titulo}.`);
     J.musicaFinal = ex ? "final-bueno" : "final-malo";
     // récords en la cuenta del niño (no se guardan las partidas del modo automático del equipo)
-    if (window.CUENTA && ui.modo === "manual") {
+    if (window.CUENTA && (ui.modo === "manual" || qs.get("guardar"))) {      // ?guardar=1: el equipo prueba el guardado jugando en automático
       const lim100 = (x) => Math.max(0, Math.min(100, Math.round(+x || 0)));
       CUENTA.guardarPartida({ version: (window.GRAFO && GRAFO.version) || "0", nivelReto: J.reto, nivelLectura: J.lectura, final: n.id, estrellas: ex ? Math.max(0, Math.min(3, n.estrellas | 0)) : 0,
         diaFinal: Math.max(0, Math.min(14, J.dia | 0)), barras: { radiacion: lim100(J.st.radiacion), energia: lim100(J.st.energia), comida: lim100(J.st.comida), salud: lim100(J.st.salud) },
