@@ -107,6 +107,26 @@ try {
       if (/Entendido|Got it/i.test(texto)) entendidos++;
       if ((await page.evaluate(() => !document.getElementById("mj").hidden))) break;      // llegó al primer minijuego
     }
+    // los cables del día 1 y el botón que sigue (antes el «Continuar» quedaba en un panel que ya no estaba en pantalla: el juego esperaba un clic imposible)
+    let sigue = false;
+    {
+      try {
+        await page.waitForSelector("#mj:not([hidden]) .op.prim", { state: "visible", timeout: 8000 });        // las instrucciones del primer minijuego
+        await page.click("#mj .op.prim");
+        await page.waitForSelector("#mj .cable", { timeout: 5000 });
+        await page.waitForTimeout(1000);                                           // el minijuego tarda un instante en aceptar clics
+        const pares = (await page.locator("#mj .cable").count()) / 2;
+        for (let i = 0; i < pares; i++) { await page.click(`#mj [data-l="${i}"]`); await page.waitForTimeout(120); await page.click(`#mj [data-r="${i}"]`); await page.waitForTimeout(150); }
+        await page.waitForSelector("#consola .op.prim:not([disabled])", { state: "visible", timeout: 4000 });
+        const antes = await page.evaluate(() => document.getElementById("consola").innerText);
+        const b = await page.$("#consola .op.prim:not([disabled])");
+        await b.scrollIntoViewIfNeeded(); const caja = await b.boundingBox();
+        await page.mouse.click(caja.x + caja.width / 2, caja.y + caja.height / 2);
+        await page.waitForFunction((t) => document.getElementById("consola").innerText !== t, antes, { timeout: 3000 });
+        sigue = true;
+      } catch (e) { console.log("     (cables:", String(e.message).split("\n")[0].slice(0, 160), ")", JSON.stringify(await page.evaluate(() => ({ mjOculto: document.getElementById("mj").hidden, mj: document.getElementById("mj").innerText.slice(0, 120), consola: document.getElementById("consola").innerText.slice(0, 100), botones: [...document.querySelectorAll("#consola .op")].map((b) => b.innerText.trim() + ":" + b.disabled) })))); }
+    }
+    ok("después de los cables aparece el botón que sigue y avanza", sigue);
     ok("los botones del tutorial responden a un clic real", clics >= 8 && atorados.length === 0, atorados.length ? "no respondieron: " + atorados.join(", ") : clics + " clics");
     ok("los avisos «¡Entendido!» de Laika responden", entendidos >= 2, entendidos + " avisos");
     ok("sin errores jugando a mano", problemas.length === 0, problemas.slice(0, 3).join(" | "));

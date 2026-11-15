@@ -370,6 +370,7 @@
   const timer = (fn, ms) => { const id = setTimeout(fn, ms); timers.push(id); return id; };
   const espera = (ms) => { const t = tok; return new Promise((res, rej) => timer(() => (t === tok ? res() : rej(ABORT)), ms / ui.vel)); };
   function botones(cont, opciones, { auto, delay = 1700 } = {}) {
+    if (!cont.isConnected) { const vivo = $c.querySelector("#ops"); console.error("[G-NOSIS] botones sobre un panel que ya no está en pantalla"); if (vivo) cont = vivo; }
     const t = tok;
     return new Promise((res, rej) => {
       cont.innerHTML = opciones.map((o, i) => `<button type="button" class="op ${o.prim ? "prim" : ""} ${o.dis ? "ko" : ""}" data-i="${i}" ${o.dis ? "disabled" : ""}>${o.html}</button>`).join("");
@@ -901,14 +902,17 @@
     const r = n.resultado || {};
     const prep = !!J.preparado; let resPaso = null, opPaso = null;
     const tema = peligroDe(n) === "peligro" ? "catastrofe" : n.tipo === "evento" ? "alerta" : n.tipo === "control_mision" || n.tipo === "calma" ? "llamada" : "normal";
-    const c = pantalla(`<span class="tag ${(ESTADO_NODO[n.id] || {}).alarma ? "alarma" : ""}">${TIPO[n.tipo]}</span><h2 class="titulo">${esc(n.titulo)}</h2><p class="txt">${esc(texto)}</p><div class="ops" id="ops"></div><div id="res"></div>`, n.tipo === "control_mision" || n.tipo === "calma" ? "control" : null, tema);
+    const htmlNodo = `<span class="tag ${(ESTADO_NODO[n.id] || {}).alarma ? "alarma" : ""}">${TIPO[n.tipo]}</span><h2 class="titulo">${esc(n.titulo)}</h2><p class="txt">${esc(texto)}</p><div class="ops" id="ops"></div><div id="res"></div>`;
+    const quienNodo = n.tipo === "control_mision" || n.tipo === "calma" ? "control" : null;
+    const c = pantalla(htmlNodo, quienNodo, tema);
     voz(texto);
-    const ops = c.querySelector("#ops"), res = c.querySelector("#res");
+    let ops = c.querySelector("#ops"), res = c.querySelector("#res");
     if (r.exito || r.fallo) {
       const spec = MJ_DE[n.id];
       const ap = apuestaHtml(r.exito, r.fallo); if (ap) res.innerHTML = ap;
       await continuar(ops, "¡A jugar! ▸", 1500);
       const gano = spec ? await minijuego(n, spec) : Math.random() < ui.hab;
+      if (!ops.isConnected) { const c2 = pantalla(htmlNodo, quienNodo, tema); ops = c2.querySelector("#ops"); res = c2.querySelector("#res"); }
       resPaso = gano ? "exito" : "fallo";
       let ef = gano ? r.exito : r.fallo, nota = "";
       if (!gano && J.preparado) { ef = suavizar(ef); nota = " Estabas preparado por el Pronóstico: el daño fue la mitad."; }
