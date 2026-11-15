@@ -623,7 +623,7 @@
     escena("plano", { resaltar: mod || null, alarma: !!(estados && estados.alarma) });
     const fuera = destino === "exterior" || destino === "crater";
     const tema = estados && estados.alarma ? "catastrofe" : estados && estados.llamada || motivo === MOTIVO.control_mision ? "llamada" : motivo === MOTIVO.evento ? "alerta" : "normal";
-    const c = pantalla(`<span class="tag">PLANO DE LA BASE</span><p class="txt">${motivo ? esc(motivo) + " " : ""}<b>${esc(NOMBRE_ESC[destino] || destino)}</b>.</p>` +
+    const c = pantalla(`<span class="tag">PLANO DE LA BASE</span><p class="txt">${motivo ? esc(motivo) + " " : ""}<b>${esc(NOMBRE_ESC[destino] || destino)}</b>${motivo && /¡[^!]*$/.test(motivo) ? "!" : "."}</p>` +
       `<p class="sub">${mod ? "Toca en el plano el módulo que parpadea, o el botón." : fuera ? "Ponte el traje: vas a salir de la base." : ""}</p><div class="ops" id="ops"></div>`, null, tema);
     J.esperaModulo = mod || null;
     try { await continuar(c.querySelector("#ops"), fuera ? "Salir ▸" : "Ir ▸", 1300); } finally { J.esperaModulo = null; }
@@ -823,30 +823,48 @@
     await continuar(c.querySelector("#ops"), "Continuar ▸", 2200);
   }
 
+  // el texto que se lee para contestar: corto, y lo extra en «Saber más» (cerrado por defecto)
+  function lectura(texto, extra = "", titulo = "LEE Y BUSCA LA RESPUESTA") {
+    return `<div class="lectura"><span class="paso">${titulo}</span><p class="txt">${esc(texto)}</p>` +
+      (extra ? `<details class="saber"><summary>Saber más</summary>${extra}</details>` : "") + `</div>`;
+  }
+  // pregunta del banco ligada a un informe: fija (la primera sin usar, la más cercana al nivel); transferencia solo en nivel 3
+  function preguntaDeInforme(id) {
+    const ok = PD.banco.filter((q) => (q.informes || []).includes(id) && !J.usadas.includes(q.id) && (q.tipo !== "transferencia" || J.reto >= 3));
+    ok.sort((x, y) => Math.abs(x.nivel - J.reto) - Math.abs(y.nivel - J.reto) || x.nivel - y.nivel);
+    return ok[0] || null;
+  }
   async function informe(n) {
     const t = n.informe.tema;
     if (J.aprendidos[t] == null || J.aprendidos[t] < 0) J.aprendidos[t] = J.aprendidos[t] == null ? n.dia : J.aprendidos[t];
     if (window.BITACORA) BITACORA.registrar("informe", n.id, { titulo: n.titulo, texto: n.informe.texto, fuente: n.informe.fuente, tema: t });
     const nueva = !J.cartas[t];
     const k = R.temas[t].carta;
-    // en el invernadero, un estudio real de NASA OSDR sobre plantas en el espacio
+    // en el invernadero, un estudio real de NASA OSDR sobre plantas en el espacio (va en «Saber más»)
     const est = t === "invernadero" ? APIS.estudio() : null;
-    const textoInforme = `<p class="txt" style="font-size:15px">${esc(n.informe.texto)}</p><p class="sub">Fuente: ${esc(n.informe.fuente || "NASA")} · se guardó en tu bitácora</p>` +
+    const saber = `<p class="sub">Fuente: ${esc(n.informe.fuente || "NASA")} · se guardó en tu bitácora.</p>` +
       (est ? `<p class="sub">La NASA lo estudia de verdad: «${esc(est.titulo)}» (${esc(est.id)}${est.mision ? ", misión " + esc(est.mision) : ""}). <a href="${esc(est.url)}" target="_blank" rel="noopener" style="color:var(--cian)">Ver el estudio</a></p>` : "");
-    let c;
+    let cab;
     if (nueva) {
       J.cartas[t] = { usada: false, armada: false };
       if (window.BITACORA) BITACORA.registrar("carta", t, {});
       pintarCartas(t);
       if (window.SFX) SFX.play("carta-nueva");
-      c = pantalla(`<span class="tag">NUEVA CARTA · INFORME</span><h2 class="titulo">${esc(k.nombre)}</h2><p class="txt">${esc(k.frase)}</p>` +
-        `<p class="sub">${k.uso.tipo === "escudo" ? `Es un escudo para la ${MINUS[k.uso.barra]}.` : `Suma ${k.uso.valor} de ${MINUS[k.uso.barra]}.`} Úsala en el momento justo.</p>` + textoInforme + `<div class="ops" id="ops"></div>`, "cientifica");
-      voz(k.nombre + ". " + k.frase + " " + n.informe.texto);
+      cab = `<span class="tag">NUEVA CARTA · INFORME</span><h2 class="titulo">${esc(k.nombre)}</h2>` +
+        `<p class="sub">${esc(k.frase)} ${k.uso.tipo === "escudo" ? `Es un escudo para la ${MINUS[k.uso.barra]}.` : `Suma ${k.uso.valor} de ${MINUS[k.uso.barra]}.`}</p>`;
       log(`Nueva carta: ${k.nombre}.`);
-    } else {
-      c = pantalla(`<span class="tag">INFORME</span><h2 class="titulo">${esc(n.titulo)}</h2>` + textoInforme + `<div class="ops" id="ops"></div>`, "cientifica");
-      voz(n.informe.texto);
+    } else cab = `<span class="tag">INFORME</span><h2 class="titulo">${esc(n.titulo)}</h2>`;
+    const q = preguntaDeInforme(n.id);
+    if (q) {
+      J.usadas.push(q.id);
+      const c = pantalla(cab + `<p class="txt pregunta-antes"><b>Busca en el texto:</b> ${esc(q.enunciado)}</p>` + lectura(n.informe.texto, saber) +
+        `<div class="ops col" id="ops"></div><div id="res"></div>`, "cientifica");
+      voz(q.enunciado + " " + n.informe.texto);
+      await responderBanco(c, q, "INFORME");
+      return;
     }
+    const c = pantalla(cab + lectura(n.informe.texto, saber, "INFORME") + `<div class="ops" id="ops"></div>`, "cientifica");
+    voz(n.informe.texto);
     await continuar(c.querySelector("#ops"), "Continuar ▸", 2600);
   }
 
@@ -946,70 +964,86 @@
     const sel = elegirTema(idx); if (sel) return llamadaSituacion(sel);
   }
 
-  // pregunta del banco, de bitácora o de repaso: respuesta, costo si falla, explicación y evidencia
+  // pregunta del banco, de bitácora o de repaso: la pregunta, luego el texto donde está la respuesta, luego las opciones.
+  // El repaso no muestra el texto (es memoria) pero deja abrir «Lo aprendido»; la de bitácora abre «Datos NASA».
   async function preguntaCtrl(q, tag) {
+    const enBitacora = q.tipo === "bitacora" ? "datos" : q.tipo === "repaso" ? "aprendido" : null;
+    const c = pantalla(`<span class="tag llamada">${esc(tag)}</span><p class="txt pregunta-antes">${esc(q.enunciado)}</p>` +
+      (enBitacora ? `<p><button type="button" class="op" id="abrir-bt">Abrir la bitácora ▸</button></p>` : q.lectura ? lectura(q.lectura) : "") +
+      `<div class="ops col" id="ops"></div><div id="res"></div>`, "control");
+    voz(q.enunciado + (q.lectura && !enBitacora ? " " + q.lectura : ""));
+    if (enBitacora) c.querySelector("#abrir-bt").addEventListener("click", () => window.BITACORA && BITACORA.abrir(enBitacora));
+    const r = await responderBanco(c, q, tag);
+    J.cuenta.ll++; if (r.ok && r.intentos === 1) J.cuenta.llOk++;
+  }
+  // contesta una pregunta del banco ya pintada en la pantalla c (opciones en #ops): reintento con pista,
+  // y la explicación y la evidencia SOLO después de contestar
+  async function responderBanco(c, q, tag) {
     const fija = q.tipo === "bitacora" || q.tipo === "repaso" && q.id.startsWith("R-") && !PD.banco.some((p) => "R-" + p.id === q.id);
     const base = fija ? { opciones: q.opciones.slice(0, Math.max(2, PQ.opcionesPorNivel(J.reto))), indiceCorrecto: q.indiceCorrecto } : PQ.recortarOpciones(q.opciones, q.indiceCorrecto, PQ.opcionesPorNivel(J.reto));
-    const bj = PQ.barajarConCorrecta(base.opciones, base.indiceCorrecto);
-    const c = pantalla(`<span class="tag llamada">${esc(tag)}</span><p class="txt">${esc(q.enunciado)}</p>` +
-      (q.tipo === "bitacora" ? `<p><button type="button" class="op" id="abrir-bt">Abrir la bitácora ▸</button></p>` : "") +
-      `<div class="ops col" id="ops"></div><div id="res"></div>`, "control");
-    voz(q.enunciado);
-    if (q.tipo === "bitacora") c.querySelector("#abrir-bt").addEventListener("click", () => window.BITACORA && BITACORA.abrir("datos"));
+    const bj = PQ.barajarFijo(base.opciones, base.indiceCorrecto, q.id);
     const r = await preguntar(c.querySelector("#ops"), { opciones: bj.opciones, correcta: bj.correcta, pista: q.pista, explicacion: q.explicacion, barra: q.barra }, { delay: 2300 });
-    const ok = r.ok;
     if (window.BITACORA && BITACORA.abierta()) BITACORA.cerrar();
-    J.cuenta.ll++; if (ok && r.intentos === 1) J.cuenta.llOk++;
-    c.querySelector("#res").innerHTML = `<div class="res ${ok ? "ok" : "ko"}">${ok ? (r.intentos === 1 ? "¡Correcto!" : "¡Correcto, con pista!") : "Esta vez no."}<br>${esc(q.explicacion)}` +
-      `<br><span class="sub">Evidencia: «${esc(q.fraseEvidencia)}» · ${esc(q.fuente)}</span></div><div class="ops" id="ops2"></div>`;
+    c.querySelector("#res").innerHTML = `<div class="res ${r.ok ? "ok" : "ko"}">${r.ok ? (r.intentos === 1 ? "¡Correcto!" : "¡Correcto, con pista!") + " " + esc(q.explicacion) : "Ahora ya lo sabes."}` +
+      `<br><span class="sub">Evidencia: «${esc(q.fraseEvidencia)}» · ${esc(q.fuente)}</span></div><div id="frase"></div><div class="ops" id="ops2"></div>`;
     hablar(q.explicacion.length);
     aprender("q-" + q.id.replace(/^R-/, ""), q.tema && R.temas[q.tema] ? R.temas[q.tema].nombre : "Pregunta de Control", q.explicacion + " " + q.fraseEvidencia, "Control de Misión", q.tema);
-    log(`${tag} (${q.id}): ${ok ? (r.intentos === 1 ? "correcta" : "correcta con pista") : "incorrecta"}.`);
-    registrarReto(ok && r.intentos === 1);
-    await continuar(c.querySelector("#ops2"), "Colgar ▸", 2600);
+    log(`${tag} (${q.id}): ${r.ok ? (r.intentos === 1 ? "correcta" : "correcta con pista") : "incorrecta"}${ui.sinTexto ? " [sin texto]" : ""}.`);
+    registrarReto(r.ok && r.intentos === 1);
+    await continuar(c.querySelector("#ops2"), tag === "INFORME" ? "Continuar ▸" : "Colgar ▸", 2600);
+    return r;
   }
 
-  // situación: predice en dos pasos (qué cambia primero y qué después), qué dato lo prueba, actúa, mira qué pasó
+  // situación: un paso por pantalla (cabe en la franja). Primero la pregunta, luego el informe de Control,
+  // luego las opciones. El porqué se muestra solo al final, cuando ya contestó todo.
   async function llamadaSituacion(sel) {
-    const s = R.situaciones.find((x) => x.tema === sel.tema), x = PD.situaciones[s.id], nv = String(J.lectura);
+    const s = R.situaciones.find((x) => x.tema === sel.tema), x = s && PD.situaciones[s.id], nv = String(J.lectura);
     if (!s || !x) return;
     J.preguntados[s.tema] = (J.preguntados[s.tema] || 0) + 1;
     if (s.escenario && s.escenario !== "control") escena(s.escenario, {});
-    const c = pantalla(`<span class="tag llamada">LLAMADA · CONTROL DE MISIÓN</span><p class="txt">${esc(x.situacion[nv])}</p>` +
-      `<span class="paso">1 · PREDICE: ¿QUÉ BARRA CAMBIA PRIMERO?</span><div class="ops" id="p1"></div><div id="p2w"></div><div id="p3w"></div><div id="act"></div><div id="res"></div>`, "control");
-    voz(x.situacion[nv]);
-    const ok1 = (await preguntar(c.querySelector("#p1"), { opciones: BARRAS.map((b) => MAYUS[b]), correcta: BARRAS.indexOf(x.cadena[0]), pista: x.pista, explicacion: x.porQue, barra: s.prediccion.barra }, { delay: 1900 })).ok;
+    const cab = `<span class="tag llamada">LLAMADA · CONTROL DE MISIÓN</span><p class="txt">${esc(x.situacion[nv])}</p>`;
+    const pista = { pista: x.pista, explicacion: x.porQue, barra: s.prediccion.barra };
+    // 1a · qué barra cambia primero
+    let c = pantalla(cab + `<span class="paso">1 · PREDICE: ¿QUÉ BARRA CAMBIA PRIMERO?</span>` + lectura(x.informe, "", "INFORME DE CONTROL") + `<div class="ops" id="p"></div>`, "control");
+    voz(x.situacion[nv] + " " + x.informe);
+    const ok1 = (await preguntar(c.querySelector("#p"), Object.assign({ opciones: BARRAS.map((b) => MAYUS[b]), correcta: BARRAS.indexOf(x.cadena[0]) }, pista), { delay: 1900 })).ok;
+    await espera(700);
+    // 1b · y después
     const resto = BARRAS.filter((b) => b !== x.cadena[0]);
-    c.querySelector("#p2w").innerHTML = `<span class="paso">… ¿Y QUÉ BARRA CAMBIA DESPUÉS?</span><div class="ops" id="p2"></div>`;
-    const ok2 = (await preguntar(c.querySelector("#p2"), { opciones: resto.map((b) => MAYUS[b]), correcta: resto.indexOf(x.cadena[1]), pista: x.pista, explicacion: x.porQue, barra: s.prediccion.barra }, { delay: 1900 })).ok;
+    c = pantalla(cab + `<span class="paso">… PRIMERO CAMBIA ${MAYUS[x.cadena[0]]}. ¿QUÉ BARRA CAMBIA DESPUÉS?</span>` + lectura(x.informe, "", "INFORME DE CONTROL") + `<div class="ops" id="p"></div>`, "control");
+    const ok2 = (await preguntar(c.querySelector("#p"), Object.assign({ opciones: resto.map((b) => MAYUS[b]), correcta: resto.indexOf(x.cadena[1]) }, pista), { delay: 1900 })).ok;
     const predOk = ok1 && ok2;
-    // evidencia
-    const ev = PQ.barajarConCorrecta([x.evidencia.correcta, ...x.evidencia.distractores.slice(0, PQ.opcionesPorNivel(J.reto) - 1)], 0);
-    c.querySelector("#p3w").innerHTML = `<span class="paso">2 · ¿QUÉ DATO LO PRUEBA?</span><div class="ops col" id="p3"></div>`;
-    const evOk = (await preguntar(c.querySelector("#p3"), { opciones: ev.opciones, correcta: ev.correcta, pista: "La prueba está en el informe de esta llamada, no en otros.", explicacion: "La prueba era: " + x.evidencia.correcta, barra: s.prediccion.barra }, { delay: 2100 })).ok;
-    // actúa
-    const acc = barajar(s.acciones.slice(0, J.reto + 1).map((a, i) => ({ ...a, i })));
-    c.querySelector("#act").innerHTML = `<span class="paso">3 · ACTÚA</span><div class="ops col" id="accs"></div>`;
-    const accs = c.querySelector("#accs"), pos = acc.findIndex((a) => a.i === s.correcta);
+    await espera(700);
+    // 2 · qué dato lo prueba (sin el texto: lo acaba de leer)
+    const ev = PQ.barajarFijo([x.evidencia.correcta, ...x.evidencia.distractores.slice(0, PQ.opcionesPorNivel(J.reto) - 1)], 0, s.id + "-ev");
+    c = pantalla(cab + `<span class="paso">2 · ¿QUÉ DATO DEL INFORME LO PRUEBA?</span><div class="ops col" id="p"></div>`, "control");
+    const evOk = (await preguntar(c.querySelector("#p"), { opciones: ev.opciones, correcta: ev.correcta, pista: "La prueba está en el informe de esta llamada, no en otros.", explicacion: "La prueba era: " + x.evidencia.correcta, barra: s.prediccion.barra }, { delay: 2100 })).ok;
+    await espera(700);
+    // 3 · actúa (una sola oportunidad: tiene efectos en la base)
+    const acc0 = s.acciones.slice(0, J.reto + 1).map((a, i) => ({ ...a, i }));
+    const fijo = PQ.barajarFijo(acc0, acc0.findIndex((a) => a.i === s.correcta), s.id + "-acc"), acc = fijo.opciones;
+    c = pantalla(cab + `<span class="paso">3 · ACTÚA</span><div class="ops col" id="accs"></div><div id="res"></div>`, "control");
+    const accs = c.querySelector("#accs"), pos = fijo.correcta;
     const accOk = await elegirRespuesta(accs, acc.map((a) => a.texto), pos, 2300, lim(ui.comp + (predOk ? 0.1 : -0.1), 0.02, 0.98));
     const elegida = acc[accs.querySelector(".elegida") ? +accs.querySelector(".elegida").dataset.i : pos];
     const ef = !accOk && conApoyo() ? suavizar(elegida.efectos) : elegida.efectos;
     aplicar(ef);
     J.cuenta.ll++; if (accOk) J.cuenta.llOk++;
+    // 4 · mira qué pasó: ahora sí, el porqué
     let html = `<span class="paso">4 · MIRA QUÉ PASÓ</span><div class="res ${accOk ? "ok" : "ko"}">${efectosTxt(ef)}`;
     if (accOk && predOk && evOk) {
       const b = masDebil(J.st);
       if (zona(b, J.st[b]) !== "verde") { aplicar({ barraMasBaja: R.powerups.recarga.valor }); html += `<br>¡Bien, capitán! Ganaste <b>Recarga</b>: +${R.powerups.recarga.valor} de ${MINUS[b]}.`; }
       else { J.preparado = true; pintarExtra(); html += `<br>¡Bien, capitán! Ganaste <b>Pronóstico</b>: mañana estarás preparado.`; }
     }
-    html += `<br>${esc(s.explicacion[nv])}</div><div class="res"><span class="paso">INFORME DE CONTROL</span><br>${esc(x.informe)}<br><span class="sub">Se guardó en tu bitácora.</span></div>`;
+    html += `<br><b>Por qué:</b> ${esc(x.porQue)}<br>${esc(s.explicacion[nv])}<br><span class="sub">El informe se guardó en tu bitácora.</span></div>`;
     if (!accOk) { const it = sel.intentos || 1; if (it < 2) J.repasos.push({ tema: s.tema, disponible: J.dia + 2, intentos: it }); else J.diferidos.push(s.tema); }
-    c.querySelector("#res").innerHTML = html + `<div class="ops" id="ops"></div>`;
-    hablar(s.explicacion[nv].length + x.informe.length);
-    voz(s.explicacion[nv] + " " + x.informe);
+    c = pantalla(cab + html + `<div class="ops" id="ops"></div>`, "control");
+    hablar(s.explicacion[nv].length + x.porQue.length);
+    voz(x.porQue + " " + s.explicacion[nv]);
     if (window.BITACORA) BITACORA.registrar("informe", "ll-" + s.id, { titulo: "Control de Misión: " + R.temas[s.tema].nombre, texto: x.informe, fuente: "Control de Misión", tema: s.tema });
     aprender("ll-" + s.tema, R.temas[s.tema].nombre, s.explicacion[nv] + " " + x.porQue, "Control de Misión", s.tema);
-    log(`Llamada (${R.temas[s.tema].nombre}): predicción ${predOk ? "bien" : "mal"}, dato ${evOk ? "bien" : "mal"}, acción ${accOk ? "bien" : "mal"}.`);
+    log(`Llamada (${R.temas[s.tema].nombre}): predicción ${predOk ? "bien" : "mal"}, dato ${evOk ? "bien" : "mal"}, acción ${accOk ? "bien" : "mal"}${ui.sinTexto ? " [sin texto]" : ""}.`);
     registrarReto(accOk && predOk);
     await continuar(c.querySelector("#ops"), "Colgar ▸", 2600);
   }

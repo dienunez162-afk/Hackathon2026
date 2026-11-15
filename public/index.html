@@ -278,6 +278,11 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 .op:not(.prim) { background: rgb(30, 32, 70); border: 2px solid rgb(14, 13, 34); box-shadow: inset 2px 2px 0 rgba(198, 190, 250, 0.28), inset -2px -3px 0 rgba(6, 6, 20, 0.55); }
 .op:not(.prim):hover:not([disabled]) { border-color: var(--tema, var(--crema)); }
 .op.ok { border-color: var(--verde) !important; } .op.ko, .op.mal { border-color: var(--rojo) !important; }
+.lectura { border-left: 3px solid var(--tema, var(--lila)); background: rgba(255, 255, 255, 0.04); padding: 4px 10px 6px; display: grid; gap: 2px; }
+.lectura .txt { font-size: 15.5px; }
+.pregunta-antes { color: var(--crema); }
+details.saber summary { cursor: pointer; font-size: 12px; color: var(--dim); }
+details.saber[open] summary { color: var(--ink); }
 .pista-txt { margin: 0; font-size: 14px; color: var(--ambar); border-left: 3px solid var(--ambar); padding: 2px 0 2px 8px; }
 .aviso-pista:empty { display: none; }
 .res { border-width: 2px; box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.06); }
