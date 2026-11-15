@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Panel del grupo 4°B</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0;background:#eef1f4}
+a{color:#a8520a}a:hover{color:#7a3b06}
+button:focus-visible{outline:3px solid #c8650b;outline-offset:2px}
+</style>
+</helmet>
+<div style="background: #eef1f4; color: #16202e; font-family: Inter, system-ui, sans-serif; font-size: 15px; line-height: 1.5; min-height: 100vh">
+<div style="max-width: 1360px; margin: 0 auto; padding: 32px 24px 56px; display: flex; flex-direction: column; gap: 28px; box-sizing: border-box">
+
+  <header style="display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: flex-end; justify-content: space-between">
+    <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+      <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #a8520a">G-NOSIS · Panel del maestro</span>
+      <h1 style="margin: 0; font-family: 'Barlow Semi Condensed', sans-serif; font-weight: 700; font-size: 44px; line-height: 1.05">Grupo 4°B</h1>
+      <p style="margin: 0; color: #4f5b6b">Primaria (ejemplo) · 4° grado · nivel inicial 2 · 24 alumnos · Código del grupo <strong style="font-family: 'JetBrains Mono', monospace; color: #16202e">K7Q2MX</strong></p>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 10px">
+      <button type="button" style="font: 600 15px Inter, sans-serif; color: #16202e; background: #ffffff; border: 1px solid #c9d1db; border-radius: 8px; padding: 12px 16px; min-height: 44px; cursor: pointer">Imprimir tarjetas de acceso</button>
+      <button type="button" style="font: 600 15px Inter, sans-serif; color: #ffffff; background: #16202e; border: 0; border-radius: 8px; padding: 12px 16px; min-height: 44px; cursor: pointer">Agregar alumno</button>
+    </div>
+  </header>
+
+  <p style="margin: 0; padding: 10px 14px; border-radius: 8px; background: #fbe9d7; color: #5c2e05; font-size: 14px">Datos de ejemplo: 24 alumnos ficticios cuyas partidas generó el simulador del juego. El panel mide lo que cada niño hizo, no respuestas de trivia. El nivel de cada alumno lo ajusta el juego según cómo le va; los alumnos nunca lo ven, solo tú.</p>
+
+  <section aria-label="Resumen" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px">
+    <sc-for list="{{kpis}}" as="k" hint-placeholder-count="6">
+      <div style="background: #ffffff; border: 1px solid #d3d9e0; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 13px; color: #4f5b6b">{{k.label}}</span>
+        <span style="font-family: 'Barlow Semi Condensed', sans-serif; font-weight: 700; font-size: 36px; line-height: 1.1; font-variant-numeric: tabular-nums">{{k.valor}}</span>
+        <span style="font-size: 13px; color: #4f5b6b">{{k.nota}}</span>
+      </div>
+    </sc-for>
+  </section>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch">
+    <section style="flex: 999 1 560px; min-width: 0; background: #ffffff; border: 1px solid #d3d9e0; border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <h2 style="margin: 0; font-family: 'Barlow Semi Condensed', sans-serif; font-weight: 600; font-size: 24px">Aprendizaje partida a partida</h2>
+        <p style="margin: 0; color: #4f5b6b; font-size: 14px">Retos resueltos bien por el grupo según el número de partida de cada alumno.</p>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 13px; color: #4f5b6b">
+        <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #2f6fce; display: inline-block"></span>Llamadas con la acción correcta</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 12px; height: 12px; border-radius: 3px; background: #c8650b; display: inline-block"></span>Averías resueltas al primer intento</span>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: flex-end; height: 220px; padding: 0 4px; border-bottom: 1px solid #c9d1db">
+        <sc-for list="{{tendencia}}" as="t" hint-placeholder-count="5">
+          <div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 6px">
+            <div style="display: flex; gap: 6px; align-items: flex-end; height: 190px">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 4px">
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px">{{t.accTxt}}</span>
+                <div style="width: 30px; height: {{t.accH}}px; background: #2f6fce; border-radius: 4px 4px 0 0"></div>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 4px">
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px">{{t.diaTxt}}</span>
+                <div style="width: 30px; height: {{t.diaH}}px; background: #c8650b; border-radius: 4px 4px 0 0"></div>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display: flex; gap: 12px; padding: 0 4px">
+        <sc-for list="{{tendencia}}" as="t" hint-placeholder-count="5">
+          <span style="flex: 1 1 0; min-width: 0; text-align: center; font-size: 13px; color: #4f5b6b">{{t.label}}</span>
+        </sc-for>
+      </div>
+      <p style="margin: 0; font-size: 13px; color: #4f5b6b">De la 1ª a la 4ª partida, las llamadas resueltas bien suben de 50% a 76% y las averías al primer intento, de 42% a 73%, aunque el juego va subiendo el nivel de quien mejora.</p>
+    </section>
+
+    <section style="flex: 1 1 360px; min-width: 0; background: #ffffff; border: 1px solid #d3d9e0; border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <h2 style="margin: 0; font-family: 'Barlow Semi Condensed', sans-serif; font-weight: 600; font-size: 24px">Temas para reforzar en clase</h2>
+        <p style="margin: 0; color: #4f5b6b; font-size: 14px">Los tres temas con menos retos resueltos bien en el grupo.</p>
+      </div>
+      <sc-for list="{{reforzar}}" as="r" hint-placeholder-count="3">
+        <div style="display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid #e3e8ee">
+          <div style="display: flex; justify-content: space-between; gap: 12px; align-items: baseline">
+            <strong style="font-size: 16px">{{r.nombre}}</strong>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 14px">{{r.pctTxt}}</span>
+          </div>
+          <div style="height: 8px; background: #e3e8ee; border-radius: 4px; overflow: hidden">
+            <div style="height: 8px; width: {{r.pct}}%; background: #c8650b"></div>
+          </div>
+          <p style="margin: 0; font-size: 14px; color: #33404f">{{r.sugerencia}}</p>
+        </div>
+      </sc-for>
+    </section>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start">
+    <section style="flex: 999 1 760px; min-width: 0; background: #ffffff; border: 1px solid #d3d9e0; border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; align-items: flex-end">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <h2 style="margin: 0; font-family: 'Barlow Semi Condensed', sans-serif; font-weight: 600; font-size: 24px">Retos resueltos por alumno y tema</h2>
+          <p style="margin: 0; color: #4f5b6b; font-size: 14px">Llamadas y averías resueltas bien. Elige un alumno para ver su detalle. El borde naranja marca menos de 50%; el guion, un tema que todavía no le ha tocado. La columna Nivel muestra el nivel actual de reto y si subió o bajó desde el inicial.</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #4f5b6b">
+          <span>0%</span>
+          <span style="width: 120px; height: 10px; border-radius: 3px; background: linear-gradient(90deg, hsl(212 65% 96%), hsl(212 65% 58%)); display: inline-block"></span>
+          <span>100%</span>
+        </div>
+      </div>
+      <div style="overflow-x: auto">
+        <div style="min-width: 1080px; display: flex; flex-direction: column; gap: 4px">
+          <div style="display: grid; grid-template-columns: 140px 60px 60px 64px 64px repeat(10, minmax(0, 1fr)); gap: 4px; font-size: 12px; color: #4f5b6b; align-items: end">
+            <span>Alumno</span><span>Partidas</span><span>Nivel</span><span>Retos</span><span>Manual</span>
+            <sc-for list="{{temasCorto}}" as="tc" hint-placeholder-count="10">
+              <span style="text-align: center">{{tc}}</span>
+            </sc-for>
+          </div>
+          <sc-for list="{{filas}}" as="f" hint-placeholder-count="24">
+            <div style="display: grid; grid-template-columns: 140px 60px 60px 64px 64px repeat(10, minmax(0, 1fr)); gap: 4px; align-items: center; border-radius: 6px; background: {{f.fondo}}; padding: 2px 0">
+              <button type="button" onClick="{{f.pick}}" aria-pressed="{{f.sel}}" style="font: 600 14px Inter, sans-serif; color: #16202e; background: transparent; border: 0; text-align: left; padding: 8px 6px; min-height: 36px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: #c9d1db">{{f.a}}</button>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px">{{f.partidas}}</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px">{{f.nivelTxt}}</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px">{{f.totTxt}}</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px">{{f.manTxt}}</span>
+              <sc-for list="{{f.celdas}}" as="c" hint-placeholder-count="10">
+                <span style="height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 12px; box-sizing: border-box; background: {{c.bg}}; color: {{c.fg}}; border: {{c.borde}}">{{c.txt}}</span>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <aside style="flex: 1 1 340px; min-width: 0; background: #ffffff; border: 1px solid #d3d9e0; border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #4f5b6b">Alumno</span>
+        <h2 style="margin: 0; font-family: 'Barlow Semi Condensed', sans-serif; font-weight: 700; font-size: 32px">{{sel.a}}</h2>
+        <span style="font-size: 14px; color: #4f5b6b">{{sel.partidasTxt}}</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 6px; padding: 12px; border-radius: 8px; background: #f3f6f9">
+        <span style="font-size: 13px; color: #4f5b6b">Nivel (solo lo ves tú)</span>
+        <span style="font-size: 15px"><strong>{{sel.nivelTxt}}</strong></span>
+        <span style="font-size: 13px; color: #4f5b6b">{{sel.ajustesTxt}}</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <span style="font-size: 13px; color: #4f5b6b">Cada partida: resultado, nivel al terminar y cartas que dejó en su manual</span>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px">
+          <sc-for list="{{sel.partidas}}" as="p" hint-placeholder-count="5">
+            <span style="display: inline-flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 8px; border: 1px solid #d3d9e0; border-radius: 8px; min-width: 52px">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #4f5b6b">{{p.n}}</span>
+              <span style="font-size: 13px; color: {{p.color}}">{{p.txt}}</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #33404f">{{p.nivel}}</span>
+              <span style="font-size: 11px; color: #4f5b6b">{{p.manual}}</span>
+            </span>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+        <sc-for list="{{sel.metricas}}" as="m" hint-placeholder-count="4">
+          <div style="border: 1px solid #e3e8ee; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 12px; color: #4f5b6b">{{m.label}}</span>
+            <span style="font-family: 'Barlow Semi Condensed', sans-serif; font-weight: 700; font-size: 26px">{{m.valor}}</span>
+            <span style="font-size: 12px; color: #4f5b6b">{{m.nota}}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <div style="display: flex; justify-content: space-between; font-size: 13px; color: #4f5b6b"><span>Cartas desbloqueadas</span><span style="font-family: 'JetBrains Mono', monospace">{{sel.cartasTxt}}</span></div>
+        <div style="height: 8px; background: #e3e8ee; border-radius: 4px; overflow: hidden">
+          <div style="height: 8px; width: {{sel.cartasPct}}%; background: #2f6fce"></div>
+        </div>
+        <span style="font-size: 13px; color: #4f5b6b">{{sel.usosTxt}}</span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <span style="font-size: 13px; color: #4f5b6b">Repasos pendientes (el último reto de ese tema le salió mal)</span>
+        <sc-if value="{{sel.sinPend}}" hint-placeholder-val="{{false}}">
+          <p style="margin: 0; font-size: 14px">Sin repasos pendientes.</p>
+        </sc-if>
+        <sc-for list="{{sel.pend}}" as="q" hint-placeholder-count="1">
+          <div style="border-left: 3px solid #c8650b; padding: 4px 0 4px 10px; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 12px; color: #4f5b6b">{{q.tema}} · {{q.tipo}}</span>
+            <span style="font-size: 14px">{{q.texto}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </aside>
+  </div>
+
+  <section style="background: #ffffff; border: 1px solid #d3d9e0; border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 12px">
+    <h2 style="margin: 0; font-family: 'Barlow Semi Condensed', sans-serif; font-weight: 600; font-size: 24px">Qué mide cada número</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px 24px; font-size: 14px; color: #33404f">
+      <p style="margin: 0"><strong>Predicción</strong>: en una llamada, tocó la barra correcta antes de actuar. Mide si entiende la causa.</p>
+      <p style="margin: 0"><strong>Acción</strong>: eligió qué hacer correctamente. Mide si aplica lo que sabe.</p>
+      <p style="margin: 0"><strong>Diagnóstico</strong>: resolvió una avería al primer intento a partir de pistas. Mide pensamiento crítico.</p>
+      <p style="margin: 0"><strong>Manual</strong>: al final emparejó bien cada carta con su momento para el siguiente capitán. Mide retención al explicarlo a otro.</p>
+      <p style="margin: 0"><strong>Nivel</strong>: el juego lo sube cuando el alumno resuelve 4 de sus últimos 5 retos y lo baja cuando resuelve 1 o ninguno. Reto = opciones y pistas; lectura = largo de los textos. Puedes cambiar el nivel inicial de cualquier alumno.</p>
+    </div>
+  </section>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2050}}'>
+const DATA = {"kpi":{"alumnos":24,"partidas":132,"exito":97,"estrellas":"1.6","prediccion":72,"accion":71,"diagnostico":64,"manual":67,"diferida":78,"retos":658},"tendencia":[{"k":1,"n":120,"acc":50,"dia":42},{"k":2,"n":119,"acc":65,"dia":64},{"k":3,"n":119,"acc":75,"dia":68},{"k":4,"n":110,"acc":76,"dia":73},{"k":5,"n":85,"acc":73,"dia":79}],"temas":[{"t":"radiacion","pct":70,"n":124},{"t":"polvo_lunar","pct":73,"n":67},{"t":"sismos","pct":76,"n":17},{"t":"micrometeoritos","pct":63,"n":16},{"t":"noche_lunar","pct":72,"n":53},{"t":"hielo_agua","pct":94,"n":16},{"t":"invernadero","pct":62,"n":125},{"t":"agua_reciclaje","pct":68,"n":93},{"t":"energia_solar","pct":68,"n":57},{"t":"salud_astronauta","pct":64,"n":90}],"alumnos":[{"a":"Cometa","p":[{"n":1,"e":1,"m":0},{"n":2,"e":3,"m":1},{"n":3,"e":1,"m":1},{"n":4,"e":1,"m":2},{"n":5,"e":3,"m":2},{"n":6,"e":2,"m":1},{"n":7,"e":1,"m":2}],"c":[50,null,100,100,67,100,43,50,100,29],"pre":81,"acc":76,"dia":29,"man":64,"tot":57,"nr":35,"usos":3.4,"cartas":10,"pend":[{"t":"noche_lunar","id":"A-noche"},{"t":"salud_astronauta","id":"A-calor"}],"niv":["1/1","1/1","2/1","2/2","3/2","3/3","2/2"],"aj":6},{"a":"Nebulosa","p":[{"n":1,"e":1,"m":1},{"n":2,"e":1,"m":0},{"n":3,"e":1,"m":1},{"n":4,"e":3,"m":1},{"n":5,"e":1,"m":2}],"c":[33,67,null,100,100,0,14,80,100,100],"pre":60,"acc":60,"dia":50,"man":56,"tot":56,"nr":25,"usos":3.8,"cartas":10,"pend":[{"t":"hielo_agua","id":"S-hielo_agua"},{"t":"invernadero","id":"S-invernadero"},{"t":"agua_reciclaje","id":"A-fuga"}],"niv":["1/1","1/1","2/1","2/2","3/2"],"aj":4},{"a":"Orión","p":[{"n":1,"e":1,"m":3},{"n":2,"e":1,"m":2},{"n":3,"e":1,"m":1},{"n":4,"e":0,"m":2}],"c":[67,50,50,100,100,null,50,100,null,80],"pre":67,"acc":67,"dia":75,"man":67,"tot":70,"nr":20,"usos":4,"cartas":10,"pend":[],"niv":["3/2","3/2","3/3","3/3"],"aj":2},{"a":"Vega","p":[{"n":1,"e":1,"m":1},{"n":2,"e":1,"m":2},{"n":3,"e":1,"m":2},{"n":4,"e":2,"m":2},{"n":5,"e":1,"m":3},{"n":6,"e":1,"m":3},{"n":7,"e":1,"m":3}],"c":[89,75,100,null,75,100,50,100,null,67],"pre":86,"acc":76,"dia":79,"man":94,"tot":77,"nr":35,"usos":5.3,"cartas":10,"pend":[],"niv":["1/1","2/1","2/2","3/2","3/3","3/3","3/3"],"aj":5},{"a":"Lira","p":[{"n":1,"e":1,"m":1},{"n":2,"e":1,"m":2},{"n":3,"e":1,"m":3},{"n":4,"e":3,"m":3},{"n":5,"e":2,"m":3},{"n":6,"e":2,"m":1}],"c":[83,100,100,null,100,null,57,67,100,50],"pre":78,"acc":78,"dia":67,"man":76,"tot":73,"nr":30,"usos":4.2,"cartas":10,"pend":[],"niv":["2/2","3/2","3/2","3/3","3/3","3/3"],"aj":2},{"a":"Andrómeda","p":[{"n":1,"e":1,"m":2},{"n":2,"e":3,"m":3},{"n":3,"e":1,"m":3},{"n":4,"e":3,"m":3},{"n":5,"e":3,"m":3},{"n":6,"e":3,"m":2}],"c":[100,100,67,100,100,100,100,100,80,100],"pre":89,"acc":89,"dia":100,"man":89,"tot":93,"nr":30,"usos":4.3,"cartas":10,"pend":[],"niv":["3/2","3/3","3/3","3/3","3/3","3/3"],"aj":2},{"a":"Sirio","p":[{"n":1,"e":1,"m":0},{"n":2,"e":1,"m":1},{"n":3,"e":1,"m":0},{"n":4,"e":3,"m":1},{"n":5,"e":3,"m":3},{"n":6,"e":1,"m":1}],"c":[56,67,null,50,100,100,100,60,50,100],"pre":67,"acc":67,"dia":67,"man":40,"tot":67,"nr":30,"usos":3.5,"cartas":10,"pend":[],"niv":["2/2","2/2","3/2","2/2","3/2","3/3"],"aj":4},{"a":"Pléyade","p":[{"n":1,"e":1,"m":1},{"n":2,"e":1,"m":1},{"n":3,"e":3,"m":1},{"n":4,"e":2,"m":2}],"c":[67,null,null,0,100,100,25,100,67,33],"pre":75,"acc":42,"dia":63,"man":83,"tot":50,"nr":20,"usos":4.8,"cartas":10,"pend":[{"t":"micrometeoritos","id":"S-micrometeoritos"},{"t":"invernadero","id":"A-moho"}],"niv":["2/2","1/1","1/1","2/1"],"aj":2},{"a":"Kepler","p":[{"n":1,"e":1,"m":1},{"n":2,"e":2,"m":2},{"n":3,"e":2,"m":1}],"c":[67,67,null,null,40,null,100,null,100,null],"pre":56,"acc":67,"dia":67,"man":50,"tot":67,"nr":15,"usos":4.3,"cartas":9,"pend":[],"niv":["2/2","3/2","3/2"],"aj":1},{"a":"Halley","p":[{"n":1,"e":1,"m":1},{"n":2,"e":1,"m":1},{"n":3,"e":1,"m":3}],"c":[80,null,null,null,null,100,100,100,100,60],"pre":67,"acc":89,"dia":67,"man":56,"tot":80,"nr":15,"usos":2.7,"cartas":9,"pend":[],"niv":["3/2","3/3","3/3"],"aj":2},{"a":"Selene","p":[{"n":1,"e":0,"m":1},{"n":2,"e":3,"m":0},{"n":3,"e":2,"m":2},{"n":4,"e":1,"m":0}],"c":[67,null,null,null,100,null,60,40,33,null],"pre":33,"acc":42,"dia":63,"man":50,"tot":50,"nr":20,"usos":3.5,"cartas":10,"pend":[{"t":"invernadero","id":"S-invernadero"}],"niv":["1/1","1/1","2/1","2/2"],"aj":3},{"a":"Tycho","p":[{"n":1,"e":1,"m":0},{"n":2,"e":1,"m":1},{"n":3,"e":0,"m":0},{"n":4,"e":1,"m":2},{"n":5,"e":1,"m":3}],"c":[45,0,100,null,null,null,100,67,null,50],"pre":53,"acc":73,"dia":22,"man":50,"tot":54,"nr":24,"usos":3.8,"cartas":10,"pend":[{"t":"polvo_lunar","id":"S-polvo_lunar"}],"niv":["2/2","2/2","2/2","3/2","3/3"],"aj":2},{"a":"Polaris","p":[{"n":1,"e":1,"m":2},{"n":2,"e":3,"m":2},{"n":3,"e":3,"m":0},{"n":4,"e":3,"m":0},{"n":5,"e":3,"m":1},{"n":6,"e":3,"m":1},{"n":7,"e":1,"m":0}],"c":[43,63,null,null,29,null,60,60,100,100],"pre":48,"acc":48,"dia":64,"man":32,"tot":54,"nr":35,"usos":3.6,"cartas":10,"pend":[{"t":"radiacion","id":"S-radiacion"}],"niv":["2/2","3/2","3/2","2/2","3/2","3/2","3/3"],"aj":4},{"a":"Rigel","p":[{"n":1,"e":1,"m":0},{"n":2,"e":0,"m":1},{"n":3,"e":2,"m":1},{"n":4,"e":1,"m":2},{"n":5,"e":2,"m":1},{"n":6,"e":3,"m":0},{"n":7,"e":1,"m":0}],"c":[42,100,33,null,100,null,75,50,50,50],"pre":86,"acc":71,"dia":23,"man":42,"tot":53,"nr":34,"usos":3.9,"cartas":10,"pend":[{"t":"radiacion","id":"A-compuerta"}],"niv":["1/1","1/1","2/1","2/1","2/1","2/2","2/2"],"aj":3},{"a":"Altair","p":[{"n":1,"e":1,"m":2},{"n":2,"e":1,"m":2},{"n":3,"e":2,"m":2},{"n":4,"e":1,"m":2},{"n":5,"e":3,"m":3},{"n":6,"e":1,"m":3},{"n":7,"e":1,"m":2}],"c":[100,100,null,100,100,100,56,83,100,67],"pre":76,"acc":86,"dia":71,"man":80,"tot":80,"nr":35,"usos":5.6,"cartas":10,"pend":[],"niv":["2/2","3/2","3/3","3/3","3/3","3/3","3/3"],"aj":2},{"a":"Deneb","p":[{"n":1,"e":2,"m":0},{"n":2,"e":1,"m":1},{"n":3,"e":1,"m":3},{"n":4,"e":1,"m":3},{"n":5,"e":1,"m":3}],"c":[100,67,null,100,100,100,60,60,100,100],"pre":80,"acc":93,"dia":60,"man":67,"tot":80,"nr":25,"usos":5.2,"cartas":10,"pend":[],"niv":["3/2","3/3","3/3","3/3","3/3"],"aj":2},{"a":"Casiopea","p":[{"n":1,"e":1,"m":2},{"n":2,"e":2,"m":1},{"n":3,"e":1,"m":1},{"n":4,"e":1,"m":2},{"n":5,"e":1,"m":1},{"n":6,"e":2,"m":3}],"c":[83,50,100,0,100,null,50,40,67,75],"pre":78,"acc":67,"dia":50,"man":67,"tot":60,"nr":30,"usos":4.2,"cartas":10,"pend":[{"t":"micrometeoritos","id":"S-micrometeoritos"},{"t":"invernadero","id":"A-moho"}],"niv":["2/2","2/2","2/2","3/2","3/2","3/3"],"aj":2},{"a":"Hubble","p":[{"n":1,"e":1,"m":1},{"n":2,"e":2,"m":3},{"n":3,"e":3,"m":3},{"n":4,"e":2,"m":3},{"n":5,"e":3,"m":3},{"n":6,"e":2,"m":3},{"n":7,"e":3,"m":2}],"c":[83,75,100,null,100,null,78,75,67,100],"pre":81,"acc":81,"dia":86,"man":86,"tot":83,"nr":35,"usos":4.1,"cartas":10,"pend":[],"niv":["3/2","3/3","3/3","3/3","3/3","3/3","3/3"],"aj":2},{"a":"Apolo","p":[{"n":1,"e":1,"m":1},{"n":2,"e":3,"m":2},{"n":3,"e":3,"m":1},{"n":4,"e":3,"m":2},{"n":5,"e":3,"m":1},{"n":6,"e":3,"m":3},{"n":7,"e":3,"m":2}],"c":[100,50,null,33,100,100,70,75,50,100],"pre":81,"acc":71,"dia":71,"man":80,"tot":71,"nr":35,"usos":4.3,"cartas":10,"pend":[{"t":"agua_reciclaje","id":"A-fuga"}],"niv":["1/1","2/1","2/1","2/1","2/2","3/2","3/3"],"aj":5},{"a":"Artemisa","p":[{"n":1,"e":1,"m":1},{"n":2,"e":1,"m":0},{"n":3,"e":1,"m":0},{"n":4,"e":3,"m":1},{"n":5,"e":3,"m":0},{"n":6,"e":1,"m":0}],"c":[80,100,null,100,25,null,33,100,50,40],"pre":39,"acc":56,"dia":50,"man":18,"tot":53,"nr":30,"usos":3,"cartas":10,"pend":[],"niv":["1/1","1/1","2/1","2/2","2/2","3/2"],"aj":4},{"a":"Ceres","p":[{"n":1,"e":3,"m":2},{"n":2,"e":2,"m":2},{"n":3,"e":3,"m":3},{"n":4,"e":2,"m":3},{"n":5,"e":3,"m":3},{"n":6,"e":3,"m":1}],"c":[100,67,null,null,80,null,67,83,75,67],"pre":94,"acc":72,"dia":83,"man":88,"tot":77,"nr":30,"usos":3.7,"cartas":10,"pend":[],"niv":["2/2","2/2","3/2","3/3","3/3","3/3"],"aj":2},{"a":"Titán","p":[{"n":1,"e":1,"m":2},{"n":2,"e":1,"m":2},{"n":3,"e":1,"m":2},{"n":4,"e":1,"m":3},{"n":5,"e":1,"m":2},{"n":6,"e":1,"m":3}],"c":[75,100,null,null,100,null,89,67,75,100],"pre":89,"acc":83,"dia":83,"man":88,"tot":83,"nr":30,"usos":4.7,"cartas":10,"pend":[],"niv":["2/2","2/2","3/2","3/3","3/3","3/3"],"aj":2},{"a":"Europa","p":[{"n":1,"e":1,"m":1},{"n":2,"e":1,"m":0},{"n":3,"e":1,"m":0},{"n":4,"e":1,"m":1}],"c":[80,null,null,null,100,null,50,50,33,33],"pre":75,"acc":42,"dia":75,"man":33,"tot":55,"nr":20,"usos":5.5,"cartas":10,"pend":[{"t":"invernadero","id":"S-invernadero"}],"niv":["1/1","1/1","2/1","2/1"],"aj":2},{"a":"Ío","p":[{"n":1,"e":1,"m":2},{"n":2,"e":1,"m":3},{"n":3,"e":2,"m":2},{"n":4,"e":1,"m":2}],"c":[80,100,null,null,null,null,100,75,50,100],"pre":67,"acc":92,"dia":75,"man":75,"tot":85,"nr":20,"usos":5.8,"cartas":10,"pend":[],"niv":["3/2","3/3","3/3","3/3"],"aj":2}]};
+
+const NIVEL_INICIAL = 2;   // 4° grado
+
+const TEMAS = [
+  ["radiacion", "Radiación y tormentas solares", "Radiación"],
+  ["polvo_lunar", "Polvo lunar", "Polvo"],
+  ["sismos", "Sismos lunares", "Sismos"],
+  ["micrometeoritos", "Micrometeoritos", "Micromet."],
+  ["noche_lunar", "La noche lunar", "Noche"],
+  ["hielo_agua", "Hielo en los cráteres", "Hielo"],
+  ["invernadero", "Cultivar comida", "Cultivo"],
+  ["agua_reciclaje", "Reciclar agua y aire", "Agua"],
+  ["energia_solar", "Energía solar", "Energía"],
+  ["salud_astronauta", "Salud del astronauta", "Salud"]
+];
+const NOMBRE = {};
+for (const t of TEMAS) NOMBRE[t[0]] = t[1];
+
+// Texto de los retos que aparecen como repaso pendiente
+const RETO = {
+  "S-polvo_lunar": "Una nube de regolito, el polvo lunar, cubrió los paneles solares. El polvo lunar es filoso como vidrio.",
+  "S-radiacion": "Una tormenta solar llega en una hora. Lanza partículas con mucha energía: eso es la radiación.",
+  "S-invernadero": "La comida está bajando. Las plantas del invernadero necesitan luz, y la luz gasta energía.",
+  "S-hielo_agua": "El rover encontró hielo en un cráter oscuro, donde nunca da el Sol. Ahí sus baterías no se recargan.",
+  "S-micrometeoritos": "Una lluvia de micrometeoritos golpea la base. Viajan a más de 20 km por segundo.",
+  "A-fuga": "Alarma: el agua y la comida bajan rápido.",
+  "A-moho": "Alarma: la cosecha está saliendo mala.",
+  "A-noche": "Alarma: la energía baja y ningún panel carga.",
+  "A-calor": "Alarma: la salud del capitán está bajando.",
+  "A-compuerta": "Alarma: la radiación sube aunque estás en el refugio."
+};
+
+// Sugerencias de actividad para el salón (ejemplos)
+const SUGERENCIA = {
+  invernadero: "Ejemplo de actividad: siembren una semilla en clase, midan el agua que usa y vean qué pasa si se riega de más.",
+  salud_astronauta: "Ejemplo de actividad: anoten cuántas horas duermen y compárenlo con las 8 horas y media de los astronautas.",
+  agua_reciclaje: "Ejemplo de actividad: filtren agua turbia con arena y algodón, y platiquen por qué en la base casi toda el agua se reutiliza.",
+  energia_solar: "Ejemplo de actividad: con una lámpara y una calculadora solar, prueben qué pasa al inclinar el panel.",
+  polvo_lunar: "Ejemplo de actividad: comparen arena de río con vidrio molido (en foto) y expliquen por qué en la Luna el polvo no se desgasta."
+};
+
+const pctTxt = (p) => (p == null ? "—" : p + "%");
+function celda(p) {
+  if (p == null) return { txt: "—", bg: "#f1f4f7", fg: "#4f5b6b", borde: "1px solid #e3e8ee" };
+  const l = Math.round(96 - 0.38 * p);
+  return { txt: p + "%", bg: "hsl(212 65% " + l + "%)", fg: "#16202e", borde: p < 50 ? "2px solid #c8650b" : "1px solid transparent" };
+}
+function nivelActual(a) {
+  const [reto, lectura] = a.niv[a.niv.length - 1].split("/").map(Number);
+  const flecha = reto > NIVEL_INICIAL ? " ↑" : reto < NIVEL_INICIAL ? " ↓" : "";
+  return { reto, lectura, corto: reto + flecha };
+}
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { sel: 0 };
+  }
+  renderVals() {
+    const K = DATA.kpi;
+    const kpis = [
+      { label: "Alumnos", valor: String(K.alumnos), nota: K.partidas + " partidas jugadas" },
+      { label: "Predicción", valor: K.prediccion + "%", nota: "tocó la barra correcta" },
+      { label: "Acción correcta", valor: K.accion + "%", nota: "en las llamadas" },
+      { label: "Diagnóstico", valor: K.diagnostico + "%", nota: "averías al primer intento" },
+      { label: "Manual", valor: K.manual + "%", nota: "cartas bien emparejadas" },
+      { label: "Retención diferida", valor: K.diferida + "%", nota: "temas de una partida anterior" }
+    ];
+    const tendencia = DATA.tendencia.map((t) => ({
+      label: t.k + "ª partida · " + t.n + " retos",
+      accTxt: t.acc + "%", accH: Math.round(t.acc * 1.6),
+      diaTxt: t.dia + "%", diaH: Math.round(t.dia * 1.6)
+    }));
+    const reforzar = DATA.temas.filter((t) => t.n >= 20).sort((a, b) => a.pct - b.pct).slice(0, 3).map((t) => ({
+      nombre: NOMBRE[t.t], pct: t.pct, pctTxt: t.pct + "% · " + t.n + " retos",
+      sugerencia: SUGERENCIA[t.t] || "Repasen juntos la carta de este tema."
+    }));
+    const sel = this.state.sel;
+    const filas = DATA.alumnos.map((a, i) => ({
+      a: a.a, partidas: String(a.p.length), nivelTxt: nivelActual(a).corto, totTxt: pctTxt(a.tot), manTxt: pctTxt(a.man),
+      celdas: a.c.map(celda), sel: i === sel ? "true" : "false",
+      fondo: i === sel ? "#fdf1e4" : "transparent",
+      pick: () => this.setState({ sel: i })
+    }));
+    const al = DATA.alumnos[sel];
+    const na = nivelActual(al);
+    const selVals = {
+      a: al.a,
+      partidasTxt: al.p.length + " partidas · " + al.nr + " retos",
+      nivelTxt: "Reto " + na.reto + " · lectura " + na.lectura + " (empezó en " + NIVEL_INICIAL + ")",
+      ajustesTxt: al.aj + (al.aj === 1 ? " ajuste automático" : " ajustes automáticos") + ". Puedes cambiar su nivel inicial si lo conoces mejor.",
+      partidas: al.p.map((p, i) => ({
+        n: "P" + p.n,
+        txt: p.e > 0 ? "★".repeat(p.e) : "Evacuación",
+        color: p.e > 0 ? "#8a6100" : "#a3352b",
+        nivel: "nivel " + al.niv[i].split("/")[0],
+        manual: p.m + (p.m === 1 ? " carta" : " cartas")
+      })),
+      metricas: [
+        { label: "Predicción", valor: pctTxt(al.pre), nota: "entiende la causa" },
+        { label: "Acción", valor: pctTxt(al.acc), nota: "aplica lo que sabe" },
+        { label: "Diagnóstico", valor: pctTxt(al.dia), nota: "pensamiento crítico" },
+        { label: "Manual", valor: pctTxt(al.man), nota: "lo explica a otro" }
+      ],
+      cartasTxt: al.cartas + " de 10",
+      cartasPct: al.cartas * 10,
+      usosTxt: "Usa en promedio " + al.usos + " cartas por partida.",
+      sinPend: al.pend.length === 0,
+      pend: al.pend.map((x) => ({ tema: NOMBRE[x.t], tipo: x.id.charAt(0) === "A" ? "avería" : "llamada", texto: RETO[x.id] || x.id }))
+    };
+    return { kpis, tendencia, reforzar, temasCorto: TEMAS.map((t) => t[2]), filas, sel: selVals };
+  }
+}
+</script>
+</body>
+</html>

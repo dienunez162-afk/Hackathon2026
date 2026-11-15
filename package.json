@@ -1,0 +1,15 @@
+{
+  "name": "g-nosis",
+  "version": "0.4.0",
+  "private": true,
+  "description": "G-NOSIS: juego educativo de supervivencia en una base lunar (NASA Space Apps 2026 Monterrey).",
+  "type": "commonjs",
+  "scripts": {
+    "datos": "node scripts/generar-datos.mjs",
+    "dev": "npm run datos && npx --yes serve public -l 3000",
+    "dev:vercel": "npm run datos && vercel dev",
+    "check": "node scripts/generar-datos.mjs && node --check public/js/juego.js && node --check public/js/minijuegos.js && node --check public/js/escenas.js && node --check public/js/apis.js && node --check api/donki.js && node --check api/radlab.js && node --check api/osdr.js",
+    "simular": "node herramientas/simulador-mision.js"
+  },
+  "engines": { "node": ">=18" }
+}

@@ -1,0 +1,219 @@
+{
+  "version": "0.3",
+  "descripcion": "Llamadas sorpresa: reemplazan al '¿Sabías que?'. Preguntan lo que el niño aprendió en los informes (de esta partida o de partidas pasadas) y lo premian con power-ups.",
+
+  "reglas": {
+    "llamadasPorPartida": 3,
+    "ventanas": [
+      { "fase": 1, "dias": [3, 4] },
+      { "fase": 2, "dias": [6, 7, 8, 9] },
+      { "fase": 3, "dias": [11, 12, 13] }
+    ],
+    "momento": "Al terminar el día, después del evento y del informe.",
+    "preguntasPorLlamada": 1,
+    "espaciado": "Solo se pregunta un tema aprendido hace 2 días o más (o en una partida anterior).",
+    "eleccion": [
+      "1. Repaso pendiente: una pregunta que respondió mal antes (en esta partida hace 2+ días, o en una partida anterior).",
+      "2. Si es la primera llamada y hay partidas anteriores: un tema aprendido en la partida pasada (chequeo de retención diferido).",
+      "3. Un tema aprendido en esta partida, el que menos se ha preguntado. Se alterna recordar y predecir.",
+      "4. Si no hay nada aprendido hace 2+ días: una pregunta de predecir sobre cualquier tema ya visto."
+    ],
+    "premio": "Al acertar: si la barra más débil no está en verde, Recarga; si todas están en verde, Pronóstico. Se aplica al instante.",
+    "error": {
+      "siempre": "Se muestra la explicación y la pregunta queda como repaso pendiente.",
+      "penalizacion": { "ramas": ["experto"], "valor": 5, "detalle": "En la rama Experto, la barra del tema baja 5 (la radiación sube 5). En las ramas Normal y Rescate, y en la fase 1, solo se pierde el premio." }
+    },
+    "_nota": "En cada pregunta la opción correcta es la de índice 'correcta'. El juego debe revolver las opciones al mostrarlas.",
+    "niveles": {
+      "_regla": "Sigue la tabla 'Qué cambiar en cada nivel' del Miro (filas Texto y Decisiones). Todo se responde con lo que el niño vivió en la partida, lo que dice su bitácora o los datos que trae la misma pregunta: nada que haya que investigar fuera del juego.",
+      "1": { "edad": "7-8", "texto": "Una frase corta con vocabulario simple.", "decisiones": "Consecuencia directa e inmediata: qué pasa o qué barra cambia.", "opciones": 2 },
+      "2": { "edad": "9-10", "texto": "Un párrafo breve que introduce un término STEM (radiación, sismómetro, panel solar, reciclar...).", "decisiones": "Consecuencia a dos pasos: A causa B, y B causa C.", "opciones": 3 },
+      "3": { "edad": "11-12", "texto": "Texto más largo con datos de la bitácora y términos técnicos (CRaTER, regolito, -133 °C, 20 km por segundo...).", "decisiones": "Varias variables (dos o más barras, días que faltan, día o noche) y consecuencias a largo plazo.", "opciones": 4 }
+    }
+  },
+
+  "personajes": {
+    "control": { "nombre": "Control de Misión", "saludo": "Aquí Control de Misión, capitán. Necesitamos tu opinión.", "tipos": ["predecir"] },
+    "cientifica": { "nombre": "Dra. Valeria Ortiz", "rol": "Científica lunar de la NASA (personaje ficticio)", "saludo": "¡Hola, capitán! Soy la Dra. Ortiz. Tengo una pregunta para ti.", "tipos": ["recordar"] }
+  },
+
+  "powerups": {
+    "recarga": { "nombre": "Recarga", "efecto": "+12 a la barra más débil, al instante.", "valor": 12 },
+    "pronostico": { "nombre": "Pronóstico", "efecto": "Revela el evento de mañana. Como te preparas, si pierdes ese minijuego el daño se reduce a la mitad." }
+  },
+
+  "temas": {
+    "radiacion":        { "nombre": "Radiación y tormentas solares", "barra": "radiacion", "aprendeEn": ["F1-D4", "E-D5", "E-D6", "N-D6", "R-D6", "E-D13", "N-D12b", "R-D12", "FAIL-radiacion"] },
+    "polvo_lunar":      { "nombre": "Polvo lunar", "barra": "energia", "aprendeEn": ["F1-D2a"] },
+    "sismos":           { "nombre": "Sismos lunares", "barra": "comida", "aprendeEn": ["F1-D2b", "E-D12a"] },
+    "micrometeoritos":  { "nombre": "Micrometeoritos", "barra": "energia", "aprendeEn": ["E-D8a", "N-D12a"] },
+    "noche_lunar":      { "nombre": "La noche lunar", "barra": "energia", "aprendeEn": ["F2-D9", "F2-D10", "E-D12b", "N-D11", "R-D11", "FAIL-energia"] },
+    "hielo_agua":       { "nombre": "Hielo en los cráteres", "barra": "comida", "aprendeEn": ["E-D11", "N-D13"] },
+    "invernadero":      { "nombre": "Cultivar comida", "barra": "comida", "aprendeEn": ["F1-D3", "E-D8b", "N-D5", "R-D7", "R-D8", "FAIL-comida"] },
+    "agua_reciclaje":   { "nombre": "Reciclar agua y aire", "barra": "comida", "aprendeEn": ["E-D7", "N-D8a"] },
+    "energia_solar":    { "nombre": "Energía solar", "barra": "energia", "aprendeEn": ["F1-D1"] },
+    "salud_astronauta": { "nombre": "Salud del astronauta", "barra": "salud", "aprendeEn": ["INICIO", "N-D7", "N-D8b", "R-D5", "R-D13", "F3-D14", "FAIL-salud"] }
+  },
+
+  "preguntas": [
+    { "id": "radiacion-R", "tema": "radiacion", "tipo": "recordar", "personaje": "cientifica", "niveles": {
+      "1": { "pregunta": "¿Qué te protege de una tormenta solar?", "opciones": ["El refugio", "La ventana"], "correcta": 0,
+             "explicacion": "El refugio. Ahí estás a salvo." },
+      "2": { "pregunta": "Una tormenta solar lanza partículas con mucha energía. A eso le llamamos radiación. Según tu bitácora, ¿por qué en el refugio tu barra de radiación sube menos?", "opciones": ["Sus paredes gruesas frenan las partículas, así que te llega menos radiación", "Está más cerca del Sol, así que se calienta más", "Tiene más luces, así que ves mejor"], "correcta": 0,
+             "explicacion": "Las paredes gruesas frenan las partículas. Si te llegan menos partículas, tu radiación sube menos." },
+      "3": { "pregunta": "Tu bitácora dice que el instrumento CRaTER mide la radiación cerca de la Luna, y que la Luna no tiene campo magnético ni una atmósfera gruesa. En la Tierra, el campo magnético y la atmósfera desvían y frenan gran parte de la radiación. ¿Qué significa esto para una base que se quedará muchos meses en la Luna?", "opciones": ["Necesitará siempre un refugio con paredes gruesas o cubierto de regolito, porque la radiación se va acumulando", "Solo necesitará refugio de noche, porque la radiación viene del Sol", "No necesitará protección, porque CRaTER detiene la radiación", "Solo necesitará protección los primeros días"], "correcta": 0,
+             "explicacion": "Sin campo magnético ni atmósfera, la radiación llega de día y de noche y se suma día tras día. Por eso una base que se queda meses necesita protección todo el tiempo. CRaTER solo la mide; no la detiene." } } },
+
+    { "id": "radiacion-P", "tema": "radiacion", "tipo": "predecir", "personaje": "control", "niveles": {
+      "1": { "pregunta": "Hay tormenta solar y te quedas afuera. ¿Qué barra sube?", "opciones": ["Radiación", "Comida"], "correcta": 0,
+             "explicacion": "Afuera te llegan las partículas del Sol. Sube la radiación." },
+      "2": { "pregunta": "Control de Misión avisa que una tormenta solar llega en una hora. La radiación son las partículas con mucha energía que lanza el Sol. Si tardas en llegar al refugio, ¿qué pasa primero y qué pasa después?", "opciones": ["Primero sube tu radiación; si llega al rojo, la misión corre peligro", "Primero sube tu comida y después tu energía", "Primero baja tu radiación y después sube"], "correcta": 0,
+             "explicacion": "Cada minuto afuera suma radiación. Si la barra llega al rojo, Control de Misión tiene que ayudarte o evacuarte." },
+      "3": { "pregunta": "Llega una tormenta solar. Tu energía está en amarillo y tu radiación ya está alta. Ir al refugio y cerrar las compuertas gasta energía. Faltan 5 días para el relevo y pronto empieza la noche lunar, cuando los paneles no producen. ¿Cuál es el mejor plan?", "opciones": ["Ir al refugio aunque gaste energía, y después ahorrar apagando lo que no se necesite", "Quedarte afuera para guardar toda la energía para la noche", "Ir al refugio y después gastar energía en el invernadero", "Esperar a que pase la tormenta sin hacer nada"], "correcta": 0,
+             "explicacion": "Con la radiación alta, otra subida puede llevarla al rojo. Proteges esa barra ahora y cuidas la energía después, ahorrando para la noche." } } },
+
+    { "id": "polvo_lunar-R", "tema": "polvo_lunar", "tipo": "recordar", "personaje": "cientifica", "niveles": {
+      "1": { "pregunta": "¿Cómo es el polvo de la Luna?", "opciones": ["Filoso como vidrio", "Suave como algodón"], "correcta": 0,
+             "explicacion": "Es filoso como vidrio." },
+      "2": { "pregunta": "A la capa de polvo y piedritas de la Luna le llamamos regolito. Tu bitácora dice que el polvo lunar es filoso. ¿Por qué tallar fuerte los paneles al limpiarlos sería un problema para tu energía?", "opciones": ["El polvo filoso raya los paneles, y un panel rayado produce menos energía", "El polvo se vuelve agua y moja los paneles", "Tallar fuerte calienta la base"], "correcta": 0,
+             "explicacion": "Primero el polvo raya el panel; después, al panel rayado le llega menos luz y produce menos energía." },
+      "3": { "pregunta": "Tu bitácora dice que en la Luna no hay viento ni agua que desgasten el polvo, por eso sigue filoso. En las misiones Apollo el polvo atascó mecanismos y rasgó trajes, y si se respira daña los pulmones. Si una base dura muchos meses y nadie limpia el polvo que entra, ¿qué pasará con el tiempo?", "opciones": ["Las máquinas fallarán más seguido y la salud de los astronautas bajará", "El polvo se suavizará solo con el tiempo", "Solo se ensuciarán las ventanas", "Los paneles producirán más energía"], "correcta": 0,
+             "explicacion": "Como nada lo desgasta, el polvo sigue filoso: con los meses atasca más máquinas y, si se respira, daña la salud." } } },
+
+    { "id": "polvo_lunar-P", "tema": "polvo_lunar", "tipo": "predecir", "personaje": "control", "niveles": {
+      "1": { "pregunta": "Hay polvo en los paneles. ¿Qué barra baja?", "opciones": ["Energía", "Radiación"], "correcta": 0,
+             "explicacion": "El polvo tapa la luz. Baja la energía." },
+      "2": { "pregunta": "Un panel solar convierte la luz del Sol en energía. Si el polvo tapa tus paneles hoy, ¿qué pasa con tu energía mañana y qué tendrás que hacer?", "opciones": ["Tendrás menos energía y tendrás que limpiarlos para recuperarla", "Tendrás más energía y no harás nada", "Bajará tu comida y tendrás que ir al refugio"], "correcta": 0,
+             "explicacion": "Primero el polvo tapa la luz; después tu energía baja hasta que limpies los paneles." },
+      "3": { "pregunta": "Faltan 3 días para que se oculte el Sol y empiece la noche lunar, que dura unos 14 días. Tus paneles tienen polvo y tu salud está en amarillo. Limpiarlos te cansa un poco, pero produce más energía mientras haya Sol. ¿Qué plan es mejor para el resto de la misión?", "opciones": ["Limpiar los paneles ahora y descansar después, para guardar energía antes de la noche", "Descansar hasta que llegue la noche y limpiarlos entonces", "No limpiarlos: de noche el polvo se cae solo", "Limpiarlos todos los días de la noche lunar"], "correcta": 0,
+             "explicacion": "Solo puedes cargar mientras hay Sol. Te cansas un poco hoy, ganas energía para dos semanas de noche y descansas cuando los paneles ya no sirvan." } } },
+
+    { "id": "sismos-R", "tema": "sismos", "tipo": "recordar", "personaje": "cientifica", "niveles": {
+      "1": { "pregunta": "¿Puede temblar en la Luna?", "opciones": ["Sí", "No"], "correcta": 0,
+             "explicacion": "Sí. Se llaman sismos lunares." },
+      "2": { "pregunta": "Un sismómetro es un aparato que mide los temblores. Los astronautas de Apollo dejaron sismómetros en la Luna. ¿Por qué gracias a ellos sabemos que hay que asegurar las cosas en una base lunar?", "opciones": ["Midieron sismos lunares, y si tiembla las cosas sueltas se caen", "Midieron la temperatura, y las cosas se derriten", "Midieron el viento, y las cosas vuelan"], "correcta": 0,
+             "explicacion": "Los sismómetros mostraron que la Luna tiembla. Si tiembla, lo que no está asegurado se cae." },
+      "3": { "pregunta": "Tu bitácora dice que los sismómetros de Apollo registraron sismos lunares, que algunos duran varios minutos y que los más fuertes de poca profundidad fueron cerca del polo sur. Si una base se construye en el polo sur y va a durar años, ¿qué conviene planear?", "opciones": ["Asegurar los objetos y revisar la estructura seguido, porque los sismos largos pueden repetirse", "Nada, porque los sismos lunares duran un segundo", "Construirla de vidrio para que se mueva con el sismo", "Mudarla cada vez que tiemble"], "correcta": 0,
+             "explicacion": "En el polo sur hubo los sismos más fuertes y algunos duran minutos. En años habrá varios, así que conviene prevenir siempre." } } },
+
+    { "id": "sismos-P", "tema": "sismos", "tipo": "predecir", "personaje": "control", "niveles": {
+      "1": { "pregunta": "Tiembla y las cajas no están aseguradas. ¿Qué pasa?", "opciones": ["Se caen", "Nada"], "correcta": 0,
+             "explicacion": "Las cajas sueltas se caen." },
+      "2": { "pregunta": "Durante un sismo se rompen cajas de comida y tu barra de comida baja. Cada día en la base comes algo. Si mañana no haces nada para conseguir comida, ¿qué pasará con tu barra?", "opciones": ["Seguirá bajando, porque cada día comes algo", "Subirá sola mañana", "Se quedará igual para siempre"], "correcta": 0,
+             "explicacion": "El sismo bajó tu comida y, además, cada día gastas un poco. Si no la recuperas, sigue bajando." },
+      "3": { "pregunta": "Después de un sismo largo perdiste comida y tu barra está en amarillo. Tu energía y tu salud están en verde. Faltan 6 días para el relevo y cada día la comida baja un poco. ¿Cuál es el mejor plan?", "opciones": ["Usar energía en el invernadero varios días para recuperar comida, vigilando que la energía no baje al amarillo", "Gastar toda la energía hoy en el invernadero", "No hacer nada: la comida se recupera sola", "Descansar todos los días para que no baje la comida"], "correcta": 0,
+             "explicacion": "Te sobra energía y te falta comida. Cambias un poco de energía por comida cada día, sin descuidar la energía, y llegas al relevo con todo en buen estado." } } },
+
+    { "id": "micrometeoritos-R", "tema": "micrometeoritos", "tipo": "recordar", "personaje": "cientifica", "niveles": {
+      "1": { "pregunta": "¿Qué golpeó tu base?", "opciones": ["Piedritas del espacio", "Estrellas"], "correcta": 0,
+             "explicacion": "Piedritas del espacio, llamadas micrometeoritos." },
+      "2": { "pregunta": "Los micrometeoritos son piedritas del espacio. Tu bitácora dice que viajan a más de 20 km por segundo. ¿Por qué esa velocidad hace que una piedrita pueda dejar un agujero en la base?", "opciones": ["A esa velocidad golpea con muchísima fuerza, aunque sea pequeña", "A esa velocidad se calienta y se derrite", "A esa velocidad se vuelve más grande"], "correcta": 0,
+             "explicacion": "Entre más rápido va algo, más fuerte golpea. Por eso una piedrita tan rápida puede hacer un agujero." },
+      "3": { "pregunta": "Tu bitácora dice que las misiones Apollo duraron días, pero una base lunar se queda meses, y que las paredes con varias capas o cubiertas de regolito ayudan a protegerla. Si cada día hay una pequeña probabilidad de que caiga un micrometeorito, ¿qué conviene para una base que durará años?", "opciones": ["Paredes con varias capas o cubiertas de regolito, porque en más tiempo caerán más micrometeoritos", "Paredes delgadas, porque los golpes solo pasan las primeras semanas", "Nada, porque de noche no caen micrometeoritos", "Muchas ventanas para verlos venir"], "correcta": 0,
+             "explicacion": "Una probabilidad pequeña cada día se vuelve muchos golpes en años. Por eso la protección debe durar toda la misión." } } },
+
+    { "id": "micrometeoritos-P", "tema": "micrometeoritos", "tipo": "predecir", "personaje": "control", "niveles": {
+      "1": { "pregunta": "Una piedrita rompe un panel. ¿Qué baja?", "opciones": ["Energía", "Comida"], "correcta": 0,
+             "explicacion": "Un panel roto produce menos energía." },
+      "2": { "pregunta": "Un micrometeorito hizo un agujero en la pared de la base. Por un agujero se puede escapar el aire. Si no lo tapas, ¿qué pasará primero y qué pasará después?", "opciones": ["Primero se escapa el aire y después baja tu salud", "Primero entra agua y después sube la comida", "Primero se calienta la base y después sube la energía"], "correcta": 0,
+             "explicacion": "El agujero deja salir el aire; sin suficiente aire, tu salud baja." },
+      "3": { "pregunta": "Un micrometeorito dañó un panel solar el día 8. En 2 días se oculta el Sol y empieza la noche lunar, unos 14 días sin luz. Repararlo hoy te cansa y gasta algo de energía. ¿Qué plan es mejor para el resto de la misión?", "opciones": ["Repararlo hoy, para cargar más energía en los últimos días de Sol, aunque te canses", "Esperar a la noche para repararlo", "No repararlo: los paneles producen igual rotos", "Apagar todos los paneles para ahorrar"], "correcta": 0,
+             "explicacion": "Los últimos días de Sol son para llenar las baterías. Un panel roto ahora significa menos energía para toda la noche." } } },
+
+    { "id": "noche_lunar-R", "tema": "noche_lunar", "tipo": "recordar", "personaje": "cientifica", "niveles": {
+      "1": { "pregunta": "¿Cuánto dura la noche en la Luna?", "opciones": ["Unos 14 días", "Una noche"], "correcta": 0,
+             "explicacion": "Unos 14 días." },
+      "2": { "pregunta": "Los paneles solares necesitan la luz del Sol para producir energía. Tu bitácora dice que la noche lunar dura unos 14 días. ¿Por qué durante esa noche tu energía solo puede bajar?", "opciones": ["Sin Sol los paneles no producen, y solo usas lo guardado en las baterías", "De noche las baterías se rompen", "De noche hay más tormentas solares"], "correcta": 0,
+             "explicacion": "Sin Sol no entra energía nueva; solo gastas la que guardaste." },
+      "3": { "pregunta": "Tu bitácora dice que la noche lunar dura unos 14 días terrestres, que la temperatura baja a unos -133 °C y que la NASA considera clave sobrevivirla para vivir en la Luna. ¿Por qué es tan difícil?", "opciones": ["Durante dos semanas no hay energía solar y, al mismo tiempo, se necesita mucha energía para la calefacción", "De noche la Luna se acerca al Sol", "De noche no hay oxígeno en la base", "La noche solo dura unas horas"], "correcta": 0,
+             "explicacion": "Son dos problemas juntos: no entra energía del Sol y el frío obliga a gastar más en calefacción, durante muchos días." } } },
+
+    { "id": "noche_lunar-P", "tema": "noche_lunar", "tipo": "predecir", "personaje": "control", "niveles": {
+      "1": { "pregunta": "Mañana es de noche. ¿Qué haces hoy?", "opciones": ["Cargar las baterías", "Gastar la energía"], "correcta": 0,
+             "explicacion": "Hoy hay Sol: carga las baterías." },
+      "2": { "pregunta": "Durante la noche lunar hace muchísimo frío afuera de la base. La calefacción gasta energía. Si la apagas, ¿qué pasa con tus barras?", "opciones": ["Ahorras energía, pero tu salud baja por el frío", "Ahorras energía y tu salud sube", "Gastas más energía y tu comida sube"], "correcta": 0,
+             "explicacion": "Apagar la calefacción ahorra energía, pero el frío entra y tu salud baja." },
+      "3": { "pregunta": "Es el día 11, en plena noche lunar. Tu energía está en amarillo; tu salud y tu comida, en verde. Faltan 3 días para el relevo y los paneles no producen hasta que salga el Sol. Tienes encendidas la calefacción, las luces de los pasillos y las luces del invernadero. ¿Qué apagas?", "opciones": ["Las luces de los pasillos y del invernadero: pierdes un poco de comida, pero la energía alcanza y la calefacción sigue", "La calefacción: ahorras mucha energía y la salud no importa", "Nada: la energía se recarga de noche", "Todo, incluida la calefacción"], "correcta": 0,
+             "explicacion": "Ahorras en lo que menos importa. Tu comida está en verde y aguanta perder un poco; la calefacción te protege del frío." } } },
+
+    { "id": "hielo_agua-R", "tema": "hielo_agua", "tipo": "recordar", "personaje": "cientifica", "niveles": {
+      "1": { "pregunta": "¿Dónde encontraste hielo?", "opciones": ["En un cráter oscuro", "En una montaña con Sol"], "correcta": 0,
+             "explicacion": "En un cráter oscuro." },
+      "2": { "pregunta": "Un cráter es un hoyo en el suelo de la Luna. A algunos nunca les da el Sol. Según tu bitácora, ¿por qué el hielo dentro de esos cráteres no se derrite?", "opciones": ["Como nunca les da el Sol, siempre están muy fríos", "Porque en la Luna llueve", "Porque el hielo lunar es de piedra"], "correcta": 0,
+             "explicacion": "Sin Sol no se calientan; como siguen fríos, el hielo no se derrite." },
+      "3": { "pregunta": "Tu bitácora dice que en cráteres que nunca reciben Sol hay hielo a menos de -198 °C, y que del agua se obtiene oxígeno para respirar y combustible para cohetes. Si una base aprende a usar ese hielo, ¿qué cambia a largo plazo?", "opciones": ["Necesitará traer menos agua, oxígeno y combustible desde la Tierra", "Ya no necesitará paneles solares", "Ya no habrá radiación", "Los cráteres se llenarán de Sol"], "correcta": 0,
+             "explicacion": "El hielo da tres cosas que antes había que traer de la Tierra. Con el tiempo, la base depende menos de las naves." } } },
+
+    { "id": "hielo_agua-P", "tema": "hielo_agua", "tipo": "predecir", "personaje": "control", "niveles": {
+      "1": { "pregunta": "Encuentras hielo. ¿Qué barra sube?", "opciones": ["Comida y agua", "Radiación"], "correcta": 0,
+             "explicacion": "El hielo es agua para la base." },
+      "2": { "pregunta": "El rover funciona con baterías. Dentro de un cráter oscuro no hay Sol para recargarlas. Si el rover entra con poca energía, ¿qué pasa primero y qué pasa después?", "opciones": ["Primero se queda sin energía y después no puede regresar a la base", "Primero encuentra más hielo y después se recarga", "Primero se calienta y después se derrite el hielo"], "correcta": 0,
+             "explicacion": "Sin Sol no se recarga: gasta lo que tiene y, si se acaba, no puede volver." },
+      "3": { "pregunta": "El rover encontró mucho hielo, pero tiene poca energía. En la base, tu comida está en amarillo y tu energía en verde. Faltan 4 días para el relevo. Puedes seguir buscando hielo, o volver, recargar y regresar mañana. ¿Qué plan cuida mejor la misión?", "opciones": ["Volver a recargar y regresar mañana: tardas un día más, pero no pierdes el rover", "Seguir buscando: más hielo es más comida", "Dejar el rover en el cráter y volver sin él", "Gastar toda la energía de la base en el rover"], "correcta": 0,
+             "explicacion": "Si pierdes el rover, ya no podrás traer hielo en los días que faltan. Esperar un día cuesta poco y protege todo lo demás." } } },
+
+    { "id": "invernadero-R", "tema": "invernadero", "tipo": "recordar", "personaje": "cientifica", "niveles": {
+      "1": { "pregunta": "¿Para qué sirve el invernadero?", "opciones": ["Para cultivar comida", "Para guardar baterías"], "correcta": 0,
+             "explicacion": "Para cultivar comida." },
+      "2": { "pregunta": "Un envío es una nave que trae comida desde la Tierra. Tu bitácora dice que a la Luna llegarán pocos envíos. ¿Por qué eso hace tan importante al invernadero?", "opciones": ["Si los envíos tardan, la comida del invernadero evita que se acabe la comida", "Las plantas le dan energía a los paneles", "Las naves no pueden llevar plantas"], "correcta": 0,
+             "explicacion": "Pocos envíos significan esperar mucho; mientras tanto, el invernadero sigue dando comida." },
+      "3": { "pregunta": "Tu bitácora dice que los astronautas de la Estación Espacial ya comieron lechuga cultivada en el espacio, que unas flores se llenaron de moho por exceso de agua y que una base lunar debe ser autosuficiente. Durante la noche lunar no hay luz del Sol por unos 14 días. ¿Qué necesita un invernadero lunar para funcionar durante años?", "opciones": ["Energía para la luz, la cantidad justa de agua y cuidado diario de las plantas", "Mucha agua para que crezcan más rápido", "Solo la luz del Sol, aunque sea de noche lunar", "Ningún cuidado: las plantas crecen solas"], "correcta": 0,
+             "explicacion": "Se juntan tres cosas: de noche necesita luz que gasta energía, el exceso de agua trae moho y las plantas necesitan cuidado todos los días." } } },
+
+    { "id": "invernadero-P", "tema": "invernadero", "tipo": "predecir", "personaje": "control", "niveles": {
+      "1": { "pregunta": "No riegas las plantas. ¿Qué pasa con la comida?", "opciones": ["Baja", "Sube"], "correcta": 0,
+             "explicacion": "Sin agua las plantas no crecen. Baja la comida." },
+      "2": { "pregunta": "Las plantas del invernadero necesitan luz, y la luz gasta energía. Si hoy usas energía en el invernadero, ¿qué pasa hoy y qué pasa en unos días?", "opciones": ["Hoy baja tu energía y en unos días sube tu comida", "Hoy sube tu comida y en unos días sube tu energía", "Hoy baja la radiación y en unos días sube"], "correcta": 0,
+             "explicacion": "Primero pagas con energía; después las plantas crecen y te dan comida." },
+      "3": { "pregunta": "Es de noche lunar y el invernadero usa luz artificial. Tu energía está en amarillo y tu comida en verde. Faltan 4 días para el relevo. Si apagas el invernadero, ¿qué pasará en los siguientes días?", "opciones": ["Tu energía alcanzará mejor y tu comida bajará poco a poco; como está en verde, puedes aguantar", "Tu comida subirá porque las plantas descansan", "Tu energía bajará más rápido", "No cambiará nada"], "correcta": 0,
+             "explicacion": "Pesas dos barras: la que está en peligro es la energía. La comida está en verde, así que puede bajar un poco sin riesgo hasta el relevo." } } },
+
+    { "id": "agua_reciclaje-R", "tema": "agua_reciclaje", "tipo": "recordar", "personaje": "cientifica", "niveles": {
+      "1": { "pregunta": "En tu base, ¿el agua se recicla?", "opciones": ["Sí, se usa otra vez", "No, se tira"], "correcta": 0,
+             "explicacion": "Sí. Se limpia y se usa otra vez." },
+      "2": { "pregunta": "Reciclar es limpiar algo para usarlo otra vez. Tu bitácora dice que la Estación Espacial recicla casi toda su agua, incluso el sudor. ¿Por qué eso ayuda a una base lejos de la Tierra?", "opciones": ["Porque así se necesita traer mucha menos agua en las naves", "Porque el agua reciclada da energía", "Porque así llueve en la base"], "correcta": 0,
+             "explicacion": "Si casi toda el agua se vuelve a usar, hay que traer muy poca desde la Tierra." },
+      "3": { "pregunta": "Tu bitácora dice que la Estación Espacial recicla cerca del 98% de su agua y que el oxígeno se obtiene separando el agua en hidrógeno y oxígeno. Si el sistema de reciclaje se descompone varios días, ¿qué problemas aparecen?", "opciones": ["El agua se gasta más rápido y también falta agua para fabricar oxígeno", "Solo falta agua para beber", "Sube la energía porque el reciclaje se apaga", "Ninguno, porque el 98% del agua ya está guardada"], "correcta": 0,
+             "explicacion": "Sin reciclaje se pierde el agua usada; y como el oxígeno se fabrica con agua, también se pone en riesgo el aire." } } },
+
+    { "id": "agua_reciclaje-P", "tema": "agua_reciclaje", "tipo": "predecir", "personaje": "control", "niveles": {
+      "1": { "pregunta": "Hay una fuga de agua. ¿Qué barra baja?", "opciones": ["Comida y agua", "Radiación"], "correcta": 0,
+             "explicacion": "El agua es parte de tus provisiones." },
+      "2": { "pregunta": "Con el agua de la base también se fabrica oxígeno para respirar. Si una fuga de agua dura varios días, ¿qué pasa primero y qué pasa después?", "opciones": ["Primero se pierde agua y después falta para fabricar oxígeno", "Primero sube la energía y después la comida", "Primero baja la radiación y después la salud"], "correcta": 0,
+             "explicacion": "La fuga quita agua; con menos agua se puede fabricar menos oxígeno." },
+      "3": { "pregunta": "Hay una fuga de agua y también una tarea de Control de Misión que da una estrella extra. Tu comida está en amarillo y tu salud en verde. Si haces la tarea primero, la fuga sigue todo el día. ¿Qué plan es mejor para el resto de la misión?", "opciones": ["Tapar la fuga primero y hacer la tarea después: la fuga hace daño cada minuto y la comida ya está en amarillo", "Hacer la tarea primero: la estrella vale más que el agua", "Descansar y esperar a que la fuga pare sola", "Ir al refugio"], "correcta": 0,
+             "explicacion": "La fuga empeora mientras esperas y tu comida ya está en amarillo. La tarea puede hacerse después sin perder nada." } } },
+
+    { "id": "energia_solar-R", "tema": "energia_solar", "tipo": "recordar", "personaje": "cientifica", "niveles": {
+      "1": { "pregunta": "¿De dónde sacan energía los paneles?", "opciones": ["Del Sol", "Del agua"], "correcta": 0,
+             "explicacion": "Del Sol." },
+      "2": { "pregunta": "Un panel solar convierte la luz del Sol en energía. Tu bitácora dice que produce más cuando la luz le llega de frente. ¿Por qué orientar bien los paneles llena más rápido tu barra de energía?", "opciones": ["Les llega más luz, y con más luz producen más energía", "Así no les cae polvo", "Así se ven desde la Tierra"], "correcta": 0,
+             "explicacion": "Primero les llega más luz; después, con más luz, producen más energía." },
+      "3": { "pregunta": "Tu bitácora dice que en la Luna el Sol brilla unos 14 días seguidos y después se oculta otros 14, y que los paneles producen más cuando la luz les llega de frente. ¿Qué plan de energía tiene más sentido para una base que vivirá ahí mucho tiempo?", "opciones": ["Orientar bien los paneles en los días de Sol y guardar energía en baterías para los 14 días de noche", "Gastar toda la energía de día: de noche los paneles también cargan", "Producir energía solo de noche", "No usar baterías: el Sol nunca se oculta"], "correcta": 0,
+             "explicacion": "Hay dos semanas para producir y dos semanas sin producir. Lo que no guardes de día no lo tendrás de noche." } } },
+
+    { "id": "energia_solar-P", "tema": "energia_solar", "tipo": "predecir", "personaje": "control", "niveles": {
+      "1": { "pregunta": "Los paneles no miran al Sol. ¿Qué pasa?", "opciones": ["Producen menos energía", "Producen más energía"], "correcta": 0,
+             "explicacion": "Sin luz de frente producen menos." },
+      "2": { "pregunta": "Es el día 8. En 2 días se oculta el Sol y los paneles dejan de producir. Las baterías guardan energía para después. Si hoy no las cargas, ¿qué pasará cuando llegue la noche?", "opciones": ["Tendrás poca energía guardada y se acabará rápido", "Los paneles cargarán de noche", "Tendrás más energía que nunca"], "correcta": 0,
+             "explicacion": "Primero llegas a la noche con poca energía guardada; después, sin Sol, esa poca energía se acaba." },
+      "3": { "pregunta": "Hoy hay Sol y mañana empieza la noche lunar. Tu salud y tu energía están en amarillo. Orientar los paneles te cansa un poco; descansar sube tu salud. Faltan 5 días para el relevo. ¿Qué plan cuida mejor las dos barras?", "opciones": ["Orientar los paneles hoy y descansar los días de noche: es tu última oportunidad de cargar con Sol", "Descansar hoy y orientar los paneles de noche", "Descansar todos los días y no cargar", "Orientar los paneles todos los días de la noche"], "correcta": 0,
+             "explicacion": "La energía solo se puede cargar hoy; la salud se puede recuperar cualquier día. Por eso haces primero lo que ya no podrás hacer mañana." } } },
+
+    { "id": "salud_astronauta-R", "tema": "salud_astronauta", "tipo": "recordar", "personaje": "cientifica", "niveles": {
+      "1": { "pregunta": "¿Quién llega al final de tu misión?", "opciones": ["Tu relevo", "Nadie"], "correcta": 0,
+             "explicacion": "Tu relevo: los astronautas que te reemplazan." },
+      "2": { "pregunta": "Un relevo es el equipo que llega a reemplazarte. Tu bitácora dice que en Skylab cada tripulación esperaba a su relevo, y que un astronauta cansado comete más errores. ¿Por qué cuidarte a ti mismo ayuda a entregar bien la base?", "opciones": ["Si estás cansado te equivocas más, y los errores dañan la base", "Descansar recarga los paneles", "El relevo llega antes si duermes"], "correcta": 0,
+             "explicacion": "Primero el cansancio provoca errores; después, los errores dañan la base que vas a entregar." },
+      "3": { "pregunta": "Tu bitácora dice que en Skylab vivieron tres tripulaciones, una tras otra, durante 28, 59 y 84 días, y que los astronautas tienen programadas unas 8 horas y media para dormir. ¿Por qué entre más larga es una misión, más importa el descanso?", "opciones": ["El cansancio se acumula día tras día, y en una misión larga hay más días para cometer errores", "En misiones largas el Sol brilla más", "En misiones largas ya no hace falta dormir", "El relevo trae más camas"], "correcta": 0,
+             "explicacion": "Un mal día de sueño se nota poco; muchos días seguidos se suman. En una misión larga, el descanso es parte del trabajo." } } },
+
+    { "id": "salud_astronauta-P", "tema": "salud_astronauta", "tipo": "predecir", "personaje": "control", "niveles": {
+      "1": { "pregunta": "Trabajas sin descansar. ¿Qué baja?", "opciones": ["Salud", "Radiación"], "correcta": 0,
+             "explicacion": "Sin descanso baja tu salud." },
+      "2": { "pregunta": "La base se calienta demasiado. Encender el enfriamiento gasta energía. Si no lo enciendes, ¿qué pasa hoy y qué pasa mañana?", "opciones": ["Hoy baja tu salud y mañana estarás más cansado para tus tareas", "Hoy sube tu comida y mañana tu energía", "Hoy baja la radiación y mañana sube"], "correcta": 0,
+             "explicacion": "Primero el calor baja tu salud; después, con menos salud, te cuesta más hacer las tareas." },
+      "3": { "pregunta": "Tu salud está casi en rojo, tu comida en verde y tu energía en amarillo. Mañana hay una tarea difícil que gasta energía. Descansar hoy usa algo de comida. Faltan 4 días para el relevo. ¿Qué plan es mejor?", "opciones": ["Descansar hoy con algo de comida, y mañana hacer la tarea con más salud", "Hacer la tarea difícil hoy mismo", "Saltarte la comida para ahorrar", "No hacer la tarea y pasar los días en el refugio"], "correcta": 0,
+             "explicacion": "La salud es la barra en peligro y la comida está en verde, así que puedes usar un poco. Descansado, la tarea de mañana te saldrá mejor." } } }
+  ]
+}

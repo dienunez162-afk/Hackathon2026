@@ -1,0 +1,831 @@
+{
+  "version": "0.3",
+  "descripcion": "Grafo ponderado de la misión lunar de 14 días. Los nodos son situaciones; las barras viven en el estado del jugador. Cada nodo deja un informe que se guarda en la bitácora y alimenta las llamadas sorpresa (ver llamadas-mision-lunar.json).",
+  "barras": {
+    "_nota": "mejor=alta: verde si valor >= verde, rojo si valor < rojo, fracaso en 0. mejor=baja: verde si valor <= verde, rojo si valor > rojo, fracaso en 100.",
+    "radiacion": { "inicio": 15, "mejor": "baja", "verde": 45, "rojo": 70 },
+    "energia": { "inicio": 60, "mejor": "alta", "verde": 55, "rojo": 30 },
+    "comida": { "inicio": 65, "mejor": "alta", "verde": 55, "rojo": 30 },
+    "salud": { "inicio": 80, "mejor": "alta", "verde": 55, "rojo": 30 }
+  },
+  "consumoDiario": {
+    "_nota": "Se aplica al terminar cada día (nodos con día 1 a 14). De día los paneles recargan un poco; la noche lunar empieza al terminar el día 10.",
+    "dia": {
+      "dias": [1, 10],
+      "energia": 3,
+      "comida": -2,
+      "salud": 0,
+      "radiacion": 1
+    },
+    "noche": {
+      "dias": [11, 14],
+      "energia": -2,
+      "comida": -2,
+      "salud": -1,
+      "radiacion": 1
+    }
+  },
+  "evaluaciones": { "experto": "las 4 barras en verde", "rescate": "al menos 1 barra en rojo", "normal": "cualquier otro caso", "tres_estrellas": "las 4 barras en verde y al menos 3 tareas de Control de Misión cumplidas", "dos_estrellas": "las 4 barras en verde", "una_estrella": "llegaste al día 14 sin que ninguna barra llegara al límite" },
+  "nodos": [
+    {
+      "id": "INICIO",
+      "tipo": "inicio",
+      "fase": 0,
+      "dia": 0,
+      "rama": "todas",
+      "titulo": "Llegada a la base",
+      "mensaje": "¡Bienvenido, capitán! La base está en perfectas condiciones. Tu relevo llega en 14 días. Cuida las cuatro barras hasta entonces.",
+      "minijuego": "Recorrido guiado por los módulos (tutorial): energía, invernadero, refugio y sala de control.",
+      "resultado": {},
+      "informe": { "tema": "salud_astronauta", "texto": "En 1973 tres tripulaciones vivieron en Skylab, una tras otra: 28, 59 y 84 días. Cada una cuidó la estación hasta que llegó la siguiente. Igual que ellos, cuida la base y cuídate: un astronauta cansado comete más errores.", "fuente": "NASA – Historia de Skylab" },
+      "escenario": "exterior"
+    },
+    {
+      "id": "F1-D1",
+      "tipo": "tarea",
+      "fase": 1,
+      "dia": 1,
+      "rama": "todas",
+      "reto": 1,
+      "titulo": "Orientar los paneles solares",
+      "mensaje": "El Sol está alto. Conecta los cables para que los paneles miren hacia él.",
+      "minijuego": "Conectar cables del mismo color (estilo 'arreglar cables').",
+      "resultado": {
+        "exito": { "energia": 10 },
+        "fallo": { "energia": 5 }
+      },
+      "informe": { "tema": "energia_solar", "texto": "Los paneles producen más energía cuando la luz del Sol les llega de frente. En la Luna el Sol brilla unos 14 días seguidos y luego se oculta otros 14.", "fuente": "NASA – Fenómenos lunares" },
+      "escenario": "paneles"
+    },
+    {
+      "id": "F1-D2a",
+      "tipo": "evento",
+      "fase": 1,
+      "dia": 2,
+      "rama": "todas",
+      "reto": 1,
+      "titulo": "Polvo lunar en los paneles",
+      "mensaje": "¡Los paneles están cubiertos de polvo! Límpialos con cuidado para no rayarlos.",
+      "minijuego": "Deslizar para limpiar el polvo sin pasar dos veces por el mismo lugar.",
+      "resultado": {
+        "exito": { "energia": 3 },
+        "fallo": { "energia": -18, "salud": -9 }
+      },
+      "informe": { "tema": "polvo_lunar", "texto": "El polvo lunar es filoso como vidrio porque en la Luna no hay viento ni agua que lo desgaste. En las misiones Apollo atascó mecanismos y rasgó trajes, y si se respira daña los pulmones.", "fuente": "NASA – Misiones Apollo" },
+      "escenario": "paneles"
+    },
+    {
+      "id": "F1-D2b",
+      "tipo": "evento",
+      "fase": 1,
+      "dia": 2,
+      "rama": "todas",
+      "reto": 1,
+      "titulo": "Pequeño sismo lunar",
+      "mensaje": "¡La base se sacude! Atrapa las cajas de comida antes de que se rompan.",
+      "minijuego": "Atrapar objetos que caen de los estantes.",
+      "resultado": {
+        "exito": {},
+        "fallo": { "comida": -18, "salud": -9 }
+      },
+      "informe": { "tema": "sismos", "texto": "Los astronautas de Apollo dejaron sismómetros que registraron sismos lunares. Algunos duran varios minutos, y los más fuertes de poca profundidad fueron cerca del polo sur.", "fuente": "NASA – Sismómetros Apollo" },
+      "escenario": "maquinas"
+    },
+    {
+      "id": "F1-D3",
+      "tipo": "decision",
+      "fase": 1,
+      "dia": 3,
+      "rama": "todas",
+      "reto": 1,
+      "titulo": "¿Invernadero o baterías?",
+      "mensaje": "Tienes energía extra hoy. ¿En qué la usas?",
+      "minijuego": null,
+      "resultado": {
+        "opciones": [
+          {
+            "texto": "Plantar semillas en el invernadero",
+            "efectos": { "energia": -8, "comida": 15 }
+          },
+          {
+            "texto": "Guardar la energía en las baterías",
+            "efectos": { "energia": 12, "comida": -3 }
+          }
+        ]
+      },
+      "informe": { "tema": "invernadero", "texto": "En la Luna los envíos de comida serán poco frecuentes, así que la base tendrá que cultivar para ser autosuficiente. En 2015 los astronautas de la Estación Espacial comieron la primera lechuga cultivada en el espacio.", "fuente": "NASA – Experimento Veggie" },
+      "escenario": "control"
+    },
+    {
+      "id": "F1-D4",
+      "tipo": "control_mision",
+      "fase": 1,
+      "dia": 4,
+      "rama": "todas",
+      "reto": 1,
+      "titulo": "Leer el medidor de radiación",
+      "mensaje": "Control de Misión te manda una gráfica real de radiación. ¿Es un día seguro para salir?",
+      "minijuego": "Leer una gráfica con datos reales y elegir: seguro / cuidado / peligro.",
+      "resultado": {
+        "exito": { "mision": 1, "radiacion": -5 },
+        "fallo": {}
+      },
+      "informe": { "tema": "radiacion", "texto": "El instrumento CRaTER mide la radiación cerca de la Luna desde 2009. La Luna no tiene campo magnético ni atmósfera gruesa que la proteja, por eso hay que vigilar la radiación y tener un refugio de paredes gruesas.", "fuente": "RadLab – CRaTER (LRO)" },
+      "escenario": "control"
+    },
+    {
+      "id": "EV1",
+      "tipo": "evaluacion",
+      "fase": 1,
+      "dia": 4,
+      "rama": "todas",
+      "titulo": "Reporte de la semana",
+      "mensaje": "Control de Misión revisa tus barras y decide qué tan difíciles serán los próximos días.",
+      "minijuego": null,
+      "resultado": {},
+      "informe": null,
+      "escenario": "control"
+    },
+    {
+      "id": "E-D5",
+      "tipo": "control_mision",
+      "fase": 2,
+      "dia": 5,
+      "rama": "experto",
+      "reto": 3,
+      "titulo": "Pronóstico del clima espacial",
+      "mensaje": "Vas muy bien, capitán. Usa los datos del Sol para predecir si viene una tormenta.",
+      "minijuego": "Comparar alertas reales de DONKI y elegir el día más probable de la tormenta.",
+      "resultado": {
+        "exito": { "mision": 1 },
+        "fallo": { "radiacion": 9 }
+      },
+      "informe": { "tema": "radiacion", "texto": "Una nube de material del Sol (eyección de masa coronal) suele tardar de 1 a 3 días en llegar. Si la detectas a tiempo, puedes preparar el refugio antes.", "fuente": "NASA DONKI – CME" },
+      "escenario": "control"
+    },
+    {
+      "id": "E-D6",
+      "tipo": "evento",
+      "fase": 2,
+      "dia": 6,
+      "rama": "experto",
+      "reto": 3,
+      "titulo": "Tormenta solar (aviso corto)",
+      "mensaje": "¡Alerta! Partículas del Sol vienen en camino y tienes muy poco tiempo. ¡Al refugio!",
+      "minijuego": "Laberinto contra reloj: cerrar compuertas y llegar al refugio.",
+      "resultado": {
+        "exito": { "radiacion": 5, "energia": -2 },
+        "fallo": { "radiacion": 45, "energia": -9 }
+      },
+      "informe": { "tema": "radiacion", "texto": "Las partículas más rápidas de una tormenta solar pueden llegar en menos de una hora. El refugio tiene paredes más gruesas que frenan esas partículas.", "fuente": "NASA DONKI – SEP" },
+      "escenario": "pasillo"
+    },
+    {
+      "id": "E-D7",
+      "tipo": "tarea",
+      "fase": 2,
+      "dia": 7,
+      "rama": "experto",
+      "reto": 3,
+      "titulo": "Reciclar el agua",
+      "mensaje": "El agua se usa una y otra vez. Arma los filtros en el orden correcto.",
+      "minijuego": "Rompecabezas de tuberías con filtros.",
+      "resultado": {
+        "exito": { "salud": 5, "comida": 8 },
+        "fallo": { "salud": -9 }
+      },
+      "informe": { "tema": "agua_reciclaje", "texto": "La Estación Espacial recicla cerca del 98% de su agua, incluso el sudor. Además, el oxígeno para respirar se obtiene separando el agua en hidrógeno y oxígeno.", "fuente": "NASA – Soporte de vida de la ISS" },
+      "escenario": "maquinas"
+    },
+    {
+      "id": "E-D8a",
+      "tipo": "evento",
+      "fase": 2,
+      "dia": 8,
+      "rama": "experto",
+      "reto": 3,
+      "titulo": "Lluvia de micrometeoritos",
+      "mensaje": "¡Pequeñas rocas espaciales golpean la base! Tapa los agujeros rápido.",
+      "minijuego": "Tapar agujeros que aparecen en distintos lugares (reflejos).",
+      "resultado": {
+        "exito": { "energia": -5 },
+        "fallo": { "energia": -27, "salud": -18 }
+      },
+      "informe": { "tema": "micrometeoritos", "texto": "Los micrometeoritos viajan a más de 20 km por segundo, por eso una piedrita puede hacer un agujero. Una base que dura meses recibe más golpes que una visita de días como Apollo.", "fuente": "NASA – Micrometeoroides" },
+      "escenario": "pasillo"
+    },
+    {
+      "id": "E-D8b",
+      "tipo": "evento",
+      "fase": 2,
+      "dia": 8,
+      "rama": "experto",
+      "reto": 3,
+      "titulo": "Moho en el invernadero",
+      "mensaje": "Algunas plantas se ven enfermas. Encuentra cuáles y ajusta la humedad.",
+      "minijuego": "Encontrar las plantas enfermas y bajar la humedad al nivel correcto.",
+      "resultado": {
+        "exito": { "comida": 5 },
+        "fallo": { "comida": -27 }
+      },
+      "informe": { "tema": "invernadero", "texto": "En 2016 unas flores de la Estación Espacial se llenaron de moho por exceso de agua. Las plantas necesitan la cantidad justa de agua; cultivar bien hace a la base menos dependiente de los envíos.", "fuente": "NASA – Experimento Veggie" },
+      "escenario": "invernadero"
+    },
+    {
+      "id": "N-D5",
+      "tipo": "tarea",
+      "fase": 2,
+      "dia": 5,
+      "rama": "normal",
+      "reto": 2,
+      "titulo": "Cosecha en el invernadero",
+      "mensaje": "Las plantas crecieron. Riega y cosecha en el orden correcto.",
+      "minijuego": "Secuencia: regar, esperar, cosechar.",
+      "resultado": {
+        "exito": { "comida": 15, "energia": -5 },
+        "fallo": { "comida": 9, "energia": -9 }
+      },
+      "informe": { "tema": "invernadero", "texto": "Cultivar gasta energía hoy, pero da comida en los próximos días. En la Luna los envíos de comida serán poco frecuentes, por eso cultivar es clave.", "fuente": "NASA – Comida espacial" },
+      "escenario": "invernadero"
+    },
+    {
+      "id": "N-D6",
+      "tipo": "evento",
+      "fase": 2,
+      "dia": 6,
+      "rama": "normal",
+      "reto": 2,
+      "titulo": "Tormenta solar",
+      "mensaje": "El Sol lanzó una tormenta. Tienes algo de tiempo: llega al refugio.",
+      "minijuego": "Laberinto hacia el refugio con tiempo moderado.",
+      "resultado": {
+        "exito": { "radiacion": 3, "energia": -5 },
+        "fallo": { "radiacion": 36, "energia": -9 }
+      },
+      "niveles": {
+        "nivel1": { "texto": "¡Tormenta del Sol! Corre al refugio.", "decision": "Ir al refugio protege tu cuerpo ahora.", "pista": "Sigue las flechas verdes." },
+        "nivel2": { "texto": "Una tormenta solar lanza partículas con mucha energía. El refugio tiene paredes más gruesas.", "decision": "Si vas al refugio gastas energía hoy, pero mañana tendrás menos radiación.", "pista": "Busca las paredes más gruesas." },
+        "nivel3": { "texto": "Una eyección de masa coronal viaja hacia la Luna. Sin campo magnético, la superficie recibe la radiación directo.", "decision": "Si refuerzas el refugio hoy, la próxima tormenta será más fácil; si no, la radiación se acumula.", "pista": "¿Qué módulo tiene más blindaje?" }
+      },
+      "informe": { "tema": "radiacion", "texto": "El refugio tiene paredes más gruesas que frenan las partículas del Sol. En la Luna no hay campo magnético que te proteja como en la Tierra.", "fuente": "NASA DONKI + RadLab" },
+      "escenario": "pasillo"
+    },
+    {
+      "id": "N-D7",
+      "tipo": "control_mision",
+      "fase": 2,
+      "dia": 7,
+      "rama": "normal",
+      "reto": 2,
+      "titulo": "Mensaje especial de la Tierra",
+      "mensaje": "Los científicos tienen preguntas sobre la base. Respóndelas para ganar puntos.",
+      "minijuego": "Preguntas cortas sobre lo que pasó en los días anteriores.",
+      "resultado": {
+        "exito": { "mision": 1, "salud": -5 },
+        "fallo": { "salud": -9 }
+      },
+      "informe": { "tema": "salud_astronauta", "texto": "Responder a la Tierra también cansa: el trabajo de un astronauta no es solo reparar. Control de Misión cuida tu descanso porque un astronauta cansado comete más errores.", "fuente": "NASA – Vida en la ISS" },
+      "escenario": "control"
+    },
+    {
+      "id": "N-D8a",
+      "tipo": "evento",
+      "fase": 2,
+      "dia": 8,
+      "rama": "normal",
+      "reto": 2,
+      "titulo": "Fuga de agua",
+      "mensaje": "¡Hay agua flotando en el pasillo! Sigue las tuberías y cierra la válvula correcta.",
+      "minijuego": "Seguir tuberías y cerrar válvulas.",
+      "resultado": {
+        "exito": { "comida": -3 },
+        "fallo": { "comida": -27, "salud": -9 }
+      },
+      "informe": { "tema": "agua_reciclaje", "texto": "El agua de la base se recicla una y otra vez: la Estación Espacial recupera casi toda, cerca del 98%. Si se pierde agua, también falta para fabricar oxígeno, que se obtiene separando el agua.", "fuente": "NASA – Soporte de vida de la ISS" },
+      "escenario": "maquinas"
+    },
+    {
+      "id": "N-D8b",
+      "tipo": "evento",
+      "fase": 2,
+      "dia": 8,
+      "rama": "normal",
+      "reto": 2,
+      "titulo": "Ola de calor en la base",
+      "mensaje": "La base se está calentando demasiado. Activa el enfriamiento.",
+      "minijuego": "Regular válvulas de enfriamiento hasta llegar a la zona verde.",
+      "resultado": {
+        "exito": { "energia": -10 },
+        "fallo": { "salud": -27, "energia": -9 }
+      },
+      "informe": { "tema": "salud_astronauta", "texto": "Skylab se sobrecalentó al perder su escudo y los astronautas abrieron una sombrilla gigante para taparla del Sol. El calor excesivo baja la salud.", "fuente": "NASA – Historia de Skylab" },
+      "escenario": "maquinas"
+    },
+    {
+      "id": "R-D5",
+      "tipo": "calma",
+      "fase": 2,
+      "dia": 5,
+      "rama": "rescate",
+      "reto": 1,
+      "titulo": "Control de Misión te ayuda",
+      "mensaje": "Tranquilo, capitán. Te explicamos qué barra está en peligro y te mandamos ayuda.",
+      "minijuego": null,
+      "resultado": {
+        "siempre": { "barraMasBaja": 20 }
+      },
+      "informe": { "tema": "salud_astronauta", "texto": "Un equipo en la Tierra acompaña a los astronautas las 24 horas. Pedir ayuda a tiempo y descansar son parte de una buena misión.", "fuente": "NASA – Control de Misión" },
+      "escenario": "control"
+    },
+    {
+      "id": "R-D6",
+      "tipo": "evento",
+      "fase": 2,
+      "dia": 6,
+      "rama": "rescate",
+      "reto": 1,
+      "titulo": "Tormenta solar (aviso largo)",
+      "mensaje": "Detectamos una tormenta solar con mucha anticipación. Ve al refugio con calma.",
+      "minijuego": "Camino al refugio con flechas y mucho tiempo.",
+      "resultado": {
+        "exito": { "radiacion": 3 },
+        "fallo": { "radiacion": 22 }
+      },
+      "informe": { "tema": "radiacion", "texto": "La Luna no tiene un campo magnético que la proteja como a la Tierra. Con aviso a tiempo, llegar al refugio de paredes gruesas es fácil.", "fuente": "NASA DONKI" },
+      "escenario": "pasillo"
+    },
+    {
+      "id": "R-D7",
+      "tipo": "tarea",
+      "fase": 2,
+      "dia": 7,
+      "rama": "rescate",
+      "reto": 1,
+      "titulo": "Cosecha rápida",
+      "mensaje": "Las lechugas ya están listas. Cosecha todas las que puedas.",
+      "minijuego": "Tocar las lechugas maduras (fácil).",
+      "resultado": {
+        "exito": { "comida": 15 },
+        "fallo": { "comida": 14 }
+      },
+      "informe": { "tema": "invernadero", "texto": "En la Luna los envíos de comida serán poco frecuentes, por eso hay que cultivar. Una base que produce su comida es más autosuficiente.", "fuente": "NASA – Producción de alimentos" },
+      "escenario": "invernadero"
+    },
+    {
+      "id": "R-D8",
+      "tipo": "calma",
+      "fase": 2,
+      "dia": 8,
+      "rama": "rescate",
+      "reto": 1,
+      "titulo": "Llega una nave de suministros",
+      "mensaje": "¡Una nave de carga aterrizó cerca! Trae comida y baterías.",
+      "minijuego": null,
+      "resultado": {
+        "siempre": { "comida": 15, "energia": 10 }
+      },
+      "informe": { "tema": "invernadero", "texto": "A la Estación Espacial llegan naves de carga cada pocos meses. En la Luna serán menos frecuentes, así que no puedes depender solo de ellas: también hay que cultivar.", "fuente": "NASA – Comida espacial" },
+      "escenario": "exterior"
+    },
+    {
+      "id": "F2-D9",
+      "tipo": "decision",
+      "fase": 2,
+      "dia": 9,
+      "rama": "todas",
+      "reto": 2,
+      "titulo": "Prepararse para la noche",
+      "mensaje": "Mañana se oculta el Sol y la noche dura días. ¿Cómo te preparas?",
+      "minijuego": null,
+      "resultado": {
+        "opciones": [
+          {
+            "texto": "Cargar todas las baterías",
+            "efectos": { "energia": 20, "comida": -5 }
+          },
+          {
+            "texto": "Guardar comida extra",
+            "efectos": { "comida": 15, "energia": -5 }
+          },
+          {
+            "texto": "Revisar la calefacción",
+            "efectos": { "salud": 10, "energia": -5 }
+          }
+        ]
+      },
+      "informe": { "tema": "noche_lunar", "texto": "La noche lunar dura unos 14 días terrestres y la temperatura baja a unos -133 °C. Sin Sol los paneles no producen energía, así que hay que cargar las baterías antes.", "fuente": "NASA – Noche lunar" },
+      "escenario": "control"
+    },
+    {
+      "id": "F2-D10",
+      "tipo": "evento",
+      "fase": 2,
+      "dia": 10,
+      "rama": "todas",
+      "reto": 2,
+      "titulo": "Cae la noche lunar",
+      "mensaje": "El Sol se ocultó. Los paneles ya no producen energía. Reparte la que tienes.",
+      "minijuego": "Mover interruptores para dar energía solo a los módulos importantes.",
+      "resultado": {
+        "exito": {},
+        "fallo": { "energia": -22, "salud": -9 }
+      },
+      "informe": { "tema": "noche_lunar", "texto": "Sin Sol los paneles no producen energía ni hay calor. La NASA dice que sobrevivir la noche lunar es clave para vivir en la Luna.", "fuente": "NASA – Noche lunar" },
+      "escenario": "maquinas"
+    },
+    {
+      "id": "EV2",
+      "tipo": "evaluacion",
+      "fase": 2,
+      "dia": 10,
+      "rama": "todas",
+      "titulo": "Reporte antes de la noche",
+      "mensaje": "Control de Misión revisa tus barras otra vez. Así empezará tu noche lunar.",
+      "minijuego": null,
+      "resultado": {},
+      "informe": null,
+      "escenario": "control"
+    },
+    {
+      "id": "E-D11",
+      "tipo": "control_mision",
+      "fase": 3,
+      "dia": 11,
+      "rama": "experto",
+      "reto": 3,
+      "titulo": "Buscar hielo en el cráter",
+      "mensaje": "Misión especial: maneja el rover hasta un cráter oscuro y encuentra hielo.",
+      "minijuego": "Manejar el rover usando un radar, sin luz.",
+      "resultado": {
+        "exito": { "mision": 1, "comida": 10 },
+        "fallo": { "energia": -18 }
+      },
+      "informe": { "tema": "hielo_agua", "texto": "En cráteres que nunca reciben Sol hay hielo, a menos de -198 °C. Con él se obtiene agua, y separándola, oxígeno para respirar y combustible para cohetes.", "fuente": "NASA – Hielo lunar" },
+      "escenario": "crater"
+    },
+    {
+      "id": "E-D12a",
+      "tipo": "evento",
+      "fase": 3,
+      "dia": 12,
+      "rama": "experto",
+      "reto": 3,
+      "titulo": "Sismo lunar fuerte",
+      "mensaje": "¡Un sismo fuerte! Asegura los soportes antes de que se dañe la base.",
+      "minijuego": "Mantener tres soportes en equilibrio al mismo tiempo.",
+      "resultado": {
+        "exito": {},
+        "fallo": { "salud": -18, "energia": -18 }
+      },
+      "informe": { "tema": "sismos", "texto": "Algunos sismos lunares duran varios minutos, más que muchos terremotos en la Tierra. Los sismómetros de Apollo los registraron. Asegurar los objetos evita perder comida y equipo.", "fuente": "NASA – Sismómetros Apollo" },
+      "escenario": "pasillo"
+    },
+    {
+      "id": "E-D12b",
+      "tipo": "evento",
+      "fase": 3,
+      "dia": 12,
+      "rama": "experto",
+      "reto": 3,
+      "titulo": "Falla en la calefacción",
+      "mensaje": "La calefacción se apagó y afuera hay -133 °C. ¡Repárala rápido!",
+      "minijuego": "Arreglar cables con el tiempo corriendo.",
+      "resultado": {
+        "exito": { "energia": -5 },
+        "fallo": { "salud": -27 }
+      },
+      "informe": { "tema": "noche_lunar", "texto": "Durante la noche lunar, de unos 14 días, la temperatura baja a unos -133 °C. Sin calefacción, la salud del capitán baja rápido.", "fuente": "NASA – Noche lunar" },
+      "escenario": "maquinas"
+    },
+    {
+      "id": "E-D13",
+      "tipo": "evento",
+      "fase": 3,
+      "dia": 13,
+      "rama": "experto",
+      "reto": 3,
+      "titulo": "Tormenta solar en la oscuridad",
+      "mensaje": "Una tormenta solar llega en plena noche y con poca energía. Encuentra el refugio a oscuras.",
+      "minijuego": "Laberinto a oscuras con linterna limitada.",
+      "resultado": {
+        "exito": { "radiacion": 5, "energia": -2 },
+        "fallo": { "radiacion": 45, "energia": -9 }
+      },
+      "informe": { "tema": "radiacion", "texto": "La radiación llega aunque sea de noche: los rayos cósmicos vienen de todas direcciones. El refugio de paredes gruesas te protege de día y de noche.", "fuente": "RadLab – CRaTER" },
+      "escenario": "pasillo"
+    },
+    {
+      "id": "N-D11",
+      "tipo": "tarea",
+      "fase": 3,
+      "dia": 11,
+      "rama": "normal",
+      "reto": 2,
+      "titulo": "Mantener la calefacción",
+      "mensaje": "Hace mucho frío. Ajusta la calefacción para que la base esté cómoda.",
+      "minijuego": "Girar perillas hasta la temperatura correcta.",
+      "resultado": {
+        "exito": { "salud": 5, "energia": -5 },
+        "fallo": { "salud": -18 }
+      },
+      "informe": { "tema": "noche_lunar", "texto": "La noche lunar dura unos 14 días y la temperatura baja a unos -133 °C. La calefacción gasta energía, pero protege tu salud.", "fuente": "NASA – Noche lunar" },
+      "escenario": "maquinas"
+    },
+    {
+      "id": "N-D12a",
+      "tipo": "evento",
+      "fase": 3,
+      "dia": 12,
+      "rama": "normal",
+      "reto": 2,
+      "titulo": "Micrometeorito en un panel",
+      "mensaje": "Una pequeña roca golpeó un panel. Repáralo antes de que vuelva a salir el Sol.",
+      "minijuego": "Reemplazar piezas del panel en orden.",
+      "resultado": {
+        "exito": { "energia": -3 },
+        "fallo": { "energia": -22 }
+      },
+      "informe": { "tema": "micrometeoritos", "texto": "Los micrometeoritos viajan a más de 20 km por segundo. Una base que dura meses recibe más golpes, por eso necesita paredes con varias capas o cubiertas de regolito.", "fuente": "NASA – Micrometeoroides" },
+      "escenario": "paneles"
+    },
+    {
+      "id": "N-D12b",
+      "tipo": "evento",
+      "fase": 3,
+      "dia": 12,
+      "rama": "normal",
+      "reto": 2,
+      "titulo": "Tormenta solar sorpresa",
+      "mensaje": "¡El Sol lanzó una tormenta sin avisar! Ve al refugio.",
+      "minijuego": "Laberinto hacia el refugio con tiempo moderado.",
+      "resultado": {
+        "exito": { "radiacion": 5 },
+        "fallo": { "radiacion": 32 }
+      },
+      "informe": { "tema": "radiacion", "texto": "La NASA vigila el Sol todos los días y guarda cada tormenta en una base de datos llamada DONKI. Aun sin aviso, el refugio de paredes gruesas te protege, porque la Luna no tiene campo magnético.", "fuente": "NASA DONKI" },
+      "escenario": "pasillo"
+    },
+    {
+      "id": "N-D13",
+      "tipo": "control_mision",
+      "fase": 3,
+      "dia": 13,
+      "rama": "normal",
+      "reto": 2,
+      "titulo": "Buscar hielo (con guía)",
+      "mensaje": "Control de Misión te guía paso a paso para encontrar hielo en un cráter.",
+      "minijuego": "Manejar el rover siguiendo señales.",
+      "resultado": {
+        "exito": { "mision": 1, "comida": 8 },
+        "fallo": { "energia": -9 }
+      },
+      "informe": { "tema": "hielo_agua", "texto": "Hay evidencia de hielo en cráteres sombreados cerca del polo sur de la Luna, donde nunca da el Sol. Ese hielo es agua para beber y para fabricar oxígeno y combustible.", "fuente": "NASA – Hielo lunar" },
+      "escenario": "crater"
+    },
+    {
+      "id": "R-D11",
+      "tipo": "decision",
+      "fase": 3,
+      "dia": 11,
+      "rama": "rescate",
+      "reto": 1,
+      "titulo": "Modo ahorro de energía",
+      "mensaje": "Para llegar al final de la noche hay que ahorrar. ¿Qué apagas?",
+      "minijuego": null,
+      "resultado": {
+        "opciones": [
+          {
+            "texto": "Apagar las luces del invernadero",
+            "efectos": { "energia": 15, "comida": -5 }
+          },
+          {
+            "texto": "Apagar las luces de los pasillos",
+            "efectos": { "energia": 10, "salud": -3 }
+          }
+        ]
+      },
+      "informe": { "tema": "noche_lunar", "texto": "Cada aparato encendido gasta energía. En la noche lunar, de unos 14 días, no hay Sol para recargar los paneles, así que ahorrar es parte del trabajo.", "fuente": "NASA – Noche lunar" },
+      "escenario": "maquinas"
+    },
+    {
+      "id": "R-D12",
+      "tipo": "evento",
+      "fase": 3,
+      "dia": 12,
+      "rama": "rescate",
+      "reto": 1,
+      "titulo": "Tormenta solar (aviso largo)",
+      "mensaje": "Viene otra tormenta, pero te avisamos con tiempo. Ve al refugio.",
+      "minijuego": "Camino al refugio con flechas y mucho tiempo.",
+      "resultado": {
+        "exito": { "radiacion": 3 },
+        "fallo": { "radiacion": 18 }
+      },
+      "informe": { "tema": "radiacion", "texto": "Cubrir una base con tierra lunar (regolito) puede protegerla de la radiación. La Luna no tiene campo magnético; con aviso a tiempo, el refugio de paredes gruesas es tu mejor amigo.", "fuente": "NASA – Hábitats lunares" },
+      "escenario": "pasillo"
+    },
+    {
+      "id": "R-D13",
+      "tipo": "calma",
+      "fase": 3,
+      "dia": 13,
+      "rama": "rescate",
+      "reto": 1,
+      "titulo": "Descanso y comida caliente",
+      "mensaje": "Hoy no pasa nada malo. Descansa y come algo caliente.",
+      "minijuego": null,
+      "resultado": {
+        "siempre": { "salud": 15, "comida": -3 }
+      },
+      "informe": { "tema": "salud_astronauta", "texto": "Los astronautas de la Estación Espacial tienen programadas unas 8 horas y media para dormir. Un capitán descansado comete menos errores.", "fuente": "NASA – Vida en la ISS" },
+      "escenario": "control"
+    },
+    {
+      "id": "F3-D14",
+      "tipo": "tarea",
+      "fase": 3,
+      "dia": 14,
+      "rama": "todas",
+      "reto": 2,
+      "titulo": "Llega la nave del relevo",
+      "mensaje": "¡Ya vienen tus sucesores! Guía su aterrizaje con las luces de la base.",
+      "minijuego": "Alinear la nave con la plataforma usando las luces.",
+      "resultado": {
+        "exito": { "salud": 5 },
+        "fallo": { "energia": -9 }
+      },
+      "informe": { "tema": "salud_astronauta", "texto": "Las tripulaciones de Skylab se relevaban: cada grupo cuidaba la estación hasta que llegaba el siguiente. Fueron 3 tripulaciones: 28, 59 y 84 días.", "fuente": "NASA – Historia de Skylab" },
+      "escenario": "exterior"
+    },
+    {
+      "id": "EVF",
+      "tipo": "evaluacion",
+      "fase": 3,
+      "dia": 14,
+      "rama": "todas",
+      "titulo": "Entrega de la base",
+      "mensaje": "Tus sucesores revisan la base. ¿Cuántas estrellas ganaste?",
+      "minijuego": null,
+      "resultado": {},
+      "informe": null,
+      "escenario": "exterior"
+    },
+    {
+      "id": "FIN-3",
+      "tipo": "final",
+      "exito": true,
+      "estrellas": 3,
+      "fase": 3,
+      "dia": 14,
+      "rama": "todas",
+      "titulo": "Misión perfecta",
+      "mensaje": "¡Base impecable y todas las tareas de la Tierra cumplidas! Eres un capitán de verdad.",
+      "minijuego": null,
+      "resultado": {},
+      "informe": null,
+      "escenario": "exterior"
+    },
+    {
+      "id": "FIN-2",
+      "tipo": "final",
+      "exito": true,
+      "estrellas": 2,
+      "fase": 3,
+      "dia": 14,
+      "rama": "todas",
+      "titulo": "Base en verde",
+      "mensaje": "Entregaste la base con todas las barras en verde. ¡Excelente trabajo!",
+      "minijuego": null,
+      "resultado": {},
+      "informe": null,
+      "escenario": "exterior"
+    },
+    {
+      "id": "FIN-1",
+      "tipo": "final",
+      "exito": true,
+      "estrellas": 1,
+      "fase": 3,
+      "dia": 14,
+      "rama": "todas",
+      "titulo": "Relevo a salvo",
+      "mensaje": "Resististe hasta que llegó el relevo. La próxima vez intenta dejar todo en verde.",
+      "minijuego": null,
+      "resultado": {},
+      "informe": null,
+      "escenario": "exterior"
+    },
+    {
+      "id": "FAIL-energia",
+      "tipo": "final",
+      "exito": false,
+      "barra": "energia",
+      "fase": null,
+      "dia": null,
+      "rama": "todas",
+      "titulo": "Apagón: evacuación",
+      "mensaje": "La base se quedó sin energía y una nave de rescate te llevó a casa. Aprendiste que sin Sol hay que ahorrar.",
+      "minijuego": null,
+      "resultado": {},
+      "informe": { "tema": "noche_lunar", "texto": "Sobrevivir la noche lunar es uno de los mayores retos para vivir en la Luna: son unos 14 días sin energía solar.", "fuente": "NASA – Noche lunar" },
+      "escenario": "exterior"
+    },
+    {
+      "id": "FAIL-comida",
+      "tipo": "final",
+      "exito": false,
+      "barra": "comida",
+      "fase": null,
+      "dia": null,
+      "rama": "todas",
+      "titulo": "Despensa vacía: evacuación",
+      "mensaje": "Se acabó la comida y una nave de rescate te llevó a casa. En la Luna hay que cultivar y reciclar.",
+      "minijuego": null,
+      "resultado": {},
+      "informe": { "tema": "invernadero", "texto": "En la Luna los envíos de comida serán poco frecuentes; la tripulación tendrá que cultivar para ser autosuficiente.", "fuente": "NASA – Producción de alimentos" },
+      "escenario": "exterior"
+    },
+    {
+      "id": "FAIL-radiacion",
+      "tipo": "final",
+      "exito": false,
+      "barra": "radiacion",
+      "fase": null,
+      "dia": null,
+      "rama": "todas",
+      "titulo": "Demasiada radiación: evacuación",
+      "mensaje": "Recibiste demasiada radiación y los doctores pidieron que volvieras. El refugio es tu mejor amigo.",
+      "minijuego": null,
+      "resultado": {},
+      "informe": { "tema": "radiacion", "texto": "La Luna no tiene un campo magnético como la Tierra. Ir al refugio de paredes gruesas a tiempo es la mejor protección.", "fuente": "RadLab – CRaTER" },
+      "escenario": "exterior"
+    },
+    {
+      "id": "FAIL-salud",
+      "tipo": "final",
+      "exito": false,
+      "barra": "salud",
+      "fase": null,
+      "dia": null,
+      "rama": "todas",
+      "titulo": "Capitán agotado: evacuación",
+      "mensaje": "Trabajaste tanto que te agotaste y te llevaron a casa a descansar. Descansar también es parte de la misión.",
+      "minijuego": null,
+      "resultado": {},
+      "informe": { "tema": "salud_astronauta", "texto": "Dormir y descansar son parte del plan diario de los astronautas: un astronauta cansado comete más errores.", "fuente": "NASA – Vida en la ISS" },
+      "escenario": "exterior"
+    }
+  ],
+  "aristas": [
+    { "desde": "INICIO", "hacia": "F1-D1", "dias": 1, "peso": 1 },
+    { "desde": "F1-D1", "hacia": "F1-D2a", "dias": 1, "peso": 0.5 },
+    { "desde": "F1-D1", "hacia": "F1-D2b", "dias": 1, "peso": 0.5 },
+    { "desde": "F1-D2a", "hacia": "F1-D3", "dias": 1, "peso": 1 },
+    { "desde": "F1-D2b", "hacia": "F1-D3", "dias": 1, "peso": 1 },
+    { "desde": "F1-D3", "hacia": "F1-D4", "dias": 1, "peso": 1 },
+    { "desde": "F1-D4", "hacia": "EV1", "dias": 0, "peso": 1 },
+    { "desde": "EV1", "hacia": "E-D5", "dias": 1, "peso": 1, "condicion": "experto" },
+    { "desde": "EV1", "hacia": "N-D5", "dias": 1, "peso": 1, "condicion": "normal" },
+    { "desde": "EV1", "hacia": "R-D5", "dias": 1, "peso": 1, "condicion": "rescate" },
+    { "desde": "E-D5", "hacia": "E-D6", "dias": 1, "peso": 1 },
+    { "desde": "E-D6", "hacia": "E-D7", "dias": 1, "peso": 1 },
+    { "desde": "E-D7", "hacia": "E-D8a", "dias": 1, "peso": 0.6 },
+    { "desde": "E-D7", "hacia": "E-D8b", "dias": 1, "peso": 0.4 },
+    { "desde": "E-D8a", "hacia": "F2-D9", "dias": 1, "peso": 1 },
+    { "desde": "E-D8b", "hacia": "F2-D9", "dias": 1, "peso": 1 },
+    { "desde": "N-D5", "hacia": "N-D6", "dias": 1, "peso": 1 },
+    { "desde": "N-D6", "hacia": "N-D7", "dias": 1, "peso": 1 },
+    { "desde": "N-D7", "hacia": "N-D8a", "dias": 1, "peso": 0.5 },
+    { "desde": "N-D7", "hacia": "N-D8b", "dias": 1, "peso": 0.5 },
+    { "desde": "N-D8a", "hacia": "F2-D9", "dias": 1, "peso": 1 },
+    { "desde": "N-D8b", "hacia": "F2-D9", "dias": 1, "peso": 1 },
+    { "desde": "R-D5", "hacia": "R-D6", "dias": 1, "peso": 1 },
+    { "desde": "R-D6", "hacia": "R-D7", "dias": 1, "peso": 1 },
+    { "desde": "R-D7", "hacia": "R-D8", "dias": 1, "peso": 1 },
+    { "desde": "R-D8", "hacia": "F2-D9", "dias": 1, "peso": 1 },
+    { "desde": "F2-D9", "hacia": "F2-D10", "dias": 1, "peso": 1 },
+    { "desde": "F2-D10", "hacia": "EV2", "dias": 0, "peso": 1 },
+    { "desde": "EV2", "hacia": "E-D11", "dias": 1, "peso": 1, "condicion": "experto" },
+    { "desde": "EV2", "hacia": "N-D11", "dias": 1, "peso": 1, "condicion": "normal" },
+    { "desde": "EV2", "hacia": "R-D11", "dias": 1, "peso": 1, "condicion": "rescate" },
+    { "desde": "E-D11", "hacia": "E-D12a", "dias": 1, "peso": 0.5 },
+    { "desde": "E-D11", "hacia": "E-D12b", "dias": 1, "peso": 0.5 },
+    { "desde": "E-D12a", "hacia": "E-D13", "dias": 1, "peso": 1 },
+    { "desde": "E-D12b", "hacia": "E-D13", "dias": 1, "peso": 1 },
+    { "desde": "E-D13", "hacia": "F3-D14", "dias": 1, "peso": 1 },
+    { "desde": "N-D11", "hacia": "N-D12a", "dias": 1, "peso": 0.5 },
+    { "desde": "N-D11", "hacia": "N-D12b", "dias": 1, "peso": 0.5, "pesoDinamico": "DONKI: subir si hubo llamaradas fuertes (clase M o X) en la última semana real" },
+    { "desde": "N-D12a", "hacia": "N-D13", "dias": 1, "peso": 1 },
+    { "desde": "N-D12b", "hacia": "N-D13", "dias": 1, "peso": 1 },
+    { "desde": "N-D13", "hacia": "F3-D14", "dias": 1, "peso": 1 },
+    { "desde": "R-D11", "hacia": "R-D12", "dias": 1, "peso": 1 },
+    { "desde": "R-D12", "hacia": "R-D13", "dias": 1, "peso": 1 },
+    { "desde": "R-D13", "hacia": "F3-D14", "dias": 1, "peso": 1 },
+    { "desde": "F3-D14", "hacia": "EVF", "dias": 0, "peso": 1 },
+    { "desde": "EVF", "hacia": "FIN-3", "dias": 0, "peso": 1, "condicion": "tres_estrellas" },
+    { "desde": "EVF", "hacia": "FIN-2", "dias": 0, "peso": 1, "condicion": "dos_estrellas" },
+    { "desde": "EVF", "hacia": "FIN-1", "dias": 0, "peso": 1, "condicion": "una_estrella" }
+  ],
+  "reglaGlobal": "Después de cada nodo, si una barra llega al límite (energía, comida o salud en 0, o radiación en 100) la partida salta al final FAIL-<barra> correspondiente.",
+  "balance": { "_nota": "Simulación de 4,000 partidas por nivel de habilidad (probabilidad de ganar cada minijuego). Es un punto de partida: hay que ajustar con niños reales.", "20%": "18% evacuación, 82% una estrella", "60%": "4% evacuación, 91% una estrella, 5% dos o tres estrellas", "80%": "1% evacuación, 65% una estrella, 33% dos o tres estrellas", "95%": "20% una estrella, 80% dos o tres estrellas" }
+}

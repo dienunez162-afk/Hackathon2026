@@ -1,0 +1,806 @@
+{
+  "version": "0.4",
+  "descripcion": "Cómo aprende el niño sin que se sienta trivia: los conceptos son reglas del juego, las llamadas son situaciones (predecir → actuar → ver), las averías se diagnostican con pistas, la bitácora son cartas que se usan y al final se escribe un manual para el siguiente capitán.",
+  "reglas": {
+    "principio": "Nunca preguntar algo que el niño no pueda resolver con lo que ya vio en su partida. La explicación aparece solo si se equivoca, y en una línea.",
+    "lectura": "Textos de una línea con íconos. En nivel 1, todo con voz en off. Nada de texto en medio de un minijuego.",
+    "espaciado": "Una situación solo usa un tema que el niño vivió hace 2 días o más (o en una partida anterior, o que trae en su manual).",
+    "apoyo": {
+      "ramas": [
+        "fase1",
+        "rescate"
+      ],
+      "tambienSi": "alguna barra está en rojo",
+      "detalle": "En la fase 1, en la rama Rescate o si alguna barra ya está en rojo, una acción equivocada hace la mitad de daño y en las averías la Dra. Ortiz manda una pista extra desde el principio. Así el niño que va batallando aprende sin hundirse."
+    },
+    "llamadas": {
+      "porPartida": 3,
+      "ventanas": [
+        {
+          "fase": 1,
+          "dias": [3, 4]
+        },
+        {
+          "fase": 2,
+          "dias": [
+            6,
+            7,
+            8,
+            9
+          ]
+        },
+        {
+          "fase": 3,
+          "dias": [
+            11,
+            12,
+            13
+          ]
+        }
+      ],
+      "pasos": [
+        "1. Aviso: Control de Misión describe la situación.",
+        "2. Predecir: el niño toca la barra que cree que va a cambiar.",
+        "3. Actuar: elige qué hacer (2, 3 o 4 acciones según el nivel).",
+        "4. Ver: las barras cambian frente a él. Si se equivocó, una línea explica por qué."
+      ],
+      "eleccion": [
+        "1ª llamada: un repaso pendiente de la partida anterior, o un tema que aprendió en ella (retención diferida).",
+        "2ª y 3ª llamada: un tema que falló en esta partida hace 2+ días (repaso).",
+        "Si no hay repasos: el tema aprendido que menos ha salido."
+      ],
+      "premio": "Predicción correcta + acción correcta: power-up al instante (Recarga si la barra más débil no está en verde; si todas están en verde, Pronóstico). Solo la acción correcta: evitas el daño. Acción incorrecta: recibes el efecto de esa acción y el tema vuelve como repaso."
+    },
+    "averias": {
+      "porPartida": 2,
+      "ventanas": [
+        {
+          "fase": 2,
+          "dias": [
+            5,
+            6,
+            7,
+            8,
+            9
+          ]
+        },
+        {
+          "fase": 3,
+          "dias": [
+            11,
+            12,
+            13
+          ]
+        }
+      ],
+      "pasos": [
+        "1. Suena una alarma: una barra baja y no se dice por qué.",
+        "2. El niño recorre la base y encuentra pistas.",
+        "3. Elige la reparación. Si acierta al primer intento, repara rápido y gana +5 en esa barra.",
+        "4. Cada intento fallido: la barra baja 4 más, esa opción se tacha y la Dra. Ortiz manda una pista extra."
+      ],
+      "danoInicial": 4,
+      "danoPorError": 4,
+      "bonusPrimerIntento": 5,
+      "eleccion": "Primero una avería de un tema que el niño ya tiene en sus cartas; si no hay, cualquiera de esa fase.",
+      "niveles": {
+        "1": { "pistasClave": 2, "distractores": 0, "enganosa": false, "acciones": 2, "texto": "Pistas que apuntan directo a la causa." },
+        "2": { "pistasClave": 2, "distractores": 1, "enganosa": false, "acciones": 3, "texto": "Una pista no tiene que ver: hay que descartarla." },
+        "3": { "pistasClave": 2, "distractores": 2, "enganosa": true, "acciones": 4, "texto": "Una pista parece apuntar a otra causa: hay que combinar las claves." }
+      }
+    },
+    "cartas": { "desbloqueo": "Al vivir un concepto (el informe del nodo), se desbloquea la carta de su tema: ícono + una frase. Tocarla muestra el informe completo; leerlo es opcional.", "uso": "Cada carta se usa una vez por partida, cuando el niño decida. Escudo: la próxima vez que esa barra empeore, empeora la mitad. Recurso: suma a esa barra al instante.", "pista": "En una avería, si el niño tiene la carta de ese tema, una de las pistas clave se resalta." },
+    "manual": {
+      "momento": "Al terminar la partida (relevo o evacuación).",
+      "pasos": "El niño elige cartas para dejarle consejos al siguiente capitán y empareja cada una con su momento (\"Antes de que empiece la noche lunar\").",
+      "cartasPorNivel": { "1": 1, "2": 2, "3": 3 },
+      "premio": "Cada carta bien emparejada empieza desbloqueada en la siguiente partida."
+    },
+    "adaptacion": {
+      "_regla": "No se le pregunta la edad al niño. El nivel se ajusta solo según cómo le va, y el niño nunca lo ve.",
+      "modos": {
+        "libre": {
+          "descripcion": "Juego fuera del salón. No se pide edad ni grado. Empieza en nivel 2 y se calibra rápido con los primeros retos.",
+          "nivelInicial": 2,
+          "calibracion": { "retos": 3, "detalle": "Solo en la primera partida: después de 3 retos, si acertó los 3 sube un nivel; si no acertó ninguno, baja uno." }
+        },
+        "educativo": {
+          "descripcion": "Grupo de un maestro. El maestro elige el grado del grupo y puede cambiar el nivel inicial de cada alumno. Después el ajuste es el mismo.",
+          "nivelPorGrado": { "1": 1, "2": 1, "3": 1, "4": 2, "5": 2, "6": 3 }
+        }
+      },
+      "cuentan": "Llamadas (acción correcta) y averías (resueltas al primer intento).",
+      "ventana": 5,
+      "sube": 4,
+      "baja": 1,
+      "enfriamiento": 3,
+      "detalleVentana": "Se miran los últimos 5 retos. Con 4 o más bien, sube; con 1 o ninguno, baja. Después de un cambio se esperan al menos 3 retos antes de volver a cambiar.",
+      "perillas": { "reto": "Cuántas acciones hay en las llamadas, cuántas pistas y reparaciones en las averías y cuántas cartas van al manual.", "lectura": "Qué tan largos son los textos (aviso y explicación). Baja junto con el reto, pero sube un ajuste después: primero sube el reto y, si le sigue yendo bien, sube la lectura. En lectura 1 la voz en off se enciende sola." },
+      "ocultar": "El niño nunca ve su nivel, su rama ni la palabra apoyo. Las estrellas premian la misión, no el nivel: en nivel 1 también se pueden ganar 3 estrellas. En modo educativo, el maestro ve el nivel de cada alumno en su panel.",
+      "persistencia": "El nivel sigue de una partida a otra: en modo educativo se guarda en Supabase; en modo libre, en el dispositivo.",
+      "dificultadSimulada": 0.08,
+      "_notaSimulador": "Supuesto del simulador: cada nivel de reto arriba de 2 baja 8 puntos la probabilidad de acertar (y cada nivel abajo la sube 8), porque hay más opciones y pistas que distraen."
+    },
+    "niveles": {
+      "1": { "edad": "7-8", "texto": "Una frase corta con vocabulario simple.", "decisiones": "Consecuencia directa e inmediata." },
+      "2": { "edad": "9-10", "texto": "Un párrafo breve que introduce un término STEM.", "decisiones": "Consecuencia a dos pasos." },
+      "3": { "edad": "11-12", "texto": "Texto más largo con datos de la bitácora y términos técnicos.", "decisiones": "Varias variables y consecuencias para el resto de la misión." },
+      "_regla": "Tabla 'Qué cambiar en cada nivel' del Miro: la fila Texto es la perilla de lectura y la fila Decisiones es la perilla de reto."
+    }
+  },
+  "personajes": {
+    "control": { "nombre": "Control de Misión", "papel": "Hace las llamadas de situación." },
+    "cientifica": { "nombre": "Dra. Valeria Ortiz", "papel": "Científica lunar de la NASA (personaje ficticio). Manda pistas en las averías y explica la causa al final." }
+  },
+  "powerups": {
+    "recarga": { "nombre": "Recarga", "efecto": "+12 a la barra más débil, al instante.", "valor": 12 },
+    "pronostico": { "nombre": "Pronóstico", "efecto": "Revela el evento de mañana. Si pierdes ese minijuego, el daño se reduce a la mitad." }
+  },
+  "temas": {
+    "radiacion": {
+      "nombre": "Radiación y tormentas solares",
+      "barra": "radiacion",
+      "aprendeEn": [
+        "F1-D4",
+        "E-D5",
+        "E-D6",
+        "N-D6",
+        "R-D6",
+        "E-D13",
+        "N-D12b",
+        "R-D12",
+        "FAIL-radiacion"
+      ],
+      "seVe": "Dentro del refugio el contador de radiación sube despacio; afuera sube rápido. Con la compuerta abierta, el refugio no protege.",
+      "carta": {
+        "id": "C-radiacion",
+        "nombre": "Refugio de regolito",
+        "frase": "Paredes gruesas de tierra lunar frenan la radiación.",
+        "uso": { "tipo": "escudo", "barra": "radiacion" },
+        "momento": "Cuando viene una tormenta solar"
+      }
+    },
+    "polvo_lunar": {
+      "nombre": "Polvo lunar",
+      "barra": "energia",
+      "aprendeEn": [
+        "F1-D2a"
+      ],
+      "seVe": "Los paneles con polvo se ven opacos y la barra de energía sube más lento. Si los tallas fuerte, quedan rayados para siempre.",
+      "carta": {
+        "id": "C-polvo_lunar",
+        "nombre": "Limpieza suave",
+        "frase": "El polvo lunar es filoso: se limpia sin tallar.",
+        "uso": { "tipo": "escudo", "barra": "energia" },
+        "momento": "Cuando hay polvo en los paneles"
+      }
+    },
+    "sismos": {
+      "nombre": "Sismos lunares",
+      "barra": "comida",
+      "aprendeEn": [
+        "F1-D2b",
+        "E-D12a"
+      ],
+      "seVe": "Durante el sismo, los objetos sueltos se caen y se rompen; los asegurados se quedan en su lugar.",
+      "carta": {
+        "id": "C-sismos",
+        "nombre": "Todo asegurado",
+        "frase": "Los sismos lunares duran minutos: asegura las cosas.",
+        "uso": { "tipo": "escudo", "barra": "comida" },
+        "momento": "Antes de que tiemble"
+      }
+    },
+    "micrometeoritos": {
+      "nombre": "Micrometeoritos",
+      "barra": "energia",
+      "aprendeEn": [
+        "E-D8a",
+        "N-D12a"
+      ],
+      "seVe": "Cada golpe deja un agujero. Si no lo tapas, el aire se escapa y la barra de salud baja poco a poco.",
+      "carta": {
+        "id": "C-micrometeoritos",
+        "nombre": "Capas protectoras",
+        "frase": "Piedritas a 20 km por segundo: las capas frenan los golpes.",
+        "uso": { "tipo": "escudo", "barra": "energia" },
+        "momento": "Durante una lluvia de micrometeoritos"
+      }
+    },
+    "noche_lunar": {
+      "nombre": "La noche lunar",
+      "barra": "energia",
+      "aprendeEn": [
+        "F2-D9",
+        "F2-D10",
+        "E-D12b",
+        "N-D11",
+        "R-D11",
+        "FAIL-energia"
+      ],
+      "seVe": "Al caer la noche la pantalla oscurece, los paneles se apagan y la energía solo puede bajar. Hace un frío que se nota en la salud si apagas la calefacción.",
+      "carta": {
+        "id": "C-noche_lunar",
+        "nombre": "Baterías llenas",
+        "frase": "14 días sin Sol: carga antes de que oscurezca.",
+        "uso": { "tipo": "recurso", "barra": "energia", "valor": 12 },
+        "momento": "Antes de que empiece la noche lunar"
+      }
+    },
+    "hielo_agua": {
+      "nombre": "Hielo en los cráteres",
+      "barra": "comida",
+      "aprendeEn": [
+        "E-D11",
+        "N-D13"
+      ],
+      "seVe": "El radar del rover solo marca hielo en las zonas que siempre están en sombra. Dentro del cráter, la batería del rover no se recarga.",
+      "carta": {
+        "id": "C-hielo_agua",
+        "nombre": "Hielo del cráter",
+        "frase": "En los cráteres sin Sol hay hielo: agua y oxígeno.",
+        "uso": { "tipo": "recurso", "barra": "comida", "valor": 10 },
+        "momento": "Cuando falta agua"
+      }
+    },
+    "invernadero": {
+      "nombre": "Cultivar comida",
+      "barra": "comida",
+      "aprendeEn": [
+        "F1-D3",
+        "E-D8b",
+        "N-D5",
+        "R-D7",
+        "R-D8",
+        "FAIL-comida"
+      ],
+      "seVe": "Las plantas crecen día a día solo si tienen luz y la cantidad justa de agua. Con demasiada agua les salen manchas de moho.",
+      "carta": {
+        "id": "C-invernadero",
+        "nombre": "Cosecha extra",
+        "frase": "Cultivar gasta energía hoy y da comida después.",
+        "uso": { "tipo": "recurso", "barra": "comida", "valor": 10 },
+        "momento": "Cuando la comida está bajando"
+      }
+    },
+    "agua_reciclaje": {
+      "nombre": "Reciclar agua y aire",
+      "barra": "comida",
+      "aprendeEn": [
+        "E-D7",
+        "N-D8a"
+      ],
+      "seVe": "Una fuga hace bajar el medidor de agua cada hora hasta que cierras la válvula. Con menos agua, también baja el oxígeno.",
+      "carta": {
+        "id": "C-agua_reciclaje",
+        "nombre": "Agua reciclada",
+        "frase": "Casi toda el agua se reutiliza, y con ella se hace oxígeno.",
+        "uso": { "tipo": "escudo", "barra": "comida" },
+        "momento": "Cuando hay una fuga de agua"
+      }
+    },
+    "energia_solar": {
+      "nombre": "Energía solar",
+      "barra": "energia",
+      "aprendeEn": [
+        "F1-D1"
+      ],
+      "seVe": "Al girar los paneles hacia el Sol, la barra de energía sube más rápido. Chuecos, apenas cargan.",
+      "carta": {
+        "id": "C-energia_solar",
+        "nombre": "Paneles al Sol",
+        "frase": "Los paneles dan más energía con la luz de frente.",
+        "uso": { "tipo": "recurso", "barra": "energia", "valor": 10, "soloDeDia": true },
+        "momento": "En un día con Sol"
+      }
+    },
+    "salud_astronauta": {
+      "nombre": "Salud del astronauta",
+      "barra": "salud",
+      "aprendeEn": [
+        "INICIO",
+        "N-D7",
+        "N-D8b",
+        "R-D5",
+        "R-D13",
+        "F3-D14",
+        "FAIL-salud"
+      ],
+      "seVe": "Con la salud baja, los minijuegos dan menos tiempo: el capitán cansado se equivoca más.",
+      "carta": {
+        "id": "C-salud_astronauta",
+        "nombre": "Buen descanso",
+        "frase": "Un capitán descansado comete menos errores.",
+        "uso": { "tipo": "recurso", "barra": "salud", "valor": 12 },
+        "momento": "Cuando estás muy cansado"
+      }
+    }
+  },
+  "situaciones": [
+    {
+      "id": "S-radiacion",
+      "tema": "radiacion",
+      "aviso": { "1": "¡Tormenta solar en camino!", "2": "Una tormenta solar llega en una hora. Lanza partículas con mucha energía: eso es la radiación.", "3": "Tormenta solar en una hora. Tu radiación ya está alta y tu energía en amarillo. Cerrar las compuertas del refugio gasta energía, y en pocos días empieza la noche lunar." },
+      "prediccion": { "pregunta": "¿Qué barra va a cambiar con la tormenta?", "barra": "radiacion", "cambio": "sube" },
+      "acciones": [
+        {
+          "texto": "Ir al refugio y cerrar las compuertas",
+          "efectos": { "energia": -3, "radiacion": 2 }
+        },
+        {
+          "texto": "Quedarte afuera",
+          "efectos": { "radiacion": 18 }
+        },
+        {
+          "texto": "Ir al refugio con las compuertas abiertas",
+          "efectos": { "radiacion": 10 }
+        },
+        {
+          "texto": "Apagar la calefacción para tener energía de sobra",
+          "efectos": { "radiacion": 18, "salud": -6 }
+        }
+      ],
+      "correcta": 0,
+      "explicacion": { "1": "Afuera te llegan las partículas. El refugio te protege.", "2": "Las paredes gruesas frenan la radiación, pero solo con las compuertas cerradas.", "3": "Con la radiación alta, gastar un poco de energía evita llegar al rojo." },
+      "escenario": "pasillo"
+    },
+    {
+      "id": "S-polvo_lunar",
+      "tema": "polvo_lunar",
+      "aviso": { "1": "¡Polvo en los paneles!", "2": "Una nube de regolito, el polvo lunar, cubrió los paneles solares. El polvo lunar es filoso como vidrio.", "3": "Polvo en los paneles a 3 días de la noche lunar, que dura unos 14 días. Tu salud está en amarillo y limpiar cansa un poco." },
+      "prediccion": { "pregunta": "¿Qué barra va a cambiar si el polvo se queda?", "barra": "energia", "cambio": "baja" },
+      "acciones": [
+        {
+          "texto": "Limpiar los paneles con cuidado",
+          "efectos": { "energia": 3, "salud": -2 }
+        },
+        {
+          "texto": "Dejar el polvo",
+          "efectos": { "energia": -10 }
+        },
+        {
+          "texto": "Tallar fuerte para terminar rápido",
+          "efectos": { "energia": -6 }
+        },
+        {
+          "texto": "Esperar a la noche para limpiar",
+          "efectos": { "energia": -10 }
+        }
+      ],
+      "correcta": 0,
+      "explicacion": { "1": "El polvo tapa la luz: hay que limpiarlo.", "2": "Tallar fuerte raya los paneles y producen menos.", "3": "Antes de la noche cuenta cada día de Sol: limpia ahora y descansa después." },
+      "escenario": "paneles"
+    },
+    {
+      "id": "S-sismos",
+      "tema": "sismos",
+      "aviso": { "1": "¡Está temblando!", "2": "Los sismómetros detectan un sismo lunar que puede durar varios minutos. Hay cajas de comida en los estantes.", "3": "Viene un sismo largo, de varios minutos. Tu comida está en amarillo, cada día comes algo y faltan 6 días para el relevo." },
+      "prediccion": { "pregunta": "¿Qué barra puede bajar con el sismo?", "barra": "comida", "cambio": "baja" },
+      "acciones": [
+        {
+          "texto": "Asegurar las cajas de comida",
+          "efectos": { "salud": -1 }
+        },
+        {
+          "texto": "Seguir trabajando",
+          "efectos": { "comida": -12 }
+        },
+        {
+          "texto": "Correr al refugio",
+          "efectos": { "comida": -12 }
+        },
+        {
+          "texto": "Sacar las cajas al pasillo",
+          "efectos": { "comida": -8 }
+        }
+      ],
+      "correcta": 0,
+      "explicacion": { "1": "Lo que no está asegurado se cae.", "2": "El sismo dura minutos: las cajas sueltas se caen y se rompen.", "3": "Con la comida en amarillo, perder cajas te acerca al rojo antes del relevo." },
+      "escenario": "maquinas"
+    },
+    {
+      "id": "S-micrometeoritos",
+      "tema": "micrometeoritos",
+      "aviso": { "1": "¡Piedritas del espacio!", "2": "Una lluvia de micrometeoritos golpea la base. Viajan a más de 20 km por segundo.", "3": "Lluvia de micrometeoritos a 2 días de la noche lunar. Un golpe puede romper un panel y otro puede hacer un agujero. Tu energía está en amarillo." },
+      "prediccion": { "pregunta": "¿Qué barra puede bajar si rompen un panel?", "barra": "energia", "cambio": "baja" },
+      "acciones": [
+        {
+          "texto": "Tapar los agujeros y revisar los paneles",
+          "efectos": { "energia": -2 }
+        },
+        {
+          "texto": "No hacer nada",
+          "efectos": { "energia": -10, "salud": -6 }
+        },
+        {
+          "texto": "Tapar los agujeros y dejar los paneles para después",
+          "efectos": { "energia": -8 }
+        },
+        {
+          "texto": "Salir a ver los micrometeoritos",
+          "efectos": { "salud": -10 }
+        }
+      ],
+      "correcta": 0,
+      "explicacion": { "1": "Una piedrita muy rápida rompe paneles.", "2": "Por un agujero se escapa el aire, y un panel roto produce menos.", "3": "Un panel roto antes de la noche significa menos energía guardada para 14 días." },
+      "escenario": "pasillo"
+    },
+    {
+      "id": "S-noche_lunar",
+      "tema": "noche_lunar",
+      "aviso": { "1": "Mañana se oculta el Sol.", "2": "Mañana empieza la noche lunar: unos 14 días sin Sol. Los paneles solares dejan de producir.", "3": "Mañana empieza la noche lunar: unos 14 días sin Sol y cerca de -133 °C afuera. Tu energía está en amarillo y faltan 5 días para el relevo." },
+      "prediccion": { "pregunta": "¿Qué barra va a bajar durante la noche?", "barra": "energia", "cambio": "baja" },
+      "acciones": [
+        {
+          "texto": "Cargar las baterías y apagar las luces que no se necesitan",
+          "efectos": { "energia": 8, "comida": -1 }
+        },
+        {
+          "texto": "Gastar la energía que queda",
+          "efectos": { "energia": -10 }
+        },
+        {
+          "texto": "Apagar la calefacción para ahorrar",
+          "efectos": { "energia": 4, "salud": -10 }
+        },
+        {
+          "texto": "Esperar a que los paneles carguen de noche",
+          "efectos": { "energia": -8 }
+        }
+      ],
+      "correcta": 0,
+      "explicacion": { "1": "Sin Sol los paneles no cargan: hay que guardar energía antes.", "2": "Apagar la calefacción ahorra energía, pero el frío baja tu salud.", "3": "Ahorras en lo que no importa y cuidas la calefacción para los días de frío." },
+      "escenario": "maquinas"
+    },
+    {
+      "id": "S-hielo_agua",
+      "tema": "hielo_agua",
+      "aviso": { "1": "¡El rover encontró hielo!", "2": "El rover encontró hielo en un cráter oscuro, donde nunca da el Sol. Ahí sus baterías no se recargan.", "3": "Hay mucho hielo en el cráter, pero el rover tiene poca energía. Tu comida está en amarillo y faltan 4 días para el relevo." },
+      "prediccion": { "pregunta": "¿Qué barra puede subir con el hielo?", "barra": "comida", "cambio": "sube" },
+      "acciones": [
+        {
+          "texto": "Tomar el hielo que alcance y regresar a recargar",
+          "efectos": { "comida": 8, "energia": -2 }
+        },
+        {
+          "texto": "Dejar el hielo",
+          "efectos": { "comida": -2 }
+        },
+        {
+          "texto": "Seguir buscando hielo en la oscuridad",
+          "efectos": { "energia": -12 }
+        },
+        {
+          "texto": "Dejar el rover en el cráter",
+          "efectos": { "energia": -6, "comida": -2 }
+        }
+      ],
+      "correcta": 0,
+      "explicacion": { "1": "El hielo es agua para la base.", "2": "Sin Sol el rover no recarga: si sigue, no puede volver.", "3": "Un viaje más mañana cuesta poco; perder el rover cuesta todo el hielo que falta." },
+      "escenario": "crater"
+    },
+    {
+      "id": "S-invernadero",
+      "tema": "invernadero",
+      "aviso": { "1": "La comida está bajando.", "2": "La comida está bajando. Las plantas del invernadero necesitan luz, y la luz gasta energía.", "3": "Tu comida está en amarillo y tu energía en verde. Faltan 6 días para el relevo y cada día comes algo. Las plantas necesitan luz y la cantidad justa de agua." },
+      "prediccion": { "pregunta": "Si prendes las luces del invernadero, ¿qué barra gastas?", "barra": "energia", "cambio": "baja" },
+      "acciones": [
+        {
+          "texto": "Prender las luces del invernadero y regar lo justo",
+          "efectos": { "energia": -5, "comida": 12 }
+        },
+        {
+          "texto": "No hacer nada",
+          "efectos": { "comida": -6 }
+        },
+        {
+          "texto": "Regar el doble para que crezcan más rápido",
+          "efectos": { "energia": -5, "comida": -4 }
+        },
+        {
+          "texto": "Gastar toda la energía en el invernadero",
+          "efectos": { "energia": -20, "comida": 14 }
+        }
+      ],
+      "correcta": 0,
+      "explicacion": { "1": "Las plantas necesitan luz y agua para dar comida.", "2": "Demasiada agua trae moho y las plantas se enferman.", "3": "Gastar toda la energía te deja sin nada para la noche lunar." },
+      "escenario": "invernadero"
+    },
+    {
+      "id": "S-agua_reciclaje",
+      "tema": "agua_reciclaje",
+      "aviso": { "1": "¡Hay una fuga de agua!", "2": "Hay una fuga de agua. Con el agua de la base también se fabrica oxígeno para respirar.", "3": "Fuga de agua y, al mismo tiempo, una tarea de Control de Misión que da una estrella extra. Tu comida está en amarillo y tu salud en verde." },
+      "prediccion": { "pregunta": "¿Qué barra baja con la fuga?", "barra": "comida", "cambio": "baja" },
+      "acciones": [
+        {
+          "texto": "Cerrar la válvula de la fuga primero",
+          "efectos": {}
+        },
+        {
+          "texto": "Dejar la fuga",
+          "efectos": { "comida": -12, "salud": -4 }
+        },
+        {
+          "texto": "Hacer la tarea primero y la fuga después",
+          "efectos": { "comida": -8 }
+        },
+        {
+          "texto": "Ir al refugio",
+          "efectos": { "comida": -12 }
+        }
+      ],
+      "correcta": 0,
+      "explicacion": { "1": "La fuga tira el agua: hay que cerrarla.", "2": "Si se pierde agua, también falta para fabricar oxígeno.", "3": "La fuga empeora cada minuto; la tarea puede esperar." },
+      "escenario": "maquinas"
+    },
+    {
+      "id": "S-energia_solar",
+      "tema": "energia_solar",
+      "aviso": { "1": "Los paneles no miran al Sol.", "2": "Un panel solar convierte la luz del Sol en energía. Hoy tus paneles quedaron chuecos.", "3": "Último día de Sol antes de la noche lunar. Tu salud y tu energía están en amarillo, y girar los paneles cansa un poco." },
+      "prediccion": { "pregunta": "Si los paneles siguen chuecos, ¿qué barra cambia?", "barra": "energia", "cambio": "baja" },
+      "acciones": [
+        {
+          "texto": "Girar los paneles hacia el Sol",
+          "efectos": { "energia": 8, "salud": -2 }
+        },
+        {
+          "texto": "Dejarlos así",
+          "efectos": { "energia": -4 }
+        },
+        {
+          "texto": "Girarlos cuando sea de noche",
+          "efectos": { "energia": -4 }
+        },
+        {
+          "texto": "Descansar todo el día",
+          "efectos": { "salud": 4, "energia": -4 }
+        }
+      ],
+      "correcta": 0,
+      "explicacion": { "1": "Con la luz de frente, los paneles dan más energía.", "2": "Chuecos les llega menos luz, y con menos luz producen menos.", "3": "La energía solo se carga con Sol; la salud la recuperas descansando de noche." },
+      "escenario": "paneles"
+    },
+    {
+      "id": "S-salud_astronauta",
+      "tema": "salud_astronauta",
+      "aviso": { "1": "Estás muy cansado.", "2": "Llevas varios días trabajando sin parar. Un astronauta cansado comete más errores.", "3": "Tu salud está casi en rojo, tu comida en verde y tu energía en amarillo. Mañana hay una tarea difícil y faltan 4 días para el relevo." },
+      "prediccion": { "pregunta": "Si sigues sin descansar, ¿qué barra baja?", "barra": "salud", "cambio": "baja" },
+      "acciones": [
+        {
+          "texto": "Descansar hoy y comer bien",
+          "efectos": { "salud": 12, "comida": -3 }
+        },
+        {
+          "texto": "Seguir trabajando",
+          "efectos": { "salud": -8 }
+        },
+        {
+          "texto": "Saltarte la comida para ahorrar",
+          "efectos": { "salud": -10 }
+        },
+        {
+          "texto": "Pasar el día en el refugio sin dormir",
+          "efectos": { "salud": -6 }
+        }
+      ],
+      "correcta": 0,
+      "explicacion": { "1": "Descansar sube tu salud.", "2": "Cansado te equivocas más, y los errores dañan la base.", "3": "La salud es la barra en peligro y la comida aguanta: hoy toca descansar." },
+      "escenario": "control"
+    }
+  ],
+  "averias": [
+    {
+      "id": "A-polvo",
+      "temas": [
+        "polvo_lunar",
+        "energia_solar"
+      ],
+      "fases": [
+        2
+      ],
+      "barra": "energia",
+      "alarma": "La energía baja aunque es de día.",
+      "pistas": {
+        "clave": [
+          "Los paneles se ven opacos",
+          "Ayer pasó una nube de polvo"
+        ],
+        "distractores": [
+          "No hay alerta de tormenta",
+          "La comida está en verde"
+        ],
+        "enganosa": "El panel 3 hace un ruido raro"
+      },
+      "acciones": [
+        "Limpiar los paneles con cuidado",
+        "Cambiar el panel 3",
+        "Ir al refugio",
+        "Apagar la calefacción"
+      ],
+      "correcta": 0,
+      "explicacion": "Era el polvo: tapaba la luz y los paneles casi no cargaban.",
+      "escenario": "paneles"
+    },
+    {
+      "id": "A-golpe",
+      "temas": [
+        "micrometeoritos"
+      ],
+      "fases": [
+        2
+      ],
+      "barra": "energia",
+      "alarma": "Un panel dejó de cargar.",
+      "pistas": {
+        "clave": [
+          "El panel 3 tiene un agujero",
+          "Anoche cayeron micrometeoritos"
+        ],
+        "distractores": [
+          "Los demás paneles están limpios",
+          "No hay alerta de tormenta"
+        ],
+        "enganosa": "Hay un poco de polvo en el suelo"
+      },
+      "acciones": [
+        "Cambiar el panel 3",
+        "Limpiar todos los paneles",
+        "Esperar a que haya más Sol",
+        "Ir al refugio"
+      ],
+      "correcta": 0,
+      "explicacion": "Un micrometeorito rompió el panel 3. Limpiar no arregla un agujero.",
+      "escenario": "paneles"
+    },
+    {
+      "id": "A-noche",
+      "temas": [
+        "noche_lunar"
+      ],
+      "fases": [
+        3
+      ],
+      "barra": "energia",
+      "alarma": "La energía baja y ningún panel carga.",
+      "pistas": {
+        "clave": [
+          "El cielo está negro desde hace días",
+          "Todos los paneles están enteros"
+        ],
+        "distractores": [
+          "No hay polvo en los paneles",
+          "No hay alerta de tormenta"
+        ],
+        "enganosa": "Ayer hubo un pequeño sismo"
+      },
+      "acciones": [
+        "Ahorrar: apagar las luces que no se necesitan",
+        "Limpiar los paneles",
+        "Cambiar un panel",
+        "Ir al refugio"
+      ],
+      "correcta": 0,
+      "explicacion": "No hay nada roto: es la noche lunar. Sin Sol no se carga, solo se ahorra.",
+      "escenario": "maquinas"
+    },
+    {
+      "id": "A-fuga",
+      "temas": [
+        "agua_reciclaje"
+      ],
+      "fases": [2, 3],
+      "barra": "comida",
+      "alarma": "El agua y la comida bajan rápido.",
+      "pistas": {
+        "clave": [
+          "Hay un charco en el pasillo",
+          "El medidor de agua baja cada hora"
+        ],
+        "distractores": [
+          "Las plantas se ven sanas",
+          "Las cajas de comida están completas"
+        ],
+        "enganosa": "La humedad del invernadero está alta"
+      },
+      "acciones": [
+        "Cerrar la válvula de la tubería",
+        "Regar menos las plantas",
+        "Reacomodar las cajas",
+        "Ir al refugio"
+      ],
+      "correcta": 0,
+      "explicacion": "Una tubería tenía una fuga. El agua del charco es la que faltaba.",
+      "escenario": "maquinas"
+    },
+    {
+      "id": "A-moho",
+      "temas": [
+        "invernadero"
+      ],
+      "fases": [2, 3],
+      "barra": "comida",
+      "alarma": "La cosecha está saliendo mala.",
+      "pistas": {
+        "clave": [
+          "Las hojas tienen manchas blancas",
+          "La humedad del invernadero está muy alta"
+        ],
+        "distractores": [
+          "Las luces del invernadero funcionan",
+          "No hay charcos en el pasillo"
+        ],
+        "enganosa": "Ayer bajó un poco el medidor de agua"
+      },
+      "acciones": [
+        "Bajar la humedad y regar lo justo",
+        "Regar el doble",
+        "Cerrar la válvula del pasillo",
+        "Apagar las luces del invernadero"
+      ],
+      "correcta": 0,
+      "explicacion": "Era moho por exceso de agua, como les pasó a unas flores en la Estación Espacial.",
+      "escenario": "invernadero"
+    },
+    {
+      "id": "A-calor",
+      "temas": [
+        "salud_astronauta"
+      ],
+      "fases": [
+        2
+      ],
+      "barra": "salud",
+      "alarma": "La salud del capitán está bajando.",
+      "pistas": {
+        "clave": [
+          "El termómetro marca mucho calor",
+          "El enfriamiento está apagado"
+        ],
+        "distractores": [
+          "La radiación está en verde",
+          "La comida está en verde"
+        ],
+        "enganosa": "Hoy trabajaste mucho"
+      },
+      "acciones": [
+        "Encender el enfriamiento",
+        "Ir al refugio",
+        "Comer más",
+        "Apagar los paneles"
+      ],
+      "correcta": 0,
+      "explicacion": "Era el calor, como en Skylab. Trabajar cansa, pero hoy el problema era la temperatura.",
+      "escenario": "maquinas"
+    },
+    {
+      "id": "A-compuerta",
+      "temas": [
+        "radiacion"
+      ],
+      "fases": [2, 3],
+      "barra": "radiacion",
+      "alarma": "La radiación sube aunque estás en el refugio.",
+      "pistas": {
+        "clave": [
+          "Hay alerta de tormenta solar",
+          "La compuerta del refugio está abierta"
+        ],
+        "distractores": [
+          "Los paneles cargan bien",
+          "La calefacción funciona"
+        ],
+        "enganosa": "Es de noche"
+      },
+      "acciones": [
+        "Cerrar la compuerta del refugio",
+        "Salir del refugio",
+        "Apagar la calefacción",
+        "Limpiar los paneles"
+      ],
+      "correcta": 0,
+      "explicacion": "Con la compuerta abierta entran las partículas. Y la radiación llega aunque sea de noche.",
+      "escenario": "pasillo"
+    }
+  ],
+  "escenarios": { "_nota": "Las llamadas empiezan en la sala de control (el aviso) y la acción ocurre en el escenario de la situación. El plano de la base es el mapa para moverse entre escenarios.", "plano": "Plano de la base (corte)", "exterior": "Exterior de la base", "paneles": "Campo de paneles solares", "crater": "Cráter oscuro", "control": "Sala de control", "invernadero": "Invernadero", "maquinas": "Sala de máquinas y almacén", "pasillo": "Pasillo y refugio" }
+}
