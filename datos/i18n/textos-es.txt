@@ -1119,7 +1119,7 @@
 1118	Mantén ▲ MOTOR (o Espacio) para frenar: gasta combustible.
 1119	Mantén la nave adentro hasta llenar la barra.
 1120	Mantener la calefacción
-1121	Mantener tres soportes en equilibrio al mismo tiempo.
+1121	Atrapar con la plataforma las piezas que se caen.
 1122	Mantenla en la zona verde hasta llenar la barra.
 1123	MANUAL PARA EL SIGUIENTE CAPITÁN
 1124	MANUAL TERMINADO

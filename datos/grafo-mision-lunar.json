@@ -711,7 +711,7 @@
       "reto": 3,
       "titulo": "Sismo lunar fuerte",
       "mensaje": "¡Un sismo fuerte! Asegura los soportes antes de que se dañe la base.",
-      "minijuego": "Mantener tres soportes en equilibrio al mismo tiempo.",
+      "minijuego": "Atrapar con la plataforma las piezas que se caen.",
       "resultado": {
         "exito": {},
         "fallo": {
@@ -1425,12 +1425,12 @@
   ],
   "reglaGlobal": "Después de cada nodo, si una barra llega al límite (energía, comida o salud en 0, o radiación en 100) la partida salta al final FAIL-<barra> correspondiente.",
   "balance": {
-    "_nota": "Simulación de 4,000 partidas por nivel de habilidad (probabilidad de ganar cada minijuego), con llamadas, averías y dificultad adaptativa. v0.4: más difícil para que se pueda perder. Hay que ajustar con niños reales.",
-    "20%": "72% evacuación, 28% una estrella, 0% dos, 0% tres",
-    "35%": "53% evacuación, 47% una estrella, 0% dos, 0% tres",
-    "50%": "30% evacuación, 70% una estrella, 0% dos, 0% tres",
-    "65%": "15% evacuación, 83% una estrella, 2% dos, 1% tres",
-    "80%": "5% evacuación, 76% una estrella, 6% dos, 13% tres",
-    "95%": "0% evacuación, 27% una estrella, 6% dos, 67% tres"
+      "_nota": "Simulación de 4,000 partidas por nivel de habilidad (probabilidad de ganar cada minijuego), con llamadas (situaciones y preguntas del banco con pista y costo por error), averías y dificultad adaptativa. v0.5 (15-nov): el costo de las preguntas casi no cambia las evacuaciones (±2 puntos) y baja un poco las 3 estrellas. Hay que ajustar con niños reales.",
+      "20%": "69% evac, 31% 1★, 0% 2★, 0% 3★",
+      "35%": "51% evac, 49% 1★, 0% 2★, 0% 3★",
+      "50%": "32% evac, 68% 1★, 0% 2★, 0% 3★",
+      "65%": "17% evac, 82% 1★, 1% 2★, 1% 3★",
+      "80%": "7% evac, 81% 1★, 3% 2★, 10% 3★",
+      "95%": "1% evac, 36% 1★, 4% 2★, 59% 3★"
   }
 }

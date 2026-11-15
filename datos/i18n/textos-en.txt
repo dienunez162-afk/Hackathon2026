@@ -843,7 +843,7 @@
 1118=Hold ▲ ENGINE (or Space) to brake: it uses fuel.
 1119=Keep the ship inside until the bar fills up.
 1120=Keep the heating on
-1121=Keep three supports balanced at the same time.
+1121=Catch the falling pieces with the platform.
 1122=Keep it in the green zone until the bar fills up.
 1123=MANUAL FOR THE NEXT CAPTAIN
 1124=MANUAL FINISHED

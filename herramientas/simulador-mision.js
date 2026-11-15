@@ -56,6 +56,8 @@
    *  retencion   probabilidad de entender y aplicar un concepto (0-1): predicciones, acciones, diagnósticos,
    *              uso de cartas y manual. Si no se da, igual a la habilidad.
    *  responder   fn(ctx) => boolean, opcional: reemplaza `retencion` con un modelo propio (ctx.paso dice qué se decide)
+   *  preguntas   contenido de preguntas-mision-lunar.json: si se da, las llamadas impares y la 3.ª son preguntas del
+   *              banco con reintento y costo (pista y error), como en el juego; si no, todas son situaciones
    *  retos       contenido de retos-mision-lunar.json (sin él no hay llamadas, averías, cartas ni manual)
    *  modoUso     "libre" (por defecto: empieza en nivel 2 y se calibra) o "educativo" (nivel inicial según el grado)
    *  grado       1 a 6, solo en modo educativo
@@ -183,7 +185,26 @@
       return { tema: pick(pool.filter((t) => (preguntados[t] || 0) === min)), origen: "esta_partida" };
     }
 
+    // pregunta del banco: 1.er error cuesta la pista (costoPista) en la barra del tema; el 2.º, el costo del nivel
+    function preguntaBanco(n, idx) {
+      const PD = opts.preguntas, nv = niv.lectura;
+      const q = PD.banco.find((x) => x.nivel === nv && !usadasBanco.has(x.id)) || PD.banco.find((x) => !usadasBanco.has(x.id));
+      if (!q) return null;
+      usadasBanco.add(q.id);
+      const barra = q.barra || masDebil(st), costoN = (PD.reglas.costoError || {})[nv] || 3, pista = PD.reglas.costoPista || 2;
+      const cobrar = (c) => { if (barra === "radiacion") st.radiacion += clip(Math.min(c, 90 - st.radiacion), 0, c); else st[barra] -= clip(Math.min(c, st[barra] - 10), 0, c); };
+      const d = n.dia;
+      const ok1 = entiende({ tipo: "banco", id: q.id, tema: q.tema, dia: d, nivel: nv, paso: "banco" });
+      let ok = ok1, intentos = 1;
+      if (!ok1) { cobrar(pista); intentos = 2; ok = rnd() < clip(retencion + (1 - retencion) / 2, 0.02, 0.98); if (!ok) cobrar(costoN); }
+      registrarReto(ok1, d);
+      const r = { tipo: "banco", id: q.id, tema: q.tema, dia: d, nivel: nv, accionOk: ok1, intentos, estado: { ...st } };
+      registro.push(r);
+      return r;
+    }
+    const usadasBanco = new Set();
     function llamada(n, idx) {
+      if (opts.preguntas && (idx === 2 || idx % 2 === 1)) { const r = preguntaBanco(n, idx); if (r) return r; }
       const sel = elegirTema(n.dia, idx);
       if (!sel) return null;
       const s = situacionDe(sel.tema);

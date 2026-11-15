@@ -8,7 +8,7 @@ npm run dev          # genera public/js/datos.js y sirve public/ + las funciones
 npm run dev:vercel   # igual, pero con las funciones de /api (requiere: npm i -g vercel)
 npm run check        # revisa la sintaxis de todo
 ```
-Parámetros de prueba: `?auto=1&vel=4` juega solo; `?final=apagon` abre un final.
+Parámetros de prueba (las «herramientas del equipo» están ocultas para los niños y solo salen con ellos): `?equipo=1` las muestra; `?auto=1&vel=4` juega solo; `?final=apagon` abre un final.
 
 ## Caché del navegador
 `vercel.json` pide revalidar `js/` e `img/` en cada visita, y el build (`scripts/generar-datos.mjs`) le pone la versión del despliegue a cada script (`js/juego.js?v=…`). Antes, el navegador guardaba `js/` una hora y mezclaba un `index.html` nuevo con un `juego.js` viejo: eso dejaba la bitácora en 0 y encimaba el HUD.
@@ -39,7 +39,8 @@ Notas (noviembre de 2026):
   - `js/finales.js`, `luna.js`, `espacio.js`, `nave.js`, `musica.js`: el arte original
 - `datos/`: el grafo y los retos (JSON). Edítalos aquí y corre `npm run datos`.
 - `api/`: funciones serverless.
-- `supabase/`: esquema y función para el modo Salón y el panel del maestro (sin probar).
+- `supabase/migrations/`: esquema (0001), cuentas y clases con código (0002) y borrar cuenta (0004) para el modo Salón; sin correr aún en el proyecto real. Copia con instrucciones en `space apps/supabase-sql/`.
+- `public/privacidad.html`: aviso de privacidad (borrador).
 - `herramientas/simulador-mision.js`: simulador para balancear.
 
 ## Música

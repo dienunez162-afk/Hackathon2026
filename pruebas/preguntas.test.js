@@ -169,3 +169,14 @@ test("el juego no tiene dos funciones con el mismo nombre (el bug de elegir)", (
   const nombres = [...src.matchAll(/^ {2}(?:async )?function (\w+)\(/gm)].map((m) => m[1]);
   assert.deepEqual(nombres.filter((n, i) => nombres.indexOf(n) !== i), []);
 });
+
+test("preguntar() no valida con el esquema del banco (bug: omitía TODAS las preguntas)", () => {
+  const src = require("node:fs").readFileSync(require("node:path").join(__dirname, "../public/js/juego.js"), "utf8");
+  const i = src.indexOf("async function preguntar(");
+  const cuerpo = src.slice(i, src.indexOf("\n  }\n", i));
+  assert.ok(i > 0 && cuerpo.length > 100);
+  // preguntar solo recibe { opciones, correcta, pista }: el esquema completo (id, enunciado, fuente...) se revisa en responderBanco
+  assert.ok(!/validarPregunta\(/.test(cuerpo), "preguntar no debe llamar a validarPregunta");
+  const j = src.indexOf("async function responderBanco(");
+  assert.ok(j > 0 && /validarPregunta\(/.test(src.slice(j, j + 600)), "responderBanco sí valida el esquema");
+});

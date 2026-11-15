@@ -44,6 +44,7 @@
     if (/Invalid login/i.test(m)) return "El alias o la contraseña no son correctos.";
     if (/already registered|duplicate|alumnos_alias/i.test(m)) return "Ese alias ya lo usa otro capitán. Prueba con otro.";
     if (/Database error|alias inv/i.test(m)) return "El alias debe tener de 3 a 20 letras minúsculas, números o _ (guion bajo), y no puede estar repetido.";
+    if (/solo una cuenta de alumno/i.test(m)) return "Esta cuenta no se puede borrar desde aquí.";
     if (/Password should/i.test(m)) return "La contraseña debe tener al menos 6 caracteres.";
     if (/ese c[oó]digo no existe/i.test(m)) return "Ese código no existe. Revísalo con tu maestro.";
     if (/ya est[aá]s en una clase/i.test(m)) return "Ya estás en una clase. Sal primero de ella.";
@@ -99,6 +100,7 @@
     await refrescar();
     return data;
   }
+  async function borrarCuenta() { await cargarLib(); const { error } = await sb.rpc("borrar_mi_cuenta"); if (error) throw error; await sb.auth.signOut(); usuario = null; info = null; }
   async function salirDeClase() { await cargarLib(); const { error } = await sb.rpc("salir_de_clase"); if (error) throw error; await refrescar(); }
 
   // ---------- partidas (récords). Si falla la red, se guarda en una cola y se reintenta ----------
@@ -147,7 +149,7 @@
         <form id="cta-form" autocomplete="off">
           <label>Tu alias<input id="cta-alias" maxlength="20" autocapitalize="none" autocorrect="off" spellcheck="false" value="${esc(ultimoAlias)}" required></label>
           <label>Contraseña<input id="cta-clave" type="password" minlength="6" autocomplete="${nueva ? "new-password" : "current-password"}" required></label>
-          ${nueva ? `<p class="cta-nota">Elige un alias inventado, <b>no tu nombre</b>. Usa letras minúsculas, números o _ . Anota tu contraseña: si la olvidas, tu maestro o un adulto tendrá que ayudarte.</p>` : ""}
+          ${nueva ? `<label class="cta-adulto"><input type="checkbox" id="cta-adulto" required> Un adulto leyó conmigo el <a href="privacidad.html" target="_blank" rel="noopener">aviso de privacidad</a></label><p class="cta-nota">Elige un alias inventado, <b>no tu nombre</b>. Usa letras minúsculas, números o _ . Anota tu contraseña: si la olvidas, tu maestro o un adulto tendrá que ayudarte.</p>` : ""}
           <button type="submit" class="cta-prim">${nueva ? "Crear cuenta" : "Entrar"}</button>
         </form>${msg}`;
       return;
@@ -165,7 +167,7 @@
         <div><dt>Mejor estado de la base</dt><dd>${fmtRecord(r.mejor_puntaje_barras, " / 400")}</dd></div>
         <div><dt>Respuestas a la primera (en una misión)</dt><dd>${fmtRecord(r.mas_aciertos_primera)}</dd></div></dl>
       <h4>Mi clase</h4>${clase}${msg}
-      <button type="button" id="cta-cerrar-sesion" class="cta-sec">Cerrar sesión</button>`;
+      <button type="button" id="cta-cerrar-sesion" class="cta-sec">Cerrar sesión</button> <button type="button" id="cta-borrar" class="cta-sec">Borrar mi cuenta</button><p class="cta-nota"><a href="privacidad.html" target="_blank" rel="noopener">Aviso de privacidad</a></p>`;
   }
 
   async function accion(fn) {
@@ -183,6 +185,7 @@
       else if (t.dataset.v) { vista = t.dataset.v; mensaje = null; pintar(); }
       else if (t.id === "cta-cerrar-sesion" || t.id === "cta-salir") accion(async () => { await salir(); mensaje = { ok: "Cerraste sesión." }; });
       else if (t.id === "cta-salir-clase") accion(salirDeClase);
+      else if (t.id === "cta-borrar") { if (window.confirm("¿Seguro? Se borra tu cuenta y todas tus partidas guardadas. No se puede deshacer.")) accion(async () => { await borrarCuenta(); mensaje = { ok: "Tu cuenta se borró." }; }); }
     });
     p.addEventListener("submit", (e) => {
       e.preventDefault();

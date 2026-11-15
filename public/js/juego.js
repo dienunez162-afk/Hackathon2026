@@ -82,6 +82,8 @@
     sinTexto: qs.get("sintexto") === "1", lecturaStats: { con: { ok: 0, n: 0 }, sin: { ok: 0, n: 0 } },
   };
   const app = $("app"), stage = $("stage"), hud = $("hud"), ctrl = $("ctrl"), $c = $("consola"), $mj = $("mj");
+  // las herramientas del equipo (modo automático, niveles, saltar a un final) solo salen con ?equipo=1 (o ?auto / ?final): un niño no debe verlas
+  if (!qs.get("equipo") && !qs.get("auto") && !qs.get("final")) ctrl.style.display = "none";
   function pintarCtl() {
     ctrl.querySelectorAll("[data-uso]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.uso === ui.uso)));
     $("l-grado").hidden = ui.uso !== "educativo";
