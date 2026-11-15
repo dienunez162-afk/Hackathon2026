@@ -867,24 +867,37 @@
   }
 
   // día 0: recorrido guiado por el plano (el tutorial del nodo INICIO)
+  // desde la partida 2, TODAS las pantallas del recorrido traen «Saltar recorrido» (en la 1 se ve completo)
+  async function pasoTour(cont, html, delay) {
+    if (J.partida <= 1) { await continuar(cont, html, delay); return false; }
+    return (await botones(cont, [{ html, prim: true }, { html: "Saltar recorrido ⏭" }], { auto: 0, delay })) === 1;
+  }
   async function recorrido(n) {
+    await tourLaika(n);
+    await repasoInicial();
+  }
+  async function tourLaika(n) {
     escena("exterior", {});
     animo("calma");
     let c = pantalla(`<span class="tag">${TIPO.inicio}</span><h2 class="titulo">${esc(n.titulo)}</h2><p class="txt">${esc(n.mensaje)}</p><div class="ops" id="ops"></div>`);
     voz(n.mensaje);
-    await continuar(c.querySelector("#ops"), "Conocer la base ▸", 2400);
+    if (await pasoTour(c.querySelector("#ops"), "Conocer la base ▸", 2400)) return;
     c = pantalla(`<span class="tag">LAIKA · TU AYUDANTE</span><p class="txt">¡Guau! Soy Laika y te voy a acompañar. Primero te enseño la base: toca el módulo que parpadea.</p><div class="ops" id="ops"></div>`, "laika");
     voz("¡Guau! Soy Laika y te voy a acompañar. Primero te enseño la base.");
-    await continuar(c.querySelector("#ops"), "¡Vamos! ▸", 1800);
+    if (await pasoTour(c.querySelector("#ops"), "¡Vamos! ▸", 1800)) return;
     for (const [mod, txt] of RECORRIDO) {
       escena("plano", { resaltar: mod });
       c = pantalla(`<span class="tag">RECORRIDO POR LA BASE</span><p class="txt">${esc(txt)}</p><div class="ops" id="ops"></div>`, "laika");
       voz(txt);
       J.esperaModulo = mod;
-      try { await continuar(c.querySelector("#ops"), "Siguiente ▸", 1300); } finally { J.esperaModulo = null; }
+      let saltar = false;
+      try { saltar = await pasoTour(c.querySelector("#ops"), "Siguiente ▸", 1300); } finally { J.esperaModulo = null; }
+      if (saltar) return;
     }
     c = pantalla(`<span class="tag">LAIKA · TU AYUDANTE</span><p class="txt">Cuida tus cuatro barras durante 14 días. Si alguna llega al límite, tendrás que evacuar. ¡Yo te aviso cuando pase algo nuevo!</p><div class="ops" id="ops"></div>`, "laika");
-    await continuar(c.querySelector("#ops"), "Comenzar la misión ▸", 1800);
+    await pasoTour(c.querySelector("#ops"), "Comenzar la misión ▸", 1800);
+  }
+  async function repasoInicial() {
     // repaso: algo que quedó en «Lo aprendido» en una misión anterior
     const previos = window.BITACORA ? BITACORA.aprendidos().filter((a) => a.fecha < J.inicio) : [];
     if (previos.length) {
