@@ -127,7 +127,12 @@
     const w = Math.min(window.innerWidth, disp * 1280 / alto), h = w * alto / 1280;
     stage.style.width = w + "px"; stage.style.height = h + "px";
     hud.style.transform = `scale(${w / 1280})`;
+    // durante la partida la escena sube según el alto de la franja de abajo, para que la base quede completa
+    // arriba de ella (lo que se recorta es cielo). En el menú y los finales la escena va completa.
+    const franja = $("franja"), subir = hud.hidden || !franja ? 0 : Math.round(franja.offsetHeight * SUBIR_ESCENA);
+    canvas.style.transform = subir ? `translateY(${-subir * w / 1280}px)` : "";
   }
+  const SUBIR_ESCENA = 0.48;   // fracción del alto de la franja que sube la escena
   window.addEventListener("resize", ajustar);
   new MutationObserver(ajustar).observe(hud, { attributes: true, attributeFilter: ["hidden"] });
   // el cuadro de texto es bajo: cuando una pantalla crece (llamadas con varios pasos, informes),
@@ -377,7 +382,7 @@
     try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(texto); u.lang = "es-MX"; u.rate = 0.95; speechSynthesis.speak(u); } catch (e) { /* sin voz */ }
   }
   // quien: "control" (Control de Misión) o "cientifica" (Dra. Ortiz): su retrato habla mientras se lee el texto
-  const NOMBRE_RETRATO = { control: "CONTROL DE MISIÓN", cientifica: "DRA. ORTIZ" };
+  const NOMBRE_RETRATO = { control: "CONTROL DE MISIÓN", cientifica: "DRA. ORTIZ", laika: "LAIKA" };
   // tema del cuadro de texto (sprites de img/dialogo): cambia el color según la tensión del momento
   //   normal (lavanda): tareas, decisiones, cartas · llamada (turquesa): Control de Misión, calma
   //   alerta (ámbar): eventos sin alarma · catastrofe (rojo): eventos con alarma, averías y evacuación
@@ -675,6 +680,7 @@
 
   async function minijuego(n, spec) {
     const t = tok;
+    await consejoLaika("minijuego", "¡Hora de un minijuego! Mira la demo y lee los pasos antes de empezar. El tiempo corre cuando tocas «¡Empezar!».");
     J.enMinijuego = true; $c.hidden = true; $mj.hidden = false;
     $mj.className = "panel tema-" + temaActual;
     try { await comoSeJuega(spec); } catch (e) { J.enMinijuego = false; throw e; }
@@ -794,14 +800,17 @@
     let c = pantalla(`<span class="tag">${TIPO.inicio}</span><h2 class="titulo">${esc(n.titulo)}</h2><p class="txt">${esc(n.mensaje)}</p><div class="ops" id="ops"></div>`);
     voz(n.mensaje);
     await continuar(c.querySelector("#ops"), "Conocer la base ▸", 2400);
+    c = pantalla(`<span class="tag">LAIKA · TU AYUDANTE</span><p class="txt">¡Guau! Soy Laika y te voy a acompañar. Primero te enseño la base: toca el módulo que parpadea.</p><div class="ops" id="ops"></div>`, "laika");
+    voz("¡Guau! Soy Laika y te voy a acompañar. Primero te enseño la base.");
+    await continuar(c.querySelector("#ops"), "¡Vamos! ▸", 1800);
     for (const [mod, txt] of RECORRIDO) {
       escena("plano", { resaltar: mod });
-      c = pantalla(`<span class="tag">RECORRIDO POR LA BASE</span><p class="txt">${esc(txt)}</p><div class="ops" id="ops"></div>`);
+      c = pantalla(`<span class="tag">RECORRIDO POR LA BASE</span><p class="txt">${esc(txt)}</p><div class="ops" id="ops"></div>`, "laika");
       voz(txt);
       J.esperaModulo = mod;
       try { await continuar(c.querySelector("#ops"), "Siguiente ▸", 1300); } finally { J.esperaModulo = null; }
     }
-    c = pantalla(`<p class="txt">Cuida tus cuatro barras durante 14 días. Si alguna llega al límite, tendrás que evacuar.</p><div class="ops" id="ops"></div>`);
+    c = pantalla(`<span class="tag">LAIKA · TU AYUDANTE</span><p class="txt">Cuida tus cuatro barras durante 14 días. Si alguna llega al límite, tendrás que evacuar. ¡Yo te aviso cuando pase algo nuevo!</p><div class="ops" id="ops"></div>`, "laika");
     await continuar(c.querySelector("#ops"), "Comenzar la misión ▸", 1800);
     // repaso: algo que quedó en «Lo aprendido» en una misión anterior
     const previos = window.BITACORA ? BITACORA.aprendidos().filter((a) => a.fecha < J.inicio) : [];
@@ -861,6 +870,7 @@
         `<p class="sub">${esc(k.frase)} ${k.uso.tipo === "escudo" ? `Es un escudo para la ${MINUS[k.uso.barra]}.` : `Suma ${k.uso.valor} de ${MINUS[k.uso.barra]}.`}</p>`;
       log(`Nueva carta: ${k.nombre}.`);
     } else cab = `<span class="tag">INFORME</span><h2 class="titulo">${esc(n.titulo)}</h2>`;
+    if (nueva && Object.keys(J.cartas).length === 1) J.laikaCarta = true;   // primera carta: Laika explica al terminar
     const q = preguntaDeInforme(n.id);
     if (q) {
       J.usadas.push(q.id);
@@ -868,11 +878,22 @@
         `<div class="ops col" id="ops"></div><div id="res"></div>`, "cientifica");
       voz(q.enunciado + (ui.sinTexto ? "" : " " + n.informe.texto));
       await responderBanco(c, q, "INFORME");
-      return;
+    } else {
+      const c = pantalla(cab + lectura(n.informe.texto, saber, "INFORME") + `<div class="ops" id="ops"></div>`, "cientifica");
+      voz(n.informe.texto);
+      await continuar(c.querySelector("#ops"), "Continuar ▸", 2600);
     }
-    const c = pantalla(cab + lectura(n.informe.texto, saber, "INFORME") + `<div class="ops" id="ops"></div>`, "cientifica");
-    voz(n.informe.texto);
-    await continuar(c.querySelector("#ops"), "Continuar ▸", 2600);
+    if (J.laikaCarta) { J.laikaCarta = false; await consejoLaika("carta", "¡Ganaste tu primera carta! Toca el botón CARTAS, arriba a la derecha, y úsala cuando una barra la necesite."); }
+  }
+  // Laika, la ayudante del tutorial: aparece la primera vez que pasa algo nuevo, solo en la primera misión
+  async function consejoLaika(clave, texto) {
+    if (J.partida > 1) return;
+    J.laikaVistos = J.laikaVistos || {};
+    if (J.laikaVistos[clave]) return;
+    J.laikaVistos[clave] = true;
+    const c = pantalla(`<span class="tag">LAIKA · TU AYUDANTE</span><p class="txt">${esc(texto)}</p><div class="ops" id="ops"></div>`, "laika");
+    voz(texto);
+    await continuar(c.querySelector("#ops"), "¡Entendido! ▸", 1800);
   }
 
   function consumo(d) {
@@ -961,6 +982,7 @@
     marca("ll");
     animo("alerta");
     await irA("control", { llamada: true }, "¡Suena la radio en");
+    await consejoLaika("llamada", "¡Guau! Llama Control de Misión. Primero verás la pregunta y luego el informe: léelo para encontrar la respuesta.");
     if (window.SFX) SFX.play("llamada");
     const c = pantalla(`<span class="tag llamada">LLAMADA ENTRANTE</span><h2 class="titulo">((( Control de Misión )))</h2><div class="ops" id="ops"></div>`, "control");
     await continuar(c.querySelector("#ops"), "Contestar ▸", 1100);
@@ -1087,6 +1109,7 @@
     marca("av");
     animo("peligro");
     await irA(a.escenario || "maquinas", Object.assign({ alarma: true }, ESTADO_AVERIA[a.id] || {}), "¡Alarma! Algo se descompuso en");
+    await consejoLaika("averia", "¡Algo se rompió! Lee las pistas con calma: no todas tienen que ver. Primero busca la causa y luego qué reparar.");
     aplicar(dano(A.danoInicial));
     const nIrr = { 1: 1, 2: 2, 3: 2 }[nv];
     const pistas = barajar([

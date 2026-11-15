@@ -64,6 +64,7 @@ Los originales están en `diseno/sprites/`. `herramientas/recortar-sprites.ps1` 
 | `bitacora-icono.png` | Botón de la bitácora, con contador de cosas nuevas |
 | `bitacora-libro.png` | Fondo de la bitácora abierta |
 | `img/personajes/cientifica.jpg`, `control-mision.jpg` | Retratos de la Dra. Ortiz y Control de Misión; alternan los dos cuadros mientras hablan |
+| `img/personajes/laika.png` | Laika, la ayudante del tutorial: guía el recorrido del día 0 y explica la primera llamada, avería, minijuego y carta (solo en la primera misión; `consejoLaika()` en `juego.js`) |
 
 ## Llamadas y preguntas
 `datos/preguntas-mision-lunar.json` + `public/js/preguntas.js` (lógica sin pantalla, probada con `npm test`). Objetivo: **que leer sea necesario para acertar**. Validación y pendientes en `docs/VALIDACION-PREGUNTAS.md`.

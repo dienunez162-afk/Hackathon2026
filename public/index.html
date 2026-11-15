@@ -226,6 +226,9 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 .retrato.cientifica { background-image: url(img/personajes/cientifica.jpg); }
 .retrato.control { background-image: url(img/personajes/control-mision.jpg); }
 .retrato.boca { background-position: 100% 0; }
+/* Laika, la ayudante del tutorial: una sola imagen (no dos cuadros); al hablar da saltitos */
+.retrato.laika { background-image: url(img/personajes/laika.png); background-size: contain; background-repeat: no-repeat; background-position: center bottom; }
+.retrato.laika.boca { background-position: center bottom; transform: translateY(-4px); }
 .retrato-nombre { font-size: 10px; color: var(--dim); text-align: center; margin-top: 3px; letter-spacing: 0.06em; }
 /* bitácora: el libro abierto ocupa la pantalla */
 #bitacora { position: absolute; inset: 0; background: rgba(2, 3, 10, 0.78); display: grid; place-items: center; z-index: 5; }
