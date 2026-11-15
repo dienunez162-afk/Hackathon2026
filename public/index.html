@@ -380,6 +380,7 @@ details.saber[open] summary { color: var(--ink); }
 .barra { margin-bottom: 0; }
 #consola { left: 522px; top: 470px; bottom: auto; width: 748px; height: 246px; max-height: none; gap: 8px; scrollbar-width: thin; scrollbar-color: var(--tema, var(--lila)) transparent; }
 #consola .titulo { font-size: 20px; }
+#consola:has(> .res + .sub) { gap: 3px; }   /* panel de fin: que quepa todo sin esconder la etiqueta */
 #toast { bottom: 270px; }
 #mj { left: 522px; top: 64px; width: 748px; max-height: 652px; }
 .fuga .b-c { font-size: 15px; letter-spacing: -1px; }

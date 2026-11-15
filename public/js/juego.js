@@ -1404,8 +1404,8 @@
     // "lo que aprendiste" ya va en la tarjeta de la cinemática (finales.js)
     let c = pantalla((ex ? `<span class="tag">LLEGÓ EL RELEVO</span><div class="estrellas">${"★".repeat(n.estrellas)}${"☆".repeat(3 - n.estrellas)}</div>` : `<span class="tag alarma">EVACUACIÓN</span>`) +
       `<h2 class="titulo">${esc(n.titulo)}</h2><p class="txt">${esc(n.mensaje)}</p>` +
-      `<div class="res">Descubriste ${Object.keys(J.cartas).length} de ${Object.keys(R.temas).length} cartas de la Luna.</div>` +
-      `<p class="sub">Llamadas resueltas bien: ${J.cuenta.llOk} de ${J.cuenta.ll} · Averías al primer intento: ${J.cuenta.avOk} de ${J.cuenta.av} · Minijuegos ganados: ${J.cuenta.mjOk} de ${J.cuenta.mj} · Cartas usadas: ${J.cuenta.usos}</p><div class="ops" id="ops"></div>`);
+      `<div class="res" style="padding:5px 10px">Descubriste ${Object.keys(J.cartas).length} de ${Object.keys(R.temas).length} cartas de la Luna.</div>` +
+      `<p class="sub" style="font-size:11.5px;line-height:1.25;margin:0">Llamadas resueltas bien: ${J.cuenta.llOk} de ${J.cuenta.ll} · Averías al primer intento: ${J.cuenta.avOk} de ${J.cuenta.av} · Minijuegos ganados: ${J.cuenta.mjOk} de ${J.cuenta.mj} · Cartas usadas: ${J.cuenta.usos}</p><div class="ops" id="ops"></div>`);
     await continuar(c.querySelector("#ops"), "Escribir el manual para el siguiente capitán ▸", 3000);
 
     escena("control", {});
