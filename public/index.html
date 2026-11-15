@@ -331,6 +331,17 @@ details.saber[open] summary { color: var(--ink); }
 .p-botones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .p-botones .op[aria-pressed="true"] b { color: var(--verde); }
 .p-botones .op b { color: var(--dim); }
+.p-voz-fila { grid-template-columns: 110px 1fr auto; }
+.p-voz-fila select { width: 100%; min-width: 0; font: 14px var(--mono); color: var(--ink); background: rgb(14, 16, 34); border: 2px solid var(--borde); padding: 4px 6px; }
+.p-voz-fila .op { padding: 4px 12px; font-size: 14px; }
+/* selector de idioma del menú principal: a la derecha de la Luna, crece con la pantalla */
+#idioma { position: absolute; right: calc(var(--k, 1) * 80px); top: 50%; transform: translateY(-50%); z-index: 4; display: grid; gap: calc(var(--k, 1) * 10px); font-family: var(--mono); font-size: calc(var(--k, 1) * 17px); }
+#idioma[hidden] { display: none; }
+#idioma .i-tit { color: rgb(110, 118, 135); letter-spacing: 0.14em; font-size: 0.72em; text-align: center; }
+#idioma button { display: flex; align-items: center; gap: 0.7em; min-width: 10.5em; padding: 0.55em 1em; font: inherit; font-weight: 700; color: rgb(170, 178, 200); background: rgba(10, 12, 28, 0.72); border: 2px solid rgb(60, 66, 100); cursor: pointer; }
+#idioma button:hover, #idioma button:focus-visible { color: rgb(255, 246, 225); border-color: rgb(150, 170, 220); outline: none; }
+#idioma button[aria-pressed="true"] { color: rgb(255, 246, 225); border-color: rgb(255, 246, 225); background: rgba(40, 44, 80, 0.85); }
+#idioma .i-ban { font-size: 0.75em; padding: 0.1em 0.4em; border: 1px solid currentColor; }
 .p-salir { justify-self: start; border-color: rgb(120, 40, 40) !important; color: rgb(255, 160, 150); }
 /* letra grande (opción del menú de pausa) */
 #app.texto-grande #consola .txt, #app.texto-grande #consola .op, #app.texto-grande #mj .op, #app.texto-grande .mj-pasos { font-size: 18.5px; }
@@ -382,8 +393,10 @@ details.saber[open] summary { color: var(--ink); }
           <button type="button" class="op prim" id="p-continuar">▶ Continuar</button>
           <label class="p-fila" for="p-musica"><span>♪ Música</span><input id="p-musica" type="range" min="0" max="100" step="5"><output id="o-musica"></output></label>
           <label class="p-fila" for="p-efectos"><span>✦ Efectos</span><input id="p-efectos" type="range" min="0" max="100" step="5"><output id="o-efectos"></output></label>
+          <div class="p-fila p-voz-fila"><label for="p-vozsel">🗣 Voz</label><select id="p-vozsel" data-sin-traducir></select><button type="button" class="op" id="p-probar">Probar</button></div>
+          <p class="sub" id="p-vozaviso" hidden></p>
           <div class="p-botones">
-            <button type="button" class="op" id="p-silencio" aria-pressed="false">Silenciar todo: <b>NO</b></button>
+            <button type="button" class="op" id="p-silencio" aria-pressed="false">Silenciar música y efectos: <b>NO</b></button>
             <button type="button" class="op" id="p-voz" aria-pressed="true">Narrador (leer en voz alta): <b>SÍ</b></button>
             <button type="button" class="op" id="p-texto" aria-pressed="false">Letra grande: <b>NO</b></button>
             <button type="button" class="op" id="p-pantalla" aria-pressed="false">Pantalla completa: <b>NO</b></button>
@@ -420,6 +433,9 @@ details.saber[open] summary { color: var(--ink); }
   </details>
 </div>
 
+<script src="js/i18n-en.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/narrador.js"></script>
 <script src="js/luna.js"></script>
 <script src="js/espacio.js"></script>
 <script src="js/nave.js"></script>

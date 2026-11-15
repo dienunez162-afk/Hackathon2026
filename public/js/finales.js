@@ -638,6 +638,7 @@ function colorBarra(v, inversa) {
   return bueno >= 60 ? "rgb(90,220,120)" : bueno >= 30 ? "rgb(255,200,60)" : "rgb(255,80,70)";
 }
 function envolver(ctx, txt, maxW) {
+  if (window.tr) txt = tr(txt);          // traducir antes de partir en líneas
   const out = []; let linea = "";
   for (const w of txt.split(" ")) {
     const prueba = linea ? linea + " " + w : w;

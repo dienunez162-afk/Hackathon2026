@@ -126,6 +126,7 @@
     const disp = Math.max(160, window.innerHeight - ctrl.offsetHeight);
     const w = Math.min(window.innerWidth, disp * 1280 / alto), h = w * alto / 1280;
     stage.style.width = w + "px"; stage.style.height = h + "px";
+    stage.style.setProperty("--k", w / 1280);         // escala para lo que va encima del canvas (selector de idioma)
     hud.style.transform = `scale(${w / 1280})`;
   }
   // zoom de la escena en la partida: lo que va de y = +360 (arriba) a y = -VISTA_ABAJO tiene que caber
@@ -168,7 +169,7 @@
   const ctx = lienzo.getContext("2d");
   ctx.imageSmoothingEnabled = false;
   let estado = "menu", menuStart = 0, seqStart = 0, seqT0 = 0, fadeStart = 0, juegoT0 = 0, ultimaEscena = 0;
-  let selected = 0, itemRects = [], seq = null, last = 0;
+  let selected = 0, itemRects = [], seq = null, last = 0, estadoVisto = null;
 
   function drawSpaced(text, font, color, cx, cy, spacing) {
     ctx.font = font; ctx.fillStyle = color;
@@ -197,7 +198,8 @@
     MENU.forEach((item, i) => {
       const y = H - 68 + i * 40 - (MENU.length - 1) * 40;
       const sel = i === selected, blink = sel && Math.sin(t * 5) > -0.3;
-      const label = blink ? `>  ${item}  <` : `   ${item}   `;
+      const nombre = window.tr ? tr(item) : item;     // JUGAR / PLAY
+      const label = blink ? `>  ${nombre}  <` : `   ${nombre}   `;
       const w = ctx.measureText(label).width;
       ctx.globalAlpha = b;
       ctx.fillStyle = sel ? ACCENT : DIM;
@@ -241,6 +243,7 @@
   function frame(now) {
     const dt = Math.min(0.1, (now - (last || now)) / 1000); last = now;
     let menuLike = true;
+    if (estado !== estadoVisto) { estadoVisto = estado; if (window.I18N) I18N.enMenu(estado === "menu"); }   // selector de idioma: solo en el menú
     if (estado === "menu") drawMenu(Math.max(0, (now - menuStart) / 1000));
     else if (estado === "aterrizaje") {
       const s = (now - seqStart) / 1000;
@@ -383,20 +386,12 @@
   const continuar = (cont, html = "Continuar ▸", delay = 1800) => botones(cont, [{ html, prim: true }], { auto: 0, delay });
   function marcar(cont, i, clase) { const b = cont.querySelector(`[data-i="${i}"]`); if (b) b.classList.add(clase); }
   // narrador: lee en voz alta los textos del juego (activo por defecto, en todos los niveles; se apaga en la pausa)
-  let vozEs = null;
-  function elegirVoz() {
-    try { const vs = speechSynthesis.getVoices(); vozEs = vs.find((v) => /es[-_]MX/i.test(v.lang)) || vs.find((v) => /es[-_](US|419)/i.test(v.lang)) || vs.find((v) => /^es/i.test(v.lang)) || null; } catch (e) { vozEs = null; }
-  }
-  try { elegirVoz(); speechSynthesis.addEventListener("voiceschanged", elegirVoz); } catch (e) { /* sin voz */ }
+  // la voz, el idioma y los cortes de frase los maneja narrador.js (lee en español o en inglés)
   function voz(texto, forzar) {
-    if ((!ui.voz && !forzar) || !texto || silenciado || ui.modo === "auto") return;
-    try {
-      speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(String(texto).replace(/[«»"]/g, "").replace(/\s+/g, " "));
-      u.lang = vozEs ? vozEs.lang : "es-MX"; if (vozEs) u.voice = vozEs; u.rate = 0.95;
-      speechSynthesis.speak(u);
-    } catch (e) { /* el navegador no tiene voz */ }
+    if ((!ui.voz && !forzar) || !texto || ui.modo === "auto") return;   // M silencia música y efectos, no al narrador
+    if (window.NARRADOR) NARRADOR.hablar(texto);
   }
+  const callarVoz = () => { if (window.NARRADOR) NARRADOR.callar(); };
   // quien: "control" (Control de Misión) o "cientifica" (Dra. Ortiz): su retrato habla mientras se lee el texto
   const NOMBRE_RETRATO = { control: "CONTROL DE MISIÓN", cientifica: "DRA. ORTIZ", laika: "LAIKA" };
   // tema del cuadro de texto (sprites de img/dialogo): cambia el color según la tensión del momento
@@ -538,7 +533,7 @@
     if (on && estado !== "juego") return;
     PAUSA.poner(on);
     $("pausa").hidden = !on;
-    try { if (on) speechSynthesis.pause(); else speechSynthesis.resume(); } catch (e) { /* sin voz */ }
+    if (on) callarVoz();        // pausar la voz del navegador falla a veces: mejor callarla
     $("btn-pausa").setAttribute("aria-expanded", String(on));
     if (on) { abrirCartas(false); pintarPausa(); $("p-continuar").focus(); }
     if (!on) $("p-salir").dataset.confirma = "";
@@ -550,17 +545,35 @@
     marca("p-silencio", silenciado); marca("p-voz", ui.voz); marca("p-texto", ui.textoGrande);
     marca("p-pantalla", !!document.fullscreenElement);
     $("p-dia").textContent = J ? `Día ${J.dia} de 14 · tu partida sigue aquí.` : "";
+    pintarVoces();
   }
+  // elegir y probar la voz del narrador
+  function pintarVoces() {
+    const sel = $("p-vozsel"), aviso = $("p-vozaviso");
+    if (!window.NARRADOR || !NARRADOR.hay) {
+      sel.hidden = true; $("p-probar").hidden = true; aviso.hidden = false;
+      aviso.textContent = "Este navegador no puede leer en voz alta. Prueba con Chrome o Edge.";
+      return;
+    }
+    const lista = NARRADOR.voces(), actual = NARRADOR.voz;
+    sel.innerHTML = lista.map((v) => `<option value="${esc(v.name)}"${actual && v.name === actual.name ? " selected" : ""}>${esc(v.name.replace(/^Microsoft /, "").replace(/ - .*$/, ""))} · ${esc(v.lang)}</option>`).join("");
+    sel.disabled = !lista.length;
+    aviso.hidden = lista.length > 0;
+    if (!lista.length) aviso.textContent = "Este dispositivo no tiene voz en este idioma. En Windows: Configuración › Hora e idioma › Voz › Agregar voces. En Chrome o Edge suele haber voces más claras.";
+  }
+  $("p-vozsel").addEventListener("change", (e) => { NARRADOR.elegir(e.target.value); NARRADOR.hablar("Hola, capitán. Así suena tu narrador."); });
+  $("p-probar").addEventListener("click", () => { if (window.NARRADOR) NARRADOR.hablar("Hola, capitán. Así suena tu narrador."); });
+  if (window.NARRADOR) NARRADOR.alCambiar(() => { if (!$("pausa").hidden) pintarVoces(); });
   $("btn-pausa").addEventListener("click", () => abrirPausa(true));
   $("p-continuar").addEventListener("click", () => abrirPausa(false));
   $("p-musica").addEventListener("input", (e) => { AJUSTES_AUDIO.musica = +e.target.value / 100; $("o-musica").textContent = e.target.value + "%"; guardarAudio(); });
   $("p-efectos").addEventListener("input", (e) => { AJUSTES_AUDIO.efectos = +e.target.value / 100; $("o-efectos").textContent = e.target.value + "%"; guardarAudio(); });
   $("p-efectos").addEventListener("change", () => { if (window.SFX) SFX.play("acierto"); });   // para oír el volumen nuevo
   $("p-musica").addEventListener("change", () => { if (window.MUSICA_BASE) MUSICA_BASE.sincronizar(); });
-  $("p-silencio").addEventListener("click", () => { alternarSilencio(); if (silenciado) try { speechSynthesis.cancel(); } catch (e) { /* sin voz */ } pintarPausa(); });
+  $("p-silencio").addEventListener("click", () => { alternarSilencio(); pintarPausa(); });
   $("p-voz").addEventListener("click", () => {
     ui.voz = !ui.voz; guardarLS("gnosis-pref", { voz: ui.voz, textoGrande: ui.textoGrande }); pintarPausa(); pintarCtl();
-    try { speechSynthesis.cancel(); } catch (e) { /* sin voz */ }
+    callarVoz();
     if (ui.voz) voz("Narrador activado. Voy a leer los textos del juego.");
   });
   $("p-texto").addEventListener("click", () => { ui.textoGrande = !ui.textoGrande; app.classList.toggle("texto-grande", ui.textoGrande); guardarLS("gnosis-pref", { voz: ui.voz, textoGrande: ui.textoGrande }); pintarPausa(); });
