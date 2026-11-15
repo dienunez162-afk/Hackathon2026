@@ -8,6 +8,8 @@
    ========================================================= */
 (() => {
   "use strict";
+  const EN = document.documentElement.lang === "en";
+  const L = (es, en) => (EN ? en : es);   // textos con datos que cambian: se arman ya en el idioma
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   const barajar = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const pick = (a) => a[Math.floor(Math.random() * a.length)];
@@ -85,7 +87,7 @@
   function limpiar(op) {
     const C = 10, F = 4, maxRayas = porNivel(op.nivel, [6, 4, 2]);
     const ui = marco(op, op.titulo || "Limpia el polvo", "Pasa el dedo o el ratón sobre el panel. Cada celda se limpia con una pasada; si pasas dos veces, el polvo filoso lo raya.");
-    ui.cuerpo.innerHTML = `<div class="mj-panel" style="grid-template-columns:repeat(${C},1fr)">${Array.from({ length: C * F }, (_, i) => `<span class="celda polvo" data-i="${i}">#</span>`).join("")}</div><p class="mj-ins">Rayones: <b class="rayas">0</b> de ${maxRayas}</p>`;
+    ui.cuerpo.innerHTML = `<div class="mj-panel" style="grid-template-columns:repeat(${C},1fr)">${Array.from({ length: C * F }, (_, i) => `<span class="celda polvo" data-i="${i}">#</span>`).join("")}</div><p class="mj-ins">${L("Rayones", "Scratches")}: <b class="rayas">0</b> ${L("de", "of")} ${maxRayas}</p>`;
     const s = sesion(op, ui, tiempoBase(op, 22));
     const estado = new Array(C * F).fill(0);
     let abajo = false, ultima = -1, limpias = 0, rayas = 0;
@@ -110,7 +112,7 @@
     const L = 5, R = 7, meta = porNivel(op.nivel, [6, 8, 10]), maxFallas = porNivel(op.nivel, [4, 3, 2]);
     const objeto = op.objeto || "caja de comida";
     const ui = marco(op, op.titulo || "¡Atrapa lo que se cae!", `Mueve la plataforma con ← → o tocando un carril. Atrapa cada ${objeto}.`);
-    ui.cuerpo.innerHTML = `<div class="mj-carriles" style="grid-template-columns:repeat(${L},1fr)"></div><div class="mj-botones"><button type="button" data-m="-1">←</button><button type="button" data-m="1">→</button></div><p class="mj-ins">Atrapadas <b class="a">0</b> de ${meta} · se cayeron <b class="f">0</b> de ${maxFallas}</p>`;
+    ui.cuerpo.innerHTML = `<div class="mj-carriles" style="grid-template-columns:repeat(${L},1fr)"></div><div class="mj-botones"><button type="button" data-m="-1">←</button><button type="button" data-m="1">→</button></div><p class="mj-ins">${L("Atrapadas", "Caught")} <b class="a">0</b> ${L("de", "of")} ${meta} · ${L("se cayeron", "dropped")} <b class="f">0</b> ${L("de", "of")} ${maxFallas}</p>`;
     const s = sesion(op, ui, tiempoBase(op, 30));
     const grid = ui.cuerpo.querySelector(".mj-carriles");
     let pos = 2, cosas = [], atrapadas = 0, fallas = 0, tick = 0;
@@ -189,7 +191,7 @@
     const [C, F] = porNivel(op.nivel, [[3, 3], [4, 3], [4, 4]]), meta = porNivel(op.nivel, [6, 8, 10]), maxFallas = porNivel(op.nivel, [4, 3, 2]);
     const dura = porNivel(op.nivel, [1700, 1350, 1050]);
     const ui = marco(op, op.titulo || "¡Tapa los agujeros!", "Toca cada agujero antes de que se escape el aire.");
-    ui.cuerpo.innerHTML = `<div class="mj-paredes" style="grid-template-columns:repeat(${C},1fr)">${Array.from({ length: C * F }, (_, i) => `<button type="button" class="pared-c" data-i="${i}">▒▒</button>`).join("")}</div><p class="mj-ins">Tapados <b class="a">0</b> de ${meta} · escapes <b class="f">0</b> de ${maxFallas}</p>`;
+    ui.cuerpo.innerHTML = `<div class="mj-paredes" style="grid-template-columns:repeat(${C},1fr)">${Array.from({ length: C * F }, (_, i) => `<button type="button" class="pared-c" data-i="${i}">▒▒</button>`).join("")}</div><p class="mj-ins">${L("Tapados", "Sealed")} <b class="a">0</b> ${L("de", "of")} ${meta} · ${L("escapes", "leaks")} <b class="f">0</b> ${L("de", "of")} ${maxFallas}</p>`;
     const s = sesion(op, ui, tiempoBase(op, 30));
     const hoyos = new Map(); let tapados = 0, fallas = 0;
     const act = () => { ui.cuerpo.querySelector(".a").textContent = tapados; ui.cuerpo.querySelector(".f").textContent = fallas; };
@@ -238,7 +240,7 @@
     const etq = op.que === "alineacion" ? ["izquierda", "derecha", "Alinea la nave con la plataforma"] : op.meta === "calentar" ? ["frío", "calor", "Sube la calefacción a la zona verde"] : ["frío", "calor", "Baja la temperatura a la zona verde"];
     const ui = marco(op, op.titulo || etq[2], op.movil ? `La zona verde se mueve: síguela con − y + (o ← →). Junta ${necesita} segundos adentro; si te sales, baja.` : `Usa − y + (o ← →). Mantén la aguja en la zona verde ${necesita} segundos.`);
     ui.cuerpo.innerHTML = `<div class="mj-medidor"><span>${etq[0]}</span><div class="pista"><i class="zona"></i><i class="aguja"></i></div><span>${etq[1]}</span></div>
-      <div class="mj-botones"><button type="button" data-m="-6">−</button><button type="button" data-m="6">+</button></div><p class="mj-ins">En la zona: <b class="z">0.0</b> de ${necesita} s</p>`;
+      <div class="mj-botones"><button type="button" data-m="-6">−</button><button type="button" data-m="6">+</button></div><p class="mj-ins">${L("En la zona", "In the zone")}: <b class="z">0.0</b> ${L("de", "of")} ${necesita} s</p>`;
     let zona0 = op.meta === "calentar" ? 60 : op.meta === "enfriar" ? 15 : 40 + Math.random() * 20 - ancho / 2;
     let v = op.meta === "calentar" ? 15 : op.meta === "enfriar" ? 85 : (zona0 > 50 ? 10 : 90), dentro = 0;
     const z = ui.cuerpo.querySelector(".zona"), a = ui.cuerpo.querySelector(".aguja");
@@ -444,7 +446,7 @@
     const pintar = () => {
       const total = mods.filter((m) => m.on).reduce((a, m) => a + m.c, 0);
       ui.cuerpo.innerHTML = `<div class="mj-opciones col">${mods.map((m, i) => `<button type="button" class="op interruptor ${m.on ? "on" : "off"}" data-i="${i}">${m.on ? "[ON ]" : "[OFF]"} ${esc(m.n)} · ${m.c}</button>`).join("")}</div>
-        <p class="mj-ins">Gasto: <b class="${total > tope ? "malo" : "bueno"}">${total}</b> de ${tope}</p><button type="button" class="op prim" data-ok="1">Confirmar</button>`;
+        <p class="mj-ins">${L("Gasto", "Spent")}: <b class="${total > tope ? "malo" : "bueno"}">${total}</b> ${L("de", "of")} ${tope}</p><button type="button" class="op prim" data-ok="1">Confirmar</button>`;
     };
     ui.cuerpo.addEventListener("click", (e) => {
       const b = e.target.closest("button"); if (!b || !s.vivo()) return;
@@ -478,7 +480,7 @@
       const resto = todas.filter((x) => x.nombre !== c.nombre && !(x.uso && c.uso && x.uso.barra === c.uso.barra));
       const otros = [...misma, ...resto].slice(0, Math.max(1, op.nivel)).map((x) => x.nombre);
       const opciones = fijo([c.nombre, ...otros], "tierra-" + c.nombre);
-      ui.cuerpo.innerHTML = `<p class="mj-tit2">Situación: ${esc(c.momento)}.</p><p class="mj-ins">¿Qué carta usas? (${k + 1} de ${qs.length})</p><div class="mj-opciones col">${opciones.map((o, i) => `<button type="button" class="op" data-i="${i}">${esc(o)}</button>`).join("")}</div><p class="mj-ins" id="por-que"></p>`;
+      ui.cuerpo.innerHTML = `<p class="mj-tit2">Situación: ${esc(c.momento)}.</p><p class="mj-ins">${L("¿Qué carta usas?", "Which card do you use?")} (${k + 1} ${L("de", "of")} ${qs.length})</p><div class="mj-opciones col">${opciones.map((o, i) => `<button type="button" class="op" data-i="${i}">${esc(o)}</button>`).join("")}</div><p class="mj-ins" id="por-que"></p>`;
       ui.cuerpo.querySelector(".mj-opciones").onclick = (e) => {
         const b = e.target.closest("[data-i]"); if (!b || !s.vivo() || b.disabled) return;
         ui.cuerpo.querySelectorAll(".mj-opciones .op").forEach((x) => (x.disabled = true));
@@ -501,7 +503,7 @@
     const AN = 440, AL = 250, PISO = 226;
     ui.cuerpo.innerHTML = `<canvas class="mj-aterrizar" width="${AN}" height="${AL}"></canvas>
       <div class="mj-botones"><button type="button" data-m="-1">←</button><button type="button" data-motor="1" class="motor">▲ MOTOR</button><button type="button" data-m="1">→</button></div>
-      <p class="mj-ins">Velocidad de bajada: <b class="vel">0</b> (máximo <b class="lim"></b>) · Combustible: <b class="comb">100</b>%</p>`;
+      <p class="mj-ins">${L("Velocidad de bajada", "Descent speed")}: <b class="vel">0</b> (${L("máximo", "maximum")} <b class="lim"></b>) · ${L("Combustible", "Fuel")}: <b class="comb">100</b>%</p>`;
     const cv = ui.cuerpo.querySelector("canvas"), g = cv.getContext("2d");
     const grav = porNivel(op.nivel, [20, 26, 32]), EMPUJE = 62, LATERAL = 80;
     const anchoPad = porNivel(op.nivel, [96, 74, 56]), padX = Math.round(AN * 0.62);
