@@ -132,7 +132,7 @@
       s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"; s.crossOrigin = "anonymous";
       s.onload = res; s.onerror = () => rej(new Error(t("No se pudo cargar Supabase (¿hay internet?).", "Could not load Supabase (is there internet?).")));
       document.head.appendChild(s);
-    }).then(() => { sb = window.supabase.createClient(C.url, C.anon, { auth: { persistSession: true, autoRefreshToken: true } }); });
+    }).then(() => { sb = window.supabase.createClient(C.url, C.anon, { auth: { persistSession: true, autoRefreshToken: true, storageKey: "gnosis-maestro-auth" } })   // sesión aparte de la del juego: abrir el panel no cierra la de un alumno; });
   }
   async function todo(tabla, seleccion, filtro) {          // pagina de 1000 en 1000 (el límite de PostgREST)
     let filas = [], desde = 0;
