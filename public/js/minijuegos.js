@@ -283,12 +283,13 @@
     const [C, F] = porNivel(op.nivel, [[6, 4], [7, 5], [8, 5]]);
     const tipo = { enfermas: { n: [3, 4, 5], bien: "%", mal: "@", tit: "Encuentra las plantas enfermas", ins: "Las enfermas tienen manchas blancas (@). Tócalas." },
       maduras: { n: [3, 4, 5], bien: "o", mal: "%", tit: "Cosecha las lechugas listas", ins: "Las listas se ven grandes y redondas (o). Tócalas." },
-      fuga: { n: [1, 2, 2], bien: "≈", mal: "═", tit: "Encuentra la fuga", ins: "Sigue las tuberías: la que gotea se ve así ≈. Tócala." } }[op.objetivo || "enfermas"];
+      fuga: { n: [1, 2, 2], bien: "═💧═", mal: "═══", tit: "Encuentra la fuga", ins: "Busca la tubería que gotea (═💧═) y tócala. Las válvulas (═◘═) están bien: no las toques." } }[op.objetivo || "enfermas"];
     const meta = porNivel(op.nivel, tipo.n), maxErr = porNivel(op.nivel, [3, 2, 1]);
     const ui = marco(op, op.titulo || tipo.tit, tipo.ins);
     const objetivos = new Set(barajar([...Array(C * F).keys()]).slice(0, meta));
-    const otro = op.objetivo === "maduras" ? "%" : op.objetivo === "fuga" ? "═" : "%";
-    ui.cuerpo.innerHTML = `<div class="mj-buscar ${op.objetivo || "enfermas"}" style="grid-template-columns:repeat(${C},1fr)">${Array.from({ length: C * F }, (_, i) => `<button type="button" class="b-c" data-i="${i}">${objetivos.has(i) ? (op.objetivo === "enfermas" ? "@" : op.objetivo === "maduras" ? "o" : "≈") : otro}</button>`).join("")}</div>`;
+    // en la fuga: tubos normales, algunas válvulas (para distraer) y la que gotea con una gota
+    const otro = (i) => (op.objetivo === "fuga" ? (i % 5 === 2 ? "═◘═" : "═══") : "%");
+    ui.cuerpo.innerHTML = `<div class="mj-buscar ${op.objetivo || "enfermas"}" style="grid-template-columns:repeat(${C},1fr)">${Array.from({ length: C * F }, (_, i) => `<button type="button" class="b-c" data-i="${i}">${objetivos.has(i) ? (op.objetivo === "enfermas" ? "@" : op.objetivo === "maduras" ? "o" : "═💧═") : otro(i)}</button>`).join("")}</div>`;
     const s = sesion(op, ui, tiempoBase(op, 22));
     let ok = 0, err = 0;
     ui.cuerpo.addEventListener("click", (e) => {

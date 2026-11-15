@@ -716,7 +716,7 @@
     secuencia: () => ["Toca los pasos en el orden correcto.", "Empieza por el primero."],
     ajustar: (s) => (s.movil ? ["La zona verde se mueve: síguela con − y + (o ← →).", "Mantén la nave adentro hasta llenar la barra.", "Si te sales, la barra baja."]
       : ["Usa − y + (o ← →) para mover la aguja.", "Mantenla en la zona verde hasta llenar la barra."]),
-    buscar: (s) => [`Toca solo ${BUSCAR_QUE[s.objetivo] || "lo que buscas"}.`, "¡No toques las demás!"],
+    buscar: (s) => (s.objetivo === "fuga" ? ["Busca la tubería que gotea: ═💧═", "Las válvulas ═◘═ están bien: no las toques."] : [`Toca solo ${BUSCAR_QUE[s.objetivo] || "lo que buscas"}.`, "¡No toques las demás!"]),
     grafica: (s) => (s.modo === "radiacion" ? ["Cada barra es un día de radiación.", "La última es hoy: ¿es seguro salir?"] : ["Lee las alertas del Sol.", "Decide cuándo tener listo el refugio."]),
     rover: (s) => ["Mueve el rover con las flechas.", "El radar te dice si el hielo está cerca."].concat(s.guia ? ["Sigue la flecha de Control de Misión."] : ["¡Cuida la batería!"]),
     energia: () => ["Apaga lo que no necesitas.", "Cuando la barra quede en verde, confirma."],
@@ -897,9 +897,22 @@
   }
 
   // el texto que se lee para contestar: corto, y lo extra en «Saber más» (cerrado por defecto)
+  // marca las palabras del diccionario (bitácora): al tocarlas se abre su significado. Una vez cada palabra.
+  function conPalabras(textoEsc) {
+    const glo = window.BITACORA && BITACORA.glosario;
+    if (!glo) return textoEsc;
+    let t = textoEsc; const usadas = new Set();
+    for (const g of glo) for (const f of g.formas) {
+      if (usadas.has(g.palabra)) break;
+      const re = new RegExp(`(^|[^\\p{L}>])(${f.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})(?![\\p{L}])`, "iu");
+      if (re.test(t)) { t = t.replace(re, (m, a, b) => `${a}<button type="button" class="palabra" data-palabra="${g.palabra}" title="${esc(g.def)}">${b}</button>`); usadas.add(g.palabra); }
+    }
+    return t;
+  }
+  document.addEventListener("click", (e) => { const b = e.target.closest("button.palabra"); if (b && window.BITACORA) { e.preventDefault(); BITACORA.abrir("diccionario", b.dataset.palabra); } });
   function lectura(texto, extra = "", titulo = "LEE Y BUSCA LA RESPUESTA") {
     if (ui.sinTexto) return `<div class="lectura"><span class="paso">${titulo}</span><p class="txt sub">[Texto oculto: prueba sin lectura]</p></div>`;
-    return `<div class="lectura"><span class="paso">${titulo}</span><p class="txt">${esc(texto)}</p>` +
+    return `<div class="lectura"><span class="paso">${titulo}</span><p class="txt">${conPalabras(esc(texto))}</p>` +
       (extra ? `<details class="saber"><summary>Saber más</summary>${extra}</details>` : "") + `</div>`;
   }
   // pregunta del banco ligada a un informe: fija (la primera sin usar, la más cercana al nivel); transferencia solo en nivel 3

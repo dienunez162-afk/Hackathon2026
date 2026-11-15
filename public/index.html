@@ -252,6 +252,12 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 .bt-pestanas { position: absolute; top: -34px; left: 6%; display: flex; gap: 6px; }
 .bt-pestanas button { font: 700 13px var(--mono); padding: 7px 12px 9px; border: 2px solid rgb(30, 28, 70); border-bottom: 0; background: rgb(48, 44, 110); color: var(--casco); cursor: pointer; }
 .bt-pestanas button[aria-pressed="true"] { background: rgb(253, 246, 226); color: rgb(60, 40, 120); }
+.bt-nuevo { font-style: normal; font-size: 9.5px; font-weight: 700; letter-spacing: 0.08em; background: rgb(214, 60, 80); color: #fff; padding: 1px 5px; margin-right: 6px; border-radius: 2px; }
+.bt-n { display: inline-grid; place-items: center; min-width: 16px; height: 16px; border-radius: 8px; background: rgb(214, 60, 80); color: #fff; font-size: 10px; margin-left: 4px; }
+.bt-pestanas button { padding: 7px 9px 9px; }
+/* palabras del diccionario dentro de los textos: se tocan para ver qué significan */
+button.palabra { all: unset; cursor: help; border-bottom: 2px dotted var(--cian); color: inherit; }
+button.palabra:hover, button.palabra:focus-visible { color: var(--cian); }
 #bt-cerrar { position: absolute; top: -34px; right: 4%; font: 700 13px var(--mono); padding: 7px 12px; background: var(--crema); color: var(--negro); border: 0; cursor: pointer; }
 /* ===== cuadros de texto pixel art (img/dialogo; se generan con herramientas/generar-sprites-dialogo.py) =====
    Mismo estilo que las barras: marco biselado, pantalla hundida y tornillos. El color cambia con la tensión:
@@ -308,6 +314,8 @@ details.saber[open] summary { color: var(--ink); }
 #consola { left: 522px; top: 470px; bottom: auto; width: 748px; height: 246px; max-height: none; gap: 8px; scrollbar-width: thin; scrollbar-color: var(--tema, var(--lila)) transparent; }
 #consola .titulo { font-size: 20px; }
 #toast { bottom: 270px; }
+#mj { left: 522px; top: 64px; width: 748px; max-height: 652px; }
+.fuga .b-c { font-size: 15px; letter-spacing: -1px; }
 /* ===== menú de pausa ===== */
 #btn-pausa { position: absolute; right: 196px; top: 96px; height: 28px; box-sizing: border-box; border-style: solid; border-color: transparent; border-width: 0 20px; border-image: url(img/dialogo/etiqueta-normal.png) 0 20 fill / 0 20px / 0 stretch; image-rendering: pixelated; background: none; padding: 0 2px 3px 6px; font: 700 12px var(--mono); letter-spacing: 0.12em; color: rgb(24, 22, 58); cursor: pointer; }
 #btn-pausa:hover, #btn-pausa:focus-visible { filter: brightness(1.12); outline: none; }
@@ -355,7 +363,7 @@ details.saber[open] summary { color: var(--ink); }
       <section id="bitacora" hidden aria-label="Bitácora">
         <div class="bt-libro">
           <div class="bt-pestanas" role="group" aria-label="Secciones">
-            <button type="button" data-sec="cartas">Cartas</button><button type="button" data-sec="informes">Informes</button><button type="button" data-sec="datos">Datos NASA</button><button type="button" data-sec="aprendido">Lo aprendido</button>
+            <button type="button" data-sec="cartas">Cartas</button><button type="button" data-sec="informes">Informes</button><button type="button" data-sec="datos">Datos NASA</button><button type="button" data-sec="aprendido">Lo aprendido</button><button type="button" data-sec="diccionario">Diccionario</button>
           </div>
           <button type="button" id="bt-cerrar">Cerrar ✕</button>
           <div class="bt-pag izq-p" id="bt-izq"></div>
