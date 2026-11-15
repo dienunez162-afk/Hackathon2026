@@ -7,6 +7,8 @@
      Datos NASA    clima espacial real (DONKI), radiación real junto a la
                    Luna (RadLab / CRaTER) y estudios reales (OSDR)
      Lo aprendido  las explicaciones de llamadas y averías
+     Diccionario   palabras difíciles explicadas para 7-12 años
+   Lo nuevo lleva la marca NUEVO hasta que se lee; los textos repetidos no se guardan dos veces.
    API: BITACORA.registrar(tipo, clave, datos), .abrir(), .cerrar(), .abierta()
    ========================================================= */
 (() => {
@@ -20,12 +22,44 @@
   try { const g = JSON.parse(localStorage.getItem(CLAVE) || "null"); if (g) B = Object.assign(B, g); } catch (e) { /* sin almacenamiento */ }
   const guardar = () => { try { localStorage.setItem(CLAVE, JSON.stringify(B)); } catch (e) { /* nada */ } };
   const total = () => Object.keys(B.cartas).length + Object.keys(B.informes).length + Object.keys(B.aprendido).length;
+  const norm = (t) => String(t || "").toLowerCase().replace(/[^a-záéíóúñü0-9]+/g, " ").trim();
+  // cuántas cosas nuevas (sin leer) hay en cada sección
+  const nuevos = (lista) => Object.values(lista).filter((x) => x.nuevo).length;
+  const nuevosPor = () => ({ cartas: nuevos(B.cartas), informes: nuevos(B.informes), aprendido: nuevos(B.aprendido), datos: 0, diccionario: 0 });
+
+  // ---------- diccionario: palabras difíciles (definiciones con lo que dicen los informes del juego) ----------
+  const GLOSARIO = [
+    ["Atmósfera", ["atmósfera"], "La capa de aire que rodea a un planeta. La Luna no tiene una atmósfera gruesa que la proteja."],
+    ["Autosuficiente", ["autosuficiente"], "Que produce lo que necesita, sin depender de que le manden cosas. Una base que cultiva su comida es más autosuficiente."],
+    ["Campo magnético", ["campo magnético"], "Un escudo invisible que tiene la Tierra y que la protege de la radiación. La Luna no tiene uno."],
+    ["CME (eyección de masa coronal)", ["eyección de masa coronal", "CME"], "Una nube de material que lanza el Sol. Suele tardar de 1 a 3 días en llegar."],
+    ["Cráter", ["cráteres", "cráter"], "Un hoyo grande en el suelo de la Luna. En los que nunca reciben Sol hay hielo."],
+    ["CRaTER", ["CRaTER"], "Un instrumento de la NASA que mide la radiación cerca de la Luna desde 2009."],
+    ["DONKI", ["DONKI"], "Una base de datos de la NASA donde se guarda cada tormenta del Sol."],
+    ["Hidrógeno", ["hidrógeno"], "Un gas. Si se separa el agua, sale hidrógeno y oxígeno."],
+    ["Invernadero", ["invernadero"], "El cuarto de la base donde crecen las plantas con luz y la cantidad justa de agua."],
+    ["Llamarada solar", ["llamaradas", "llamarada"], "Un destello fuerte en el Sol. Se nombra con letras: A, B y C son suaves; M y X son fuertes."],
+    ["Micrometeorito", ["micrometeoritos", "micrometeorito"], "Una piedrita del espacio que viaja a más de 20 km por segundo: puede hacer un agujero."],
+    ["Moho", ["moho"], "Un hongo que crece cuando hay demasiada agua. Puede enfermar a las plantas."],
+    ["Noche lunar", ["noche lunar"], "Unos 14 días sin Sol en la Luna, con temperaturas de unos -133 °C."],
+    ["Oxígeno", ["oxígeno"], "El gas que respiramos. En la base se obtiene separando el agua."],
+    ["Panel solar", ["paneles solares", "panel solar", "paneles"], "Un aparato que convierte la luz del Sol en energía. Produce más cuando la luz le llega de frente."],
+    ["Radiación", ["radiación"], "Partículas con mucha energía que llegan del Sol y del espacio. Mucha radiación daña la salud."],
+    ["Rayos cósmicos", ["rayos cósmicos"], "Radiación que llega de todas direcciones del espacio, de día y de noche."],
+    ["Refugio", ["refugio"], "El cuarto de la base con paredes más gruesas, que frenan las partículas del Sol."],
+    ["Regolito", ["regolito"], "El polvo y las piedritas que cubren la Luna. Es filoso como vidrio."],
+    ["Relevo", ["relevo"], "El equipo que llega a reemplazarte para cuidar la base."],
+    ["Rover", ["rover"], "Un vehículo para explorar la Luna. Sin Sol no puede recargar sus baterías."],
+    ["Sismo lunar", ["sismos lunares", "sismo lunar", "sismos", "sismo"], "Un temblor en la Luna. Algunos duran varios minutos."],
+    ["Sismómetro", ["sismómetros", "sismómetro"], "Un aparato que mide los temblores. Los astronautas de Apollo dejaron varios en la Luna."],
+    ["Tormenta solar", ["tormenta solar", "tormentas solares"], "Cuando el Sol lanza partículas con mucha energía. Las más rápidas pueden llegar en menos de una hora."],
+  ].map(([palabra, formas, def]) => ({ palabra, formas, def }));
 
   const $ = (id) => document.getElementById(id);
   let seccion = "cartas", elegido = null;
 
   function badge() {
-    const n = total() - (B.vistos || 0), el = $("bitacora-nuevos");
+    const p = nuevosPor(), n = p.cartas + p.informes + p.aprendido, el = $("bitacora-nuevos");
     if (!el) return;
     el.hidden = n <= 0; el.textContent = n > 9 ? "9+" : String(n);
   }
@@ -34,7 +68,9 @@
   function registrar(tipo, clave, datos) {
     const lista = tipo === "carta" ? B.cartas : tipo === "informe" ? B.informes : B.aprendido;
     if (lista[clave]) return false;
-    lista[clave] = Object.assign({ fecha: Date.now() }, datos || {});
+    // no se repiten: si ya hay un texto igual guardado, no se agrega otra vez
+    if (datos && datos.texto && Object.values(lista).some((x) => norm(x.texto) === norm(datos.texto))) return false;
+    lista[clave] = Object.assign({ fecha: Date.now(), nuevo: true }, datos || {});
     guardar(); badge();
     return true;
   }
@@ -42,12 +78,17 @@
   // ---------- páginas ----------
   function listaIzq(items, vacio) {
     if (!items.length) return `<p class="bt-vacio">${esc(vacio)}</p>`;
-    return `<ul class="bt-lista">${items.map((it) => `<li><button type="button" class="bt-item ${it.id === elegido ? "sel" : ""} ${it.bloq ? "bloq" : ""}" data-id="${esc(it.id)}" ${it.bloq ? "disabled" : ""}>${esc(it.titulo)}${it.sub ? `<small>${esc(it.sub)}</small>` : ""}</button></li>`).join("")}</ul>`;
+    return `<ul class="bt-lista">${items.map((it) => `<li><button type="button" class="bt-item ${it.id === elegido ? "sel" : ""} ${it.bloq ? "bloq" : ""}" data-id="${esc(it.id)}" ${it.bloq ? "disabled" : ""}>${it.nuevo ? `<i class="bt-nuevo">NUEVO</i>` : ""}${esc(it.titulo)}${it.sub ? `<small>${esc(it.sub)}</small>` : ""}</button></li>`).join("")}</ul>`;
   }
+  // al mostrar un elemento, deja de ser nuevo
+  function leido(entrada) { if (entrada && entrada.nuevo) { entrada.nuevo = false; guardar(); badge(); } }
+  // quita repetidos al mostrar (por si quedaron guardados de antes)
+  const unicos = (pares) => { const vistos = new Set(); return pares.filter(([, x]) => { const k = norm(x.texto) || x.titulo; if (vistos.has(k)) return false; vistos.add(k); return true; }); };
   function pagCartas() {
     const temas = Object.keys(R.temas);
-    const items = temas.map((t) => B.cartas[t] ? { id: t, titulo: R.temas[t].carta.nombre, sub: R.temas[t].nombre } : { id: t, titulo: "???", sub: "sin descubrir", bloq: true });
-    if (!elegido || !B.cartas[elegido]) elegido = (items.find((i) => !i.bloq) || {}).id || null;
+    const items = temas.map((t) => B.cartas[t] ? { id: t, titulo: R.temas[t].carta.nombre, sub: R.temas[t].nombre, nuevo: B.cartas[t].nuevo } : { id: t, titulo: "???", sub: "sin descubrir", bloq: true });
+    if (!elegido || !B.cartas[elegido]) elegido = (items.find((i) => i.nuevo) || items.find((i) => !i.bloq) || {}).id || null;
+    if (elegido) leido(B.cartas[elegido]);
     let der = `<p class="bt-vacio">Descubre cartas jugando: cada evento te enseña algo nuevo.</p>`;
     if (elegido) {
       const k = R.temas[elegido].carta, u = k.uso;
@@ -60,17 +101,19 @@
     return [`<h3 class="bt-tit">Cartas · ${Object.keys(B.cartas).length} de ${temas.length}</h3>` + listaIzq(items, ""), der];
   }
   function pagInformes() {
-    const items = Object.entries(B.informes).sort((a, b) => a[1].fecha - b[1].fecha).map(([id, i]) => ({ id, titulo: i.titulo, sub: R.temas[i.tema] ? R.temas[i.tema].nombre : "" }));
-    if (!elegido || !B.informes[elegido]) elegido = items.length ? items[items.length - 1].id : null;
+    const items = unicos(Object.entries(B.informes).sort((a, b) => a[1].fecha - b[1].fecha)).map(([id, i]) => ({ id, titulo: i.titulo, sub: R.temas[i.tema] ? R.temas[i.tema].nombre : "", nuevo: i.nuevo }));
+    if (!elegido || !B.informes[elegido]) elegido = (items.find((x) => x.nuevo) || items[items.length - 1] || {}).id || null;
     const i = elegido && B.informes[elegido];
+    leido(i);
     const der = i ? `<h3 class="bt-tit">${esc(i.titulo)}</h3><p>${esc(i.texto)}</p><p class="bt-mini">Fuente: ${esc(i.fuente || "NASA")}</p>`
       : `<p class="bt-vacio">Cada evento de la misión deja un informe. Aquí se guardan todos.</p>`;
     return [`<h3 class="bt-tit">Informes · ${items.length}</h3>` + listaIzq(items, "Todavía no hay informes."), der];
   }
   function pagAprendido() {
-    const items = Object.entries(B.aprendido).sort((a, b) => a[1].fecha - b[1].fecha).map(([id, a]) => ({ id, titulo: a.titulo, sub: a.quien || "" }));
-    if (!elegido || !B.aprendido[elegido]) elegido = items.length ? items[items.length - 1].id : null;
+    const items = unicos(Object.entries(B.aprendido).sort((a, b) => a[1].fecha - b[1].fecha)).map(([id, a]) => ({ id, titulo: a.titulo, sub: a.quien || "", nuevo: a.nuevo }));
+    if (!elegido || !B.aprendido[elegido]) elegido = (items.find((x) => x.nuevo) || items[items.length - 1] || {}).id || null;
     const a = elegido && B.aprendido[elegido];
+    leido(a);
     const der = a ? `<h3 class="bt-tit">${esc(a.titulo)}</h3><p>${esc(a.texto)}</p>${a.quien ? `<p class="bt-mini">— ${esc(a.quien)}</p>` : ""}`
       : `<p class="bt-vacio">Cuando Control de Misión o la Dra. Ortiz te explican algo, se guarda aquí.</p>`;
     return [`<h3 class="bt-tit">Lo aprendido · ${items.length}</h3>` + listaIzq(items, "Contesta llamadas y repara averías para aprender."), der];
@@ -104,19 +147,34 @@
     return [izq, der];
   }
   const claseNum = (c) => { const m = /^([ABCMX])(\d*\.?\d*)/i.exec(c || ""); return m ? "ABCMX".indexOf(m[1].toUpperCase()) * 10 + (parseFloat(m[2]) || 0) : -1; };
-  const PAGS = { cartas: pagCartas, informes: pagInformes, datos: pagDatos, aprendido: pagAprendido };
+  function pagDiccionario() {
+    const items = GLOSARIO.slice().sort((a, b) => a.palabra.localeCompare(b.palabra, "es")).map((g) => ({ id: g.palabra, titulo: g.palabra }));
+    if (!elegido || !GLOSARIO.some((g) => g.palabra === elegido)) elegido = items[0].id;
+    const g = GLOSARIO.find((x) => x.palabra === elegido);
+    const donde = Object.values(B.informes).filter((i) => g.formas.some((f) => norm(i.texto).includes(norm(f)))).map((i) => i.titulo);
+    const der = `<h3 class="bt-tit">${esc(g.palabra)}</h3><p class="bt-frase" style="font-weight:400">${esc(g.def)}</p>` +
+      (donde.length ? `<p class="bt-mini">La leíste en: ${[...new Set(donde)].slice(0, 4).map(esc).join(", ")}.</p>` : `<p class="bt-mini">Todavía no aparece en tus informes.</p>`);
+    return [`<h3 class="bt-tit">Diccionario · ${items.length} palabras</h3>` + listaIzq(items, ""), der];
+  }
+  const PAGS = { cartas: pagCartas, informes: pagInformes, datos: pagDatos, aprendido: pagAprendido, diccionario: pagDiccionario };
+  const NOMBRES = { cartas: "Cartas", informes: "Informes", datos: "Datos NASA", aprendido: "Lo aprendido", diccionario: "Diccionario" };
 
   function pintar() {
     const [izq, der] = PAGS[seccion]();
     $("bt-izq").innerHTML = izq; $("bt-der").innerHTML = der;
-    document.querySelectorAll("#bitacora [data-sec]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.sec === seccion)));
+    const p = nuevosPor();
+    document.querySelectorAll("#bitacora [data-sec]").forEach((b) => {
+      b.setAttribute("aria-pressed", String(b.dataset.sec === seccion));
+      b.innerHTML = esc(NOMBRES[b.dataset.sec] || b.dataset.sec) + (p[b.dataset.sec] ? ` <b class="bt-n">${p[b.dataset.sec]}</b>` : "");
+    });
   }
-  function abrir(sec) {
+  function abrir(sec, palabra) {
     // en medio de un minijuego no: el tiempo seguiría corriendo
     const s = window.GNOSIS && GNOSIS.estado && GNOSIS.estado();
     if (s && s.J && s.J.enMinijuego) { const b = $("btn-bitacora"); if (b) { b.title = "Termina el minijuego para abrir la bitácora"; } return; }
     if (sec) seccion = sec;
-    elegido = null;
+    else { const p = nuevosPor(); const con = ["cartas", "informes", "aprendido"].find((k) => p[k]); if (con) seccion = con; }   // abre donde hay algo nuevo
+    elegido = palabra || null;
     $("bitacora").hidden = false;
     B.vistos = total(); guardar(); badge();
     pintar();
@@ -137,7 +195,7 @@
   setTimeout(badge, 0);
 
   window.BITACORA = {
-    registrar, abrir, cerrar,
+    registrar, abrir, cerrar, glosario: GLOSARIO,
     abierta: () => !!$("bitacora") && !$("bitacora").hidden,
     // lo guardado en «Lo aprendido» (para el repaso al empezar otra misión)
     aprendidos: () => Object.entries(B.aprendido).map(([clave, a]) => Object.assign({ clave }, a)),
