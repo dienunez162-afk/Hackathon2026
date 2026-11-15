@@ -188,11 +188,12 @@
     seq = new Aterrizaje(moonRadius());
   }
   function terminarAterrizaje() { estado = "fundido"; fadeStart = performance.now(); }
-  function entrarJuego() { estado = "juego"; juegoT0 = performance.now(); ultimaEscena = 0; hud.hidden = false; nuevaPartida(); }
+  function entrarJuego() { estado = "juego"; juegoT0 = performance.now(); ultimaEscena = 0; hud.hidden = false; salirIntro(); MUSICA_BASE.activar(); nuevaPartida(); }
   function volverAlMenu() {
     abortar(); hud.hidden = true; $mj.hidden = true; stage.classList.remove("tiembla");
     if (typeof finalActual !== "undefined") finalActual = null;
     estado = "menu"; menuStart = performance.now() - 2500;
+    MUSICA_BASE.detener(); volverIntro();
   }
 
   function frame(now) {
@@ -414,7 +415,7 @@
     const ult = J.ajustes.slice(-3).map((a) => `D${a.dia} ${a.accion === "sube" ? "↑" : "↓"} r${a.a.reto}/l${a.a.lectura}`).join(", ");
     $("c-equipo").textContent = `${ui.uso === "educativo" ? `salón ${ui.grado}°` : "libre"} · partida ${J.partida} · reto ${J.reto} · lectura ${J.lectura} · ` +
       `últimos retos ${J.ventana.map((x) => (x ? "✓" : "✗")).join("") || "—"} · rama ${J.rama ? RAMA_TXT[J.rama] : "—"} · apoyo ${conApoyo() ? "sí" : "no"} · ` +
-      `minijuegos ${J.cuenta.mjOk}/${J.cuenta.mj}` + (ult ? ` · ajustes: ${ult}` : "");
+      `minijuegos ${J.cuenta.mjOk}/${J.cuenta.mj} · música ${J.animo || "calma"}` + (ult ? ` · ajustes: ${ult}` : "");
   }
   // ventana de 5 retos, enfriamiento de 3, calibración rápida en modo libre
   function registrarReto(ok) {
@@ -513,6 +514,17 @@
     for (const t of frenos) { const n = R.temas[t].carta.nombre; toast(`Tu carta ${n} frenó la mitad del daño.`); log(`${n} frenó la mitad del daño.`); }
   }
 
+  // ---------- música: el peligro de la misión decide qué tan tensa suena ----------
+  // peligro: eventos fuertes (tormentas solares, micrometeoritos, sismo fuerte, calefacción rota) y averías
+  // alerta: los demás eventos y las llamadas; también si alguna barra está en rojo
+  // calma: tareas, decisiones, reportes y días tranquilos
+  const peligroDe = (n) => ((ESTADO_NODO[n.id] || {}).alarma ? "peligro" : n.tipo === "evento" ? "alerta" : "calma");
+  function animo(m) {
+    if (m === "calma" && conteo(J.st).rojo > 0) m = "alerta";
+    J.animo = m;
+    MUSICA_BASE.modo(m, { noche: J.noche });
+  }
+
   // ---------- escenas: plano de la base y cambio de módulo ----------
   function escena(id, estados) { J.escena = id; J.est = Object.assign({}, estados || {}); }
   async function irA(destino, estados, motivo) {
@@ -593,6 +605,7 @@
     pantalla(`<div class="grande">DÍA ${String(J.dia).padStart(2, "0")}</div><p class="sub" style="text-align:center">${faseTxt(J.dia)}</p>` +
       (noche ? `<p class="txt" style="text-align:center">Se ocultó el Sol. Los paneles ya no cargan: la energía solo puede bajar.</p>` : ""));
     if (noche) log("Cayó la noche lunar.");
+    animo("calma");
     await espera(noche ? 2200 : 1100);
   }
 
@@ -601,6 +614,7 @@
     if (n.tipo === "final") return;
     if (n.tipo === "evaluacion") { escena(n.escenario || "control", {}); return evaluacion(n); }
     if (n.tipo === "inicio") return recorrido(n);
+    animo(peligroDe(n));
     await irA(n.escenario || "control", ESTADO_NODO[n.id] || {}, MOTIVO[n.tipo]);
     const texto = n.niveles ? n.niveles["nivel" + J.lectura].texto : n.mensaje;
     const r = n.resultado || {};
@@ -615,6 +629,7 @@
       if (!gano && J.preparado) { ef = suavizar(ef); nota = " Estabas preparado por el Pronóstico: el daño fue la mitad."; }
       if (J.preparado) J.preparado = false;
       aplicar(ef);
+      animo("calma");
       res.innerHTML = `<div class="res ${gano ? "ok" : "ko"}">${gano ? "¡Lo lograste!" : "No salió esta vez."} ${efectosTxt(ef)}${nota}</div>`;
       log(`${n.titulo}: ${gano ? "minijuego ganado" : "minijuego perdido"}.`);
     } else if (r.opciones) {
@@ -638,6 +653,7 @@
   // día 0: recorrido guiado por el plano (el tutorial del nodo INICIO)
   async function recorrido(n) {
     escena("exterior", {});
+    animo("calma");
     let c = pantalla(`<span class="tag">${TIPO.inicio}</span><h2 class="titulo">${esc(n.titulo)}</h2><p class="txt">${esc(n.mensaje)}</p><div class="ops" id="ops"></div>`);
     voz(n.mensaje);
     await continuar(c.querySelector("#ops"), "Conocer la base ▸", 2400);
@@ -661,6 +677,7 @@
       rescate: "Una barra necesita atención. Control de Misión va a estar más cerca de ti estos días.",
     };
     marca("ev");
+    animo("calma");
     const c = pantalla(`<span class="tag">${TIPO.evaluacion}</span><h2 class="titulo">${esc(n.titulo)}</h2>` +
       `<p class="txt">${BARRAS.map((b) => `<span class="z-${zona(b, J.st[b])}">${MAYUS[b]} ${J.st[b]}</span>`).join(" · ")}</p>` +
       `<div class="res ok">${MSG[rama]}</div><div class="ops" id="ops"></div>`);
@@ -724,6 +741,7 @@
     if (!s) return;
     J.preguntados[s.tema] = (J.preguntados[s.tema] || 0) + 1;
     marca("ll");
+    animo("alerta");
     await irA("control", { llamada: true }, "¡Suena la radio en");
     let c = pantalla(`<span class="tag llamada">LLAMADA ENTRANTE</span><h2 class="titulo">((( Control de Misión )))</h2><p class="sub">${esc(R.temas[s.tema].nombre)}</p><div class="ops" id="ops"></div>`);
     await continuar(c.querySelector("#ops"), "Contestar ▸", 1100);
@@ -780,6 +798,7 @@
     const A = R.reglas.averias, NV = A.niveles[nv], b = a.barra;
     const dano = (v) => ({ [b]: b === "radiacion" ? v : -v });
     marca("av");
+    animo("peligro");
     await irA(a.escenario || "maquinas", Object.assign({ alarma: true }, ESTADO_AVERIA[a.id] || {}), "¡Alarma! Algo se descompuso en");
     aplicar(dano(A.danoInicial));
     const pistas = barajar([
@@ -819,6 +838,7 @@
       await espera(900);
     }
     J.est = Object.assign({}, J.est, { alarma: false });
+    animo("calma");
     J.cuenta.av++;
     if (intentos === 1) { J.cuenta.avOk++; aplicar({ [b]: mejora(b, A.bonusPrimerIntento) }); }
     else if (!J.repasos.some((r) => r.tema === a.temas[0])) J.repasos.push({ tema: a.temas[0], disponible: J.dia + 2, intentos: 1 });
@@ -850,6 +870,7 @@
     pintarTrack();
     const ex = n.exito;
     log(ex ? `Fin: ${n.titulo} (${n.estrellas} estrellas).` : `Fin: ${n.titulo}.`);
+    MUSICA_BASE.modo("calma", { noche: !ex });
     await verCinematica(FINAL_DE[n.id] || (ex ? "relevo" : "apagon"));
     escena("exterior", { nave: !!ex });
     // lo que aprendiste: el concepto del final, como carta

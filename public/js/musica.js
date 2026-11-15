@@ -13,6 +13,7 @@ musica.preload = "auto";
 musica.volume = 0;
 
 let musicaIniciada = false;
+let introActiva = true;       // false mientras se juega en la base
 let silenciado = false;
 try { silenciado = localStorage.getItem("gnosis-silencio") === "1"; } catch (e) { }
 musica.muted = silenciado;
@@ -32,6 +33,7 @@ function fundirVolumen(objetivo, ms) {
 function iniciarMusica() {
   if (musicaIniciada) return;
   musicaIniciada = true;
+  if (!introActiva) return;     // dentro de la base no suena el soundtrack
   musica.play()
     .then(() => fundirVolumen(MUSICA_VOL, 2500))
     .catch(() => { musicaIniciada = false; });   // se reintenta en la siguiente interaccion
@@ -55,4 +57,17 @@ function dibujarBotonSonido(ctx) {
   ctx.fillStyle = !musicaIniciada ? "rgb(150,160,185)" : silenciado ? "rgb(90,96,112)" : "rgb(170,180,205)";
   ctx.fillText(txt, W - 16, 14);
   botonSonido = { x: W - 16 - w - 6, y: 8, w: w + 12, h: 24 };
+}
+
+// al entrar a la base: el soundtrack se apaga suave y se pausa
+function salirIntro() {
+  introActiva = false;
+  fundirVolumen(0, 1200);
+  setTimeout(() => { if (!introActiva) musica.pause(); }, 1300);
+}
+// al volver al menú: regresa el soundtrack
+function volverIntro() {
+  introActiva = true;
+  if (!musicaIniciada) return;
+  musica.play().then(() => fundirVolumen(MUSICA_VOL, 1800)).catch(() => {});
 }

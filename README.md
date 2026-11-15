@@ -39,5 +39,17 @@ Notas (noviembre de 2026):
 - `supabase/`: esquema y función para el modo Salón y el panel del maestro (sin probar).
 - `herramientas/simulador-mision.js`: simulador para balancear.
 
+## Música
+- **Intro** (menú y alunizaje): `public/audio/soundtrack.mp3`, el soundtrack del equipo.
+- **Dentro de la base**: `public/js/musica-base.js`, que genera la música en el navegador con Web Audio. Es original del proyecto: no usa archivos ni licencias de terceros. Cambia sola según el peligro:
+
+| Ánimo | Cuándo suena | Cómo suena |
+|---|---|---|
+| calma | tareas, decisiones, reportes, días tranquilos | acordes lentos y campanitas; de noche, en tono menor y más grave |
+| alerta | eventos normales, llamadas, o cualquier barra en rojo | mismos acordes con pulso de bajo y un latido |
+| peligro | tormentas solares, micrometeoritos, sismo fuerte, calefacción rota y averías | bajo rápido, arpegio, platillos y una sirena suave |
+
+Para cambiar qué eventos son "peligro", edita `peligroDe()` en `public/js/juego.js`.
+
 ## Privacidad
 En modo Libre el progreso se guarda solo en el dispositivo (`localStorage`). En modo Salón, los alumnos usan un alias y un código, sin correo.
