@@ -9,6 +9,19 @@
    ========================================================= */
 
 const MUSICA_VOL = 0.55;
+// volumen de música y de efectos (0 a 1): lo cambia el menú de pausa y se guarda en el dispositivo
+const AJUSTES_AUDIO = { musica: 1, efectos: 1 };
+try { Object.assign(AJUSTES_AUDIO, JSON.parse(localStorage.getItem("gnosis-volumen") || "{}")); } catch (e) { }
+function guardarAudio() {
+  try { localStorage.setItem("gnosis-volumen", JSON.stringify(AJUSTES_AUDIO)); } catch (e) { }
+  if (window.MUSICA_BASE) MUSICA_BASE.sincronizar();
+}
+// pausa: el reloj de los minijuegos no avanza mientras está activa (ver minijuegos.js)
+window.PAUSA = {
+  activa: false, desde: 0, total: 0,
+  pausado() { return this.total + (this.activa ? performance.now() - this.desde : 0); },
+  poner(on) { if (on === this.activa) return; if (on) this.desde = performance.now(); else this.total += performance.now() - this.desde; this.activa = on; },
+};
 const musica = new Audio("audio/soundtrack.mp3");
 musica.loop = true;
 musica.preload = "auto";
