@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>G-NOSIS · Panel del maestro</title>
+<style>
+:root { --negro: #05060d; --panel: #0e1022; --borde: #3a3e66; --ink: #e8ecf8; --dim: #8a90b8; --crema: #fff6e1; --verde: #5ad27a; --ambar: #ffc83c; --rojo: #ff6a5a; --cian: #6ad6e6; --mono: ui-monospace, "Cascadia Mono", Consolas, monospace; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--negro); color: var(--ink); font: 15px/1.5 var(--mono); }
+main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; display: grid; gap: 18px; }
+header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+h1 { margin: 0; font-size: 22px; letter-spacing: 0.18em; color: var(--crema); }
+h1 small { display: block; font-size: 12px; letter-spacing: 0.08em; color: var(--dim); }
+h2 { margin: 0 0 8px; font-size: 16px; letter-spacing: 0.1em; color: var(--crema); }
+.caja { background: var(--panel); border: 2px solid var(--borde); padding: 16px; }
+.fila { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
+label { display: grid; gap: 4px; font-size: 13px; color: var(--dim); }
+input, select { font: inherit; padding: 7px 9px; color: var(--ink); background: var(--negro); border: 2px solid var(--borde); min-width: 0; }
+input:focus, select:focus { outline: none; border-color: var(--crema); }
+button { font: inherit; font-weight: 700; padding: 7px 14px; color: var(--ink); background: #1a1d3a; border: 2px solid var(--borde); cursor: pointer; }
+button:hover, button:focus-visible { border-color: var(--crema); outline: none; }
+button.prim { background: #2a2650; border-color: var(--crema); color: var(--crema); }
+button.si { border-color: var(--verde); color: var(--verde); }
+button.no { border-color: var(--rojo); color: var(--rojo); }
+button:disabled { opacity: 0.5; cursor: wait; }
+.msg { margin: 8px 0 0; color: var(--rojo); min-height: 1.2em; }
+.msg.ok { color: var(--verde); }
+.sub { color: var(--dim); font-size: 13px; margin: 6px 0 0; }
+.grupos { display: flex; flex-wrap: wrap; gap: 8px; }
+.grupos button[aria-pressed="true"] { border-color: var(--crema); background: #2a2650; }
+.codigo { font-size: 34px; letter-spacing: 0.25em; color: var(--ambar); font-weight: 800; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--borde); white-space: nowrap; }
+th { color: var(--dim); font-weight: 600; }
+.tabla { overflow-x: auto; }
+.pct { display: inline-block; min-width: 46px; padding: 1px 6px; text-align: right; }
+.v { color: var(--verde); } .a { color: var(--ambar); } .r { color: var(--rojo); } .n { color: var(--dim); }
+.dos { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 760px) { .dos { grid-template-columns: 1fr; } }
+[hidden] { display: none !important; }
+a { color: var(--cian); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>G-NOSIS <small>Panel del maestro · misión lunar</small></h1>
+    <div class="fila"><span id="quien" class="sub"></span><button type="button" id="salir" hidden>Cerrar sesión</button><a href="/">Ir al juego</a></div>
+  </header>
+
+  <section id="acceso" class="dos" hidden>
+    <form class="caja" id="f-entrar" autocomplete="on">
+      <h2>Entrar</h2>
+      <div style="display:grid;gap:10px">
+        <label>Correo <input name="correo" type="email" required autocomplete="username"></label>
+        <label>Contraseña <input name="clave" type="password" required minlength="6" autocomplete="current-password"></label>
+        <button type="submit" class="prim">Entrar ▸</button>
+      </div>
+      <p class="msg" role="status"></p>
+    </form>
+    <form class="caja" id="f-crear" autocomplete="on">
+      <h2>Crear cuenta de maestro</h2>
+      <div style="display:grid;gap:10px">
+        <label>Tu nombre (lo ven tus alumnos) <input name="nombre" maxlength="60" required></label>
+        <label>Correo <input name="correo" type="email" required autocomplete="username"></label>
+        <label>Contraseña (mínimo 6) <input name="clave" type="password" required minlength="6" autocomplete="new-password"></label>
+        <button type="submit" class="prim">Crear cuenta ▸</button>
+      </div>
+      <p class="msg" role="status"></p>
+    </form>
+  </section>
+
+  <section id="panel" hidden>
+    <div class="caja">
+      <h2>Tus clases</h2>
+      <div class="grupos" id="grupos"></div>
+      <form class="fila" id="f-grupo" style="margin-top:14px">
+        <label>Nombre <input name="nombre" maxlength="40" placeholder="4.° B" required></label>
+        <label>Grado <select name="grado"><option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option></select></label>
+        <label>Escuela (opcional) <input name="escuela" maxlength="80"></label>
+        <button type="submit">+ Nueva clase</button>
+      </form>
+      <p class="msg" id="m-grupo" role="status"></p>
+    </div>
+
+    <div id="detalle" hidden style="display:grid;gap:18px;margin-top:18px">
+      <div class="caja">
+        <h2 id="g-nombre"></h2>
+        <p class="sub">Código para tus alumnos (lo escriben en el juego, en «Mi cuenta»):</p>
+        <div class="codigo" id="g-codigo"></div>
+        <p class="sub">Al aceptar a un alumno, su nivel inicial queda según el grado (1.°–2.°: 1 · 3.°–4.°: 2 · 5.°–6.°: 3). El juego lo ajusta solo según cómo le va; el niño nunca ve su nivel.</p>
+      </div>
+      <div class="caja">
+        <div class="fila" style="justify-content:space-between"><h2>Solicitudes para entrar</h2><button type="button" id="refrescar">Actualizar ↻</button></div>
+        <div id="solicitudes"></div>
+      </div>
+      <div class="caja">
+        <h2>Alumnos</h2>
+        <div class="tabla" id="alumnos"></div>
+        <p class="sub">Predicción: ¿tocó la barra correcta en las llamadas? · Acción: ¿eligió bien qué hacer? · Diagnóstico: averías resueltas al primer intento · Manual: consejos bien emparejados al final.</p>
+      </div>
+      <div class="caja">
+        <h2>Temas del grupo</h2>
+        <div class="tabla" id="temas"></div>
+      </div>
+    </div>
+  </section>
+  <p class="sub" id="estado">Conectando…</p>
+</main>
+<script src="js/vendor/supabase.min.js"></script>
+<script src="js/supabase.js"></script>
+<script src="js/maestro.js"></script>
+</body>
+</html>
