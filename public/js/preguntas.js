@@ -147,6 +147,24 @@
     };
   }
 
+  // ---------- diccionario: marca las palabras difíciles de un texto YA escapado ----------
+  // Antes se reemplazaba sobre el HTML que se iba armando: si la definición de una palabra (en su title)
+  // tenía otra palabra del glosario, la segunda se metía DENTRO del atributo y rompía el texto
+  // (salía «...desde 2009.">CRaTER mide...»). Ahora: primero se ponen marcas que no son letras,
+  // solo en el texto, y al final se cambian por los botones. Una vez cada palabra.
+  const escAttr = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  function marcarPalabras(textoEsc, glosario) {
+    if (!glosario || !textoEsc) return textoEsc;
+    let t = String(textoEsc); const botones = [];
+    for (const g of glosario) for (const f of g.formas) {
+      const re = new RegExp(`(^|[^\\p{L}])(${f.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})(?![\\p{L}])`, "iu");
+      if (!re.test(t)) continue;
+      t = t.replace(re, (m, a, b) => { botones.push(`<button type="button" class="palabra" data-palabra="${escAttr(g.palabra)}" title="${escAttr(g.def)}">${b}</button>`); return `${a}\u0001${botones.length - 1}\u0002`; });
+      break;
+    }
+    return t.replace(/\u0001(\d+)\u0002/g, (m, i) => botones[+i]);
+  }
+
   // valida que una pregunta tenga el esquema completo
   const CAMPOS = ["id", "nivel", "tipo", "enunciado", "opciones", "indiceCorrecto", "fraseEvidencia", "explicacion", "fuente", "pista"];
   function validarPregunta(p) {
@@ -165,6 +183,6 @@
 
   return {
     BARRAS, barajarConCorrecta, barajarFijo, semilla, recortarOpciones, opcionesPorNivel, elegirPregunta, costoError, diasDeLlamada,
-    respuestaAuto, zonaRadiacion, tendencia, preguntaBitacora, preguntaRepaso, validarPregunta, claseNum, fuerzaDe, fechaTxt,
+    respuestaAuto, zonaRadiacion, tendencia, preguntaBitacora, preguntaRepaso, validarPregunta, claseNum, fuerzaDe, fechaTxt, marcarPalabras,
   };
 });

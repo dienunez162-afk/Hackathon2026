@@ -913,17 +913,8 @@
 
   // el texto que se lee para contestar: corto, y lo extra en «Saber más» (cerrado por defecto)
   // marca las palabras del diccionario (bitácora): al tocarlas se abre su significado. Una vez cada palabra.
-  function conPalabras(textoEsc) {
-    const glo = window.BITACORA && BITACORA.glosario;
-    if (!glo) return textoEsc;
-    let t = textoEsc; const usadas = new Set();
-    for (const g of glo) for (const f of g.formas) {
-      if (usadas.has(g.palabra)) break;
-      const re = new RegExp(`(^|[^\\p{L}>])(${f.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})(?![\\p{L}])`, "iu");
-      if (re.test(t)) { t = t.replace(re, (m, a, b) => `${a}<button type="button" class="palabra" data-palabra="${g.palabra}" title="${esc(g.def)}">${b}</button>`); usadas.add(g.palabra); }
-    }
-    return t;
-  }
+  // (la lógica está en preguntas.js: marca solo en el texto, nunca dentro de un atributo)
+  const conPalabras = (textoEsc) => PQ.marcarPalabras(textoEsc, window.BITACORA && BITACORA.glosario);
   document.addEventListener("click", (e) => { const b = e.target.closest("button.palabra"); if (b && window.BITACORA) { e.preventDefault(); BITACORA.abrir("diccionario", b.dataset.palabra); } });
   function lectura(texto, extra = "", titulo = "LEE Y BUSCA LA RESPUESTA") {
     if (ui.sinTexto) return `<div class="lectura"><span class="paso">${titulo}</span><p class="txt sub">[Texto oculto: prueba sin lectura]</p></div>`;
