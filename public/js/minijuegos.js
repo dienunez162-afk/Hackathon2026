@@ -429,16 +429,19 @@
   function quiz(op) {
     const cartas = op.cartas || [], todas = op.todasCartas || [];
     const ui = marco(op, "Mensaje especial de la Tierra", "Los científicos te cuentan una situación. ¿Qué carta es la mejor para ese momento?");
-    const qs = barajar(cartas).slice(0, 2);
+    // fijo: las 2 primeras cartas descubiertas y opciones en orden fijo por carta (sin variantes por partida)
+    const fijo = (lista, clave) => (window.PREGUNTAS ? PREGUNTAS.barajarFijo(lista, 0, clave).opciones : lista);
+    const qs = cartas.slice(0, 2);
     if (!qs.length) { const s = sesion(op, ui, 5); setTimeout(() => s.fin(true, "Mensaje recibido."), 800); return s.promesa; }
     const s = sesion(op, ui, tiempoBase(op, 30) * qs.length);
     let k = 0, bien = 0;
     const siguiente = () => {
       const c = qs[k];
-      const misma = barajar(todas.filter((x) => x.nombre !== c.nombre && x.uso && c.uso && x.uso.barra === c.uso.barra));
-      const resto = barajar(todas.filter((x) => x.nombre !== c.nombre && !(x.uso && c.uso && x.uso.barra === c.uso.barra)));
+      // distractores creíbles: primero cartas de la misma barra (las confunde quien leyó a medias)
+      const misma = todas.filter((x) => x.nombre !== c.nombre && x.uso && c.uso && x.uso.barra === c.uso.barra);
+      const resto = todas.filter((x) => x.nombre !== c.nombre && !(x.uso && c.uso && x.uso.barra === c.uso.barra));
       const otros = [...misma, ...resto].slice(0, Math.max(1, op.nivel)).map((x) => x.nombre);
-      const opciones = barajar([c.nombre, ...otros]);
+      const opciones = fijo([c.nombre, ...otros], "tierra-" + c.nombre);
       ui.cuerpo.innerHTML = `<p class="mj-tit2">Situación: ${esc(c.momento)}.</p><p class="mj-ins">¿Qué carta usas? (${k + 1} de ${qs.length})</p><div class="mj-opciones col">${opciones.map((o, i) => `<button type="button" class="op" data-i="${i}">${esc(o)}</button>`).join("")}</div><p class="mj-ins" id="por-que"></p>`;
       ui.cuerpo.querySelector(".mj-opciones").onclick = (e) => {
         const b = e.target.closest("[data-i]"); if (!b || !s.vivo() || b.disabled) return;
