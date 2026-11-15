@@ -112,13 +112,37 @@
   $("c-grado").addEventListener("change", (e) => { ui.grado = +e.target.value; guardarLS("gnosis-uso", { uso: ui.uso, grado: ui.grado }); });
   ctrl.addEventListener("toggle", () => setTimeout(ajustar, 0));
 
+  // Con el HUD visible el escenario mide 1280 x 940: la escena 16:9 arriba (completa, sin nada encima)
+  // y una franja de 220 px abajo para las barras y el cuadro de texto. En el menú y los finales, solo la escena.
+  const FRANJA = 240;
   function ajustar() {
+    const alto = 720 + (hud.hidden ? 0 : FRANJA);
     const disp = Math.max(160, window.innerHeight - ctrl.offsetHeight);
-    const w = Math.min(window.innerWidth, disp * 16 / 9), h = w * 9 / 16;
+    const w = Math.min(window.innerWidth, disp * 1280 / alto), h = w * alto / 1280;
     stage.style.width = w + "px"; stage.style.height = h + "px";
+    canvas.style.height = (w * 9 / 16) + "px";
     hud.style.transform = `scale(${w / 1280})`;
   }
   window.addEventListener("resize", ajustar);
+  new MutationObserver(ajustar).observe(hud, { attributes: true, attributeFilter: ["hidden"] });
+  // el cuadro de texto es bajo: cuando una pantalla crece (llamadas con varios pasos, informes),
+  // se desplaza solo para que se vea lo que toca responder ahora, con el texto anterior arriba
+  let enfoqueId = 0;
+  new MutationObserver(() => {
+    cancelAnimationFrame(enfoqueId);
+    enfoqueId = requestAnimationFrame(() => {
+      const c = $("consola");
+      if (c.hidden || c.scrollHeight <= c.clientHeight) return;
+      const activos = [...c.querySelectorAll(".ops")].filter((o) => o.querySelector("button:not([disabled])"));
+      const meta = activos.length ? activos[activos.length - 1] : c.lastElementChild;
+      if (!meta) return;
+      const arriba = (el) => { let y = 0; for (let e = el; e && e !== c; e = e.offsetParent) y += e.offsetTop; return y; };
+      // se ve la pregunta (lo que va justo antes de los botones) y los botones; si no caben juntos, desde la pregunta
+      const pregunta = meta.previousElementSibling || meta, y0 = arriba(pregunta), y1 = arriba(meta) + meta.offsetHeight;
+      const top = y1 - y0 + 16 <= c.clientHeight ? y1 - c.clientHeight + 12 : y0 - 6;
+      c.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+    });
+  }).observe($("consola"), { childList: true, subtree: true });
 
   // ---------- menú y alunizaje (de main.js de G-NOSIS) ----------
   const TITLE = "G-NOSIS";
