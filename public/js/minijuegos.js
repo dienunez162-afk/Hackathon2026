@@ -230,22 +230,44 @@
 
   // ---------- 7. ajustar una perilla ----------
   function ajustar(op) {
-    const ancho = porNivel(op.nivel, [30, 22, 15]), necesita = porNivel(op.nivel, [3, 4, 5]);
+    // op.movil (salida de la Luna): la zona verde se mueve sola y hay que seguirla; si te sales, el avance baja
+    const ancho = op.movil ? porNivel(op.nivel, [24, 18, 14]) : porNivel(op.nivel, [30, 22, 15]), necesita = porNivel(op.nivel, [3, 4, 5]);
     const etq = op.que === "alineacion" ? ["izquierda", "derecha", "Alinea la nave con la plataforma"] : op.meta === "calentar" ? ["frío", "calor", "Sube la calefacción a la zona verde"] : ["frío", "calor", "Baja la temperatura a la zona verde"];
-    const ui = marco(op, op.titulo || etq[2], `Usa − y + (o ← →). Mantén la aguja en la zona verde ${necesita} segundos.`);
+    const ui = marco(op, op.titulo || etq[2], op.movil ? `La zona verde se mueve: síguela con − y + (o ← →). Junta ${necesita} segundos adentro; si te sales, baja.` : `Usa − y + (o ← →). Mantén la aguja en la zona verde ${necesita} segundos.`);
     ui.cuerpo.innerHTML = `<div class="mj-medidor"><span>${etq[0]}</span><div class="pista"><i class="zona"></i><i class="aguja"></i></div><span>${etq[1]}</span></div>
       <div class="mj-botones"><button type="button" data-m="-6">−</button><button type="button" data-m="6">+</button></div><p class="mj-ins">En la zona: <b class="z">0.0</b> de ${necesita} s</p>`;
-    const zona0 = op.meta === "calentar" ? 60 : op.meta === "enfriar" ? 15 : 40 + Math.random() * 20 - ancho / 2;
+    let zona0 = op.meta === "calentar" ? 60 : op.meta === "enfriar" ? 15 : 40 + Math.random() * 20 - ancho / 2;
     let v = op.meta === "calentar" ? 15 : op.meta === "enfriar" ? 85 : (zona0 > 50 ? 10 : 90), dentro = 0;
     const z = ui.cuerpo.querySelector(".zona"), a = ui.cuerpo.querySelector(".aguja");
     z.style.left = zona0 + "%"; z.style.width = ancho + "%";
     const s = sesion(op, ui, tiempoBase(op, 22));
     const mover = (d) => { v = Math.max(0, Math.min(100, v + d)); a.style.left = v + "%"; };
-    ui.cuerpo.querySelector(".mj-botones").addEventListener("click", (e) => { const b = e.target.closest("[data-m]"); if (b) { sfx("perilla"); mover(+b.dataset.m); } });
+    // tocar mueve un paso; mantener presionado sigue moviendo (para seguir la zona que se mueve)
+    let repite = null;
+    const soltar = () => { clearInterval(repite); repite = null; };
+    ui.cuerpo.querySelector(".mj-botones").addEventListener("pointerdown", (e) => {
+      const b = e.target.closest("[data-m]"); if (!b || !s.vivo()) return;
+      e.preventDefault(); soltar(); sfx("perilla"); mover(+b.dataset.m);
+      repite = setInterval(() => { if (s.vivo()) mover(+b.dataset.m * 0.6); else soltar(); }, 90);
+    });
+    ["pointerup", "pointercancel", "pointerleave"].forEach((ev) => ui.cuerpo.querySelector(".mj-botones").addEventListener(ev, soltar));
+    window.addEventListener("pointerup", soltar);
     s.teclas((e) => { if (e.key === "ArrowLeft" || e.key === "-") { sfx("perilla"); mover(-6); } if (e.key === "ArrowRight" || e.key === "+") { sfx("perilla"); mover(6); } });
+    // zona móvil: dos ondas mezcladas + cambios de rumbo al azar, más rápida en niveles altos
+    const vel = porNivel(op.nivel, [0.7, 1.0, 1.35]), t0 = performance.now(), fase = Math.random() * 6.28;
+    let empuje = 0;
+    const moverZona = () => {
+      const t = (performance.now() - t0) / 1000;
+      if (Math.random() < 0.02) empuje = (Math.random() - 0.5) * 30;          // de vez en cuando cambia de rumbo
+      const centro = 50 + 28 * Math.sin(t * vel + fase) + 12 * Math.sin(t * vel * 2.3 + fase * 2) + empuje * Math.sin(t * 0.5);
+      zona0 = Math.max(0, Math.min(100 - ancho, centro - ancho / 2));
+      z.style.left = zona0 + "%";
+    };
     s.cada(100, () => {
+      if (op.movil) moverZona();
       mover((Math.random() - 0.5) * porNivel(op.nivel, [2.5, 4, 5.5]) + (op.meta === "enfriar" ? 0.6 : op.meta === "calentar" ? -0.6 : 0));
       if (v >= zona0 && v <= zona0 + ancho) dentro += 0.1;
+      else if (op.movil) dentro = Math.max(0, dentro - 0.06);
       ui.cuerpo.querySelector(".z").textContent = dentro.toFixed(1);
       if (dentro >= necesita) s.fin(true, "¡Justo en la zona!");
     });
@@ -268,7 +290,7 @@
     let ok = 0, err = 0;
     ui.cuerpo.addEventListener("click", (e) => {
       const b = e.target.closest("[data-i]"); if (!b || b.disabled || !s.vivo()) return;
-      if (objetivos.has(+b.dataset.i)) { sfx("encontrar"); b.disabled = true; b.classList.add("ok"); if (++ok === meta) s.fin(true, "¡Las encontraste todas!"); }
+      if (objetivos.has(+b.dataset.i)) { sfx(op.objetivo === "fuga" ? "encontrar" : "plantas"); b.disabled = true; b.classList.add("ok"); if (++ok === meta) s.fin(true, "¡Las encontraste todas!"); }
       else { sfx("error"); err++; b.classList.add("mal"); setTimeout(() => b.classList.remove("mal"), 400); s.estado(`Esa no. Errores: ${err} de ${maxErr}.`); if (err > maxErr) s.fin(false, "Demasiados errores."); }
     });
     return s.promesa;

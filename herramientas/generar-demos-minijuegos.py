@@ -272,6 +272,39 @@ def ajustar():
     return cuadros
 
 
+# ---------------- 7b. ajustar con zona movil (salida de la Luna) ----------------
+def ajustar_movil():
+    import math
+    cuadros = []; ag = 30.0; dentro = 0.0; ancho = 22
+
+    def pintar(z0, boton=None):
+        img, d = lienzo()
+        d.rectangle((16, 28, 144, 44), fill=(40, 42, 80))
+        for x in range(16, 145, 8):
+            d.point((x, 36), fill=TENUE)
+        d.rectangle((z0, 25, z0 + ancho, 47), outline=VERDE); d.rectangle((z0 + 1, 26, z0 + ancho - 1, 46), outline=VERDE)
+        d.rectangle((int(ag) - 1, 22, int(ag) + 1, 50), fill=CREMA)
+        d.polygon([(int(ag) - 3, 20), (int(ag) + 3, 20), (int(ag), 16)], fill=CREMA)      # la nave
+        d.rectangle((16, 58, 16 + int(128 * min(1, dentro / 4)), 61), fill=VERDE)
+        for k, s in enumerate("-+"):
+            on = boton == k
+            caja(d, 56 + k * 30, 70, 76 + k * 30, 86, CREMA if on else PANEL)
+            texto(d, 64 + k * 30, 76, s, OSCURO if on else TINTA)
+        return img
+    for k in range(64):
+        t = k * 0.13
+        z0 = int(62 + 40 * math.sin(t) + 10 * math.sin(t * 2.3))
+        centro = z0 + ancho / 2
+        boton = None
+        if abs(centro - ag) > 4 and k % 2 == 0:
+            boton = 1 if centro > ag else 0
+            ag += 6 if boton else -6
+        if z0 <= ag <= z0 + ancho: dentro += 0.1
+        else: dentro = max(0, dentro - 0.06)
+        cuadros.append(pintar(z0, boton))
+    return cuadros
+
+
 # ---------------- 8. buscar ----------------
 def buscar():
     C, F, cw, ch, x0, y0 = 8, 4, 16, 16, 16, 12
@@ -412,6 +445,6 @@ def quiz():
 if __name__ == "__main__":
     random.seed(7)
     for nombre, fn in [("cables", cables), ("limpiar", limpiar), ("atrapar", atrapar), ("laberinto", laberinto),
-                       ("tapar", tapar), ("secuencia", secuencia), ("ajustar", ajustar), ("buscar", buscar),
+                       ("tapar", tapar), ("secuencia", secuencia), ("ajustar", ajustar), ("ajustar-movil", ajustar_movil), ("buscar", buscar),
                        ("grafica", grafica), ("rover", rover), ("energia", energia), ("quiz", quiz)]:
         guardar(nombre, fn())
