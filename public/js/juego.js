@@ -446,6 +446,7 @@
       cartas: {}, aprendidos: {}, repasos: [], pasados: ((historial && historial.repasos) || []).slice(), diferidos: [],
       preguntados: {}, preparado: false, log: [], marcas: {}, hechasL: new Set(), hechasA: new Set(),
       cuenta: { ll: 0, llOk: 0, av: 0, avOk: 0, usos: 0, mj: 0, mjOk: 0, pq: 0, pq1: 0 },
+      registro: [], pasos: [], guardada: null,      // lo que el niño decidió y los nodos que visitó (se mandan a Supabase al terminar)
     };
     for (const b of BARRAS) J.st[b] = G.barras[b].inicio;
     for (const t of (historial && historial.cartas) || []) { J.cartas[t] = { usada: false, armada: false }; J.aprendidos[t] = -99; }
@@ -505,6 +506,12 @@
     $("c-equipo").textContent = `${ui.uso === "educativo" ? `salón ${ui.grado}°` : "libre"} · partida ${J.partida} · reto ${J.reto} · lectura ${J.lectura} · ` +
       `últimos retos ${J.ventana.map((x) => (x ? "✓" : "✗")).join("") || "—"} · rama ${J.rama ? RAMA_TXT[J.rama] : "—"} · apoyo ${conApoyo() ? "sí" : "no"} · ` +
       `minijuegos ${J.cuenta.mjOk}/${J.cuenta.mj} · música ${J.animo || "calma"}` + (ult ? ` · ajustes: ${ult}` : "");
+  }
+  // lo que el niño decidió en cada reto, con la forma de la tabla `respuestas` (solo se manda si hay sesión)
+  const ORIGEN = { "repaso": "repaso", "de la partida pasada": "partida_pasada", "de esta partida": "esta_partida" };
+  function anotar(tipo, d) {
+    if (!J || !J.registro) return;
+    J.registro.push(Object.assign({ tipo, nivel_reto: J.reto, nivel_lectura: J.lectura, dia: J.dia | 0, rama: J.rama || null }, d));
   }
   // ventana de 5 retos, enfriamiento de 3, calibración rápida en modo libre
   function registrarReto(ok) {
@@ -836,6 +843,7 @@
     await irA(n.escenario || "control", ESTADO_NODO[n.id] || {}, MOTIVO[n.tipo]);
     const texto = n.niveles ? n.niveles["nivel" + J.lectura].texto : n.mensaje;
     const r = n.resultado || {};
+    const prep = !!J.preparado; let resPaso = null, opPaso = null;
     const tema = peligroDe(n) === "peligro" ? "catastrofe" : n.tipo === "evento" ? "alerta" : n.tipo === "control_mision" || n.tipo === "calma" ? "llamada" : "normal";
     const c = pantalla(`<span class="tag ${(ESTADO_NODO[n.id] || {}).alarma ? "alarma" : ""}">${TIPO[n.tipo]}</span><h2 class="titulo">${esc(n.titulo)}</h2><p class="txt">${esc(texto)}</p><div class="ops" id="ops"></div><div id="res"></div>`, n.tipo === "control_mision" || n.tipo === "calma" ? "control" : null, tema);
     voz(texto);
@@ -844,6 +852,7 @@
       const spec = MJ_DE[n.id];
       await continuar(ops, "¡A jugar! ▸", 1500);
       const gano = spec ? await minijuego(n, spec) : Math.random() < ui.hab;
+      resPaso = gano ? "exito" : "fallo";
       let ef = gano ? r.exito : r.fallo, nota = "";
       if (!gano && J.preparado) { ef = suavizar(ef); nota = " Estabas preparado por el Pronóstico: el daño fue la mitad."; }
       if (J.preparado) J.preparado = false;
@@ -858,7 +867,7 @@
         let m = 0; r.opciones.forEach((o, i) => { if (peor(o.efectos) > peor(r.opciones[m].efectos)) m = i; }); return m;
       };
       const i = await botones(ops, r.opciones.map((o) => ({ html: esc(o.texto) })), { auto, delay: 2000 });
-      aplicar(r.opciones[i].efectos);
+      aplicar(r.opciones[i].efectos); opPaso = r.opciones[i].texto;
       res.innerHTML = `<div class="res">${efectosTxt(r.opciones[i].efectos)}</div>`;
       log(`${n.titulo}: ${r.opciones[i].texto}.`);
     } else if (r.siempre) {
@@ -866,6 +875,8 @@
       res.innerHTML = `<div class="res ok">${efectosTxt(r.siempre)}</div>`;
       log(n.titulo + ".");
     }
+    J.pasos.push({ nodo_id: n.id, dia: Math.max(0, Math.min(14, (n.dia != null ? n.dia : J.dia) | 0)), resultado: resPaso, opcion: opPaso ? String(opPaso).slice(0, 200) : null, preparado: prep,
+      barras: { radiacion: Math.round(J.st.radiacion), energia: Math.round(J.st.energia), comida: Math.round(J.st.comida), salud: Math.round(J.st.salud) } });
     await continuar(ops, "Continuar ▸", 1600);
   }
 
@@ -1138,6 +1149,7 @@
     aprender("q-" + q.id.replace(/^R-/, ""), q.tema && R.temas[q.tema] ? R.temas[q.tema].nombre : "Pregunta de Control", q.explicacion + " " + q.fraseEvidencia, "Control de Misión", q.tema);
     log(`${tag} (${q.id}): ${r.ok ? (r.intentos === 1 ? "correcta" : "correcta con pista") : "incorrecta"}${ui.sinTexto ? " [sin texto]" : ""}.`);
     registrarReto(r.ok && r.intentos === 1);
+    if (!r.omitida) anotar("pregunta", { reto_id: q.id, tema: q.tema || null, origen: q.tipo === "repaso" ? "repaso" : null, accion_correcta: !!(r.ok && r.intentos === 1), intentos: Math.max(1, Math.min(2, r.intentos || 1)) });
     if (q.lectura && q.tipo !== "repaso" && q.tipo !== "bitacora") contarLectura(r.ok && r.intentos === 1);
     await continuar(c.querySelector("#ops2"), tag === "INFORME" ? "Continuar ▸" : "Colgar ▸", 2600);
     return r;
@@ -1212,6 +1224,7 @@
     aprender("ll-" + s.tema, R.temas[s.tema].nombre, s.explicacion[nv] + " " + x.porQue, "Control de Misión", s.tema);
     log(`Llamada (${R.temas[s.tema].nombre}): predicción ${predOk ? "bien" : "mal"}, dato ${evOk ? "bien" : "mal"}, acción ${accOk ? "bien" : "mal"}${ui.sinTexto ? " [sin texto]" : ""}.`);
     registrarReto(accOk && predOk);
+    anotar("situacion", { reto_id: s.id, tema: s.tema, origen: ORIGEN[sel.origen] || null, prediccion_correcta: !!predOk, accion_correcta: !!accOk, accion: String((elegida && elegida.texto) || "").slice(0, 200), con_apoyo: !!conApoyo() });
     await continuar(c.querySelector("#ops"), "Colgar ▸", 2600);
   }
 
@@ -1290,6 +1303,7 @@
     aprender("av-" + a.id, a.alarma, a.explicacion, "Dra. Ortiz", a.temas[0]);
     log(`Avería: ${a.alarma} Causa en ${iCausa > INT ? "—" : iCausa} intento(s), reparación en ${iRep > INT ? "—" : iRep}.`);
     registrarReto(primera);
+    anotar("averia", { reto_id: a.id, tema: a.temas[0], accion_correcta: !!primera, intentos: Math.max(1, Math.min(3, Math.max(iCausa, iRep) | 0)), con_apoyo: !!conApoyo() });
     await continuar(c.querySelector("#ops"), "Volver a la base ▸", 2600);
     escena(a.escenario || "maquinas", {});
   }
@@ -1318,9 +1332,10 @@
     // récords en la cuenta del niño (no se guardan las partidas del modo automático del equipo)
     if (window.CUENTA && (ui.modo === "manual" || qs.get("guardar"))) {      // ?guardar=1: el equipo prueba el guardado jugando en automático
       const lim100 = (x) => Math.max(0, Math.min(100, Math.round(+x || 0)));
-      CUENTA.guardarPartida({ version: (window.GRAFO && GRAFO.version) || "0", nivelReto: J.reto, nivelLectura: J.lectura, final: n.id, estrellas: ex ? Math.max(0, Math.min(3, n.estrellas | 0)) : 0,
+      J.guardada = CUENTA.guardarPartida({ version: (window.GRAFO && GRAFO.version) || "0", nivelReto: J.reto, nivelLectura: J.lectura, final: n.id, estrellas: ex ? Math.max(0, Math.min(3, n.estrellas | 0)) : 0,
         diaFinal: Math.max(0, Math.min(14, J.dia | 0)), barras: { radiacion: lim100(J.st.radiacion), energia: lim100(J.st.energia), comida: lim100(J.st.comida), salud: lim100(J.st.salud) },
-        tareas: Math.max(0, J.st.mision | 0), pregTotal: J.cuenta.pq, pregPrimera: Math.min(J.cuenta.pq1, J.cuenta.pq) });
+        tareas: Math.max(0, J.st.mision | 0), pregTotal: J.cuenta.pq, pregPrimera: Math.min(J.cuenta.pq1, J.cuenta.pq),
+        respuestas: J.registro.slice(), pasos: J.pasos.slice() }).then((id) => id, () => null);
     }
     await verCinematica(FINAL_DE[n.id] || (ex ? "relevo" : "apagon"));
     escena("exterior", { nave: !!ex });
@@ -1352,6 +1367,8 @@
       c.querySelector("#res").innerHTML = `<div class="res ${ok ? "ok" : "ko"}">${ok ? "¡Buen consejo!" : `Esta carta sirve ${esc(k2.momento.charAt(0).toLowerCase() + k2.momento.slice(1))}.`} ${esc(k2.frase)}</div><div class="ops" id="ops2"></div>`;
       await continuar(c.querySelector("#ops2"), "Siguiente ▸", 1800);
     }
+    anotar("manual", { accion_correcta: bien.length === kk, aciertos: bien.length, total: kk });
+    if (J.guardada && window.CUENTA) { const filaManual = J.registro[J.registro.length - 1]; J.guardada.then((id) => id && CUENTA.agregarRespuestas(id, [filaManual])); }
     historial = {
       temas: Object.keys(J.aprendidos).filter((x) => J.aprendidos[x] >= 0),
       repasos: [...new Set([...J.pasados, ...J.diferidos, ...J.repasos.map((r) => r.tema)])].slice(-3),

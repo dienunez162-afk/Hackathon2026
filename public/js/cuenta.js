@@ -105,13 +105,44 @@
   async function borrarCuenta() { await cargarLib(); const { error } = await sb.rpc("borrar_mi_cuenta"); if (error) throw error; await sb.auth.signOut(); usuario = null; info = null; }
   async function salirDeClase() { await cargarLib(); const { error } = await sb.rpc("salir_de_clase"); if (error) throw error; await refrescar(); }
 
-  // ---------- partidas (récords). Si falla la red, se guarda en una cola y se reintenta ----------
-  async function enviar(r) {
-    const { error } = await sb.rpc("registrar_partida", {
-      p_version: String(r.version || "0"), p_nivel_reto: r.nivelReto, p_nivel_lectura: r.nivelLectura, p_final: String(r.final || ""),
-      p_estrellas: r.estrellas, p_dia_final: r.diaFinal, p_barras: r.barras, p_tareas: r.tareas, p_preg_total: r.pregTotal, p_preg_primera: r.pregPrimera,
-    });
+  // ---------- partidas, respuestas y pasos. Si falla la red, se guarda en una cola y se reintenta ----------
+  const RAMAS = ["experto", "normal", "rescate"], ORIGENES = ["esta_partida", "partida_pasada", "repaso"];
+  const ent = (x, a, b, def) => { const n = Math.round(+x); return Number.isFinite(n) ? Math.max(a, Math.min(b, n)) : def; };
+  const fila = (r, id) => ({
+    alumno_id: usuario.id, partida_id: id, tipo: r.tipo, reto_id: r.reto_id ? String(r.reto_id).slice(0, 60) : null, tema: r.tema ? String(r.tema).slice(0, 40) : null,
+    nivel_reto: ent(r.nivel_reto, 1, 3, 1), nivel_lectura: ent(r.nivel_lectura, 1, 3, 1), origen: ORIGENES.includes(r.origen) ? r.origen : null,
+    dia: ent(r.dia, 0, 14, 0), rama: RAMAS.includes(r.rama) ? r.rama : null,
+    prediccion_correcta: typeof r.prediccion_correcta === "boolean" ? r.prediccion_correcta : null, accion_correcta: !!r.accion_correcta,
+    accion: r.accion ? String(r.accion).slice(0, 200) : null, intentos: r.intentos == null ? null : ent(r.intentos, 1, 3, 1),
+    con_carta: !!r.con_carta, con_apoyo: !!r.con_apoyo, aciertos: r.aciertos == null ? null : ent(r.aciertos, 0, 99, 0), total: r.total == null ? null : ent(r.total, 0, 99, 0),
+  });
+  async function insertar(tabla, filas) {
+    if (!filas.length) return;
+    let { error } = await sb.from(tabla).insert(filas);
+    if (error && tabla === "respuestas" && /respuestas_tipo_check|check constraint/i.test(error.message || "")) {
+      // la base todavía no acepta el tipo 'pregunta' (falta la migración 0006): se guardan las demás
+      const sin = filas.filter((f) => f.tipo !== "pregunta");
+      error = sin.length ? (await sb.from(tabla).insert(sin)).error : null;
+    }
     if (error) throw error;
+  }
+  async function enviar(r) {
+    if (!r._id) {
+      const { data, error } = await sb.rpc("registrar_partida", {
+        p_version: String(r.version || "0"), p_nivel_reto: r.nivelReto, p_nivel_lectura: r.nivelLectura, p_final: String(r.final || ""),
+        p_estrellas: r.estrellas, p_dia_final: r.diaFinal, p_barras: r.barras, p_tareas: r.tareas, p_preg_total: r.pregTotal, p_preg_primera: r.pregPrimera,
+      });
+      if (error) throw error;
+      r._id = data;
+    }
+    const id = r._id;
+    if (r.respuestas && r.respuestas.length) { await insertar("respuestas", r.respuestas.map((x) => fila(x, id))); r.respuestas = []; }
+    if (r.pasos && r.pasos.length) {
+      await insertar("pasos", r.pasos.map((p) => ({ partida_id: id, nodo_id: String(p.nodo_id).slice(0, 40), dia: ent(p.dia, 0, 14, 0), resultado: p.resultado === "exito" || p.resultado === "fallo" ? p.resultado : null,
+        opcion: p.opcion ? String(p.opcion).slice(0, 200) : null, preparado: !!p.preparado, barras: p.barras || {} })));
+      r.pasos = [];
+    }
+    return id;
   }
   async function vaciarCola() {
     const cola = leerCola(); if (!cola.length || !usuario) return;
@@ -119,11 +150,16 @@
     for (const r of cola) { try { await enviar(r); } catch (e) { resto.push(r); } }
     guardarCola(resto);
   }
-  // Se llama al terminar una misión. Sin sesión no hace nada (el progreso local lo guarda juego.js).
+  // Se llama al terminar una misión. Sin sesión no hace nada (el progreso local lo guarda juego.js). Devuelve el id de la partida.
   async function guardarPartida(r) {
-    if (!ACTIVO || !usuario || !sb) return false;
-    try { await enviar(r); await refrescar(); return true; }
-    catch (e) { guardarCola([...leerCola(), r]); return false; }
+    if (!ACTIVO || !usuario || !sb) return null;
+    try { const id = await enviar(r); await refrescar(); return id; }
+    catch (e) { guardarCola([...leerCola(), r]); return r._id || null; }
+  }
+  // filas que llegan después de guardar la partida (el manual para el siguiente capitán)
+  async function agregarRespuestas(id, filas) {
+    if (!ACTIVO || !usuario || !sb || !id) return false;
+    try { await insertar("respuestas", filas.map((x) => fila(x, id))); return true; } catch (e) { return false; }
   }
 
   // ---------- menú desplegable (hamburguesa arriba a la derecha del menú principal) ----------
@@ -247,5 +283,5 @@
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", montar); else montar();
 
-  window.CUENTA = { activo: ACTIVO, visible, abrir, abierto, registrar, entrar, salir, guardarPartida, sesion: () => (usuario ? { alias: info && info.alias } : null) };
+  window.CUENTA = { activo: ACTIVO, visible, abrir, abierto, registrar, entrar, salir, guardarPartida, agregarRespuestas, sesion: () => (usuario ? { alias: info && info.alias } : null) };
 })();
