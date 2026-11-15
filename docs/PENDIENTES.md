@@ -3,18 +3,16 @@
 Revisada el 15 de noviembre de 2026 (rama `correcciones-pendientes`). Probado en local y en `gnosis-kappa.vercel.app`: JUGAR arranca y varias misiones seguidas en modo automático 4× terminan sin errores en consola.
 
 ## Solo Diego puede hacerlo (Supabase)
-Estado del proyecto `tsidieehhdwspeomdixs` el 15-nov (probado de punta a punta): **ya funciona** el registro con alias, el inicio de sesión desde el juego, guardar partidas, los récords, pedir unirse a una clase, aceptar al alumno y que el maestro vea o deje de ver sus partidas, y el aislamiento entre alumnos. «Confirm email» ya está desactivado y Supabase acepta el dominio `alumnos.g-nosis.local`. Falta:
-- [x] `0004_borrar_cuenta.sql` y `0005_permisos_funciones.sql` corridos el 15-nov (comprobado: existe `borrar_mi_cuenta` y ninguna función se puede llamar sin sesión).
-- [x] **Ya no hace falta poner variables en Vercel:** `scripts/generar-datos.mjs` escribe `config.js` con la URL y la publishable key del proyecto (públicas por diseño). Si se ponen `SUPABASE_URL`, `SUPABASE_ANON_KEY` o `DOMINIO_ALUMNOS` en Vercel, esas ganan. Basta con fusionar la rama `supabase-sin-vercel` y Vercel redepliega solo.
-- [x] **Cuentas de prueba de alumnos borradas** (15-nov). Se probó el botón «Borrar mi cuenta» en producción: borra la cuenta, la sesión y sus datos, y el maestro ya no ve nada.
-- [ ] Borrar en Authentication > Users el maestro de prueba `maestro.prueba.claude@example.com` (con las llaves públicas no se puede; su grupo ya se eliminó), o usarlo como maestro de pruebas para el panel.
-- [ ] Crear el maestro y el grupo reales (`0003_datos_de_prueba.sql` sirve de plantilla).
+- [ ] **Correr `supabase/migrations/0006_panel_maestro.sql`** en el SQL Editor (copia en `space apps/supabase-sql/`). Hasta entonces: no se guardan las **preguntas del banco** en `respuestas` (el juego guarda las llamadas, averías y el manual), y en el panel del maestro no funcionan **Restablecer contraseña** y **Quitar de la clase** (avisa que falta la migración). Trae también el límite de intentos con códigos de clase.
+- [ ] Borrar en Authentication > Users el maestro de prueba `maestro.prueba.claude@example.com` y los alumnos ficticios (`cometa`, `nebulosa`, `orion`, `vega`, `lira`, `andromeda`, `sirio`, `pleyade`, `kepler`, `halley`, `selene`, `tycho`) cuando ya no se necesiten para enseñar el panel. Los alumnos se borran solos con `DEMO_CLAVE=... node herramientas/sembrar-demo.mjs --limpiar` (después hay que borrar a mano el maestro).
+- [ ] Crear el maestro y el grupo reales (el panel permite crear grupos; el maestro se registra en `maestro.html`).
+- [ ] En Supabase: activar la protección de contraseñas filtradas y un límite de registros por hora.
 
 ## Código que sigue pendiente
-- [ ] **Panel del maestro**: aceptar o rechazar solicitudes (`resolver_solicitud`), crear grupos y mostrar el código. Hoy solo existe la maqueta `diseno/panel-maestro`. Las funciones y los permisos ya están probados.
-- [ ] Guardar también `respuestas` y `pasos` (hoy se guarda solo el resumen de la partida) para que el panel tenga datos de aprendizaje.
-- [ ] Restablecer la contraseña de un alumno desde el panel (Edge Function): sin correo no hay otra forma.
-- [ ] Limitar los intentos al escribir un código de clase (hoy se puede probar muchas veces) y activar protección de contraseñas filtradas y límite de registros en Supabase.
+- [ ] Probar en el panel, con la migración 0006 corrida, **Restablecer contraseña** y **Quitar de la clase** (hoy solo se comprobó que avisan bien cuando falta).
+- [ ] El panel del maestro es solo en español.
+- [ ] Un maestro puede registrarse sin verificar que lo sea (cualquiera puede crear una cuenta de maestro; solo verá a quien lo acepte). Valorar una lista de correos permitidos.
+- [ ] «Un dato que cambia el día»: falta mostrarlo también en la tarjeta final de la misión y volver a correr el simulador de balance con los +3/+6 de radiación (máximo 3 días por misión).
 
 ## Necesita personas (no se puede automatizar)
 - [ ] **Prueba a mano con dedo y mouse**, sobre todo «limpiar el panel» (arrastrar) y el laberinto en tablet. Solo se probó en modo automático y con el navegador emulando celular.
@@ -28,6 +26,15 @@ Estado del proyecto `tsidieehhdwspeomdixs` el 15-nov (probado de punta a punta):
 - [ ] Elegir 2-3 diferenciadores para la demo (ver `docs/propuestas-diferenciadores.docx`).
 
 ## Hecho
+- [x] **Panel del maestro real** (`public/maestro.html`, basado en la maqueta): registro y entrada del maestro, grupos con código, solicitudes (aceptar/rechazar), resumen del grupo, aprendizaje partida a partida, temas para reforzar con actividades, matriz alumno × tema, detalle por alumno (nivel, partidas, métricas, repasos pendientes), nivel inicial, restablecer contraseña y quitar de la clase. Enlace desde el menú ☰ del juego.
+- [x] **Datos ficticios para enseñarlo**: `herramientas/sembrar-demo.mjs` (maestra «Maestra Ortiz (ficticia)», grupo «4.º B (ficticio)», 10 alumnos con 3 a 6 partidas y 2 solicitudes pendientes).
+- [x] **Respuestas y pasos guardados** al terminar cada misión (llamadas, averías, preguntas del banco, manual, nodos visitados y cartas del manual).
+- [x] **Costo de cada acción según el nivel** (números en nivel 1, flechas en nivel 2, nada en nivel 3) en decisiones y minijuegos; no en las preguntas de las llamadas, porque darían la respuesta.
+- [x] **Prueba de humo automática** (`npm run humo`, también en GitHub Actions): menú, tutorial con clics reales y una misión completa. Se comprobó que detecta el bug de las preguntas omitidas.
+- [x] **Auditoría de idioma** (`npm run idioma`): juega en inglés y avisa de todo texto que siga en español.
+- [x] **Un dato que cambia el día**: cada día del juego es un día real de la NASA; aviso «El Sol hoy» en el menú ☰, línea en el HUD y +3/+6 de radiación en días de llamarada M/X (máximo 3 por misión).
+- [x] **Bugs del documento de pendientes** (capturas del PDF): texto de las barras sobre los juegos (z-index), minijuego del clima espacial con gráfica y sin regalar la respuesta, «eyección de masa coronal» simplificado, y la mezcla español/inglés (pistas de averías, frases con «;», diccionario de la bitácora, datos de la NASA, textos partidos por el diccionario).
+- [x] **Detalles de estilo**: casilla y cuadros de confirmación con el arte del juego; aviso de privacidad con el look del juego y al día.
 - [x] **Producción probada de punta a punta** (15-nov, commit 68bd82d): el menú ☰ MENÚ sale en `gnosis-kappa.vercel.app`, inicio de sesión con alias, récords, borrar cuenta y que las funciones no se puedan llamar sin sesión.
 - [x] **Menú ☰ MENÚ arriba a la derecha del inicio**, desplegable, con el idioma (español/inglés) y la cuenta dentro. Usa el mismo arte que el resto del juego (etiqueta, panel pixel y botones `.op`), se escala con la pantalla, está en español e inglés y desaparece al empezar a jugar. El aviso de sonido se corre a su izquierda.
 - [x] **Supabase probado de punta a punta** (15-nov): cuenta de alumno, sesión en el juego (también tras refrescar), partidas y récords (la misión guardada desde el juego sube el contador), maestro con grupo y código, solicitud pendiente, aceptación, visibilidad del maestro solo tras aceptar y tras salir de la clase, un alumno no ve ni escribe datos de otro, errores de alias en español. Para probar el guardado jugando en automático: `?auto=1&vel=4&guardar=1`.

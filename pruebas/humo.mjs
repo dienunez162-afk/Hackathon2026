@@ -77,8 +77,7 @@ try {
   }
 
   // ---------- 2. jugar a mano: el tutorial y los avisos de Laika, con clics de ratón reales ----------
-  console.log("
-2. Tutorial y avisos de Laika con clics reales");
+  console.log("\n2. Tutorial y avisos de Laika con clics reales");
   {
     const ctx = await navegador.newContext({ viewport: { width: 1280, height: 720 } });
     const page = await ctx.newPage();
@@ -98,6 +97,7 @@ try {
       const el = boton.asElement();
       if (!el) { await page.waitForTimeout(200); continue; }
       const texto = (await el.innerText()).trim();
+      await el.scrollIntoViewIfNeeded();                    // como haría una persona: desplaza el panel hasta ver el botón
       const caja = await el.boundingBox();
       if (!caja) { await page.waitForTimeout(200); continue; }
       await page.mouse.click(caja.x + caja.width / 2, caja.y + caja.height / 2);       // clic real, no .click() del DOM

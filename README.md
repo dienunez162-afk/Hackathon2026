@@ -46,7 +46,11 @@ Notas (noviembre de 2026):
 ## Pruebas
 - `npm test`: pruebas de funciones sueltas (rápidas).
 - `npm run check`: revisa la sintaxis y corre `npm test`.
+- `npm run idioma`: **auditoría de idioma**. Juega una misión en inglés y lista todo texto que siga en español (incluye la bitácora). Las traducciones que no caben en `textos-es/en.txt` van en `datos/i18n/extra-en.json`.
 - `npm run humo`: **prueba de humo**. Abre el juego en Chrome, lo juega solo (una misión completa a 4×, unos 2 minutos) y falla si hay errores en consola, si se omiten preguntas, si no se anotan las decisiones o si el menú no abre. `HUMO_URL=https://gnosis-kappa.vercel.app npm run humo` prueba un sitio ya publicado. Corre sola en cada pull request (`.github/workflows/humo.yml`). Con `?semilla=N` el azar del juego sale igual cada vez.
+
+## Panel del maestro
+`public/maestro.html`: el maestro entra con correo, crea grupos (código de clase), acepta alumnos y ve cómo aprenden. Para ver cómo se llena sin alumnos reales: `DEMO_CLAVE=<contraseña> node herramientas/sembrar-demo.mjs` crea una maestra y un grupo ficticios (`--limpiar` borra y regenera los alumnos). Necesita las migraciones de `supabase/migrations/` (hasta la 0006).
 
 ## Música
 | Archivo | Cuándo suena |
