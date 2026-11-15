@@ -652,6 +652,25 @@
     J.log.push(`D${String(J.dia).padStart(2, "0")} · ${t}`);
     $("log").innerHTML = J.log.slice(-6).map((x) => `<div>${esc(x)}</div>`).join("");
   }
+  // costo visible de una acción antes de elegirla (según el nivel; ver PQ.describirEfectos)
+  function costoHtml(ef) {
+    const items = PQ.describirEfectos(ef, J.reto);
+    if (!items.length) return "";
+    return '<span class="costos">' + items.map((i) => {
+      const cls = i.bueno ? "bueno" : "malo";
+      if (i.tipo === "mision") return `<span class="costo bueno">+${i.v} tarea de Control</span>`;
+      if (i.tipo === "recarga") return `<span class="costo bueno">+${i.v} a la barra más débil</span>`;
+      if (i.numero) return `<span class="costo ${cls}">${i.v > 0 ? "+" : ""}${i.v} ${MINUS[i.clave]}</span>`;
+      return `<span class="costo ${cls}"><span aria-hidden="true">${i.v > 0 ? "▲" : "▼"}</span> ${MINUS[i.clave]}<span class="oculto"> ${i.v > 0 ? "sube" : "baja"}</span></span>`;
+    }).join("") + "</span>";
+  }
+  // lo que se juega en un minijuego: si lo logras / si fallas (niveles 1 y 2)
+  function apuestaHtml(exito, fallo) {
+    if (J.reto >= 3) return "";
+    const f = J.preparado ? suavizar(fallo) : fallo;
+    const una = (ef) => costoHtml(ef) || '<span class="costo">sin cambios</span>';
+    return `<div class="apuesta"><span>Si lo logras:</span> ${una(exito)} <span>Si fallas:</span> ${una(f)}</div>`;
+  }
   function efectosTxt(ef) {
     const p = [];
     for (const [k, v] of Object.entries(ef || {})) {
@@ -850,6 +869,7 @@
     const ops = c.querySelector("#ops"), res = c.querySelector("#res");
     if (r.exito || r.fallo) {
       const spec = MJ_DE[n.id];
+      const ap = apuestaHtml(r.exito, r.fallo); if (ap) res.innerHTML = ap;
       await continuar(ops, "¡A jugar! ▸", 1500);
       const gano = spec ? await minijuego(n, spec) : Math.random() < ui.hab;
       resPaso = gano ? "exito" : "fallo";
@@ -866,7 +886,8 @@
         const peor = (ef) => { const t = { ...J.st }; for (const [k, v] of Object.entries(ef)) if (t[k] != null) t[k] = lim(t[k] + v, 0, 100); return Math.min(...BARRAS.map((b) => saludDe(t, b))); };
         let m = 0; r.opciones.forEach((o, i) => { if (peor(o.efectos) > peor(r.opciones[m].efectos)) m = i; }); return m;
       };
-      const i = await botones(ops, r.opciones.map((o) => ({ html: esc(o.texto) })), { auto, delay: 2000 });
+      if (J.reto <= 2) ops.classList.add("col");
+      const i = await botones(ops, r.opciones.map((o) => ({ html: esc(o.texto) + costoHtml(o.efectos) })), { auto, delay: 2000 });
       aplicar(r.opciones[i].efectos); opPaso = r.opciones[i].texto;
       res.innerHTML = `<div class="res">${efectosTxt(r.opciones[i].efectos)}</div>`;
       log(`${n.titulo}: ${r.opciones[i].texto}.`);

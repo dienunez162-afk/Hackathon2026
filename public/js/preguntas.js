@@ -238,6 +238,21 @@
     return t.replace(/\u0001(\d+)\u0002/g, (m, i) => botones[+i]);
   }
 
+  // costo visible de una acción, según el nivel de reto (el nivel baja las ayudas poco a poco):
+  //   nivel 1: cada barra con su número (+8 energía)     nivel 2: solo la dirección (▲ energía)     nivel 3: nada, hay que deducirlo
+  // "bueno" es lo que le conviene a la base: que la radiación suba es malo, que las demás suban es bueno.
+  function describirEfectos(ef, nivel) {
+    if ((nivel | 0) >= 3) return [];
+    const out = [];
+    for (const [k, v] of Object.entries(ef || {})) {
+      if (!v) continue;
+      if (k === "mision") out.push({ tipo: "mision", clave: k, v, bueno: true, numero: true });
+      else if (k === "barraMasBaja") out.push({ tipo: "recarga", clave: k, v, bueno: true, numero: true });
+      else if (BARRAS.includes(k)) out.push({ tipo: "barra", clave: k, v, bueno: (k === "radiacion" ? -v : v) > 0, numero: (nivel | 0) <= 1 });
+    }
+    return out;
+  }
+
   // valida que una pregunta tenga el esquema completo
   const CAMPOS = ["id", "nivel", "tipo", "enunciado", "opciones", "indiceCorrecto", "fraseEvidencia", "explicacion", "fuente", "pista"];
   function validarPregunta(p) {
@@ -256,7 +271,7 @@
 
   return {
     BARRAS, barajarConCorrecta, barajarFijo, semilla, recortarOpciones, opcionesPorNivel, elegirPregunta, costoError, diasDeLlamada,
-    respuestaAuto, zonaRadiacion, tendencia, preguntaBitacora, preguntaRepaso, validarPregunta, validarBanco,
+    respuestaAuto, describirEfectos, zonaRadiacion, tendencia, preguntaBitacora, preguntaRepaso, validarPregunta, validarBanco,
     variantes, rotar, preguntaParaInforme, preguntaLlamada, transferenciaPermitida, claseNum, fuerzaDe, fechaTxt, marcarPalabras,
   };
 });
