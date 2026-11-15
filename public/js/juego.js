@@ -102,7 +102,7 @@
       else { abortar(); if (typeof finalActual !== "undefined") finalActual = null; entrarJuego(); }   // también desde un final o el alunizaje
     }
     else if (b.id === "c-menu") volverAlMenu();
-    else if (b.id === "c-borrar") { historial = null; partidas = 0; try { localStorage.removeItem(CLAVE); } catch (e2) { /* nada */ } toast("Se borró el progreso guardado en este dispositivo."); if (J) pintarEquipo(); }
+    else if (b.id === "c-borrar") { historial = null; partidas = 0; if (window.BITACORA) BITACORA.borrar(); try { localStorage.removeItem(CLAVE); } catch (e2) { /* nada */ } toast("Se borró el progreso guardado en este dispositivo."); if (J) pintarEquipo(); }
     else if (b.dataset.final) { abortar(); hud.hidden = true; estado = "final"; iniciarFinal(b.dataset.final, () => volverAlMenu()); MUSICA_BASE.sincronizar(); }
     pintarCtl();
   });
@@ -345,7 +345,27 @@
     if (!(ui.voz && J.lectura === 1)) return;
     try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(texto); u.lang = "es-MX"; u.rate = 0.95; speechSynthesis.speak(u); } catch (e) { /* sin voz */ }
   }
-  function pantalla(html) { $c.hidden = false; $c.innerHTML = html; $c.scrollTop = 0; return $c; }
+  // quien: "control" (Control de Misión) o "cientifica" (Dra. Ortiz): su retrato habla mientras se lee el texto
+  const NOMBRE_RETRATO = { control: "CONTROL DE MISIÓN", cientifica: "DRA. ORTIZ" };
+  function pantalla(html, quien) {
+    $c.hidden = false;
+    $c.innerHTML = quien ? `<div class="con-retrato"><div><div class="retrato ${quien}" role="img" aria-label="${NOMBRE_RETRATO[quien]}"></div><div class="retrato-nombre">${NOMBRE_RETRATO[quien]}</div></div><div class="cuerpo">${html}</div></div>` : html;
+    $c.scrollTop = 0;
+    if (quien) hablar(html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").length);
+    return $c;
+  }
+  // abre y cierra la boca (cambia entre los dos cuadros del sprite) según lo largo del texto
+  let hablaId = null;
+  function hablar(caracteres) {
+    const el = $c.querySelector(".retrato");
+    clearInterval(hablaId);
+    if (!el) return;
+    const fin = performance.now() + Math.max(900, Math.min(4500, caracteres * 40));
+    hablaId = setInterval(() => {
+      if (!el.isConnected || performance.now() > fin) { el.classList.remove("boca"); clearInterval(hablaId); return; }
+      el.classList.toggle("boca");
+    }, 150);
+  }
   let toastId = null;
   function toast(t) { const el = $("toast"); el.textContent = t; el.classList.add("on"); clearTimeout(toastId); toastId = setTimeout(() => el.classList.remove("on"), 3200); }
 
@@ -380,18 +400,23 @@
   }
 
   // ---------- HUD ----------
+  // barras con sprites (img/hud/barra-*.png, 760x160): 10 segmentos, cada uno vale 10 puntos.
+  // Posición de los segmentos medida por herramientas/recortar-sprites.ps1 (img/hud/sprites.json).
+  const ORDEN_BARRAS = ["salud", "comida", "energia", "radiacion"];
+  const SEG_X = Array.from({ length: 10 }, (_, k) => 180 + 45 * k), SPRITE_W = 760;
   function crearBarras() {
-    $("barras").innerHTML = BARRAS.map((b) => `<div class="barra" data-b="${b}"><span class="lbl">${MAYUS[b]}${b === "radiacion" ? " <small>(baja = mejor)</small>" : ""}</span><span class="val"></span><span class="ascii"></span><span class="delta"></span></div>`).join("");
+    $("barras").innerHTML = ORDEN_BARRAS.map((b) => `<div class="barra" data-b="${b}" role="meter" aria-label="${MAYUS[b]}" aria-valuemin="0" aria-valuemax="100">` +
+      `<span class="lbl">${MAYUS[b]}${b === "radiacion" ? " · BAJA = MEJOR" : ""}</span><div class="marco"><img src="img/hud/barra-${b}.png" alt="">` +
+      SEG_X.map((x) => `<span class="seg" style="left:${(100 * x / SPRITE_W).toFixed(2)}%"></span>`).join("") + `<span class="delta"></span></div></div>`).join("");
     pintarBarras();
   }
   function pintarBarras() {
     for (const b of BARRAS) {
-      const el = $("barras").querySelector(`[data-b="${b}"]`), v = J.st[b], z = zona(b, v), n = Math.round(v / 5);
-      el.querySelector(".val").textContent = v;
-      el.querySelector(".val").className = "val z-" + z;
-      const a = el.querySelector(".ascii");
-      a.textContent = "[" + "#".repeat(n) + ".".repeat(20 - n) + "]";
-      a.className = "ascii z-" + z;
+      const el = $("barras").querySelector(`[data-b="${b}"]`), v = J.st[b], z = zona(b, v), encendidos = Math.ceil(v / 10);
+      el.querySelectorAll(".seg").forEach((s, k) => s.classList.toggle("off", k >= encendidos));
+      el.classList.toggle("z-rojo", z === "rojo");
+      el.setAttribute("aria-valuenow", String(v));
+      el.title = `${MAYUS[b]}: ${v} de 100`;
     }
   }
   function mostrarDeltas(antes) {
@@ -480,7 +505,10 @@
       h += `<span class="${cls}" title="Día ${d}">${d}${m.ll ? '<i class="ll"></i>' : ""}${m.av ? '<i class="av"></i>' : ""}${m.ev ? '<i class="ev"></i>' : ""}</span>`;
     }
     $("h-track").innerHTML = h;
-    $("h-dia").innerHTML = `DÍA ${String(J.dia).padStart(2, "0")} / 14<small>${faseTxt(J.dia)}</small>`;
+    $("h-num").textContent = String(J.dia).padStart(2, "0");
+    $("h-dia").classList.toggle("noche", J.dia >= 11);
+    $("h-dia").title = `Día ${J.dia} de 14`;
+    $("h-fase").textContent = faseTxt(J.dia);
   }
   const faseTxt = (d) => (d === 0 ? "LLEGADA" : d <= 4 ? "FASE 1 · BIENVENIDA · SOL" : d <= 10 ? "FASE 2 · CLIMA ESPACIAL · SOL" : "FASE 3 · NOCHE LUNAR");
   const marca = (k) => { (J.marcas[J.dia] = J.marcas[J.dia] || {})[k] = true; pintarTrack(); };
@@ -630,7 +658,7 @@
     await irA(n.escenario || "control", ESTADO_NODO[n.id] || {}, MOTIVO[n.tipo]);
     const texto = n.niveles ? n.niveles["nivel" + J.lectura].texto : n.mensaje;
     const r = n.resultado || {};
-    const c = pantalla(`<span class="tag ${(ESTADO_NODO[n.id] || {}).alarma ? "alarma" : ""}">${TIPO[n.tipo]}</span><h2 class="titulo">${esc(n.titulo)}</h2><p class="txt">${esc(texto)}</p><div class="ops" id="ops"></div><div id="res"></div>`);
+    const c = pantalla(`<span class="tag ${(ESTADO_NODO[n.id] || {}).alarma ? "alarma" : ""}">${TIPO[n.tipo]}</span><h2 class="titulo">${esc(n.titulo)}</h2><p class="txt">${esc(texto)}</p><div class="ops" id="ops"></div><div id="res"></div>`, n.tipo === "control_mision" || n.tipo === "calma" ? "control" : null);
     voz(texto);
     const ops = c.querySelector("#ops"), res = c.querySelector("#res");
     if (r.exito || r.fallo) {
@@ -692,7 +720,7 @@
     animo("calma");
     const c = pantalla(`<span class="tag">${TIPO.evaluacion}</span><h2 class="titulo">${esc(n.titulo)}</h2>` +
       `<p class="txt">${BARRAS.map((b) => `<span class="z-${zona(b, J.st[b])}">${MAYUS[b]} ${J.st[b]}</span>`).join(" · ")}</p>` +
-      `<div class="res ok">${MSG[rama]}</div><div class="ops" id="ops"></div>`);
+      `<div class="res ok">${MSG[rama]}</div><div class="ops" id="ops"></div>`, "control");
     log("Reporte de Control de Misión.");
     await continuar(c.querySelector("#ops"), "Continuar ▸", 2200);
   }
@@ -700,13 +728,15 @@
   async function informe(n) {
     const t = n.informe.tema;
     if (J.aprendidos[t] == null || J.aprendidos[t] < 0) J.aprendidos[t] = J.aprendidos[t] == null ? n.dia : J.aprendidos[t];
+    if (window.BITACORA) BITACORA.registrar("informe", n.id, { titulo: n.titulo, texto: n.informe.texto, fuente: n.informe.fuente, tema: t });
     if (J.cartas[t]) return;
     J.cartas[t] = { usada: false, armada: false };
+    if (window.BITACORA) BITACORA.registrar("carta", t, {});
     pintarCartas(t);
     if (window.SFX) SFX.play("carta-nueva");
     const k = R.temas[t].carta;
     const c = pantalla(`<span class="tag">NUEVA CARTA</span><h2 class="titulo">${esc(k.nombre)}</h2><p class="txt">${esc(k.frase)}</p>` +
-      `<p class="sub">Se guardó en tu bitácora. ${k.uso.tipo === "escudo" ? `Es un escudo para la ${MINUS[k.uso.barra]}.` : `Suma ${k.uso.valor} de ${MINUS[k.uso.barra]}.`} Úsala en el momento justo.</p><div id="inf"></div><div class="ops" id="ops"></div>`);
+      `<p class="sub">Se guardó en tu bitácora. ${k.uso.tipo === "escudo" ? `Es un escudo para la ${MINUS[k.uso.barra]}.` : `Suma ${k.uso.valor} de ${MINUS[k.uso.barra]}.`} Úsala en el momento justo.</p><div id="inf"></div><div class="ops" id="ops"></div>`, "cientifica");
     voz(k.nombre + ". " + k.frase);
     log(`Nueva carta: ${k.nombre}.`);
     const i = await botones(c.querySelector("#ops"), [{ html: "Continuar ▸", prim: true }, { html: "Leer el informe" }], { auto: 0, delay: 2200 });
@@ -757,12 +787,12 @@
     animo("alerta");
     await irA("control", { llamada: true }, "¡Suena la radio en");
     if (window.SFX) SFX.play("llamada");
-    let c = pantalla(`<span class="tag llamada">LLAMADA ENTRANTE</span><h2 class="titulo">((( Control de Misión )))</h2><p class="sub">${esc(R.temas[s.tema].nombre)}</p><div class="ops" id="ops"></div>`);
+    let c = pantalla(`<span class="tag llamada">LLAMADA ENTRANTE</span><h2 class="titulo">((( Control de Misión )))</h2><p class="sub">${esc(R.temas[s.tema].nombre)}</p><div class="ops" id="ops"></div>`, "control");
     await continuar(c.querySelector("#ops"), "Contestar ▸", 1100);
     if (s.escenario && s.escenario !== "control") escena(s.escenario, {});
 
     c = pantalla(`<span class="tag llamada">LLAMADA · CONTROL DE MISIÓN</span><p class="txt">${esc(s.aviso[nv])}</p>` +
-      `<span class="paso">1 · PREDICE</span><p class="sub">${esc(s.prediccion.pregunta)}</p><div class="ops" id="pred"></div><div id="act"></div><div id="res"></div>`);
+      `<span class="paso">1 · PREDICE</span><p class="sub">${esc(s.prediccion.pregunta)}</p><div class="ops" id="pred"></div><div id="act"></div><div id="res"></div>`, "control");
     voz(s.aviso[nv] + " " + s.prediccion.pregunta);
     const pred = c.querySelector("#pred");
     const okB = BARRAS.indexOf(s.prediccion.barra);
@@ -797,6 +827,8 @@
       if (it < 2) J.repasos.push({ tema: s.tema, disponible: J.dia + 2, intentos: it }); else J.diferidos.push(s.tema);
     }
     c.querySelector("#res").innerHTML = html + `</div><div class="ops" id="ops"></div>`;
+    hablar(accOk ? 40 : s.explicacion[nv].length);
+    if (window.BITACORA) BITACORA.registrar("aprendido", "ll-" + s.tema, { titulo: R.temas[s.tema].nombre, texto: s.explicacion[nv], quien: "Control de Misión" });
     if (!accOk) voz(s.explicacion[nv]);
     log(`Llamada (${R.temas[s.tema].nombre}): ${predOk ? "predijo bien" : "predijo mal"}, ${accOk ? "acción correcta" : "acción equivocada"}.`);
     registrarReto(accOk);
@@ -821,7 +853,7 @@
       ...a.pistas.distractores.slice(0, NV.distractores).map((t) => ({ t })),
       ...(NV.enganosa ? [{ t: a.pistas.enganosa }] : []),
     ]);
-    const c = pantalla(`<span class="tag alarma">ALARMA</span><h2 class="titulo">${esc(a.alarma)}</h2><p class="sub">Mira el módulo y lee las pistas.</p><div id="pistas"></div><div id="rep"></div><div id="res"></div>`);
+    const c = pantalla(`<span class="tag alarma">ALARMA</span><h2 class="titulo">${esc(a.alarma)}</h2><p class="sub">Mira el módulo y lee las pistas.</p><div id="pistas"></div><div id="rep"></div><div id="res"></div>`, "cientifica");
     voz(a.alarma);
     const cont = c.querySelector("#pistas");
     let resaltada = false;
@@ -849,6 +881,7 @@
       aplicar(dano(porError));
       const clave = a.pistas.clave[intentos === 1 ? 0 : 1] || a.pistas.clave[0];
       c.querySelector("#res").innerHTML = `<div class="res ko">Eso no lo arregló. Dra. Ortiz: fíjate en esta pista: «${esc(clave)}».</div>`;
+      hablar(clave.length + 30);
       voz("Fíjate en esta pista: " + clave);
       await espera(900);
     }
@@ -859,6 +892,8 @@
     else if (!J.repasos.some((r) => r.tema === a.temas[0])) J.repasos.push({ tema: a.temas[0], disponible: J.dia + 2, intentos: 1 });
     c.querySelector("#res").innerHTML = `<div class="res ok">${intentos === 1 ? `¡Diagnóstico al primer intento! +${A.bonusPrimerIntento} de ${MINUS[b]}.` : `Reparado en ${intentos} intentos.`}<br>Dra. Ortiz: ${esc(a.explicacion)}</div><div class="ops" id="ops"></div>`;
     voz(a.explicacion);
+    hablar(a.explicacion.length);
+    if (window.BITACORA) BITACORA.registrar("aprendido", "av-" + a.id, { titulo: a.alarma, texto: a.explicacion, quien: "Dra. Ortiz" });
     log(`Avería: ${a.alarma} ${intentos === 1 ? "Resuelta al primer intento." : `Resuelta en ${intentos} intentos.`}`);
     registrarReto(intentos === 1);
     await continuar(c.querySelector("#ops"), "Volver a la base ▸", 2600);

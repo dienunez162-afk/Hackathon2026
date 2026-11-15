@@ -41,9 +41,23 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 [hidden] { display: none !important; }
 
 /* día y recorrido de 14 días */
-.top { position: absolute; left: 16px; top: 10px; display: flex; align-items: center; gap: 16px; padding: 6px 10px; }
-#h-dia { font-weight: 700; letter-spacing: 0.08em; white-space: nowrap; min-width: 200px; }
-#h-dia small { display: block; font-weight: 400; color: var(--dim); letter-spacing: 0.04em; font-size: 11px; }
+.top { position: absolute; left: 12px; top: 6px; right: 300px; display: flex; align-items: center; gap: 12px; }
+/* panel de día (sprite): el texto y la luna van encima, en % del sprite (img/hud/sprites.json) */
+#h-dia { position: relative; width: 150px; flex: none; line-height: 1; }
+#h-dia img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+#h-dia .dia-txt { position: absolute; left: 44%; top: 11.9%; width: 47.9%; height: 67.3%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; }
+#h-dia .dia-txt small { font-size: 12px; font-weight: 700; color: var(--casco); letter-spacing: 0.1em; }
+#h-dia .dia-txt b { font-size: 26px; font-weight: 700; color: var(--ambar); letter-spacing: 0.04em; text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5); }
+#h-dia .luna { position: absolute; left: 14.5%; top: 24%; width: 24%; height: 50%; background: rgb(14, 16, 40); display: none; }
+#h-dia .luna::after { content: ""; position: absolute; left: 22%; top: 18%; width: 56%; height: 64%; border-radius: 50%; background: radial-gradient(circle at 35% 35%, rgb(235, 238, 255), rgb(170, 175, 215) 60%, rgb(120, 125, 175)); box-shadow: inset -6px -2px 0 rgba(14, 16, 40, 0.55); }
+#h-dia.noche .luna { display: block; }
+#h-fase { position: absolute; left: 174px; top: 56px; font-size: 10.5px; color: var(--dim); letter-spacing: 0.05em; white-space: nowrap; }
+/* botón del libro (bitácora) */
+#btn-bitacora { position: relative; flex: none; width: 66px; padding: 0; background: none; border: 0; cursor: pointer; }
+#btn-bitacora img { display: block; width: 100%; height: auto; image-rendering: pixelated; transition: transform 0.15s; }
+#btn-bitacora:hover img { transform: translateY(-2px) rotate(-3deg); }
+#btn-bitacora:focus-visible { outline: 2px solid var(--crema); outline-offset: 3px; }
+#bitacora-nuevos { position: absolute; right: -6px; top: -6px; min-width: 20px; height: 20px; border-radius: 10px; background: var(--rojo); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; padding: 0 4px; box-sizing: border-box; }
 #h-track { display: flex; gap: 4px; }
 .dia { width: 28px; height: 28px; border: 1px solid var(--borde); display: grid; place-items: center; font-size: 11px; color: var(--faint); position: relative; background: rgba(8, 10, 24, 0.6); }
 .dia.noche { background: rgba(24, 28, 90, 0.6); }
@@ -58,15 +72,20 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 .panel h3 { margin: 0 0 8px; font-size: 11px; letter-spacing: 0.16em; color: var(--dim); font-weight: 400; display: flex; justify-content: space-between; }
 
 /* sistemas (arriba a la izquierda) */
-.izq { position: absolute; left: 16px; top: 64px; width: 262px; padding: 12px; box-sizing: border-box; }
-.barra { display: grid; grid-template-columns: 1fr auto; gap: 0 8px; margin-bottom: 9px; position: relative; }
-.barra .lbl { font-size: 11px; letter-spacing: 0.1em; color: var(--dim); }
-.barra .lbl small { letter-spacing: 0; font-size: 10px; color: var(--faint); }
-.barra .val { font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
-.barra .ascii { grid-column: 1 / -1; font-size: 12.5px; white-space: pre; }
-.barra .delta { position: absolute; right: 40px; top: -2px; font-weight: 700; opacity: 0; transition: opacity 0.3s; }
+.izq { position: absolute; left: 16px; top: 96px; width: 262px; padding: 10px 6px; box-sizing: border-box; }
+.izq h3 { padding: 0 6px; }
+/* barra = sprite de 760x160 (img/hud/barra-*.png); 10 segmentos de 10 puntos; los apagados se oscurecen */
+.barra { margin-bottom: 3px; }
+.barra .marco { position: relative; }
+.barra img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+.barra .seg { position: absolute; top: 37.5%; height: 25%; width: 5.26%; background: rgba(8, 10, 26, 0.86); opacity: 0; transition: opacity 0.35s; }
+.barra .seg.off { opacity: 1; }
+.barra .lbl { display: block; padding-left: 24%; margin-bottom: -6px; position: relative; z-index: 1; font-size: 9.5px; letter-spacing: 0.12em; color: var(--casco); text-shadow: 1px 1px 0 #000; }
+.barra .delta { position: absolute; right: 4%; top: 30%; font-weight: 700; font-size: 15px; opacity: 0; transition: opacity 0.3s; text-shadow: 1px 1px 0 #000; }
 .barra .delta.on { opacity: 1; }
-.barra.pulsa .ascii { animation: pulso 0.6s ease 2; }
+.barra.pulsa img { animation: pulso 0.6s ease 2; }
+.barra.z-rojo img { animation: alerta-barra 0.9s steps(2) infinite; }
+@keyframes alerta-barra { 50% { filter: brightness(1.5) drop-shadow(0 0 6px rgb(255, 80, 70)); } }
 @keyframes pulso { 50% { filter: brightness(1.8); } }
 .z-verde { color: var(--verde); } .z-amarillo { color: var(--ambar); } .z-rojo { color: var(--rojo); }
 .bueno { color: var(--verde); } .malo { color: var(--rojo); }
@@ -74,7 +93,7 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 #extra b { color: var(--ink); font-weight: 700; }
 
 /* cartas (arriba a la derecha) */
-.der { position: absolute; right: 16px; top: 64px; width: 262px; padding: 12px; box-sizing: border-box; }
+.der { position: absolute; right: 16px; top: 96px; width: 262px; padding: 12px; box-sizing: border-box; }
 #cartas { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
 .carta { text-align: left; background: rgba(20, 22, 50, 0.9); border: 1px solid var(--borde); color: var(--ink); padding: 5px 6px; min-height: 44px; cursor: pointer; font-size: 11px; line-height: 1.25; display: flex; flex-direction: column; gap: 2px; }
 .carta small { color: var(--dim); font-size: 10px; }
@@ -115,7 +134,7 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 .grande { font-size: 52px; font-weight: 700; letter-spacing: 0.12em; color: var(--crema); text-align: center; margin: 10px 0 0; }
 
 /* minijuegos (ventana central) */
-#mj { position: absolute; left: 294px; width: 692px; top: 64px; max-height: 642px; overflow: auto; padding: 14px 18px; box-sizing: border-box; }
+#mj { position: absolute; left: 294px; width: 692px; top: 96px; max-height: 610px; overflow: auto; padding: 14px 18px; box-sizing: border-box; }
 .mj { display: grid; gap: 10px; }
 .mj-cab { display: grid; gap: 4px; }
 .mj-tag { font-size: 11px; letter-spacing: 0.16em; color: var(--ambar); }
@@ -191,6 +210,37 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 .ctl.ancho output { color: var(--hielo); }
 #log { flex-basis: 100%; font-size: 11.5px; color: var(--faint); display: grid; gap: 1px; text-align: center; }
 #log div:last-child { color: var(--dim); }
+/* retratos que hablan: dos cuadros lado a lado en un jpg (img/personajes/) */
+.con-retrato { display: grid; grid-template-columns: 92px 1fr; gap: 14px; align-items: start; }
+.con-retrato > .cuerpo { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.retrato { width: 92px; height: 105px; background-size: 200% 100%; background-position: 0 0; image-rendering: pixelated; border: 2px solid var(--borde); box-sizing: border-box; background-color: #07070c; }
+.retrato.cientifica { background-image: url(img/personajes/cientifica.jpg); }
+.retrato.control { background-image: url(img/personajes/control-mision.jpg); }
+.retrato.boca { background-position: 100% 0; }
+.retrato-nombre { font-size: 10px; color: var(--dim); text-align: center; margin-top: 3px; letter-spacing: 0.06em; }
+/* bitácora: el libro abierto ocupa la pantalla */
+#bitacora { position: absolute; inset: 0; background: rgba(2, 3, 10, 0.78); display: grid; place-items: center; z-index: 5; }
+.bt-libro { position: relative; width: 1000px; aspect-ratio: 1056 / 708; background: url(img/hud/bitacora-libro.png) center / 100% 100% no-repeat; image-rendering: pixelated; color: rgb(40, 36, 64); margin-top: 30px; }
+.bt-pag { position: absolute; top: 7.5%; height: 82%; width: 36.5%; overflow: auto; font-size: 14px; line-height: 1.45; padding-right: 6px; }
+.bt-pag.izq-p { left: 5.5%; } .bt-pag.der-p { left: 57.5%; }
+.bt-pag p { margin: 0 0 9px; }
+.bt-tit { margin: 0 0 8px; font-size: 17px; color: rgb(60, 40, 120); border-bottom: 2px dashed rgba(60, 40, 120, 0.25); padding-bottom: 4px; }
+.bt-frase { font-size: 16px; font-weight: 700; color: rgb(150, 50, 70); }
+.bt-mini { font-size: 12px; color: rgb(110, 100, 130); }
+.bt-vacio { color: rgb(130, 120, 150); font-style: italic; }
+.bt-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.bt-item { width: 100%; text-align: left; background: rgba(60, 40, 120, 0.06); border: 1px solid rgba(60, 40, 120, 0.18); color: inherit; font: inherit; font-size: 13.5px; padding: 5px 8px; cursor: pointer; display: flex; justify-content: space-between; gap: 8px; }
+.bt-item small { color: rgb(120, 110, 140); font-size: 11px; }
+.bt-item.sel { background: rgba(60, 40, 120, 0.16); border-color: rgb(60, 40, 120); }
+.bt-item.bloq { opacity: 0.45; cursor: default; }
+.bt-datos { margin: 0 0 8px; padding-left: 18px; display: grid; gap: 4px; }
+.bt-datos a { color: rgb(40, 80, 170); }
+.bt-grafica { display: flex; align-items: flex-end; gap: 2px; height: 90px; border-bottom: 2px solid rgba(60, 40, 120, 0.3); margin-bottom: 6px; }
+.bt-grafica i { flex: 1; min-height: 3px; }
+.bt-pestanas { position: absolute; top: -34px; left: 6%; display: flex; gap: 6px; }
+.bt-pestanas button { font: 700 13px var(--mono); padding: 7px 12px 9px; border: 2px solid rgb(30, 28, 70); border-bottom: 0; background: rgb(48, 44, 110); color: var(--casco); cursor: pointer; }
+.bt-pestanas button[aria-pressed="true"] { background: rgb(253, 246, 226); color: rgb(60, 40, 120); }
+#bt-cerrar { position: absolute; top: -34px; right: 4%; font: 700 13px var(--mono); padding: 7px 12px; background: var(--crema); color: var(--negro); border: 0; cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .tag.alarma, .carta.nueva, .barra.pulsa .ascii, #stage.tiembla, .cable.mal { animation: none; } }
 </style>
 </head>
@@ -199,7 +249,12 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
   <div id="stage">
     <canvas id="juego" width="2560" height="1440" aria-label="G-NOSIS: la Luna y la base dibujadas en ASCII"></canvas>
     <div id="hud" hidden>
-      <div class="top panel"><div id="h-dia"></div><div id="h-track" aria-label="Días de la misión"></div></div>
+      <div class="top">
+        <div id="h-dia"><img src="img/hud/panel-dia.png" alt=""><span class="luna" aria-hidden="true"></span><span class="dia-txt"><small>DÍA</small><b id="h-num">00</b></span></div>
+        <div id="h-track" aria-label="Días de la misión"></div>
+        <button type="button" id="btn-bitacora" title="Bitácora: lo que has descubierto" aria-label="Abrir la bitácora"><img src="img/hud/bitacora-icono.png" alt=""><span id="bitacora-nuevos" hidden>0</span></button>
+      </div>
+      <div id="h-fase"></div>
       <aside class="izq panel" aria-label="Sistemas de la base">
         <h3><span>SISTEMAS</span></h3>
         <div id="barras"></div>
@@ -211,6 +266,16 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
         <p class="mini">Toca una carta para usarla. Escudo: frena la mitad del próximo daño a esa barra. Recurso: suma al instante.</p>
       </aside>
       <section id="consola" class="panel" aria-live="polite"></section>
+      <section id="bitacora" hidden aria-label="Bitácora">
+        <div class="bt-libro">
+          <div class="bt-pestanas" role="group" aria-label="Secciones">
+            <button type="button" data-sec="cartas">Cartas</button><button type="button" data-sec="informes">Informes</button><button type="button" data-sec="datos">Datos NASA</button><button type="button" data-sec="aprendido">Lo aprendido</button>
+          </div>
+          <button type="button" id="bt-cerrar">Cerrar ✕</button>
+          <div class="bt-pag izq-p" id="bt-izq"></div>
+          <div class="bt-pag der-p" id="bt-der"></div>
+        </div>
+      </section>
       <section id="mj" class="panel" aria-live="polite" hidden></section>
       <div id="toast" role="status"></div>
     </div>
@@ -250,6 +315,7 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 <script src="js/escenas.js"></script>
 <script src="js/apis.js"></script>
 <script src="js/minijuegos.js"></script>
+<script src="js/bitacora.js"></script>
 <script src="js/juego.js"></script>
 </body>
 </html>

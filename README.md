@@ -50,6 +50,24 @@ Notas (noviembre de 2026):
 
 La música de fondo se genera en el navegador con Web Audio (original, sin licencias externas). Las pistas mp3 son del equipo. Para cambiar qué eventos ponen la alarma, edita `peligroDe()` en `public/js/juego.js`.
 
+## Sprites del HUD
+Los originales están en `diseno/sprites/`. `herramientas/recortar-sprites.ps1` les quita el fondo, los recorta a PNG en `public/img/hud/` y mide en `sprites.json` dónde va cada segmento de las barras y el número del día. Si cambian una imagen, vuelvan a correrlo (PowerShell de Windows, sin instalar nada).
+
+| Sprite | Uso |
+|---|---|
+| `barra-salud / comida / energia / radiacion.png` | Barras de 10 segmentos; cada segmento vale 10 puntos y los apagados se oscurecen; parpadean en rojo |
+| `panel-dia.png` | Día de la misión; de noche (días 11-14) el sol cambia por una luna |
+| `bitacora-icono.png` | Botón de la bitácora, con contador de cosas nuevas |
+| `bitacora-libro.png` | Fondo de la bitácora abierta |
+| `img/personajes/cientifica.jpg`, `control-mision.jpg` | Retratos de la Dra. Ortiz y Control de Misión; alternan los dos cuadros mientras hablan |
+
+## Bitácora
+`public/js/bitacora.js`. Se llena sola y se guarda entre misiones (en el dispositivo):
+- **Cartas:** las 10, con su frase, para qué sirve, cuándo usarla y dónde se leyó.
+- **Informes:** lo que contó cada evento, con su fuente.
+- **Datos NASA:** llamaradas, CME y tormentas reales de DONKI (30 días), la radiación real de CRaTER (RadLab) y estudios reales de OSDR con enlace.
+- **Lo aprendido:** las explicaciones de Control de Misión (llamadas) y de la Dra. Ortiz (averías).
+
 ## Efectos de sonido
 `public/js/sfx.js`. Si el efecto tiene archivo, suena `public/audio/sfx/<nombre>.mp3`; si no, suena uno corto provisional generado en código. Para poner el suyo: guarden el mp3 con ese nombre en `public/audio/sfx/` y agreguen el nombre a `ARCHIVOS` en `sfx.js`.
 
@@ -57,7 +75,7 @@ La música de fondo se genera en el navegador con Web Audio (original, sin licen
 |---|---|---|
 | `limpiar-panel` | Limpiar el polvo de los paneles: en bucle mientras se arrastra | ✅ del equipo |
 | `rayon` | Limpiar: pasar dos veces y rayar el panel | provisional |
-| `cable-conectar` | Cables: conexión correcta | provisional |
+| `cable-conectar` | Cables: conexión correcta (el archivo trae 4 tomas; se usa una distinta cada vez) | ✅ del equipo |
 | `atrapar` / `caer` | Atrapar cajas o piezas / se cae una | provisional |
 | `paso` | Laberinto al refugio: cada paso | provisional |
 | `tapar` / `fuga-aire` | Tapar agujeros / se escapa el aire | provisional |

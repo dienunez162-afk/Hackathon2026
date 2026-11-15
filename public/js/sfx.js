@@ -11,7 +11,13 @@
 (() => {
   "use strict";
   // efectos que ya tienen archivo grabado por el equipo
-  const ARCHIVOS = ["limpiar-panel"];
+  const ARCHIVOS = ["limpiar-panel", "cable-conectar"];
+  // archivos con varias tomas separadas por silencio: [inicio, fin] en segundos.
+  // Cada vez que suena se usa la siguiente toma, para que no se oiga siempre igual.
+  const TOMAS = {
+    "cable-conectar": [[0.45, 1.3], [2.4, 4.1], [5.0, 6.7], [8.2, 9.2]],
+  };
+  const turno = {};
   const VOL = 0.55;
 
   const listo = () => typeof musicaIniciada === "undefined" || musicaIniciada;   // el navegador pide un toque antes de sonar
@@ -19,14 +25,34 @@
 
   // ---------- archivos ----------
   const audios = {};
-  for (const n of ARCHIVOS) { const a = new Audio(`audio/sfx/${n}.mp3`); a.preload = "auto"; a.volume = VOL; audios[n] = a; }
+  for (const n of ARCHIVOS.filter((x) => !TOMAS[x])) { const a = new Audio(`audio/sfx/${n}.mp3`); a.preload = "auto"; a.volume = VOL; audios[n] = a; }
 
   // ---------- provisionales generados (Web Audio) ----------
   let ac = null;
-  function ctx() {
+  function crearAC() {
     if (!ac) { const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; ac = new AC(); }
-    if (ac.state === "suspended") ac.resume().catch(() => {});
     return ac;
+  }
+  function ctx() {
+    const c = crearAC();
+    if (c && c.state === "suspended") c.resume().catch(() => {});
+    return c;
+  }
+  // los archivos con varias tomas se decodifican una vez y se toca solo el pedazo de cada toma
+  const buffers = {};
+  for (const n of Object.keys(TOMAS)) {
+    fetch(`audio/sfx/${n}.mp3`).then((r) => r.arrayBuffer())
+      .then((b) => new Promise((ok, mal) => { const c = crearAC(); if (!c) return mal(); c.decodeAudioData(b, ok, mal); }))
+      .then((buf) => { buffers[n] = buf; }).catch(() => {});
+  }
+  function tocarToma(nombre) {
+    const c = ctx(), buf = buffers[nombre], tomas = TOMAS[nombre];
+    if (!c || !buf) return false;
+    const k = (turno[nombre] = ((turno[nombre] ?? -1) + 1) % tomas.length), [ini, fin] = tomas[k];
+    const s = c.createBufferSource(), g = c.createGain();
+    s.buffer = buf; g.gain.value = VOL; s.connect(g); g.connect(c.destination);
+    s.start(c.currentTime + 0.01, ini, fin - ini);
+    return true;
   }
   function tono(c, t, f0, f1, dur, tipo, vol) {
     const o = c.createOscillator(), g = c.createGain();
@@ -69,8 +95,13 @@
     tieneArchivo: (n) => ARCHIVOS.includes(n),
     play(nombre) {
       if (!listo() || mudo()) return;
-      const a = audios[nombre];
-      if (a) { const c = a.paused ? a : a.cloneNode(); c.volume = VOL; c.currentTime = 0; const p = c.play(); if (p) p.catch(() => {}); return; }
+      if (TOMAS[nombre]) { if (tocarToma(nombre)) return; }   // una sola toma del archivo
+      const a = TOMAS[nombre] ? null : audios[nombre];
+      if (a) {
+        const c = a.paused ? a : a.cloneNode(); c.volume = VOL; c.currentTime = 0;
+        const p = c.play(); if (p) p.catch(() => {});
+        return;
+      }
       const f = SINT[nombre], c = f && ctx();
       if (c) f(c, c.currentTime + 0.01);
     },
