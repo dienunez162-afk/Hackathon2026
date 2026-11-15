@@ -20,7 +20,8 @@
 
   // ---------- diccionario ----------
   // palabras sueltas del panel del equipo que el extractor no alcanza a ver (vienen de claves internas)
-  const EXTRA = { despensa: "pantry", agotado: "exhausted", "Datos:": "Data:" };
+  const EXTRA = { despensa: "pantry", agotado: "exhausted", "Datos:": "Data:", conectado: "connected", "sin configurar": "not set up",
+    "llave rechazada": "key rejected", "sin conexión": "offline", "revisando…": "checking…" };
   const D = Object.assign({}, EXTRA, window.I18N_EN || {});
   const exacto = new Map(), patrones = [], fragmentos = [], palabras = new Map();
   const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

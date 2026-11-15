@@ -95,7 +95,9 @@
     $("o-hab").textContent = Math.round(ui.hab * 100) + "%";
     $("o-comp").textContent = Math.round(ui.comp * 100) + "%";
     $("c-apis").textContent = `DONKI: ${APIS.estado.donki} · RadLab: ${APIS.estado.radlab} · OSDR: ${APIS.estado.osdr}`;
+    if (window.GNOSIS_SUPABASE) $("c-apis").textContent += ` · Supabase: ${GNOSIS_SUPABASE.estado}`;
   }
+  if (window.GNOSIS_SUPABASE) GNOSIS_SUPABASE.alCambiar(() => pintarCtl());
   ctrl.addEventListener("click", (e) => {
     const b = e.target.closest("button");
     if (!b) return;

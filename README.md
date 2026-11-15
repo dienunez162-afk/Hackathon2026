@@ -17,6 +17,12 @@ Parámetros de prueba: `?auto=1&vel=4` juega solo; `?final=apagon` abre un final
 1. El dueño del repo (dienunez162-afk) entra a vercel.com/new, conecta su GitHub e importa Hackathon2026 (o lo agrega al equipo DAW). Solo el dueño puede darle a Vercel acceso al repo. `vercel.json` ya define el build (`node scripts/generar-datos.mjs`) y la carpeta `public`.
 2. En Settings > Environment Variables, pon las variables de `.env.example`.
 
+## Supabase (modo Salón)
+- Variables en Vercel (Settings › Environment Variables, en todos los entornos, y luego *Redeploy*): `SUPABASE_URL`, `SUPABASE_ANON_KEY` (la publishable, `sb_publishable_...`) y `DOMINIO_ALUMNOS`.
+- El juego las lee en `/api/config` (`api/config.js`), que solo publica la URL y la llave pública; si alguien pone la llave secreta por error, se niega a mandarla.
+- `public/js/supabase.js` prueba la conexión al cargar. El estado se ve en «herramientas del equipo» › Datos: `Supabase: conectado`, `sin configurar` o `llave rechazada`.
+- La secret / service role key y la contraseña de la base nunca van en Vercel ni en el repo.
+
 ## APIs de la NASA
 El navegador llama a `/api/*` (funciones de Vercel) y nunca directo a la NASA. Las llaves, si las hay, solo viven en variables de entorno.
 
