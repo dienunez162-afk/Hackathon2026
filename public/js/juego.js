@@ -411,19 +411,21 @@
 
   // ---------- HUD ----------
   // barras con sprites (img/hud/barra-*.png, 760x160): 10 segmentos, cada uno vale 10 puntos.
-  // Posición de los segmentos medida por herramientas/recortar-sprites.ps1 (img/hud/sprites.json).
+  // Debajo va la barra vacía (barra-*-vacia.png, de herramientas/barras-vacias.py) y encima la llena,
+  // recortada justo en el hueco entre dos segmentos: así los apagados se ven completos y sin rayitas.
+  // Los segmentos empiezan en x = 180 + 45·k (img/hud/sprites.json); el hueco está 2.5 px antes.
   const ORDEN_BARRAS = ["salud", "comida", "energia", "radiacion"];
-  const SEG_X = Array.from({ length: 10 }, (_, k) => 180 + 45 * k), SPRITE_W = 760;
+  const SPRITE_W = 760, corteBarra = (n) => (n >= 10 ? 0 : (100 * (SPRITE_W - (177.5 + 45 * n)) / SPRITE_W).toFixed(2));
   function crearBarras() {
     $("barras").innerHTML = ORDEN_BARRAS.map((b) => `<div class="barra" data-b="${b}" role="meter" aria-label="${MAYUS[b]}" aria-valuemin="0" aria-valuemax="100">` +
-      `<span class="lbl">${MAYUS[b]}${b === "radiacion" ? " · BAJA = MEJOR" : ""}</span><div class="marco"><img src="img/hud/barra-${b}.png" alt="">` +
-      SEG_X.map((x) => `<span class="seg" style="left:${(100 * x / SPRITE_W).toFixed(2)}%"></span>`).join("") + `<span class="delta"></span></div></div>`).join("");
+      `<span class="lbl">${MAYUS[b]}${b === "radiacion" ? " · BAJA = MEJOR" : ""}</span><div class="marco"><img class="vacia" src="img/hud/barra-${b}-vacia.png" alt="">` +
+      `<img class="llena" src="img/hud/barra-${b}.png" alt=""><span class="delta"></span></div></div>`).join("");
     pintarBarras();
   }
   function pintarBarras() {
     for (const b of BARRAS) {
       const el = $("barras").querySelector(`[data-b="${b}"]`), v = J.st[b], z = zona(b, v), encendidos = Math.ceil(v / 10);
-      el.querySelectorAll(".seg").forEach((s, k) => s.classList.toggle("off", k >= encendidos));
+      el.querySelector(".llena").style.clipPath = `inset(0 ${corteBarra(encendidos)}% 0 0)`;
       el.classList.toggle("z-rojo", z === "rojo");
       el.setAttribute("aria-valuenow", String(v));
       el.title = `${MAYUS[b]}: ${v} de 100`;
@@ -479,9 +481,25 @@
     }
     pintarEquipo();
   }
+  // menú de cartas retráctil: un botón arriba a la derecha lo abre y lo cierra
+  function abrirCartas(abrir) {
+    const p = $("panel-cartas"), b = $("btn-cartas");
+    p.hidden = !abrir; b.setAttribute("aria-expanded", String(abrir));
+    if (abrir) b.classList.remove("nueva");
+  }
+  $("btn-cartas").addEventListener("click", () => abrirCartas($("panel-cartas").hidden));
+  $("cerrar-cartas").addEventListener("click", () => abrirCartas(false));
+  document.addEventListener("pointerdown", (e) => {
+    if (!$("panel-cartas").hidden && !e.target.closest("#panel-cartas, #btn-cartas")) abrirCartas(false);
+  });
+  // Escape cierra las cartas primero (en captura, para que no regrese al menú)
+  window.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("panel-cartas").hidden) { e.stopImmediatePropagation(); abrirCartas(false); } }, true);
   function pintarCartas(nueva) {
     const temas = Object.keys(R.temas);
     $("n-cartas").textContent = Object.keys(J.cartas).length + " / " + temas.length;
+    $("n-cartas-btn").textContent = Object.keys(J.cartas).length + " / " + temas.length;
+    $("btn-cartas").classList.toggle("armada", Object.values(J.cartas).some((c) => c.armada && !c.usada));
+    if (nueva && $("panel-cartas").hidden) { const b = $("btn-cartas"); b.classList.remove("nueva"); void b.offsetWidth; b.classList.add("nueva"); }
     $("cartas").innerHTML = temas.map((t) => {
       const c = J.cartas[t], k = R.temas[t].carta, u = k.uso;
       if (!c) return `<button type="button" class="carta bloq" disabled aria-label="Carta sin descubrir">???<small>sin descubrir</small></button>`;
@@ -507,14 +525,8 @@
     }
     pintarCartas(); pintarExtra();
   }
+  // panel del día (la tira de días 0-14 se quitó: repetía lo mismo que el panel)
   function pintarTrack() {
-    let h = "";
-    for (let d = 0; d <= 14; d++) {
-      const m = J.marcas[d] || {};
-      const cls = ["dia", d >= 11 ? "noche" : "", d < J.dia ? "pasado" : "", d === J.dia ? "hoy" : ""].join(" ");
-      h += `<span class="${cls}" title="Día ${d}">${d}${m.ll ? '<i class="ll"></i>' : ""}${m.av ? '<i class="av"></i>' : ""}${m.ev ? '<i class="ev"></i>' : ""}</span>`;
-    }
-    $("h-track").innerHTML = h;
     $("h-num").textContent = String(J.dia).padStart(2, "0");
     $("h-dia").classList.toggle("noche", J.dia >= 11);
     $("h-dia").title = `Día ${J.dia} de 14`;
@@ -591,10 +603,47 @@
   }
   const MOTIVO = { evento: "¡Algo pasa en", tarea: "Tu tarea de hoy es en", decision: "Te esperan en", control_mision: "Control de Misión te llama desde", calma: "Ve a" };
 
+  // ---------- antes de cada minijuego: instrucciones cortas + demo animada (img/minijuegos/<tipo>.gif) ----------
+  // Las demos se generan con herramientas/generar-demos-minijuegos.py
+  const TITULO_MJ = {
+    cables: "Conecta los cables", limpiar: "Limpia el polvo", atrapar: "¡Atrapa lo que se cae!", laberinto: "¡Corre al refugio!",
+    tapar: "¡Tapa los agujeros!", secuencia: "Hazlo en orden", ajustar: "Ajusta el medidor", buscar: "Busca y toca",
+    grafica: "Lee los datos del Sol", rover: "Busca hielo con el rover", energia: "Cae la noche: reparte la energía", quiz: "Mensaje especial de la Tierra",
+  };
+  const BUSCAR_QUE = { enfermas: "las plantas enfermas (@)", maduras: "las plantas listas para cosechar", fuga: "las fugas de agua" };
+  const COMO_SE_JUEGA = {
+    cables: () => ["Toca un cable de la izquierda.", "Luego toca el del mismo color a la derecha.", "¡Conéctalos todos!"],
+    limpiar: () => ["Pasa el dedo o el ratón sobre el panel.", "Cada cuadro se limpia con una pasada.", "No pases dos veces: ¡se raya!"],
+    atrapar: (s) => ["Mueve la plataforma con ← → o tocando un carril.", `Atrapa cada ${s.objeto || "cosa"} que cae.`],
+    laberinto: (s) => ["Muévete con las flechas o tocando una casilla vecina.", "Llega a la R antes de que se acabe el tiempo."].concat(s.oscuro ? ["Está oscuro: solo ves cerca de ti."] : []),
+    tapar: () => ["Toca cada agujero en cuanto aparezca.", "¡Rápido, antes de que se escape el aire!"],
+    secuencia: () => ["Toca los pasos en el orden correcto.", "Empieza por el primero."],
+    ajustar: () => ["Usa − y + (o ← →) para mover la aguja.", "Mantenla en la zona verde hasta llenar la barra."],
+    buscar: (s) => [`Toca solo ${BUSCAR_QUE[s.objetivo] || "lo que buscas"}.`, "¡No toques las demás!"],
+    grafica: (s) => (s.modo === "radiacion" ? ["Cada barra es un día de radiación.", "La última es hoy: ¿es seguro salir?"] : ["Lee las alertas del Sol.", "Decide cuándo tener listo el refugio."]),
+    rover: (s) => ["Mueve el rover con las flechas.", "El radar te dice si el hielo está cerca."].concat(s.guia ? ["Sigue la flecha de Control de Misión."] : ["¡Cuida la batería!"]),
+    energia: () => ["Apaga lo que no necesitas.", "Cuando la barra quede en verde, confirma."],
+    quiz: () => ["Lee la carta.", "Elige cuándo sirve."],
+  };
+  async function comoSeJuega(spec) {
+    const pasos = (COMO_SE_JUEGA[spec.tipo] || (() => []))(spec);
+    const titulo = spec.titulo || (spec.tipo === "grafica" && spec.modo === "radiacion" ? "Lee el medidor de radiación" : TITULO_MJ[spec.tipo] || "Minijuego");
+    $mj.innerHTML = `<div class="mj mj-intro"><div class="mj-cab"><span class="mj-tag">MINIJUEGO · ASÍ SE JUEGA</span><h3 class="mj-tit">${esc(titulo)}</h3></div>` +
+      `<div class="mj-demo"><img src="img/minijuegos/${spec.tipo}.gif" alt="Demostración: así se juega ${esc(titulo)}">` +
+      `<ol class="mj-pasos">${pasos.map((p) => `<li>${esc(p)}</li>`).join("")}</ol></div><div class="ops" id="mj-ops"></div></div>`;
+    voz(titulo + ". " + pasos.join(" "));
+    // Enter también empieza (durante el minijuego el teclado es del juego)
+    const enter = (e) => { if (e.key === "Enter") { const b = $mj.querySelector("#mj-ops .op.prim:not([disabled])"); if (b) { e.preventDefault(); b.click(); } } };
+    window.addEventListener("keydown", enter);
+    try { await continuar($mj.querySelector("#mj-ops"), "¡Empezar! ▸", 2600); } finally { window.removeEventListener("keydown", enter); }
+  }
+
   async function minijuego(n, spec) {
     const t = tok;
     J.enMinijuego = true; $c.hidden = true; $mj.hidden = false;
     $mj.className = "panel tema-" + temaActual;
+    try { await comoSeJuega(spec); } catch (e) { J.enMinijuego = false; throw e; }
+    if (t !== tok) { J.enMinijuego = false; throw ABORT; }
     const todas = Object.values(R.temas).map((x) => x.carta);
     let r;
     try {
