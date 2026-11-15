@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel del maestro · G-NOSIS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  :root { --fondo: #eef1f4; --tinta: #16202e; --tenue: #4f5b6b; --linea: #d3d9e0; --naranja: #c8650b; --azul: #2f6fce; --verde: #2e8b57; --rojo: #a3352b; --blanco: #fff; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fondo); color: var(--tinta); font: 15px/1.5 Inter, system-ui, sans-serif; }
+  a { color: #a8520a; } a:hover { color: #7a3b06; }
+  button, select, input { font: inherit; }
+  button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--naranja); outline-offset: 2px; }
+  .pagina { max-width: 1360px; margin: 0 auto; padding: 32px 24px 56px; display: flex; flex-direction: column; gap: 28px; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .sobre { font: 12px 'JetBrains Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: #a8520a; }
+  h1 { margin: 0; font: 700 44px/1.05 'Barlow Semi Condensed', sans-serif; }
+  h2 { margin: 0; font: 600 24px 'Barlow Semi Condensed', sans-serif; }
+  h3 { margin: 0; font: 700 32px 'Barlow Semi Condensed', sans-serif; }
+  p { margin: 0; }
+  .sub { color: var(--tenue); font-size: 14px; }
+  header.top { display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: flex-end; justify-content: space-between; }
+  .acciones { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .btn { color: var(--tinta); background: var(--blanco); border: 1px solid #c9d1db; border-radius: 8px; padding: 10px 16px; min-height: 44px; font-weight: 600; cursor: pointer; }
+  .btn.prim { color: #fff; background: var(--tinta); border: 0; }
+  .btn.peligro { color: var(--rojo); border-color: #e3b7b2; }
+  .btn.chico { min-height: 36px; padding: 6px 12px; font-size: 14px; }
+  .aviso { padding: 10px 14px; border-radius: 8px; background: #fbe9d7; color: #5c2e05; font-size: 14px; }
+  .aviso.ok { background: #dff1e6; color: #14532d; } .aviso.mal { background: #f9dedb; color: #7a1f17; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+  .kpi, .caja { background: var(--blanco); border: 1px solid var(--linea); border-radius: 10px; padding: 16px; }
+  .caja { padding: 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .kpi { display: flex; flex-direction: column; gap: 4px; }
+  .kpi .n { font: 700 36px/1.1 'Barlow Semi Condensed', sans-serif; font-variant-numeric: tabular-nums; }
+  .kpi span:not(.n) { font-size: 13px; color: var(--tenue); }
+  .fila { display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch; }
+  .fila > .caja:first-child { flex: 999 1 560px; } .fila > .caja:last-child { flex: 1 1 360px; }
+  .leyenda { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 13px; color: var(--tenue); }
+  .leyenda i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; margin-right: 6px; vertical-align: -1px; }
+  .barras { display: flex; gap: 12px; align-items: flex-end; height: 200px; padding: 0 4px; border-bottom: 1px solid #c9d1db; }
+  .grupo-b { flex: 1 1 0; min-width: 0; display: flex; gap: 5px; align-items: flex-end; justify-content: center; height: 100%; }
+  .col { display: flex; flex-direction: column; align-items: center; gap: 4px; justify-content: flex-end; height: 100%; }
+  .col .v { font: 12px 'JetBrains Mono', monospace; } .col .b { width: 24px; border-radius: 4px 4px 0 0; }
+  .etiquetas { display: flex; gap: 12px; padding: 0 4px; } .etiquetas span { flex: 1 1 0; text-align: center; font-size: 13px; color: var(--tenue); }
+  .reforzar { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid #e3e8ee; }
+  .reforzar .cab { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+  .progreso { height: 8px; background: #e3e8ee; border-radius: 4px; overflow: hidden; } .progreso > div { height: 8px; }
+  .tabla { overflow-x: auto; }
+  .tabla .in { min-width: 1080px; display: flex; flex-direction: column; gap: 4px; }
+  .tr { display: grid; grid-template-columns: 150px 60px 60px 64px 64px repeat(10, minmax(0, 1fr)); gap: 4px; align-items: center; border-radius: 6px; padding: 2px 0; }
+  .tr.cab { font-size: 12px; color: var(--tenue); align-items: end; } .tr.cab span:nth-child(n+6) { text-align: center; }
+  .tr.sel { background: #fdf1e4; }
+  .tr button.nom { text-align: left; background: transparent; border: 0; padding: 8px 6px; min-height: 36px; font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: #c9d1db; }
+  .num { font: 13px 'JetBrains Mono', monospace; }
+  .celda { height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 5px; font: 12px 'JetBrains Mono', monospace; border: 1px solid transparent; }
+  .gradiente { display: inline-block; width: 120px; height: 10px; border-radius: 3px; background: linear-gradient(90deg, hsl(212 65% 96%), hsl(212 65% 58%)); }
+  .detalle { flex: 1 1 340px; }
+  .bloque { display: flex; flex-direction: column; gap: 6px; padding: 12px; border-radius: 8px; background: #f3f6f9; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 8px; border: 1px solid var(--linea); border-radius: 8px; min-width: 52px; font-size: 13px; }
+  .chip small { font: 11px 'JetBrains Mono', monospace; color: var(--tenue); }
+  .mets { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .met { border: 1px solid #e3e8ee; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 2px; } .met b { font: 700 26px 'Barlow Semi Condensed', sans-serif; } .met span { font-size: 12px; color: var(--tenue); }
+  .pend { border-left: 3px solid var(--naranja); padding: 4px 0 4px 10px; display: flex; flex-direction: column; gap: 2px; }
+  .glosario { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px 24px; font-size: 14px; color: #33404f; }
+  .solicitud { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; padding: 10px 12px; border: 1px solid var(--linea); border-radius: 8px; }
+  .form { max-width: 420px; margin: 8vh auto; display: flex; flex-direction: column; gap: 14px; }
+  .form label { display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: var(--tenue); }
+  .form input, .sel { padding: 10px 12px; border: 1px solid #c9d1db; border-radius: 8px; background: #fff; color: var(--tinta); }
+  .temp { font: 600 22px 'JetBrains Mono', monospace; letter-spacing: .08em; padding: 10px 14px; background: #fff7e8; border: 2px dashed var(--naranja); border-radius: 8px; text-align: center; }
+  .vacio { padding: 28px; text-align: center; color: var(--tenue); }
+  @media print { .acciones, .btn { display: none !important; } body { background: #fff; } }
+</style>
+</head>
+<body>
+<div id="app"><p class="vacio">Cargando…</p></div>
+<script src="js/datos.js"></script>
+<script src="js/config.js"></script>
+<script>
+(function () {
+  "use strict";
+  const C = window.GNOSIS_CONFIG || {};
+  const R = window.RETOS || { temas: {}, situaciones: [], averias: [] };
+  const PD = window.PREGUNTAS_DATOS || { banco: [] };
+  const app = document.getElementById("app");
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const TEMAS = Object.keys(R.temas);
+  const NOMBRE = Object.fromEntries(TEMAS.map((t) => [t, R.temas[t].nombre]));
+  const CORTO = { radiacion: "Radiación", polvo_lunar: "Polvo", sismos: "Sismos", micrometeoritos: "Micromet.", noche_lunar: "Noche", hielo_agua: "Hielo", invernadero: "Cultivo", agua_reciclaje: "Agua", energia_solar: "Energía", salud_astronauta: "Salud" };
+  const SUGERENCIA = {
+    radiacion: "Actividad: pidan a los niños que dibujen un refugio y expliquen qué materiales frenan mejor «partículas» (una sombrilla, un muro, una pared de libros).",
+    polvo_lunar: "Actividad: comparen arena de río con vidrio molido (en foto) y expliquen por qué en la Luna el polvo no se desgasta.",
+    sismos: "Actividad: sobre una mesa, construyan torres de bloques y prueben cuál resiste mejor unas sacudidas suaves.",
+    micrometeoritos: "Actividad: lancen bolitas de papel contra un cartón con una capa extra y vean cuántas «pasan».",
+    noche_lunar: "Actividad: con una lámpara y un termómetro, midan cuánto se enfría un objeto al apagar la luz.",
+    hielo_agua: "Actividad: dejen hielo al sol y a la sombra y comparen cuánto tarda en derretirse; platiquen por qué el hielo de los cráteres se conserva.",
+    invernadero: "Actividad: siembren una semilla en clase, midan el agua que usa y vean qué pasa si se riega de más.",
+    agua_reciclaje: "Actividad: filtren agua turbia con arena y algodón, y platiquen por qué en la base casi toda el agua se reutiliza.",
+    energia_solar: "Actividad: con una lámpara y una calculadora solar, prueben qué pasa al inclinar el panel.",
+    salud_astronauta: "Actividad: anoten cuántas horas duermen y compárenlo con las 8 horas y media de los astronautas.",
+  };
+  const MJ_TIPOS = ["situacion", "averia", "pregunta"];
+
+  let sb = null, usuario = null, perfil = null;
+  let grupos = [], grupoId = null, datos = null, sel = null, mensaje = null, claveTemp = null, cargando = false;
+
+  // ---------- Supabase ----------
+  function cargarLib() {
+    return new Promise((res, rej) => {
+      if (window.supabase) return res();
+      const s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"; s.crossOrigin = "anonymous";
+      s.onload = res; s.onerror = () => rej(new Error("No se pudo cargar Supabase (¿hay internet?)."));
+      document.head.appendChild(s);
+    }).then(() => { sb = window.supabase.createClient(C.url, C.anon, { auth: { persistSession: true, autoRefreshToken: true } }); });
+  }
+  async function todo(tabla, seleccion, filtro) {          // pagina de 1000 en 1000 (el límite de PostgREST)
+    let filas = [], desde = 0;
+    for (;;) {
+      let q = sb.from(tabla).select(seleccion).range(desde, desde + 999);
+      if (filtro) q = filtro(q);
+      const { data, error } = await q; if (error) throw error;
+      filas = filas.concat(data); if (data.length < 1000) break; desde += 1000;
+    }
+    return filas;
+  }
+  const amable = (e) => {
+    const m = String((e && e.message) || e);
+    if (/Invalid login/i.test(m)) return "El correo o la contraseña no son correctos.";
+    if (/already registered/i.test(m)) return "Ese correo ya tiene una cuenta.";
+    if (/Password should/i.test(m)) return "La contraseña debe tener al menos 6 caracteres.";
+    if (/PGRST202|Could not find the function/i.test(m)) return "Esta función todavía no existe en la base de datos: falta correr la migración 0006 en Supabase (se lo pasas a quien administra el proyecto).";
+    return m;
+  };
+
+  // ---------- cálculos ----------
+  const pct = (a, b) => (b ? Math.round((100 * a) / b) : null);
+  const txt = (p) => (p == null ? "—" : p + "%");
+  function metricas(rs) {
+    const sit = rs.filter((r) => r.tipo === "situacion"), ave = rs.filter((r) => r.tipo === "averia"), man = rs.filter((r) => r.tipo === "manual"), pre = rs.filter((r) => r.tipo === "pregunta");
+    const dif = sit.filter((r) => r.origen === "partida_pasada");
+    const retos = rs.filter((r) => MJ_TIPOS.includes(r.tipo));
+    return {
+      prediccion: pct(sit.filter((r) => r.prediccion_correcta === true).length, sit.filter((r) => r.prediccion_correcta != null).length),
+      accion: pct(sit.filter((r) => r.accion_correcta).length, sit.length),
+      diagnostico: pct(ave.filter((r) => r.accion_correcta).length, ave.length),
+      manual: pct(man.reduce((a, r) => a + (r.aciertos || 0), 0), man.reduce((a, r) => a + (r.total || 0), 0)),
+      preguntas: pct(pre.filter((r) => r.accion_correcta).length, pre.length),
+      diferida: pct(dif.filter((r) => r.accion_correcta).length, dif.length),
+      retos: retos.length, total: pct(retos.filter((r) => r.accion_correcta).length, retos.length),
+    };
+  }
+  function calcular() {
+    const { alumnos, partidas, respuestas, ajustes } = datos;
+    const porAlumno = new Map(alumnos.map((a) => [a.id, { a, partidas: [], rs: [], ajustes: 0 }]));
+    const numeroDe = new Map(partidas.map((p) => [p.id, p.numero]));
+    for (const p of partidas) if (porAlumno.has(p.alumno_id)) porAlumno.get(p.alumno_id).partidas.push(p);
+    for (const r of respuestas) if (porAlumno.has(r.alumno_id)) { r.numero = numeroDe.get(r.partida_id); porAlumno.get(r.alumno_id).rs.push(r); }
+    for (const x of ajustes) if (porAlumno.has(x.alumno_id)) porAlumno.get(x.alumno_id).ajustes++;
+    const filas = [...porAlumno.values()].sort((x, y) => x.a.alias.localeCompare(y.a.alias)).map((f) => {
+      f.partidas.sort((p, q) => p.numero - q.numero);
+      f.m = metricas(f.rs);
+      f.temas = TEMAS.map((t) => { const r = f.rs.filter((x) => x.tema === t && MJ_TIPOS.includes(x.tipo)); return pct(r.filter((x) => x.accion_correcta).length, r.length); });
+      // repasos pendientes: el último reto del tema falló
+      const ult = new Map();
+      for (const r of f.rs.filter((x) => MJ_TIPOS.includes(x.tipo) && x.tema).sort((p, q) => String(p.creado_en).localeCompare(String(q.creado_en)))) ult.set(r.tema, r);
+      f.pend = [...ult.values()].filter((r) => !r.accion_correcta);
+      return f;
+    });
+    const grupo = metricas(respuestas.filter((r) => porAlumno.has(r.alumno_id)));
+    const tendencia = [1, 2, 3, 4, 5].map((k) => {
+      const rs = respuestas.filter((r) => r.numero === k);
+      const sit = rs.filter((r) => r.tipo === "situacion"), ave = rs.filter((r) => r.tipo === "averia"), pre = rs.filter((r) => r.tipo === "pregunta");
+      return { k, n: sit.length + ave.length + pre.length, acc: pct(sit.filter((r) => r.accion_correcta).length, sit.length), dia: pct(ave.filter((r) => r.accion_correcta).length, ave.length), pre: pct(pre.filter((r) => r.accion_correcta).length, pre.length) };
+    }).filter((t) => t.n > 0);
+    const temas = TEMAS.map((t) => { const r = respuestas.filter((x) => x.tema === t && MJ_TIPOS.includes(x.tipo)); return { t, n: r.length, p: pct(r.filter((x) => x.accion_correcta).length, r.length) }; });
+    return { filas, grupo, tendencia, temas, nPartidas: partidas.length };
+  }
+  const celda = (p) => p == null ? { txt: "—", bg: "#f1f4f7", fg: "#4f5b6b", borde: "1px solid #e3e8ee" } : { txt: p + "%", bg: `hsl(212 65% ${Math.round(96 - 0.38 * p)}%)`, fg: "#16202e", borde: p < 50 ? "2px solid #c8650b" : "1px solid transparent" };
+
+  // ---------- carga de datos del grupo ----------
+  async function cargarGrupos() {
+    const { data, error } = await sb.from("grupos").select("id,nombre,escuela,grado,codigo").order("creado_en", { ascending: true });
+    if (error) throw error;
+    grupos = data; if (!grupos.some((g) => g.id === grupoId)) grupoId = grupos.length ? grupos[0].id : null;
+  }
+  async function cargarDatos() {
+    datos = null; sel = null;
+    if (!grupoId) return;
+    const alumnos = await todo("alumnos", "id,alias,nivel_inicial,nivel_reto,nivel_lectura", (q) => q.eq("grupo_id", grupoId));
+    const ids = alumnos.map((a) => a.id);
+    const solicitudes = await todo("solicitudes_clase", "id,estado,alumno_id,creada_en,alumnos(alias)", (q) => q.eq("grupo_id", grupoId).eq("estado", "pendiente"));
+    let partidas = [], respuestas = [], ajustes = [];
+    if (ids.length) {
+      partidas = await todo("partidas", "id,alumno_id,numero,final,estrellas,nivel_reto,nivel_lectura,cartas_manual,terminada_en", (q) => q.in("alumno_id", ids));
+      respuestas = await todo("respuestas", "alumno_id,partida_id,tipo,reto_id,tema,prediccion_correcta,accion_correcta,origen,intentos,aciertos,total,creado_en", (q) => q.in("alumno_id", ids));
+      ajustes = await todo("ajustes_nivel", "alumno_id", (q) => q.in("alumno_id", ids)).catch(() => []);
+    }
+    datos = { alumnos, partidas, respuestas, ajustes, solicitudes };
+    datos.c = calcular();
+    if (datos.c.filas.length) sel = datos.c.filas[0].a.id;
+  }
+
+  // ---------- pantallas ----------
+  function pintarEntrada(modo) {
+    const crear = modo === "crear";
+    app.innerHTML = `<form class="form" id="f-entrada"><span class="sobre">G-NOSIS · Panel del maestro</span><h1 style="font-size:34px">${crear ? "Crear cuenta de maestro" : "Entrar"}</h1>
+      ${C.url ? "" : '<p class="aviso mal">Supabase no está configurado en este sitio (falta <code>js/config.js</code>).</p>'}
+      ${mensaje ? `<p class="aviso ${mensaje.mal ? "mal" : "ok"}" role="status">${esc(mensaje.mal || mensaje.ok)}</p>` : ""}
+      ${crear ? '<label>Tu nombre (como lo verán tus alumnos)<input id="e-nombre" required maxlength="60"></label>' : ""}
+      <label>Correo<input id="e-correo" type="email" required autocomplete="username"></label>
+      <label>Contraseña<input id="e-clave" type="password" required minlength="6" autocomplete="${crear ? "new-password" : "current-password"}"></label>
+      <button class="btn prim" type="submit">${crear ? "Crear cuenta" : "Entrar"}</button>
+      <button class="btn" type="button" id="e-cambiar">${crear ? "Ya tengo cuenta" : "Soy maestro y no tengo cuenta"}</button>
+      <p class="sub">Los niños no entran aquí: ellos juegan en <a href="./">G-NOSIS</a> y piden unirse a tu clase con el código.</p></form>`;
+    document.getElementById("e-cambiar").onclick = () => { mensaje = null; pintarEntrada(crear ? "entrar" : "crear"); };
+    document.getElementById("f-entrada").onsubmit = async (e) => {
+      e.preventDefault(); mensaje = null;
+      const correo = document.getElementById("e-correo").value.trim(), clave = document.getElementById("e-clave").value;
+      try {
+        if (crear) {
+          const { data, error } = await sb.auth.signUp({ email: correo, password: clave, options: { data: { rol: "maestro", nombre: document.getElementById("e-nombre").value.trim() } } });
+          if (error) throw error; if (!data.session) throw new Error("La cuenta se creó pero Supabase pide confirmar el correo.");
+        } else { const { error } = await sb.auth.signInWithPassword({ email: correo, password: clave }); if (error) throw error; }
+        await iniciar();
+      } catch (err) { mensaje = { mal: amable(err) }; pintarEntrada(modo); }
+    };
+  }
+
+  function pintarPanel() {
+    const g = grupos.find((x) => x.id === grupoId), D = datos, c = D && D.c;
+    let h = `<div class="pagina"><header class="top"><div style="display:flex;flex-direction:column;gap:6px;min-width:0"><span class="sobre">G-NOSIS · Panel del maestro · ${esc(perfil.nombre)}</span>
+      <h1>${g ? esc(g.nombre) : "Sin grupos todavía"}</h1>
+      <p class="sub">${g ? `${esc(g.escuela || "")}${g.escuela ? " · " : ""}${g.grado}° grado · nivel inicial ${nivelInicial(g.grado)} · ${c ? c.filas.length : 0} alumnos · Código de la clase <strong class="mono" style="color:var(--tinta);font-size:18px">${esc(g.codigo)}</strong>` : "Crea tu primer grupo para recibir un código de clase."}</p></div>
+      <div class="acciones">${grupos.length > 1 ? `<select class="sel" id="p-grupo" aria-label="Grupo">${grupos.map((x) => `<option value="${x.id}" ${x.id === grupoId ? "selected" : ""}>${esc(x.nombre)}</option>`).join("")}</select>` : ""}
+        <button class="btn" id="p-nuevo">Nuevo grupo</button>${g ? '<button class="btn" id="p-copiar">Copiar código</button><button class="btn" id="p-imprimir">Imprimir</button>' : ""}<button class="btn" id="p-salir">Cerrar sesión</button></div></header>`;
+    if (mensaje) h += `<p class="aviso ${mensaje.mal ? "mal" : "ok"}" role="status">${esc(mensaje.mal || mensaje.ok)}</p>`;
+    if (!g) { app.innerHTML = h + "</div>"; return enlazarComun(); }
+    if (D && D.solicitudes.length) {
+      h += `<section class="caja"><h2>Alumnos que piden unirse</h2><p class="sub">Solo verás el avance de quien aceptes. Si no reconoces el alias, recházalo.</p>` +
+        D.solicitudes.map((s) => `<div class="solicitud"><span><strong>${esc(s.alumnos ? s.alumnos.alias : "alumno")}</strong> <span class="sub">pidió unirse</span></span><span class="acciones"><button class="btn chico prim" data-acepta="${s.id}">Aceptar</button><button class="btn chico" data-rechaza="${s.id}">Rechazar</button></span></div>`).join("") + "</section>";
+    }
+    if (!D || !c.filas.length) {
+      h += `<section class="caja vacio"><h2>Todavía no hay alumnos en este grupo</h2><p>Pide a tus alumnos que entren a <a href="./">G-NOSIS</a>, creen su cuenta en el menú ☰ y escriban el código <strong class="mono">${esc(g.codigo)}</strong>.</p></section></div>`;
+      app.innerHTML = h; return enlazarComun();
+    }
+    const K = c.grupo;
+    const kpis = [["Alumnos", c.filas.length, c.nPartidas + " partidas jugadas"], ["Predicción", txt(K.prediccion), "tocó la barra correcta"], ["Acción correcta", txt(K.accion), "en las llamadas"], ["Diagnóstico", txt(K.diagnostico), "averías al primer intento"],
+      ["Preguntas", txt(K.preguntas), "contestadas a la primera"], ["Manual", txt(K.manual), "cartas bien emparejadas"], ["Retención diferida", txt(K.diferida), "temas de una partida anterior"]];
+    h += `<section class="kpis" aria-label="Resumen">${kpis.map(([l, v, n]) => `<div class="kpi"><span>${l}</span><span class="n">${v}</span><span>${n}</span></div>`).join("")}</section>`;
+    // tendencia + temas a reforzar
+    const T = c.tendencia, refz = c.temas.filter((t) => t.n >= 5 && t.p != null).sort((a, b) => a.p - b.p).slice(0, 3);
+    h += `<div class="fila"><section class="caja"><div><h2>Aprendizaje partida a partida</h2><p class="sub">Retos resueltos bien por el grupo según el número de partida de cada alumno.</p></div>
+      <div class="leyenda"><span><i style="background:var(--azul)"></i>Llamadas con la acción correcta</span><span><i style="background:var(--naranja)"></i>Averías al primer intento</span><span><i style="background:var(--verde)"></i>Preguntas a la primera</span></div>
+      ${T.length ? `<div class="barras">${T.map((t) => `<div class="grupo-b">${[[t.acc, "var(--azul)"], [t.dia, "var(--naranja)"], [t.pre, "var(--verde)"]].map(([v, col]) => v == null ? "" : `<div class="col"><span class="v">${v}%</span><div class="b" style="height:${Math.max(3, Math.round(v * 1.5))}px;background:${col}"></div></div>`).join("")}</div>`).join("")}</div>
+      <div class="etiquetas">${T.map((t) => `<span>${t.k}ª partida · ${t.n} retos</span>`).join("")}</div>` : '<p class="vacio">Todavía no hay respuestas guardadas.</p>'}
+      ${T.length >= 2 ? `<p class="sub">De la 1ª a la ${T[T.length - 1].k}ª partida, las llamadas bien resueltas van de ${txt(T[0].acc)} a ${txt(T[T.length - 1].acc)}${T[0].dia != null && T[T.length - 1].dia != null ? ` y las averías al primer intento, de ${txt(T[0].dia)} a ${txt(T[T.length - 1].dia)}` : ""}, aunque el juego va subiendo el nivel de quien mejora.</p>` : ""}</section>
+      <section class="caja"><div><h2>Temas para reforzar en clase</h2><p class="sub">Los tres temas con menos retos resueltos bien en el grupo.</p></div>
+      ${refz.length ? refz.map((t) => `<div class="reforzar"><div class="cab"><strong>${esc(NOMBRE[t.t])}</strong><span class="mono">${t.p}% · ${t.n} retos</span></div><div class="progreso"><div style="width:${t.p}%;background:var(--naranja)"></div></div><p style="font-size:14px;color:#33404f">${esc(SUGERENCIA[t.t] || "Repasen juntos la carta de este tema.")}</p></div>`).join("") : '<p class="vacio">Aún no hay suficientes respuestas por tema.</p>'}</section></div>`;
+    // matriz + detalle
+    h += `<div class="fila" style="align-items:flex-start"><section class="caja" style="flex:999 1 760px"><div style="display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;align-items:flex-end"><div><h2>Retos resueltos por alumno y tema</h2>
+      <p class="sub">Llamadas, averías y preguntas resueltas bien. Elige un alumno para ver su detalle. El borde naranja marca menos de 50%; el guion, un tema que todavía no le ha tocado. La columna Nivel muestra el nivel actual de reto y si subió o bajó desde el inicial del grupo.</p></div>
+      <div class="sub" style="display:flex;align-items:center;gap:8px;font-size:12px"><span>0%</span><span class="gradiente"></span><span>100%</span></div></div>
+      <div class="tabla"><div class="in"><div class="tr cab"><span>Alumno</span><span>Partidas</span><span>Nivel</span><span>Retos</span><span>Manual</span>${TEMAS.map((t) => `<span>${esc(CORTO[t] || t)}</span>`).join("")}</div>
+      ${c.filas.map((f) => { const ini = g ? nivelInicial(g.grado) : 2, fl = f.a.nivel_reto > ini ? " ↑" : f.a.nivel_reto < ini ? " ↓" : ""; return `<div class="tr ${f.a.id === sel ? "sel" : ""}"><button class="nom" data-sel="${f.a.id}" aria-pressed="${f.a.id === sel}">${esc(f.a.alias)}</button><span class="num">${f.partidas.length}</span><span class="num">${f.a.nivel_reto}${fl}</span><span class="num">${txt(f.m.total)}</span><span class="num">${txt(f.m.manual)}</span>${f.temas.map((p) => { const x = celda(p); return `<span class="celda" style="background:${x.bg};color:${x.fg};border:${x.borde}">${x.txt}</span>`; }).join("")}</div>`; }).join("")}</div></div></section>`;
+    h += detalleAlumno(c.filas.find((f) => f.a.id === sel), g) + "</div>";
+    h += `<section class="caja"><h2>Qué mide cada número</h2><div class="glosario">
+      <p><strong>Predicción</strong>: en una llamada, tocó la barra correcta antes de actuar. Mide si entiende la causa.</p><p><strong>Acción</strong>: eligió qué hacer correctamente. Mide si aplica lo que sabe.</p>
+      <p><strong>Diagnóstico</strong>: resolvió una avería al primer intento a partir de pistas. Mide pensamiento crítico.</p><p><strong>Preguntas</strong>: contestó a la primera una pregunta del banco, sin usar la pista.</p>
+      <p><strong>Manual</strong>: al final emparejó bien cada carta con su momento para el siguiente capitán. Mide retención al explicarlo a otro.</p><p><strong>Retención diferida</strong>: acertó en una llamada un tema que vivió en una partida anterior.</p>
+      <p><strong>Nivel</strong>: el juego lo sube cuando el alumno resuelve 4 de sus últimos 5 retos y lo baja cuando resuelve 1 o ninguno. Reto = opciones y pistas; lectura = largo de los textos. Los alumnos nunca lo ven.</p></div></section></div>`;
+    app.innerHTML = h; enlazarComun(); enlazarPanel();
+  }
+  const nivelInicial = (grado) => (grado <= 2 ? 1 : grado <= 4 ? 2 : 3);
+
+  function detalleAlumno(f, g) {
+    if (!f) return "";
+    const ini = g ? nivelInicial(g.grado) : 2;
+    const rec = (r) => { if (r.tipo === "averia") { const a = (R.averias || []).find((x) => x.id === r.reto_id); return { tipo: "avería", texto: a ? a.alarma || a.titulo || r.reto_id : r.reto_id }; }
+      if (r.tipo === "pregunta") { const q = PD.banco.find((x) => x.id === String(r.reto_id).replace(/^R-/, "")); return { tipo: "pregunta", texto: q ? q.enunciado : r.reto_id }; }
+      const s = (R.situaciones || []).find((x) => x.id === r.reto_id); return { tipo: "llamada", texto: s ? s.aviso || s.titulo || r.reto_id : r.reto_id }; };
+    return `<aside class="caja detalle"><div><span class="sobre" style="color:var(--tenue)">Alumno</span><h3>${esc(f.a.alias)}</h3><p class="sub">${f.partidas.length} partidas · ${f.m.retos} retos</p></div>
+      <div class="bloque"><span class="sub">Nivel (solo lo ves tú)</span><strong>Reto ${f.a.nivel_reto} · lectura ${f.a.nivel_lectura} <span class="sub">(el grupo empieza en ${ini})</span></strong><span class="sub">${f.ajustes} ${f.ajustes === 1 ? "ajuste automático" : "ajustes automáticos"}.</span>
+        <label class="sub" style="display:flex;gap:8px;align-items:center;margin-top:4px">Nivel inicial <select class="sel" id="d-nivel">${[1, 2, 3].map((n) => `<option ${n === f.a.nivel_inicial ? "selected" : ""}>${n}</option>`).join("")}</select></label></div>
+      <div style="display:flex;flex-direction:column;gap:8px"><span class="sub">Cada partida: resultado, nivel al terminar y cartas que dejó en su manual</span><div class="chips">${f.partidas.length ? f.partidas.map((p) => `<span class="chip"><small>P${p.numero}</small><span style="color:${p.estrellas > 0 ? "#8a6100" : "var(--rojo)"}">${p.estrellas > 0 ? "★".repeat(p.estrellas) : "Evacuación"}</span><small>nivel ${p.nivel_reto}</small><small>${(p.cartas_manual || []).length} cartas</small></span>`).join("") : '<span class="sub">Aún no termina ninguna partida.</span>'}</div></div>
+      <div class="mets">${[["Predicción", f.m.prediccion, "entiende la causa"], ["Acción", f.m.accion, "aplica lo que sabe"], ["Diagnóstico", f.m.diagnostico, "pensamiento crítico"], ["Preguntas", f.m.preguntas, "a la primera"], ["Manual", f.m.manual, "lo explica a otro"], ["Retención", f.m.diferida, "de partidas pasadas"]].map(([l, v, n]) => `<div class="met"><span>${l}</span><b>${txt(v)}</b><span>${n}</span></div>`).join("")}</div>
+      <div style="display:flex;flex-direction:column;gap:8px"><span class="sub">Repasos pendientes (el último reto de ese tema le salió mal)</span>${f.pend.length ? f.pend.map((r) => { const x = rec(r); return `<div class="pend"><span class="sub" style="font-size:12px">${esc(NOMBRE[r.tema] || r.tema)} · ${x.tipo}</span><span style="font-size:14px">${esc(x.texto)}</span></div>`; }).join("") : "<p>Sin repasos pendientes.</p>"}</div>
+      <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--linea);padding-top:12px"><span class="sub">Cuenta del alumno</span>
+        ${claveTemp && claveTemp.id === f.a.id ? `<div class="temp" aria-live="polite">${esc(claveTemp.clave)}</div><p class="sub">Contraseña nueva de <strong>${esc(f.a.alias)}</strong>. Anótala ahora: no se vuelve a mostrar.</p>` : ""}
+        <div class="acciones"><button class="btn chico" id="d-clave">Restablecer contraseña</button><button class="btn chico peligro" id="d-quitar">Quitar de la clase</button></div></div></aside>`;
+  }
+
+  // ---------- eventos ----------
+  function enlazarComun() {
+    const salir = document.getElementById("p-salir"); if (salir) salir.onclick = async () => { await sb.auth.signOut(); usuario = perfil = datos = null; grupos = []; mensaje = null; pintarEntrada("entrar"); };
+    const nuevo = document.getElementById("p-nuevo"); if (nuevo) nuevo.onclick = crearGrupo;
+    const gs = document.getElementById("p-grupo"); if (gs) gs.onchange = async () => { grupoId = gs.value; await refrescar(); };
+    const cp = document.getElementById("p-copiar"); if (cp) cp.onclick = async () => { const g = grupos.find((x) => x.id === grupoId); try { await navigator.clipboard.writeText(g.codigo); mensaje = { ok: "Código copiado: " + g.codigo }; } catch (e) { mensaje = { ok: "El código es " + g.codigo }; } pintarPanel(); };
+    const im = document.getElementById("p-imprimir"); if (im) im.onclick = () => window.print();
+    document.querySelectorAll("[data-acepta],[data-rechaza]").forEach((b) => b.onclick = () => resolver(b.dataset.acepta || b.dataset.rechaza, !!b.dataset.acepta));
+  }
+  function enlazarPanel() {
+    document.querySelectorAll("[data-sel]").forEach((b) => b.onclick = () => { sel = b.dataset.sel; claveTemp = null; mensaje = null; pintarPanel(); });
+    const niv = document.getElementById("d-nivel"); if (niv) niv.onchange = async () => accion(async () => { const { error } = await sb.from("alumnos").update({ nivel_inicial: +niv.value }).eq("id", sel); if (error) throw error; mensaje = { ok: "Nivel inicial actualizado." }; await refrescar(true); });
+    const cl = document.getElementById("d-clave"); if (cl) cl.onclick = () => accion(async () => {
+      const A = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; const b = crypto.getRandomValues(new Uint8Array(8)); const clave = Array.from(b, (x) => A[x % A.length]).join("");
+      const { error } = await sb.rpc("restablecer_clave_alumno", { p_alumno: sel, p_clave: clave }); if (error) throw error; claveTemp = { id: sel, clave }; mensaje = { ok: "Contraseña restablecida." }; pintarPanel(); });
+    const q = document.getElementById("d-quitar"); if (q) q.onclick = () => { const a = datos.c.filas.find((f) => f.a.id === sel); if (!window.confirm(`¿Quitar a ${a.a.alias} de la clase? Dejarás de ver su avance (puede volver a pedir unirse).`)) return; accion(async () => { const { error } = await sb.rpc("quitar_de_clase", { p_alumno: sel }); if (error) throw error; mensaje = { ok: a.a.alias + " ya no está en la clase." }; await refrescar(); }); };
+  }
+  async function accion(fn) { try { mensaje = null; await fn(); } catch (e) { mensaje = { mal: amable(e) }; pintarPanel(); } }
+  async function resolver(id, acepta) { await accion(async () => { const { error } = await sb.rpc("resolver_solicitud", { p_id: id, p_acepta: acepta }); if (error) throw error; mensaje = { ok: acepta ? "Alumno aceptado." : "Solicitud rechazada." }; await refrescar(); }); }
+  async function crearGrupo() {
+    const nombre = window.prompt("Nombre del grupo (por ejemplo: 4.º B)"); if (!nombre) return;
+    const escuela = window.prompt("Escuela (opcional)") || null;
+    const grado = +window.prompt("Grado (1 a 6)", "4");
+    if (!(grado >= 1 && grado <= 6)) { mensaje = { mal: "El grado debe ser de 1 a 6." }; return pintarPanel(); }
+    await accion(async () => { const { data, error } = await sb.from("grupos").insert({ maestro_id: usuario.id, nombre: nombre.trim(), escuela, grado }).select().single(); if (error) throw error; grupoId = data.id; mensaje = { ok: "Grupo creado. El código de la clase es " + data.codigo + "." }; await refrescar(); });
+  }
+  async function refrescar(conservar) { cargando = true; const s = sel; await cargarGrupos(); await cargarDatos(); if (conservar && datos && datos.c.filas.some((f) => f.a.id === s)) sel = s; cargando = false; pintarPanel(); }
+
+  async function iniciar() {
+    const { data } = await sb.auth.getSession(); usuario = data.session ? data.session.user : null;
+    if (!usuario) return pintarEntrada("entrar");
+    const { data: p, error } = await sb.from("perfiles").select("id,rol,nombre").eq("id", usuario.id).maybeSingle();
+    if (error || !p || p.rol !== "maestro") { await sb.auth.signOut(); usuario = null; mensaje = { mal: "Esta cuenta no es de maestro. Los niños juegan en G-NOSIS; aquí entra solo el maestro." }; return pintarEntrada("entrar"); }
+    perfil = p; app.innerHTML = '<p class="vacio">Cargando tu panel…</p>';
+    try { await cargarGrupos(); await cargarDatos(); pintarPanel(); } catch (e) { mensaje = { mal: amable(e) }; pintarPanel(); }
+  }
+
+  (async function () {
+    if (!C.url || !C.anon) { app.innerHTML = '<div class="form"><span class="sobre">G-NOSIS · Panel del maestro</span><p class="aviso mal">Supabase no está configurado en este sitio.</p></div>'; return; }
+    try { await cargarLib(); await iniciar(); } catch (e) { app.innerHTML = `<div class="form"><p class="aviso mal">${esc(e.message)}</p></div>`; }
+  })();
+})();
+</script>
+</body>
+</html>

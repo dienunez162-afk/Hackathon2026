@@ -157,9 +157,13 @@
     catch (e) { guardarCola([...leerCola(), r]); return r._id || null; }
   }
   // filas que llegan después de guardar la partida (el manual para el siguiente capitán)
-  async function agregarRespuestas(id, filas) {
+  async function agregarRespuestas(id, filas, cartasManual) {
     if (!ACTIVO || !usuario || !sb || !id) return false;
-    try { await insertar("respuestas", filas.map((x) => fila(x, id))); return true; } catch (e) { return false; }
+    try {
+      await insertar("respuestas", filas.map((x) => fila(x, id)));
+      if (Array.isArray(cartasManual)) await sb.from("partidas").update({ cartas_manual: cartasManual.map((t) => String(t).slice(0, 40)).slice(0, 12) }).eq("id", id);
+      return true;
+    } catch (e) { return false; }
   }
 
   // ---------- menú desplegable (hamburguesa arriba a la derecha del menú principal) ----------
@@ -195,7 +199,8 @@
   const OJO = '<svg viewBox="0 0 14 7" width="20" height="10" shape-rendering="crispEdges" fill="currentColor" aria-hidden="true"><rect x="4" y="0" width="6" height="1"/><rect x="2" y="1" width="2" height="1"/><rect x="10" y="1" width="2" height="1"/><rect x="1" y="2" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="0" y="3" width="1" height="1"/><rect x="13" y="3" width="1" height="1"/><rect x="1" y="4" width="1" height="1"/><rect x="12" y="4" width="1" height="1"/><rect x="2" y="5" width="2" height="1"/><rect x="10" y="5" width="2" height="1"/><rect x="4" y="6" width="6" height="1"/><rect x="5" y="2" width="4" height="3"/></svg>';
   const OJO_TACHADO = OJO.replace("</svg>", '<rect x="1" y="5" width="2" height="1"/><rect x="3" y="4" width="2" height="1"/><rect x="9" y="2" width="2" height="1"/><rect x="11" y="1" width="2" height="1"/></svg>').replace('<rect x="5" y="2" width="4" height="3"/>', '<rect x="5" y="2" width="4" height="3"/><rect x="5" y="3" width="4" height="1" fill="#0e1022"/>');
   const fmtRecord = (v, suf) => (v == null ? "—" : v + (suf || ""));
-  function pintar() {
+  function pintar() { pintarBase(); const p = $("menu-cuenta"); if (p) p.insertAdjacentHTML("beforeend", enlaceMaestro()); }
+  function pintarBase() {
     const p = $("menu-cuenta"); if (!p) return;
     const msg = mensaje ? `<p class="cta-msg ${mensaje.mal ? "mal" : "ok"}" role="status">${esc(mensaje.mal || mensaje.ok)}</p>` : "";
     const tit = (x) => `<h3 class="menu-tit">${x}</h3>`;
@@ -230,6 +235,8 @@
       <h4 class="menu-sub">${t("Mi clase", "My class")}</h4>${clase}${msg}
       <div class="cta-fila"><button type="button" class="op" id="cta-cerrar-sesion">${t("Cerrar sesión", "Log out")}</button> <button type="button" class="op" id="cta-borrar">${t("Borrar mi cuenta", "Delete my account")}</button></div><p class="cta-nota"><a href="privacidad.html" target="_blank" rel="noopener">${t("Aviso de privacidad", "Privacy notice")}</a></p>`;
   }
+  // enlace para maestros, al final de cualquier vista del menú
+  const enlaceMaestro = () => `<p class="cta-nota">${t("¿Eres maestro o maestra?", "Are you a teacher?")} <a href="maestro.html">${t("Panel del maestro", "Teacher panel")}</a></p>`;
 
   async function accion(fn) {
     try { mensaje = null; await fn(); } catch (e) { mensaje = { mal: amable(e) }; }

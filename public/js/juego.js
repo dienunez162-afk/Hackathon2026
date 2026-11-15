@@ -1426,7 +1426,7 @@
       await continuar(c.querySelector("#ops2"), "Siguiente ▸", 1800);
     }
     anotar("manual", { accion_correcta: bien.length === kk, aciertos: bien.length, total: kk });
-    if (J.guardada && window.CUENTA) { const filaManual = J.registro[J.registro.length - 1]; J.guardada.then((id) => id && CUENTA.agregarRespuestas(id, [filaManual])); }
+    if (J.guardada && window.CUENTA) { const filaManual = J.registro[J.registro.length - 1]; J.guardada.then((id) => id && CUENTA.agregarRespuestas(id, [filaManual], bien)); }
     historial = {
       temas: Object.keys(J.aprendidos).filter((x) => J.aprendidos[x] >= 0),
       repasos: [...new Set([...J.pasados, ...J.diferidos, ...J.repasos.map((r) => r.tema)])].slice(-3),
