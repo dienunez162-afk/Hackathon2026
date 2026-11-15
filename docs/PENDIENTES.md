@@ -35,4 +35,4 @@ Lista revisada el 15 de noviembre de 2026, después del primer despliegue en Ver
 - [x] Juego completo en `public/` (intro, 8 escenarios, 12 minijuegos, llamadas, averías, cartas, manual y dificultad adaptativa).
 - [x] APIs conectadas: DONKI, RadLab (CRaTER) y OSDR, con copia guardada si no hay conexión.
 - [x] Desplegado en Vercel por el dueño del repo.
-- [x] Música: el soundtrack queda para la intro y en la base suena música que cambia con el peligro de la misión (`public/js/musica-base.js`).
+- [x] **Música.** Soundtrack en la intro; en la base, acordes sostenidos sin ritmo; `alarma-emergencia.mp3` en eventos fuertes y averías; `final-bueno.mp3` y `final-malo.mp3` en los finales.

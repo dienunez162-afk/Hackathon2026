@@ -491,8 +491,9 @@ let finalActual = null;
 function iniciarFinal(tipo, alTerminar) {
   if (!FINALES[tipo]) throw new Error("Final desconocido: " + tipo);
   finalActual = { tipo, start: performance.now(), alTerminar };
-  if (typeof fundirVolumen === "function" && musicaIniciada)
-    fundirVolumen(FINALES[tipo].gana ? MUSICA_VOL : MUSICA_VOL * 0.45, 1500);
+  // música del final (final-bueno.mp3 / final-malo.mp3); sigue sonando durante el manual del capitán
+  if (window.MUSICA_BASE) MUSICA_BASE.pista(FINALES[tipo].gana ? "final-bueno" : "final-malo");
+  if (typeof fundirVolumen === "function" && musicaIniciada) fundirVolumen(0, 1200);   // el soundtrack de la intro se calla
 }
 function tiempoFinal() { return (performance.now() - finalActual.start) / 1000; }
 function tarjetaFinal() { return guion(finalActual.tipo, 0).T.tarjeta; }

@@ -354,6 +354,7 @@
 
   function nuevaPartida() {
     abortar();
+    MUSICA_BASE.pista(null);          // termina la música del final anterior
     partidas++;
     // nivel adaptativo: dos perillas (reto y lectura) que el niño nunca ve
     const AD = R.reglas.adaptacion, hn = historial && historial.niveles;
@@ -514,10 +515,10 @@
     for (const t of frenos) { const n = R.temas[t].carta.nombre; toast(`Tu carta ${n} frenó la mitad del daño.`); log(`${n} frenó la mitad del daño.`); }
   }
 
-  // ---------- música: el peligro de la misión decide qué tan tensa suena ----------
-  // peligro: eventos fuertes (tormentas solares, micrometeoritos, sismo fuerte, calefacción rota) y averías
-  // alerta: los demás eventos y las llamadas; también si alguna barra está en rojo
-  // calma: tareas, decisiones, reportes y días tranquilos
+  // ---------- música ----------
+  // peligro -> suena alarma-emergencia.mp3: eventos fuertes (tormentas solares, micrometeoritos,
+  //            sismo fuerte, calefacción rota) y averías
+  // calma / alerta -> los acordes de fondo (musica-base.js); los finales ponen su propia pista
   const peligroDe = (n) => ((ESTADO_NODO[n.id] || {}).alarma ? "peligro" : n.tipo === "evento" ? "alerta" : "calma");
   function animo(m) {
     if (m === "calma" && conteo(J.st).rojo > 0) m = "alerta";

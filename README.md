@@ -40,16 +40,15 @@ Notas (noviembre de 2026):
 - `herramientas/simulador-mision.js`: simulador para balancear.
 
 ## Música
-- **Intro** (menú y alunizaje): `public/audio/soundtrack.mp3`, el soundtrack del equipo.
-- **Dentro de la base**: `public/js/musica-base.js`, que genera la música en el navegador con Web Audio. Es original del proyecto: no usa archivos ni licencias de terceros. Cambia sola según el peligro:
+| Archivo | Cuándo suena |
+|---|---|
+| `public/audio/soundtrack.mp3` | Intro: menú y alunizaje |
+| `public/js/musica-base.js` (generada) | Dentro de la base: acordes sostenidos, sin ritmo; de noche en tono menor |
+| `public/audio/alarma-emergencia.mp3` | Eventos fuertes (tormentas solares, micrometeoritos, sismo fuerte, calefacción rota) y averías; se repite mientras dure |
+| `public/audio/final-bueno.mp3` | Finales con relevo (1, 2 o 3 estrellas), durante la cinemática y el manual |
+| `public/audio/final-malo.mp3` | Finales con evacuación |
 
-| Ánimo | Cuándo suena | Cómo suena |
-|---|---|---|
-| calma | tareas, decisiones, reportes, días tranquilos | acordes lentos y campanitas; de noche, en tono menor y más grave |
-| alerta | eventos normales, llamadas, o cualquier barra en rojo | mismos acordes con pulso de bajo y un latido |
-| peligro | tormentas solares, micrometeoritos, sismo fuerte, calefacción rota y averías | bajo rápido, arpegio, platillos y una sirena suave |
-
-Para cambiar qué eventos son "peligro", edita `peligroDe()` en `public/js/juego.js`.
+La música de fondo se genera en el navegador con Web Audio (original, sin licencias externas). Las pistas mp3 son del equipo. Para cambiar qué eventos ponen la alarma, edita `peligroDe()` en `public/js/juego.js`.
 
 ## Privacidad
 En modo Libre el progreso se guarda solo en el dispositivo (`localStorage`). En modo Salón, los alumnos usan un alias y un código, sin correo.
