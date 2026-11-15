@@ -131,7 +131,7 @@
       if (window.supabase) return res();
       const s = document.createElement("script");
       s.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"; s.crossOrigin = "anonymous";
-      s.onload = res; s.onerror = () => rej(new Error(t("No se pudo cargar Supabase (¿hay internet?).", "Could not load Supabase (is there internet?).")));
+      s.onload = res; s.onerror = () => rej(new Error("SIN_SUPABASE"));
       document.head.appendChild(s);
     }).then(() => { sb = window.supabase.createClient(C.url, C.anon, { auth: { persistSession: true, autoRefreshToken: true, storageKey: "gnosis-maestro-auth" } }); });
   }
@@ -147,6 +147,8 @@
   }
   const amable = (e) => {
     const m = String((e && e.message) || e);
+    if (m === "SIN_SUPABASE") return t("No se pudo cargar Supabase (¿hay internet?).", "Could not load Supabase (is there internet?).");
+    if (m === "CONFIRMAR_CORREO") return t("La cuenta se creó pero Supabase pide confirmar el correo.", "The account was created but Supabase asks to confirm the email.");
     if (/Invalid login/i.test(m)) return t("El correo o la contraseña no son correctos.", "The email or password is not correct.");
     if (/already registered/i.test(m)) return t("Ese correo ya tiene una cuenta.", "That email already has an account.");
     if (/Password should/i.test(m)) return t("La contraseña debe tener al menos 6 caracteres.", "The password must have at least 6 characters.");
@@ -223,7 +225,7 @@
   }
 
   // ---------- pantallas ----------
-  const aviso = () => (mensaje ? `<p class="aviso ${mensaje.mal ? "mal" : "ok"}" role="status">${esc(mensaje.mal || mensaje.ok)}</p>` : "");
+  const aviso = () => { if (!mensaje) return ""; const v = mensaje.mal || mensaje.ok; return `<p class="aviso ${mensaje.mal ? "mal" : "ok"}" role="status">${esc(typeof v === "function" ? v() : v)}</p>`; };
   function pintarEntrada(modo) {
     modoEntrada = modo;
     const crear = modo === "crear";
@@ -245,10 +247,10 @@
       try {
         if (crear) {
           const { data, error } = await sb.auth.signUp({ email: correo, password: clave, options: { data: { rol: "maestro", nombre: document.getElementById("e-nombre").value.trim() } } });
-          if (error) throw error; if (!data.session) throw new Error(t("La cuenta se creó pero Supabase pide confirmar el correo.", "The account was created but Supabase asks to confirm the email."));
+          if (error) throw error; if (!data.session) throw new Error("CONFIRMAR_CORREO");
         } else { const { error } = await sb.auth.signInWithPassword({ email: correo, password: clave }); if (error) throw error; }
         await iniciar();
-      } catch (err) { mensaje = { mal: amable(err) }; pintarEntrada(modo); }
+      } catch (err) { mensaje = { mal: () => amable(err) }; pintarEntrada(modo); }
     };
   }
 
@@ -323,26 +325,26 @@
     const salir = document.getElementById("p-salir"); if (salir) salir.onclick = async () => { await sb.auth.signOut(); usuario = perfil = datos = null; grupos = []; mensaje = null; pintarEntrada("entrar"); };
     const nuevo = document.getElementById("p-nuevo"); if (nuevo) nuevo.onclick = crearGrupo;
     const gs = document.getElementById("p-grupo"); if (gs) gs.onchange = async () => { grupoId = gs.value; await refrescar(); };
-    const cp = document.getElementById("p-copiar"); if (cp) cp.onclick = async () => { const g = grupos.find((x) => x.id === grupoId); try { await navigator.clipboard.writeText(g.codigo); mensaje = { ok: t("Código copiado: ", "Code copied: ") + g.codigo }; } catch (e) { mensaje = { ok: t("El código es ", "The code is ") + g.codigo }; } pintarPanel(); };
+    const cp = document.getElementById("p-copiar"); if (cp) cp.onclick = async () => { const g = grupos.find((x) => x.id === grupoId); try { await navigator.clipboard.writeText(g.codigo); mensaje = { ok: () => t("Código copiado: ", "Code copied: ") + g.codigo }; } catch (e) { mensaje = { ok: () => t("El código es ", "The code is ") + g.codigo }; } pintarPanel(); };
     const im = document.getElementById("p-imprimir"); if (im) im.onclick = () => window.print();
     document.querySelectorAll("[data-acepta],[data-rechaza]").forEach((b) => b.onclick = () => resolver(b.dataset.acepta || b.dataset.rechaza, !!b.dataset.acepta));
   }
   function enlazarPanel() {
     document.querySelectorAll("[data-sel]").forEach((b) => b.onclick = () => { sel = b.dataset.sel; claveTemp = null; mensaje = null; pintarPanel(); });
-    const niv = document.getElementById("d-nivel"); if (niv) niv.onchange = async () => accion(async () => { const { error } = await sb.from("alumnos").update({ nivel_inicial: +niv.value }).eq("id", sel); if (error) throw error; mensaje = { ok: t("Nivel inicial actualizado.", "Starting level updated.") }; await refrescar(true); });
+    const niv = document.getElementById("d-nivel"); if (niv) niv.onchange = async () => accion(async () => { const { error } = await sb.from("alumnos").update({ nivel_inicial: +niv.value }).eq("id", sel); if (error) throw error; mensaje = { ok: () => t("Nivel inicial actualizado.", "Starting level updated.") }; await refrescar(true); });
     const cl = document.getElementById("d-clave"); if (cl) cl.onclick = () => accion(async () => {
       const A = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; const b = crypto.getRandomValues(new Uint8Array(8)); const clave = Array.from(b, (x) => A[x % A.length]).join("");
-      const { error } = await sb.rpc("restablecer_clave_alumno", { p_alumno: sel, p_clave: clave }); if (error) throw error; claveTemp = { id: sel, clave }; mensaje = { ok: t("Contraseña restablecida.", "Password reset.") }; pintarPanel(); });
-    const q = document.getElementById("d-quitar"); if (q) q.onclick = () => { const a = datos.c.filas.find((f) => f.a.id === sel); if (!window.confirm(t(`¿Quitar a ${a.a.alias} de la clase? Dejarás de ver su avance (puede volver a pedir unirse).`, `Remove ${a.a.alias} from the class? You will stop seeing their progress (they can ask to join again).`))) return; accion(async () => { const { error } = await sb.rpc("quitar_de_clase", { p_alumno: sel }); if (error) throw error; mensaje = { ok: t(`${a.a.alias} ya no está en la clase.`, `${a.a.alias} is no longer in the class.`) }; await refrescar(); }); };
+      const { error } = await sb.rpc("restablecer_clave_alumno", { p_alumno: sel, p_clave: clave }); if (error) throw error; claveTemp = { id: sel, clave }; mensaje = { ok: () => t("Contraseña restablecida.", "Password reset.") }; pintarPanel(); });
+    const q = document.getElementById("d-quitar"); if (q) q.onclick = () => { const a = datos.c.filas.find((f) => f.a.id === sel); if (!window.confirm(t(`¿Quitar a ${a.a.alias} de la clase? Dejarás de ver su avance (puede volver a pedir unirse).`, `Remove ${a.a.alias} from the class? You will stop seeing their progress (they can ask to join again).`))) return; accion(async () => { const { error } = await sb.rpc("quitar_de_clase", { p_alumno: sel }); if (error) throw error; mensaje = { ok: () => t(`${a.a.alias} ya no está en la clase.`, `${a.a.alias} is no longer in the class.`) }; await refrescar(); }); };
   }
-  async function accion(fn) { try { mensaje = null; await fn(); } catch (e) { mensaje = { mal: amable(e) }; pintarPanel(); } }
-  async function resolver(id, acepta) { await accion(async () => { const { error } = await sb.rpc("resolver_solicitud", { p_id: id, p_acepta: acepta }); if (error) throw error; mensaje = { ok: acepta ? t("Alumno aceptado.", "Student accepted.") : t("Solicitud rechazada.", "Request rejected.") }; await refrescar(); }); }
+  async function accion(fn) { try { mensaje = null; await fn(); } catch (e) { mensaje = { mal: () => amable(e) }; pintarPanel(); } }
+  async function resolver(id, acepta) { await accion(async () => { const { error } = await sb.rpc("resolver_solicitud", { p_id: id, p_acepta: acepta }); if (error) throw error; mensaje = { ok: () => acepta ? t("Alumno aceptado.", "Student accepted.") : t("Solicitud rechazada.", "Request rejected.") }; await refrescar(); }); }
   async function crearGrupo() {
     const nombre = window.prompt(t("Nombre del grupo (por ejemplo: 4.º B)", "Group name (for example: Grade 4 B)")); if (!nombre) return;
     const escuela = window.prompt(t("Escuela (opcional)", "School (optional)")) || null;
     const grado = +window.prompt(t("Grado (1 a 6)", "Grade (1 to 6)"), "4");
-    if (!(grado >= 1 && grado <= 6)) { mensaje = { mal: t("El grado debe ser de 1 a 6.", "The grade must be from 1 to 6.") }; return pintarPanel(); }
-    await accion(async () => { const { data, error } = await sb.from("grupos").insert({ maestro_id: usuario.id, nombre: nombre.trim(), escuela, grado }).select().single(); if (error) throw error; grupoId = data.id; mensaje = { ok: t("Grupo creado. El código de la clase es ", "Group created. The class code is ") + data.codigo + "." }; await refrescar(); });
+    if (!(grado >= 1 && grado <= 6)) { mensaje = { mal: () => t("El grado debe ser de 1 a 6.", "The grade must be from 1 to 6.") }; return pintarPanel(); }
+    await accion(async () => { const { data, error } = await sb.from("grupos").insert({ maestro_id: usuario.id, nombre: nombre.trim(), escuela, grado }).select().single(); if (error) throw error; grupoId = data.id; mensaje = { ok: () => t("Grupo creado. El código de la clase es ", "Group created. The class code is ") + data.codigo + "." }; await refrescar(); });
   }
   async function refrescar(conservar) { const s = sel; await cargarGrupos(); await cargarDatos(); if (conservar && datos && datos.c.filas.some((f) => f.a.id === s)) sel = s; pintarPanel(); }
 
@@ -350,15 +352,15 @@
     const { data } = await sb.auth.getSession(); usuario = data.session ? data.session.user : null;
     if (!usuario) return pintarEntrada("entrar");
     const { data: p, error } = await sb.from("perfiles").select("id,rol,nombre").eq("id", usuario.id).maybeSingle();
-    if (error || !p || p.rol !== "maestro") { await sb.auth.signOut(); usuario = null; mensaje = { mal: t("Esta cuenta no es de maestro. Los niños juegan en G-NOSIS; aquí entra solo el maestro.", "This is not a teacher account. Children play in G-NOSIS; only teachers log in here.") }; return pintarEntrada("entrar"); }
+    if (error || !p || p.rol !== "maestro") { await sb.auth.signOut(); usuario = null; mensaje = { mal: () => t("Esta cuenta no es de maestro. Los niños juegan en G-NOSIS; aquí entra solo el maestro.", "This is not a teacher account. Children play in G-NOSIS; only teachers log in here.") }; return pintarEntrada("entrar"); }
     perfil = p; app.innerHTML = `<p class="vacio">${t("Cargando tu panel…", "Loading your panel…")}</p>`;
-    try { await cargarGrupos(); await cargarDatos(); pintarPanel(); } catch (e) { mensaje = { mal: amable(e) }; pintarPanel(); }
+    try { await cargarGrupos(); await cargarDatos(); pintarPanel(); } catch (e) { mensaje = { mal: () => amable(e) }; pintarPanel(); }
   }
 
   (async function () {
     document.documentElement.lang = EN ? "en" : "es"; document.title = t("Panel del maestro · G-NOSIS", "Teacher panel · G-NOSIS");
     if (!C.url || !C.anon) { app.innerHTML = `<div class="form"><span class="sobre">${t("G-NOSIS · Panel del maestro", "G-NOSIS · Teacher panel")}</span><p class="aviso mal">${t("Supabase no está configurado en este sitio.", "Supabase is not configured on this site.")}</p></div>`; return; }
-    try { await cargarLib(); await iniciar(); } catch (e) { app.innerHTML = `<div class="form"><p class="aviso mal">${esc(e.message)}</p></div>`; }
+    try { await cargarLib(); await iniciar(); } catch (e) { app.innerHTML = `<div class="form"><p class="aviso mal">${esc(amable(e))}</p></div>`; }
   })();
 })();
 </script>
