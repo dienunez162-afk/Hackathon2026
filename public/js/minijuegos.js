@@ -283,13 +283,21 @@
       return s.promesa;
     }
     // radiación: 7 días de dosis
-    const serie = d.radlab && d.radlab.serie && d.radlab.serie.length >= 7 ? d.radlab.serie.slice(-7) : [0.021, 0.019, 0.023, 0.022, 0.02, 0.024, Math.random() < 0.5 ? 0.022 : 0.061].map((v, k) => ({ dia: k + 1, dosis: v }));
-    const hoy = serie[serie.length - 1].dosis, max = Math.max(...serie.map((x) => x.dosis)) * 1.15;
-    const correcta = hoy > 0.045 ? "Peligro: mejor no salir" : hoy > 0.032 ? "Cuidado: sal poco tiempo" : "Seguro para salir";
-    const todas = ["Seguro para salir", "Peligro: mejor no salir", "Cuidado: sal poco tiempo"];
-    const opciones = barajar(op.nivel === 1 ? [correcta, todas.find((x) => x !== correcta && x !== "Cuidado: sal poco tiempo") || todas[0]] : todas);
-    const ui = marco(op, "Lee el medidor de radiación", "La última barra es hoy. ¿Es un día seguro para salir?");
-    ui.cuerpo.innerHTML = `<div class="mj-datos"><p class="mj-ins">Fuente: ${esc(d.radlab && d.radlab.fuente || "CRaTER (datos de muestra)")}</p><div class="mj-barras">${serie.map((x, k) => `<div class="mb"><i style="height:${Math.round(100 * x.dosis / max)}%;background:${x.dosis > 0.045 ? "var(--rojo)" : x.dosis > 0.032 ? "var(--ambar)" : "var(--verde)"}"></i><span>${k === serie.length - 1 ? "hoy" : "d" + (k + 1)}</span></div>`).join("")}</div></div>
+    // 7 días reales de CRaTER (RadLab). Se compara cada día contra un día tranquilo ("base"):
+    // hasta 1.5 veces = seguro, hasta 3 veces = cuidado, más = peligro (tormenta solar).
+    const sem = op.semana || { fuente: "CRaTER (datos de muestra)", base: 5, dias: [5, 5.1, 5, 5.2, 5.1, 5, Math.random() < 0.5 ? 5.3 : 220].map((v, k) => ({ fecha: "d" + (k + 1), dosis: v })) };
+    const serie = sem.dias, base = sem.base || Math.min(...serie.map((x) => x.dosis));
+    const rel = (x) => x.dosis / base, zona = (x) => (rel(x) > 3 ? "peligro" : rel(x) > 1.5 ? "cuidado" : "seguro");
+    const alto = (x) => Math.round(Math.min(100, 22 + 26 * Math.log10(Math.max(0.6, rel(x)))));   // escala que crece despacio: las tormentas son cientos de veces mayores
+    const TXT = { seguro: "Seguro para salir", cuidado: "Cuidado: sal poco tiempo", peligro: "Peligro: mejor no salir" };
+    const COL = { seguro: "var(--verde)", cuidado: "var(--ambar)", peligro: "var(--rojo)" };
+    const correcta = TXT[zona(serie[serie.length - 1])];
+    const todas = Object.values(TXT);
+    const opciones = barajar(op.nivel === 1 ? [correcta, correcta === TXT.peligro ? TXT.seguro : TXT.peligro] : todas);
+    const f0 = String(serie[0].fecha), f1 = String(serie[serie.length - 1].fecha);
+    const ui = marco(op, "Lee el medidor de radiación", "Cada barra es un día de radiación medida de verdad junto a la Luna. La última es hoy. ¿Es un día seguro para salir?");
+    ui.cuerpo.innerHTML = `<div class="mj-datos"><p class="mj-ins">Fuente: ${esc(sem.fuente)}${/^\d{4}/.test(f0) ? ` · del ${esc(f0)} al ${esc(f1)}` : ""}</p><div class="mj-barras">${serie.map((x, k) => `<div class="mb"><i style="height:${alto(x)}%;background:${COL[zona(x)]}"></i><span>${k === serie.length - 1 ? "hoy" : "d" + (k + 1)}</span></div>`).join("")}</div>
+      <p class="mj-ins">Verde: como un día normal · Ámbar: hasta 3 veces más · Rojo: mucho más (tormenta solar)</p></div>
       <div class="mj-opciones">${opciones.map((t, i) => `<button type="button" class="op" data-i="${i}">${esc(t)}</button>`).join("")}</div>`;
     const s = sesion(op, ui, tiempoBase(op, 25));
     ui.cuerpo.querySelector(".mj-opciones").addEventListener("click", (e) => { const b = e.target.closest("[data-i]"); if (!b || !s.vivo()) return; const ok = opciones[+b.dataset.i] === correcta; b.classList.add(ok ? "ok" : "mal"); s.fin(ok, ok ? "¡Bien leído!" : `Hoy era: ${correcta}.`); });

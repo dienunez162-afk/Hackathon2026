@@ -536,7 +536,7 @@
     try {
       r = await MJ.jugar(spec.tipo, Object.assign({}, spec, {
         cont: $mj, nivel: J.reto, dificultad: n.reto || 2, auto: ui.modo === "auto", hab: ui.hab, vel: ui.vel,
-        datos: APIS.datos, cartas: Object.keys(J.cartas).map((k) => R.temas[k].carta), todasCartas: todas,
+        datos: APIS.datos, semana: spec.modo === "radiacion" ? APIS.semanaRadiacion() : null, cartas: Object.keys(J.cartas).map((k) => R.temas[k].carta), todasCartas: todas,
       }));
     } finally { J.enMinijuego = false; }
     if (t !== tok) throw ABORT;
@@ -681,7 +681,10 @@
     log(`Nueva carta: ${k.nombre}.`);
     const i = await botones(c.querySelector("#ops"), [{ html: "Continuar ▸", prim: true }, { html: "Leer el informe" }], { auto: 0, delay: 2200 });
     if (i === 1) {
-      c.querySelector("#inf").innerHTML = `<p class="txt" style="font-size:15px">${esc(n.informe.texto)}</p><p class="sub">Fuente: ${esc(n.informe.fuente || "NASA")}</p>`;
+      // en el invernadero, un estudio real de NASA OSDR sobre plantas en el espacio
+      const est = t === "invernadero" ? APIS.estudio() : null;
+      c.querySelector("#inf").innerHTML = `<p class="txt" style="font-size:15px">${esc(n.informe.texto)}</p><p class="sub">Fuente: ${esc(n.informe.fuente || "NASA")}</p>` +
+        (est ? `<p class="sub">La NASA lo estudia de verdad: «${esc(est.titulo)}» (${esc(est.id)}${est.mision ? ", misión " + esc(est.mision) : ""}). <a href="${esc(est.url)}" target="_blank" rel="noopener" style="color:var(--cian)">Ver el estudio</a></p>` : "");
       await continuar(c.querySelector("#ops"));
     }
   }
