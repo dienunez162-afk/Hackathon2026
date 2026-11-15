@@ -45,10 +45,23 @@ if (process.env.VERCEL || pedirVersion) {
   console.log("index.html: scripts con ?v=" + version);
 }
 
-// 3. Llaves públicas de Supabase para el navegador (solo si están en el entorno; nunca la service role).
-if (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) {
-  const cfg = { url: process.env.SUPABASE_URL, anon: process.env.SUPABASE_ANON_KEY, dominio: process.env.DOMINIO_ALUMNOS || "alumnos.g-nosis.local" };
+// 3. Llaves públicas de Supabase para el navegador (nunca la service role / secret key).
+//    Por defecto, las del proyecto de G-NOSIS: la URL y la publishable key son públicas por diseño
+//    (las ve cualquier navegador; los datos los protege la RLS). Así no hay que configurar nada en Vercel.
+//    Si en el entorno (Vercel) existen SUPABASE_URL / SUPABASE_ANON_KEY / DOMINIO_ALUMNOS, esas ganan.
+const SUPABASE_POR_DEFECTO = {
+  url: "https://tsidieehhdwspeomdixs.supabase.co",
+  anon: "sb_publishable_Fi-qV27KlO1n5Z_GFUwWJg__x-KvpHX",
+  dominio: "alumnos.g-nosis.local",
+};
+{
+  const cfg = {
+    url: process.env.SUPABASE_URL || SUPABASE_POR_DEFECTO.url,
+    anon: process.env.SUPABASE_ANON_KEY || SUPABASE_POR_DEFECTO.anon,
+    dominio: process.env.DOMINIO_ALUMNOS || SUPABASE_POR_DEFECTO.dominio,
+  };
+  if (/^sb_secret_/.test(cfg.anon)) throw new Error("SUPABASE_ANON_KEY tiene la llave SECRETA: usa la publishable (sb_publishable_...).");
   writeFileSync(join(raiz, "public", "js", "config.js"),
-    "/* generado por scripts/generar-datos.mjs desde las variables de entorno */\nwindow.GNOSIS_CONFIG = " + JSON.stringify(cfg) + ";\n");
-  console.log("public/js/config.js: Supabase activo");
+    "/* generado por scripts/generar-datos.mjs (valores públicos; las variables de Vercel ganan si existen) */\nwindow.GNOSIS_CONFIG = " + JSON.stringify(cfg) + ";\n");
+  console.log("public/js/config.js: Supabase activo (" + (process.env.SUPABASE_URL ? "variables del entorno" : "valores por defecto") + ")");
 }
