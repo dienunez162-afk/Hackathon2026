@@ -118,19 +118,13 @@
     }).observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ATR });
   }
 
-  // ---------- selector de idioma del menú principal (a la derecha de la Luna) ----------
+  // ---------- selector de idioma: va dentro del menú ☰ (arriba a la derecha del menú principal) ----------
   function selector() {
-    const stage = document.getElementById("stage");
-    if (!stage || document.getElementById("idioma")) return;
-    const caja = document.createElement("div");
-    caja.id = "idioma";
-    caja.dataset.sinTraducir = "";
-    caja.setAttribute("role", "group");
-    caja.setAttribute("aria-label", "Idioma / Language");
-    caja.innerHTML = `<span class="i-tit">IDIOMA · LANGUAGE</span>
-      <button type="button" data-l="es" aria-pressed="${!EN}"><span class="i-ban" aria-hidden="true">ES</span>Español</button>
-      <button type="button" data-l="en" aria-pressed="${EN}"><span class="i-ban" aria-hidden="true">EN</span>English</button>`;
-    caja.addEventListener("pointerdown", (e) => e.stopPropagation());
+    const caja = document.getElementById("menu-idioma");
+    if (!caja || caja.dataset.listo) return;
+    caja.dataset.listo = "1";
+    caja.innerHTML = `<button type="button" class="op${EN ? "" : " elegida"}" data-l="es" aria-pressed="${!EN}"><span class="i-ban" aria-hidden="true">ES</span>Español</button>
+      <button type="button" class="op${EN ? " elegida" : ""}" data-l="en" aria-pressed="${EN}"><span class="i-ban" aria-hidden="true">EN</span>English</button>`;
     caja.addEventListener("click", (e) => {
       const b = e.target.closest("button[data-l]");
       if (!b || b.dataset.l === idioma) return;
@@ -139,13 +133,12 @@
       const u = new URL(location.href); u.searchParams.delete("lang");
       location.href = u.toString();
     });
-    stage.appendChild(caja);
   }
 
   window.I18N = {
     idioma, tr,
     // el juego avisa si está en el menú principal: solo ahí se ve el selector
-    enMenu(on) { const c = document.getElementById("idioma"); if (c) c.hidden = !on; },
+    enMenu(on) { if (window.CUENTA) CUENTA.visible(on); else { const c = document.getElementById("menu-inicio"); if (c) c.hidden = !on; } },
   };
   const listo = () => { selector(); if (EN) empezarPantalla(); };
   if (document.body) listo(); else document.addEventListener("DOMContentLoaded", listo);

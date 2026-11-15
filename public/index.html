@@ -204,32 +204,38 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 #toast.on { opacity: 1; }
 
 
-/* menú de cuenta (hamburguesa del menú principal): alias, récords y clase */
-#btn-menu-cuenta { position: absolute; left: 14px; top: 14px; z-index: 6; width: 44px; height: 44px; display: grid; place-content: center; gap: 5px; background: var(--panel); border: 1px solid var(--borde); border-radius: 6px; cursor: pointer; padding: 0; }
-#btn-menu-cuenta span { display: block; width: 22px; height: 3px; background: var(--casco); }
-#btn-menu-cuenta:hover, #btn-menu-cuenta:focus-visible { border-color: var(--cian); outline: none; }
-#panel-cuenta { position: absolute; left: 14px; top: 66px; z-index: 7; width: min(360px, calc(100% - 28px)); max-height: calc(100% - 90px); overflow: auto; box-sizing: border-box; padding: 14px 16px; background: var(--panel); border: 1px solid var(--borde); border-radius: 6px; font-size: 13px; line-height: 1.45; }
-#panel-cuenta h3 { margin: 0 0 8px; font-size: 16px; color: var(--cian); }
-#panel-cuenta h4 { margin: 12px 0 4px; font-size: 12px; letter-spacing: 0.12em; color: var(--lila); text-transform: uppercase; }
-#panel-cuenta p { margin: 6px 0; }
-#panel-cuenta label { display: block; margin: 8px 0; color: var(--dim); }
-#panel-cuenta input { display: block; width: 100%; box-sizing: border-box; margin-top: 3px; padding: 8px; font: inherit; font-size: 15px; color: var(--ink); background: rgba(0,0,0,0.5); border: 1px solid var(--borde); border-radius: 4px; }
-#panel-cuenta input:focus { outline: 2px solid var(--cian); }
-#panel-cuenta button { font: inherit; color: var(--ink); background: rgba(168,162,232,0.14); border: 1px solid var(--borde); border-radius: 4px; padding: 8px 12px; cursor: pointer; }
-#panel-cuenta button:hover, #panel-cuenta button:focus-visible { border-color: var(--cian); outline: none; }
-#panel-cuenta .cta-prim { background: rgba(120,245,255,0.16); border-color: var(--cian); margin-top: 4px; }
-#panel-cuenta .cta-sec { margin-top: 14px; }
-#panel-cuenta .cta-tabs { display: flex; gap: 6px; margin-bottom: 6px; }
-#panel-cuenta .cta-tabs [aria-selected="true"] { border-color: var(--cian); color: var(--cian); }
-#panel-cuenta .cta-nota { font-size: 12px; color: var(--dim); }
-#panel-cuenta .cta-msg.mal { color: var(--rojo); } #panel-cuenta .cta-msg.ok { color: var(--verde); }
-#panel-cuenta .cta-records { margin: 0; } #panel-cuenta .cta-records div { display: flex; justify-content: space-between; gap: 10px; padding: 3px 0; border-bottom: 1px dotted var(--faint); }
-#panel-cuenta .cta-records dt { color: var(--dim); } #panel-cuenta .cta-records dd { margin: 0; color: var(--crema); text-align: right; }
-#panel-cuenta .cta-adulto { display: flex; gap: 8px; align-items: flex-start; color: var(--ink); } #panel-cuenta .cta-adulto input { width: auto; margin-top: 3px; } #panel-cuenta a { color: var(--cian); }
+/* menú desplegable del inicio (☰ arriba a la derecha): idioma y cuenta. Usa el mismo arte que el resto de los botones
+   del juego (etiqueta, panel y .op). Vive en el espacio de 1280x720 y se escala con --k, igual que el HUD. */
+#menu-inicio { position: absolute; top: 0; right: 0; width: 1280px; height: 0; transform: scale(var(--k, 1)); transform-origin: top right; z-index: 7; font-family: var(--mono); }
+#menu-inicio[hidden] { display: none; }
+#btn-menu { position: absolute; right: 16px; top: 16px; height: 28px; box-sizing: border-box; border-style: solid; border-color: transparent; border-width: 0 20px; border-image: url(img/dialogo/etiqueta-normal.png) 0 20 fill / 0 20px / 0 stretch; image-rendering: pixelated; background: none; padding: 0 2px 3px 6px; display: inline-flex; align-items: center; gap: 8px; font: 700 12px var(--mono); letter-spacing: 0.12em; color: rgb(24, 22, 58); cursor: pointer; }
+#btn-menu:hover, #btn-menu:focus-visible { filter: brightness(1.12); outline: none; }
+#btn-menu .flecha { transition: transform 0.2s; }
+#btn-menu[aria-expanded="true"] .flecha { transform: rotate(180deg); }
+#menu-caja { position: absolute; right: 16px; top: 52px; width: 300px; max-height: 640px; overflow: auto; box-sizing: border-box; padding: 4px 8px 8px; background: none; border: 16px solid transparent; border-image: url(img/dialogo/panel-normal.png) 32 fill / 32px / 0 stretch; image-rendering: pixelated; color: var(--ink); font-size: 13px; line-height: 1.45; }
+#menu-caja[hidden] { display: none; }
+#menu-caja .menu-tit, #menu-caja .menu-sub { margin: 10px 0 4px; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; color: var(--lila); }
+#menu-caja .menu-tit:first-child { margin-top: 0; }
+#menu-caja p { margin: 6px 0; }
+#menu-caja label { display: block; margin: 8px 0; color: var(--dim); }
+#menu-caja a { color: var(--hielo); }
+#menu-cuenta { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--borde); }
+#menu-idioma, .cta-tabs, .cta-fila { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0; }
+#menu-idioma .op, .cta-tabs .op { flex: 1 1 0; display: flex; align-items: center; justify-content: center; gap: 0.6em; text-align: center; }
+#menu-caja .op.elegida:not(.prim) { border-color: var(--crema); box-shadow: 0 0 0 2px var(--crema), inset 2px 2px 0 rgba(198, 190, 250, 0.28), inset -2px -3px 0 rgba(6, 6, 20, 0.55); color: var(--crema); }
+#menu-caja .op.prim { margin-top: 4px; }
+#menu-idioma .i-ban { font-size: 0.75em; padding: 0.05em 0.35em; border: 1px solid currentColor; }
+.cta-input { display: block; width: 100%; box-sizing: border-box; margin-top: 3px; padding: 6px 8px; font: 14px var(--mono); color: var(--ink); background: rgb(14, 16, 34); border: 2px solid var(--borde); }
+.cta-input:focus { outline: 2px solid var(--crema); }
+.cta-adulto { display: flex !important; gap: 8px; align-items: flex-start; color: var(--ink) !important; }
+.cta-adulto input { margin-top: 3px; }
+.cta-nota { font-size: 12px; color: var(--dim); }
+.cta-msg.mal { color: var(--rojo); } .cta-msg.ok { color: var(--verde); }
+.cta-records { margin: 0; } .cta-records div { display: flex; justify-content: space-between; gap: 10px; padding: 3px 0; border-bottom: 1px dotted var(--faint); }
+.cta-records dt { color: var(--dim); } .cta-records dd { margin: 0; color: var(--crema); text-align: right; }
 #girar { display: none; position: fixed; inset: 0; z-index: 50; place-content: center; text-align: center; gap: 12px; padding: 24px; background: #05060f; color: var(--ink); font: 700 20px/1.4 var(--mono); }
 #girar b { font-size: 56px; }
 @media (orientation: portrait) and (max-width: 820px) { #girar { display: grid; } }
-#cta-cerrar { position: absolute; right: 8px; top: 8px; padding: 2px 8px !important; }
 /* herramientas del equipo (fuera del juego, plegadas) */
 #ctrl { width: 100%; box-sizing: border-box; background: rgb(8, 9, 18); border-top: 1px solid rgba(168, 162, 232, 0.18); font-size: 12px; color: var(--dim); }
 #ctrl summary { cursor: pointer; padding: 6px max(16px, env(safe-area-inset-left, 0px)); color: var(--faint); list-style: none; text-align: center; }
@@ -361,14 +367,6 @@ details.saber[open] summary { color: var(--ink); }
 .p-voz-fila { grid-template-columns: 110px 1fr auto; }
 .p-voz-fila select { width: 100%; min-width: 0; font: 14px var(--mono); color: var(--ink); background: rgb(14, 16, 34); border: 2px solid var(--borde); padding: 4px 6px; }
 .p-voz-fila .op { padding: 4px 12px; font-size: 14px; }
-/* selector de idioma del menú principal: a la derecha de la Luna, crece con la pantalla */
-#idioma { position: absolute; right: calc(var(--k, 1) * 80px); top: 50%; transform: translateY(-50%); z-index: 4; display: grid; gap: calc(var(--k, 1) * 10px); font-family: var(--mono); font-size: calc(var(--k, 1) * 17px); }
-#idioma[hidden] { display: none; }
-#idioma .i-tit { color: rgb(110, 118, 135); letter-spacing: 0.14em; font-size: 0.72em; text-align: center; }
-#idioma button { display: flex; align-items: center; gap: 0.7em; min-width: 10.5em; padding: 0.55em 1em; font: inherit; font-weight: 700; color: rgb(170, 178, 200); background: rgba(10, 12, 28, 0.72); border: 2px solid rgb(60, 66, 100); cursor: pointer; }
-#idioma button:hover, #idioma button:focus-visible { color: rgb(255, 246, 225); border-color: rgb(150, 170, 220); outline: none; }
-#idioma button[aria-pressed="true"] { color: rgb(255, 246, 225); border-color: rgb(255, 246, 225); background: rgba(40, 44, 80, 0.85); }
-#idioma .i-ban { font-size: 0.75em; padding: 0.1em 0.4em; border: 1px solid currentColor; }
 .p-salir { justify-self: start; border-color: rgb(120, 40, 40) !important; color: rgb(255, 160, 150); }
 /* letra grande (opción del menú de pausa) */
 #app.texto-grande #consola .txt, #app.texto-grande #consola .op, #app.texto-grande #mj .op, #app.texto-grande .mj-pasos { font-size: 18.5px; }
@@ -381,8 +379,15 @@ details.saber[open] summary { color: var(--ink); }
 <div id="app">
   <div id="stage">
     <canvas id="juego" width="2560" height="1440" aria-label="G-NOSIS: la Luna y la base dibujadas en ASCII"></canvas>
-    <button type="button" id="btn-menu-cuenta" aria-expanded="false" aria-controls="panel-cuenta" aria-label="Menú: mi cuenta, récords y clase" title="Mi cuenta, récords y clase" hidden><span></span><span></span><span></span></button>
-    <section id="panel-cuenta" role="dialog" aria-label="Mi cuenta" hidden><button type="button" id="cta-cerrar" aria-label="Cerrar">✕</button><div id="panel-cuerpo"></div></section>
+    <div id="menu-inicio" hidden>
+      <button type="button" id="btn-menu" aria-expanded="false" aria-controls="menu-caja" aria-label="Menú: idioma y cuenta" title="Idioma y cuenta" data-sin-traducir>☰ MENÚ<span class="flecha" aria-hidden="true">▾</span></button>
+      <aside id="menu-caja" hidden aria-label="Menú">
+        <h3 class="menu-tit" data-sin-traducir>IDIOMA · LANGUAGE</h3>
+        <div id="menu-idioma" data-sin-traducir role="group" aria-label="Idioma / Language"></div>
+        <div id="menu-cuenta" data-sin-traducir></div>
+      </aside>
+    </div>
+
     <div id="hud" hidden>
       <div id="franja" aria-hidden="true"></div>
       <div class="top">

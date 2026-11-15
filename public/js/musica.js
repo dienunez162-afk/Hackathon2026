@@ -55,6 +55,8 @@ function dibujarBotonSonido(ctx) {
   ctx.textAlign = "right"; ctx.textBaseline = "top";
   const w = ctx.measureText(txt).width;
   ctx.fillStyle = !musicaIniciada ? "rgb(150,160,185)" : silenciado ? "rgb(90,96,112)" : "rgb(170,180,205)";
-  ctx.fillText(txt, W - 16, 14);
-  botonSonido = { x: W - 16 - w - 6, y: 8, w: w + 12, h: 24 };
+  // en el menú principal, el botón ☰ MENÚ ocupa la esquina: el aviso de sonido se corre a su izquierda
+  const mn = document.getElementById("menu-inicio"), der = mn && !mn.hidden ? 150 : 16;
+  ctx.fillText(txt, W - der, 14);
+  botonSonido = { x: W - der - w - 6, y: 8, w: w + 12, h: 24 };
 }
