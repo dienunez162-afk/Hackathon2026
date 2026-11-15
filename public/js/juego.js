@@ -867,29 +867,42 @@
   }
 
   // día 0: recorrido guiado por el plano (el tutorial del nodo INICIO)
+  // desde la partida 2, TODAS las pantallas del recorrido traen «Saltar recorrido» (en la 1 se ve completo)
+  async function pasoTour(cont, html, delay) {
+    if (J.partida <= 1) { await continuar(cont, html, delay); return false; }
+    return (await botones(cont, [{ html, prim: true }, { html: "Saltar recorrido ⏭" }], { auto: 0, delay })) === 1;
+  }
   async function recorrido(n) {
+    await tourLaika(n);
+    await repasoInicial();
+  }
+  async function tourLaika(n) {
     escena("exterior", {});
     animo("calma");
     let c = pantalla(`<span class="tag">${TIPO.inicio}</span><h2 class="titulo">${esc(n.titulo)}</h2><p class="txt">${esc(n.mensaje)}</p><div class="ops" id="ops"></div>`);
     voz(n.mensaje);
-    await continuar(c.querySelector("#ops"), "Conocer la base ▸", 2400);
+    if (await pasoTour(c.querySelector("#ops"), "Conocer la base ▸", 2400)) return;
     c = pantalla(`<span class="tag">LAIKA · TU AYUDANTE</span><p class="txt">¡Guau! Soy Laika y te voy a acompañar. Primero te enseño la base: toca el módulo que parpadea.</p><div class="ops" id="ops"></div>`, "laika");
     voz("¡Guau! Soy Laika y te voy a acompañar. Primero te enseño la base.");
-    await continuar(c.querySelector("#ops"), "¡Vamos! ▸", 1800);
+    if (await pasoTour(c.querySelector("#ops"), "¡Vamos! ▸", 1800)) return;
     for (const [mod, txt] of RECORRIDO) {
       escena("plano", { resaltar: mod });
       c = pantalla(`<span class="tag">RECORRIDO POR LA BASE</span><p class="txt">${esc(txt)}</p><div class="ops" id="ops"></div>`, "laika");
       voz(txt);
       J.esperaModulo = mod;
-      try { await continuar(c.querySelector("#ops"), "Siguiente ▸", 1300); } finally { J.esperaModulo = null; }
+      let saltar = false;
+      try { saltar = await pasoTour(c.querySelector("#ops"), "Siguiente ▸", 1300); } finally { J.esperaModulo = null; }
+      if (saltar) return;
     }
     c = pantalla(`<span class="tag">LAIKA · TU AYUDANTE</span><p class="txt">Cuida tus cuatro barras durante 14 días. Si alguna llega al límite, tendrás que evacuar. ¡Yo te aviso cuando pase algo nuevo!</p><div class="ops" id="ops"></div>`, "laika");
-    await continuar(c.querySelector("#ops"), "Comenzar la misión ▸", 1800);
+    await pasoTour(c.querySelector("#ops"), "Comenzar la misión ▸", 1800);
+  }
+  async function repasoInicial() {
     // repaso: algo que quedó en «Lo aprendido» en una misión anterior
     const previos = window.BITACORA ? BITACORA.aprendidos().filter((a) => a.fecha < J.inicio) : [];
     if (previos.length) {
       const otras = R.situaciones.flatMap((s) => Object.values(s.explicacion)).concat(PD.banco.map((p) => p.explicacion));
-      const q = PQ.preguntaRepaso(previos, PD.banco, J.reto, otras);
+      const q = PQ.preguntaRepaso(previos, PD.banco, J.reto, otras, J.partida);   // mismo tema, otra variante
       if (q) { if (window.SFX) SFX.play("llamada"); await preguntaCtrl(q, "REPASO DE TU MISIÓN ANTERIOR"); }
     }
   }
@@ -913,28 +926,21 @@
 
   // el texto que se lee para contestar: corto, y lo extra en «Saber más» (cerrado por defecto)
   // marca las palabras del diccionario (bitácora): al tocarlas se abre su significado. Una vez cada palabra.
-  function conPalabras(textoEsc) {
-    const glo = window.BITACORA && BITACORA.glosario;
-    if (!glo) return textoEsc;
-    let t = textoEsc; const usadas = new Set();
-    for (const g of glo) for (const f of g.formas) {
-      if (usadas.has(g.palabra)) break;
-      const re = new RegExp(`(^|[^\\p{L}>])(${f.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})(?![\\p{L}])`, "iu");
-      if (re.test(t)) { t = t.replace(re, (m, a, b) => `${a}<button type="button" class="palabra" data-palabra="${g.palabra}" title="${esc(g.def)}">${b}</button>`); usadas.add(g.palabra); }
-    }
-    return t;
-  }
+  // (la lógica está en preguntas.js: marca solo en el texto, nunca dentro de un atributo)
+  const conPalabras = (textoEsc) => PQ.marcarPalabras(textoEsc, window.BITACORA && BITACORA.glosario);
   document.addEventListener("click", (e) => { const b = e.target.closest("button.palabra"); if (b && window.BITACORA) { e.preventDefault(); BITACORA.abrir("diccionario", b.dataset.palabra); } });
   function lectura(texto, extra = "", titulo = "LEE Y BUSCA LA RESPUESTA") {
     if (ui.sinTexto) return `<div class="lectura"><span class="paso">${titulo}</span><p class="txt sub">[Texto oculto: prueba sin lectura]</p></div>`;
     return `<div class="lectura"><span class="paso">${titulo}</span><p class="txt">${conPalabras(esc(texto))}</p>` +
       (extra ? `<details class="saber"><summary>Saber más</summary>${extra}</details>` : "") + `</div>`;
   }
-  // pregunta del banco ligada a un informe: fija (la primera sin usar, la más cercana al nivel); transferencia solo en nivel 3
-  function preguntaDeInforme(id) {
-    const ok = PD.banco.filter((q) => (q.informes || []).includes(id) && !J.usadas.includes(q.id) && (q.tipo !== "transferencia" || J.reto >= 3));
-    ok.sort((x, y) => Math.abs(x.nivel - J.reto) - Math.abs(y.nivel - J.reto) || x.nivel - y.nivel);
-    return ok[0] || null;
+  // pregunta del banco ligada a un informe: rota sin azar según la partida y cuántos informes de ese tema van
+  // (variantes[(partida - 1 + indiceDelEvento) % n]); solo las que se contestan con el texto del informe
+  function preguntaDeInforme(n) {
+    J.eventosTema = J.eventosTema || {};
+    const t = n.informe.tema, k = J.eventosTema[t] || 0;
+    J.eventosTema[t] = k + 1;
+    return PQ.preguntaParaInforme(PD.banco, t, n.informe.texto, J.reto, J.partida, k, J.usadas);
   }
   async function informe(n) {
     const t = n.informe.tema;
@@ -957,7 +963,7 @@
       log(`Nueva carta: ${k.nombre}.`);
     } else cab = `<span class="tag">INFORME</span><h2 class="titulo">${esc(n.titulo)}</h2>`;
     if (nueva && Object.keys(J.cartas).length === 1) J.laikaCarta = true;   // primera carta: Laika explica al terminar
-    const q = preguntaDeInforme(n.id);
+    const q = preguntaDeInforme(n);
     J.temasLeidos = J.temasLeidos || {};
     const repetido = !q && !nueva && J.temasLeidos[t];
     J.temasLeidos[t] = true;
@@ -1053,7 +1059,10 @@
   //   1.er error: se tacha la opción, aparece la pista y cuesta un poco (cobrarPista);
   //   2.º error: se muestra la respuesta y la explicación, se cobra el costo normal y se sigue.
   async function preguntar(cont, q, { delay = 2000, pAuto = ui.comp } = {}) {
-    const invalida = PQ.validarPregunta(q);
+    // aquí llegan solo { opciones, correcta, pista, ... }: se revisa ESO (el esquema completo del banco
+    // se revisa antes, en responderBanco). Antes se pedía id/enunciado/fuente y TODAS se omitían.
+    const invalida = !q || !Array.isArray(q.opciones) || q.opciones.length < 2 || !q.opciones.every((o) => typeof o === "string" && o.trim()) ? "opciones inválidas"
+      : !(Number.isInteger(q.correcta) && q.correcta >= 0 && q.correcta < q.opciones.length) ? "correcta fuera de rango" : null;
     if (invalida) { console.error("[G-NOSIS] pregunta omitida (" + (q && q.id) + "): " + invalida); if (cont) cont.innerHTML = ""; return { ok: true, intentos: 0, omitida: true }; }
     const { opciones, correcta } = q, tachadas = new Set();
     let aviso = cont.nextElementSibling;
@@ -1087,8 +1096,11 @@
     if (window.SFX) SFX.play("llamada");
     toast("((( Llamada de Control de Misión )))");
     if (tipo === "situacion") { const sel = elegirTema(idx); if (sel) return llamadaSituacion(sel); }
-    if (tipo === "bitacora" && !J.bitacoraHecha) { const q = PQ.preguntaBitacora(APIS.datos); if (q) { J.bitacoraHecha = true; return preguntaCtrl(q, "CONSULTA TU BITÁCORA"); } }
-    const q = PQ.elegirPregunta(PD.banco, J.reto, J.usadas, Object.keys(J.aprendidos));
+    if (tipo === "bitacora" && !J.bitacoraHecha) { const q = PQ.preguntaBitacora(APIS.datos, J.partida); if (q) { J.bitacoraHecha = true; return preguntaCtrl(q, "CONSULTA TU BITÁCORA"); } }
+    // transferencia: solo nivel 3 y con 4 o más bien en los últimos 5 retos (la ventana del nivel adaptativo)
+    const AD = R.reglas.adaptacion, conT = PQ.transferenciaPermitida(J.ventana, J.reto, AD.ventana, AD.sube);
+    const q = PQ.preguntaLlamada(PD.banco, Object.keys(J.aprendidos), J.reto, J.partida, idx, J.usadas, conT);
+    if (q && q.tipo === "transferencia") log("Pregunta de transferencia (le va muy bien en nivel 3).");
     if (q) { J.usadas.push(q.id); return preguntaCtrl(q, "PREGUNTA DE CONTROL DE MISIÓN"); }
     const sel = elegirTema(idx); if (sel) return llamadaSituacion(sel);
   }
@@ -1098,7 +1110,7 @@
   async function preguntaCtrl(q, tag) {
     const enBitacora = q.tipo === "bitacora" ? "datos" : q.tipo === "repaso" ? "aprendido" : null;
     const c = pantalla(`<span class="tag llamada">${esc(tag)}</span><p class="txt pregunta-antes">${esc(q.enunciado)}</p>` +
-      (enBitacora ? `<p><button type="button" class="op" id="abrir-bt">Abrir la bitácora ▸</button></p>` : q.lectura ? lectura(q.lectura) : "") +
+      (enBitacora ? `<p><button type="button" class="op" id="abrir-bt">Abrir la bitácora ▸</button></p>` : q.lectura ? lectura(q.lectura, "", q.tipo === "transferencia" ? "LEE LA REGLA Y ÚSALA EN ESTE CASO" : undefined) : "") +
       `<div class="ops col" id="ops"></div><div id="res"></div>`, "control");
     voz(q.enunciado + (q.lectura && !enBitacora && !ui.sinTexto ? " " + q.lectura : ""));
     if (enBitacora) c.querySelector("#abrir-bt").addEventListener("click", () => window.BITACORA && BITACORA.abrir(enBitacora));
@@ -1108,12 +1120,14 @@
   // contesta una pregunta del banco ya pintada en la pantalla c (opciones en #ops): reintento con pista,
   // y la explicación y la evidencia SOLO después de contestar
   async function responderBanco(c, q, tag) {
+    const mal = PQ.validarPregunta(q);
+    if (mal) { console.error("[G-NOSIS] pregunta del banco omitida (" + (q && q.id) + "): " + mal); return { ok: true, intentos: 0, omitida: true }; }
     const fija = q.tipo === "bitacora" || q.tipo === "repaso" && q.id.startsWith("R-") && !PD.banco.some((p) => "R-" + p.id === q.id);
     const base = fija ? { opciones: q.opciones.slice(0, Math.max(2, PQ.opcionesPorNivel(J.reto))), indiceCorrecto: q.indiceCorrecto } : PQ.recortarOpciones(q.opciones, q.indiceCorrecto, PQ.opcionesPorNivel(J.reto));
     const bj = PQ.barajarFijo(base.opciones, base.indiceCorrecto, q.id);
     const r = await preguntar(c.querySelector("#ops"), { opciones: bj.opciones, correcta: bj.correcta, pista: q.pista, explicacion: q.explicacion, barra: q.barra }, { delay: 2300 });
     if (window.BITACORA && BITACORA.abierta()) BITACORA.cerrar();
-    c.querySelector("#res").innerHTML = `<div class="res ${r.ok ? "ok" : "ko"}">${r.ok ? (r.intentos === 1 ? "¡Correcto!" : "¡Correcto, con pista!") + " " + esc(q.explicacion) : "Ahora ya lo sabes."}` +
+    c.querySelector("#res").innerHTML = `<div class="res ${r.ok ? "ok" : "ko"}">${r.ok ? "<b>" + (r.intentos === 1 ? "¡Correcto!" : "¡Correcto, con pista!") + "</b> " + esc(q.explicacion) : "Ahora ya lo sabes."}` +
       `<br><span class="sub">Evidencia: «${esc(q.fraseEvidencia)}» · ${esc(q.fuente)}</span></div><div id="frase"></div><div class="ops" id="ops2"></div>`;
     hablar(q.explicacion.length);
     if (r.ok && q.lectura && q.tipo !== "repaso") await fraseQueLoPrueba(c.querySelector("#frase"), q);
