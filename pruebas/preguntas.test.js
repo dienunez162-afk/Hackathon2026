@@ -88,8 +88,8 @@ test("pregunta de bitácora: se pregunta el día de la llamarada más fuerte, en
   assert.equal(P.validarPregunta(q), null);
   assert.equal(q.opciones[q.indiceCorrecto], "el 5 de noviembre");
   assert.ok(q.fraseEvidencia.includes("M3.5") && q.fraseEvidencia.includes("fuerte"), "conserva el dato real y la versión en palabras");
-  assert.equal(P.fuerzaDe("C1.3"), "media");
-  assert.equal(P.fuerzaDe("B5.0"), "suave");
+  assert.equal(P.fuerzaDe("C1.3"), "suave");
+  assert.equal(P.fuerzaDe("M3.5"), "fuerte");
 });
 
 test("cada pregunta del banco depende de su lectura: la frase de evidencia está en el texto", () => {

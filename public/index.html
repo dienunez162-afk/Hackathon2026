@@ -358,6 +358,8 @@ details.saber[open] summary { color: var(--ink); }
       <label class="ctl" for="c-hab">Habilidad <input id="c-hab" type="range" min="10" max="100" step="5" value="70"><output id="o-hab">70%</output></label>
       <label class="ctl" for="c-comp">Comprensión <input id="c-comp" type="range" min="10" max="100" step="5" value="65"><output id="o-comp">65%</output></label>
       <div class="ctl"><button type="button" id="c-voz" aria-pressed="false">Voz en off (lectura 1)</button></div>
+      <div class="ctl"><button type="button" id="c-sintexto" aria-pressed="false" title="Oculta los textos de lectura para comparar aciertos con y sin leer (también con ?sintexto=1)">Prueba: texto oculto</button></div>
+      <div class="ctl ancho"><span>Prueba de lectura (aciertos al primer intento):</span><output id="c-lectura">—</output></div>
       <div class="ctl"><button type="button" id="c-reiniciar">Nueva partida</button><button type="button" id="c-menu">Menú</button><button type="button" id="c-borrar">Borrar progreso</button></div>
       <div class="ctl" role="group" aria-label="Ver un final"><span>Finales</span>
         <button type="button" data-final="perfecta">3★</button><button type="button" data-final="verde">2★</button><button type="button" data-final="relevo">1★</button>

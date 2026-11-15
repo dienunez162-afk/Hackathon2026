@@ -78,6 +78,8 @@
   const ui = {
     uso: guardadoUso.uso || "libre", grado: guardadoUso.grado || 4,
     modo: qs.get("auto") ? "auto" : "manual", vel: +qs.get("vel") || 1, hab: 0.7, comp: 0.65, voz: false,
+    // prueba de lectura (solo equipo): oculta los textos para comparar aciertos con y sin leer
+    sinTexto: qs.get("sintexto") === "1", lecturaStats: { con: { ok: 0, n: 0 }, sin: { ok: 0, n: 0 } },
   };
   const app = $("app"), stage = $("stage"), hud = $("hud"), ctrl = $("ctrl"), $c = $("consola"), $mj = $("mj");
   function pintarCtl() {
@@ -87,6 +89,9 @@
     ctrl.querySelectorAll("[data-modo]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.modo === ui.modo)));
     ctrl.querySelectorAll("[data-vel]").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.vel === ui.vel)));
     $("c-voz").setAttribute("aria-pressed", String(ui.voz));
+    $("c-sintexto").setAttribute("aria-pressed", String(ui.sinTexto));
+    const ls = ui.lecturaStats, pct = (x) => (x.n ? Math.round(100 * x.ok / x.n) + "%" : "—");
+    $("c-lectura").textContent = `con texto ${ls.con.ok}/${ls.con.n} (${pct(ls.con)}) · sin texto ${ls.sin.ok}/${ls.sin.n} (${pct(ls.sin)})`;
     $("o-hab").textContent = Math.round(ui.hab * 100) + "%";
     $("o-comp").textContent = Math.round(ui.comp * 100) + "%";
     $("c-apis").textContent = `DONKI: ${APIS.estado.donki} · RadLab: ${APIS.estado.radlab} · OSDR: ${APIS.estado.osdr}`;
@@ -98,6 +103,7 @@
     else if (b.dataset.modo) ui.modo = b.dataset.modo;
     else if (b.dataset.vel) ui.vel = +b.dataset.vel;
     else if (b.id === "c-voz") ui.voz = !ui.voz;
+    else if (b.id === "c-sintexto") ui.sinTexto = !ui.sinTexto;
     else if (b.id === "c-reiniciar") {
       if (estado === "menu") elegir("JUGAR");
       else { abortar(); if (typeof finalActual !== "undefined") finalActual = null; entrarJuego(); }   // también desde un final o el alunizaje
@@ -825,6 +831,7 @@
 
   // el texto que se lee para contestar: corto, y lo extra en «Saber más» (cerrado por defecto)
   function lectura(texto, extra = "", titulo = "LEE Y BUSCA LA RESPUESTA") {
+    if (ui.sinTexto) return `<div class="lectura"><span class="paso">${titulo}</span><p class="txt sub">[Texto oculto: prueba sin lectura]</p></div>`;
     return `<div class="lectura"><span class="paso">${titulo}</span><p class="txt">${esc(texto)}</p>` +
       (extra ? `<details class="saber"><summary>Saber más</summary>${extra}</details>` : "") + `</div>`;
   }
@@ -859,7 +866,7 @@
       J.usadas.push(q.id);
       const c = pantalla(cab + `<p class="txt pregunta-antes"><b>Busca en el texto:</b> ${esc(q.enunciado)}</p>` + lectura(n.informe.texto, saber) +
         `<div class="ops col" id="ops"></div><div id="res"></div>`, "cientifica");
-      voz(q.enunciado + " " + n.informe.texto);
+      voz(q.enunciado + (ui.sinTexto ? "" : " " + n.informe.texto));
       await responderBanco(c, q, "INFORME");
       return;
     }
@@ -971,7 +978,7 @@
     const c = pantalla(`<span class="tag llamada">${esc(tag)}</span><p class="txt pregunta-antes">${esc(q.enunciado)}</p>` +
       (enBitacora ? `<p><button type="button" class="op" id="abrir-bt">Abrir la bitácora ▸</button></p>` : q.lectura ? lectura(q.lectura) : "") +
       `<div class="ops col" id="ops"></div><div id="res"></div>`, "control");
-    voz(q.enunciado + (q.lectura && !enBitacora ? " " + q.lectura : ""));
+    voz(q.enunciado + (q.lectura && !enBitacora && !ui.sinTexto ? " " + q.lectura : ""));
     if (enBitacora) c.querySelector("#abrir-bt").addEventListener("click", () => window.BITACORA && BITACORA.abrir(enBitacora));
     const r = await responderBanco(c, q, tag);
     J.cuenta.ll++; if (r.ok && r.intentos === 1) J.cuenta.llOk++;
@@ -991,10 +998,13 @@
     aprender("q-" + q.id.replace(/^R-/, ""), q.tema && R.temas[q.tema] ? R.temas[q.tema].nombre : "Pregunta de Control", q.explicacion + " " + q.fraseEvidencia, "Control de Misión", q.tema);
     log(`${tag} (${q.id}): ${r.ok ? (r.intentos === 1 ? "correcta" : "correcta con pista") : "incorrecta"}${ui.sinTexto ? " [sin texto]" : ""}.`);
     registrarReto(r.ok && r.intentos === 1);
+    if (q.lectura && q.tipo !== "repaso" && q.tipo !== "bitacora") contarLectura(r.ok && r.intentos === 1);
     await continuar(c.querySelector("#ops2"), tag === "INFORME" ? "Continuar ▸" : "Colgar ▸", 2600);
     return r;
   }
 
+  // estadística de la prueba de lectura (panel del equipo): aciertos al primer intento con y sin texto
+  function contarLectura(ok) { const x = ui.lecturaStats[ui.sinTexto ? "sin" : "con"]; x.n++; if (ok) x.ok++; pintarCtl(); }
   // tras acertar: «¿Qué frase lo prueba?» con 3 o 4 frases (las del texto y, si faltan, de otros informes).
   // Acertar da un bonus pequeño (+3 a la barra más débil); fallar no cuesta nada. Fijo por pregunta.
   const oraciones = (t) => String(t).split(/(?<=[.!?])\s+/).filter((x) => x.length > 8);
@@ -1021,7 +1031,7 @@
     const pista = { pista: x.pista, explicacion: x.porQue, barra: s.prediccion.barra };
     // 1a · qué barra cambia primero
     let c = pantalla(cab + `<span class="paso">1 · PREDICE: ¿QUÉ BARRA CAMBIA PRIMERO?</span>` + lectura(x.informe, "", "INFORME DE CONTROL") + `<div class="ops" id="p"></div>`, "control");
-    voz(x.situacion[nv] + " " + x.informe);
+    voz(x.situacion[nv] + (ui.sinTexto ? "" : " " + x.informe));
     const ok1 = (await preguntar(c.querySelector("#p"), Object.assign({ opciones: BARRAS.map((b) => MAYUS[b]), correcta: BARRAS.indexOf(x.cadena[0]) }, pista), { delay: 1900 })).ok;
     await espera(700);
     // 1b · y después
@@ -1029,6 +1039,7 @@
     c = pantalla(cab + `<span class="paso">… PRIMERO CAMBIA ${MAYUS[x.cadena[0]]}. ¿QUÉ BARRA CAMBIA DESPUÉS?</span>` + lectura(x.informe, "", "INFORME DE CONTROL") + `<div class="ops" id="p"></div>`, "control");
     const ok2 = (await preguntar(c.querySelector("#p"), Object.assign({ opciones: resto.map((b) => MAYUS[b]), correcta: resto.indexOf(x.cadena[1]) }, pista), { delay: 1900 })).ok;
     const predOk = ok1 && ok2;
+    contarLectura(predOk);
     await espera(700);
     // 2 · qué dato lo prueba (sin el texto: lo acaba de leer)
     const ev = PQ.barajarFijo([x.evidencia.correcta, ...x.evidencia.distractores.slice(0, PQ.opcionesPorNivel(J.reto) - 1)], 0, s.id + "-ev");

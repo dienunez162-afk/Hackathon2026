@@ -89,7 +89,7 @@
         <li>Tormenta geomagnética más fuerte: <b>Kp ${kp || "—"}</b> ${kp >= 6 ? "(¡fuerte!)" : kp >= 5 ? "(moderada)" : ""}</li>
       </ul>
       <p class="bt-mini">Últimas llamaradas: ${fl.slice(0, 5).map((f) => `${esc(f.clase)} · ${esc(PREGUNTAS.fuerzaDe(f.clase))} (${esc(PREGUNTAS.fechaTxt(f.fecha))})`).join(" · ") || "—"}</p>
-      <p class="bt-mini">Las llamaradas A y B son suaves, C media, M fuerte y X muy fuerte. Una CME tarda de 1 a 3 días en llegar a la Luna.</p>`;
+      <p class="bt-mini">Las llamaradas A, B y C son suaves; M y X son fuertes. Una CME tarda de 1 a 3 días en llegar a la Luna.</p>`;
     const serie = (rl && rl.serie) || [], base = (rl && rl.base) || 1;
     const maxL = Math.log10(Math.max(1.5, ...serie.map((x) => x.dosis / base)));
     const barras = serie.map((x) => { const r = x.dosis / base, h = Math.max(4, Math.round(100 * Math.log10(Math.max(1, r)) / maxL)); return `<i title="${esc(x.fecha)}: ${r.toFixed(1)} veces lo normal" style="height:${h}%;background:${r > 3 ? "#c8344a" : r > 1.5 ? "#d98a1c" : "#3c9a5a"}"></i>`; }).join("");

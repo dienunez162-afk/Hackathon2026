@@ -88,7 +88,8 @@
   // ---------- consulta la bitácora (Datos NASA) ----------
   const claseNum = (c) => { const m = /^([ABCMX])(\d*\.?\d*)/i.exec(c || ""); return m ? "ABCMX".indexOf(m[1].toUpperCase()) * 10 + (parseFloat(m[2]) || 0) : -1; };
   // la clase de una llamarada en palabras (para 7-8 años), sin quitar el dato real: «M3.5 · fuerte»
-  const fuerzaDe = (c) => ({ X: "muy fuerte", M: "fuerte", C: "media", B: "suave", A: "muy suave" })[String(c || "").charAt(0).toUpperCase()] || "";
+  // misma escala que ya explicaba el juego: A, B y C son suaves; M y X son fuertes (X, la más fuerte). TODO NASA: confirmar redacción.
+  const fuerzaDe = (c) => ({ X: "muy fuerte", M: "fuerte", C: "suave", B: "suave", A: "suave" })[String(c || "").charAt(0).toUpperCase()] || "";
   const MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
   const fechaTxt = (f) => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(f || "")); return m ? `el ${+m[3]} de ${MESES[+m[2] - 1]}` : String(f || "").slice(0, 10); };
   function preguntaBitacora(datos) {
@@ -104,7 +105,7 @@
         enunciado: "Abre tu bitácora en «Datos NASA». ¿Qué día fue la llamarada solar más fuerte?",
         opciones: ops, indiceCorrecto: 0,
         fraseEvidencia: `Datos NASA: la más fuerte fue ${fuerte.clase} (${fuerzaDe(fuerte.clase)}) ${fechaTxt(fuerte.fecha)}.`,
-        explicacion: `La letra dice qué tan fuerte es: A y B son suaves, C es media, M es fuerte y X muy fuerte. ${fuerte.clase} es ${fuerzaDe(fuerte.clase)}.`,
+        explicacion: `La letra dice qué tan fuerte es: A, B y C son suaves; M y X son fuertes. ${fuerte.clase} es ${fuerzaDe(fuerte.clase)}.`,
         fuente: "NASA DONKI", pista: "En la bitácora, busca la línea que dice «la más fuerte fue».",
       };
     }

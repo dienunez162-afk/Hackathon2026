@@ -66,18 +66,15 @@ Los originales están en `diseno/sprites/`. `herramientas/recortar-sprites.ps1` 
 | `img/personajes/cientifica.jpg`, `control-mision.jpg` | Retratos de la Dra. Ortiz y Control de Misión; alternan los dos cuadros mientras hablan |
 
 ## Llamadas y preguntas
-`datos/preguntas-mision-lunar.json` + `public/js/preguntas.js` (lógica sin pantalla, probada con `npm test`).
-- **Una llamada cada 2 o 3 días** (días 2 a 13). Se alternan:
-  - **Situación** (sin dar la respuesta): 1) predice qué barra cambia primero y cuál después; 2) ¿qué dato lo prueba?; 3) actúa; 4) mira qué pasó + informe de Control (se guarda en la bitácora).
-  - **Pregunta del banco** (esquema `{ id, nivel, tipo, enunciado, opciones, indiceCorrecto, fraseEvidencia, explicacion, fuente }` + `tema` y `barra`), elegida según el nivel del niño y de temas que ya leyó.
-  - **Consulta la bitácora** (una por partida): la respuesta está en «Datos NASA» (la llamarada más fuerte o la peor tormenta de RadLab).
-- **Repaso**: al empezar una misión nueva, una pregunta sobre algo guardado en «Lo aprendido».
-- **Costo por error**: la barra del tema baja 3 / 5 / 8 puntos (nivel 1 / 2 / 3), nunca por debajo de 10 (ni la radiación arriba de 90) por una pregunta.
-- **Avería**: pistas con irrelevantes; pide la causa y luego la reparación, 2 intentos cada una; cada error cuesta y al final se explica por qué pasó.
-- **Mensaje de la Tierra**: una situación y eliges la carta (sin ver su descripción); los distractores son cartas de la misma barra.
-- **Medidor de radiación**: sin colores; cada barra dice "xN" de un día normal; pregunta de tendencia si hubo días altos y hoy bajó.
-- **Manual**: 2 cartas recomendadas y el porqué.
-- **Informes**: se muestran siempre (son la evidencia de las preguntas).
+`datos/preguntas-mision-lunar.json` + `public/js/preguntas.js` (lógica sin pantalla, probada con `npm test`). Objetivo: **que leer sea necesario para acertar**. Validación y pendientes en `docs/VALIDACION-PREGUNTAS.md`.
+- **Fijas y deterministas**: misma pregunta y mismo orden de opciones en cada partida; la corrección nunca es aleatoria.
+- **Banco** (esquema `{ id, nivel, tipo, enunciado, opciones, indiceCorrecto, fraseEvidencia, explicacion, fuente, pista }` + `tema`, `barra`, `informes` y `lectura`). Cada pregunta depende de un dato de su **lectura** (un informe NASA del juego); la frase de evidencia está tal cual en el texto. Distractores creíbles: causa de otro evento, dato parecido pero equivocado o la acción correcta en el momento equivocado. Transferencia solo en nivel 3.
+- **Pregunta antes del texto**: en los informes y en las preguntas de Control primero va la pregunta, luego el texto (1 a 3 oraciones; lo extra en «Saber más») y luego las opciones. La explicación solo aparece después de contestar.
+- **Un reintento con pista y costo**: 1.er error → se tacha, aparece la pista y cuesta 2 puntos; 2.º error → respuesta y explicación, costo normal (3 / 5 / 8 según nivel) y se sigue. Igual en la avería. No hay reintentos gratis.
+- **«¿Qué frase lo prueba?»** tras acertar: si la elige bien, +3 a la barra más débil; si no, nada.
+- **Llamadas** (una cada 2 o 3 días): situación paso a paso (predice primero/después leyendo el informe de Control, qué dato lo prueba, actúa, mira qué pasó y el porqué), pregunta del banco o **Consulta la bitácora** (el día de la llamarada más fuerte; la bitácora dice «M3.5 · fuerte»).
+- **Repaso**: al empezar una misión nueva, una pregunta de «Lo aprendido» (de memoria, con botón para abrir la bitácora).
+- **Prueba de lectura** (equipo): botón **Prueba: texto oculto** o `?sintexto=1`; cuenta aciertos al primer intento con y sin texto.
 
 ## Cuadros de texto, eventos y misiones
 El cuadro de texto (`#consola`), la ventana de minijuegos (`#mj`) y los avisos usan sprites pixel art con el mismo estilo que las barras: marco biselado, pantalla hundida, tornillos y las rayas "//". Se dibujan con `border-image` (9-slice), así que se estiran a cualquier tamaño sin deformar las esquinas.
