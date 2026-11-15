@@ -116,11 +116,10 @@
   // y una franja de 220 px abajo para las barras y el cuadro de texto. En el menú y los finales, solo la escena.
   const FRANJA = 240;
   function ajustar() {
-    const alto = 720 + (hud.hidden ? 0 : FRANJA);
+    const alto = 720;                                  // siempre 16:9 (2560x1440 a pantalla completa); la franja va dentro
     const disp = Math.max(160, window.innerHeight - ctrl.offsetHeight);
     const w = Math.min(window.innerWidth, disp * 1280 / alto), h = w * alto / 1280;
     stage.style.width = w + "px"; stage.style.height = h + "px";
-    canvas.style.height = (w * 9 / 16) + "px";
     hud.style.transform = `scale(${w / 1280})`;
   }
   window.addEventListener("resize", ajustar);
