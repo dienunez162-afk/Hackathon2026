@@ -3,13 +3,12 @@
 Revisada el 15 de noviembre de 2026 (rama `correcciones-pendientes`). Probado en local y en `gnosis-kappa.vercel.app`: JUGAR arranca y varias misiones seguidas en modo automático 4× terminan sin errores en consola.
 
 ## Solo Diego puede hacerlo (Supabase)
-- [ ] **Correr `supabase/migrations/0006_panel_maestro.sql`** en el SQL Editor (copia en `space apps/supabase-sql/`). Hasta entonces: no se guardan las **preguntas del banco** en `respuestas` (el juego guarda las llamadas, averías y el manual), y en el panel del maestro no funcionan **Restablecer contraseña** y **Quitar de la clase** (avisa que falta la migración). Trae también el límite de intentos con códigos de clase.
+- [x] **`0006_panel_maestro.sql` corrido** (15-nov). Probado con la base real: restablecer contraseña (la nueva funciona y la vieja deja de funcionar), quitar de la clase, rechazo a quien no es de la clase o a una clave corta, y el límite de intentos con códigos (corta en el 9.º intento en 10 minutos). Las preguntas del banco ya se guardan.
 - [ ] Borrar en Authentication > Users el maestro de prueba `maestro.prueba.claude@example.com` y los alumnos ficticios (`cometa`, `nebulosa`, `orion`, `vega`, `lira`, `andromeda`, `sirio`, `pleyade`, `kepler`, `halley`, `selene`, `tycho`) cuando ya no se necesiten para enseñar el panel. Los alumnos se borran solos con `DEMO_CLAVE=... node herramientas/sembrar-demo.mjs --limpiar` (después hay que borrar a mano el maestro).
 - [ ] Crear el maestro y el grupo reales (el panel permite crear grupos; el maestro se registra en `maestro.html`).
 - [ ] En Supabase: activar la protección de contraseñas filtradas y un límite de registros por hora.
 
 ## Código que sigue pendiente
-- [ ] Probar en el panel, con la migración 0006 corrida, **Restablecer contraseña** y **Quitar de la clase** (hoy solo se comprobó que avisan bien cuando falta).
 - [x] El panel del maestro ya está en español e inglés (selector ES | EN, comparte la preferencia con el juego).
 - [ ] Un maestro puede registrarse sin verificar que lo sea (cualquiera puede crear una cuenta de maestro; solo verá a quien lo acepte). Valorar una lista de correos permitidos.
 - [ ] «Un dato que cambia el día»: falta mostrarlo también en la tarjeta final de la misión y volver a correr el simulador de balance con los +3/+6 de radiación (máximo 3 días por misión).
