@@ -61,7 +61,7 @@
     "E-D11": { tipo: "rover" }, "N-D13": { tipo: "rover", guia: true },
     "E-D12a": { tipo: "atrapar", objeto: "pieza", titulo: "¡Sujeta las piezas que se caen!" },
     "E-D12b": { tipo: "cables", titulo: "Reconecta la calefacción" }, "N-D11": { tipo: "ajustar", meta: "calentar" },
-    "N-D12a": { tipo: "secuencia", pasos: PANEL, titulo: "Repara el panel en orden" }, "F3-D14": { tipo: "ajustar", que: "alineacion", movil: true, titulo: "Guía a la nave del relevo" },
+    "N-D12a": { tipo: "secuencia", pasos: PANEL, titulo: "Repara el panel en orden" }, "F3-D14": { tipo: "aterrizar", titulo: "Aterriza la nave del relevo" },
   };
   const FINAL_DE = { "FIN-3": "perfecta", "FIN-2": "verde", "FIN-1": "relevo", "FAIL-energia": "apagon", "FAIL-comida": "despensa", "FAIL-radiacion": "radiacion", "FAIL-salud": "agotado" };
   const RECORRIDO = [
@@ -705,6 +705,7 @@
     cables: "Conecta los cables", limpiar: "Limpia el polvo", atrapar: "¡Atrapa lo que se cae!", laberinto: "¡Corre al refugio!",
     tapar: "¡Tapa los agujeros!", secuencia: "Hazlo en orden", ajustar: "Ajusta el medidor", buscar: "Busca y toca",
     grafica: "Lee los datos del Sol", rover: "Busca hielo con el rover", energia: "Cae la noche: reparte la energía", quiz: "Mensaje especial de la Tierra",
+    aterrizar: "Aterriza la nave del relevo",
   };
   const BUSCAR_QUE = { enfermas: "las plantas enfermas (@)", maduras: "las plantas listas para cosechar", fuga: "las fugas de agua" };
   const COMO_SE_JUEGA = {
@@ -721,6 +722,7 @@
     rover: (s) => ["Mueve el rover con las flechas.", "El radar te dice si el hielo está cerca."].concat(s.guia ? ["Sigue la flecha de Control de Misión."] : ["¡Cuida la batería!"]),
     energia: () => ["Apaga lo que no necesitas.", "Cuando la barra quede en verde, confirma."],
     quiz: () => ["Lee la carta.", "Elige cuándo sirve."],
+    aterrizar: () => ["Mantén ▲ MOTOR (o Espacio) para frenar: gasta combustible.", "Usa ← → para llegar a la plataforma verde.", "Toca el suelo despacio: la velocidad debe estar en verde."],
   };
   async function comoSeJuega(spec) {
     const pasos = (COMO_SE_JUEGA[spec.tipo] || (() => []))(spec);
