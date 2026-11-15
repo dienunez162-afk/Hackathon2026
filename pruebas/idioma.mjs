@@ -67,7 +67,13 @@ try {
     for (let i = 0; i < Math.min(n, 40); i++) { await page.evaluate((k) => { const l = document.querySelectorAll("#bitacora .lista button, #bitacora .entrada, #bitacora li button"); if (l[k]) l[k].click(); }, i); await page.waitForTimeout(60); }
     await page.evaluate(() => window.__escanear(document.getElementById("bitacora")));
   }
-  const encontrados = await page.evaluate(() => [...window.__es.entries()]);
+  // se vuelve a mirar la pantalla: un texto que el juego ya tradujo no cuenta (el detector lo pudo anotar un instante antes)
+  const encontrados = await page.evaluate(() => {
+    window.__escanear(document.body);
+    const actuales = new Set(); const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    for (let n = w.nextNode(); n; n = w.nextNode()) actuales.add(n.data.replace(/s+/g, " ").trim());
+    return [...window.__es.entries()].filter(([t]) => actuales.has(t));
+  });
   console.log(`\nTextos en español dentro del juego en inglés: ${encontrados.length}`);
   for (const [t, c] of encontrados) console.log(`  · [${c}] ${t.slice(0, VERBOSO ? 400 : 170)}`);
   codigo = encontrados.length ? 1 : 0;
