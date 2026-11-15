@@ -89,6 +89,17 @@ for (let r = 0; r < FROWS; r++)
     FPX[r * FCOLS + c] = ((c + 0.5) * CW - FSW / 2) / FC;
     FPY[r * FCOLS + c] = -((r + 0.5) * CH - FSH / 2) / FC;
   }
+// vista con zoom: en la partida la escena se aleja (VISTA_Z > 1) para caber completa arriba de la franja,
+// sin deformarse. La parte de arriba queda fija (el cielo no se corta). Con 1, todo queda como siempre.
+const FPX0 = Float32Array.from(FPX), FPY0 = Float32Array.from(FPY);
+let VISTA_Z = 1;
+function aplicarVista(z) {
+  if (z === VISTA_Z) return;
+  VISTA_Z = z;
+  for (let i = 0; i < FN; i++) { FPX[i] = FPX0[i] * z; FPY[i] = H / 2 - (H / 2 - FPY0[i]) * z; }
+}
+// de coordenadas de la escena a la pantalla (unidades de 1280x720) con la vista actual
+const vistaX = (x) => x / VISTA_Z, vistaY = (y) => H / 2 - (H / 2 - y) / VISTA_Z;
 const FB = new Float32Array(FN), FIDX = new Uint8Array(FN);
 const FCR = new Uint8Array(FN), FCG = new Uint8Array(FN), FCB = new Uint8Array(FN);
 let fImg = null, f32 = null;
@@ -130,9 +141,10 @@ const KIND = new Uint8Array(FN);
 const SB = new Float32Array(FN), SR = new Float32Array(FN),
   SG = new Float32Array(FN), SBL = new Float32Array(FN);
 const HASH = new Float32Array(FN);
-let escenaLista = false;
+let escenaLista = 0;   // zoom con el que se construyó la escena fija (0 = sin construir)
 
 function cellAt(px, py) {
+  px = vistaX(px); py = vistaY(py);
   const c = Math.floor((px * FC + FSW / 2) / CW), r = Math.floor((FSH / 2 - py * FC) / CH);
   return c < 0 || c >= FCOLS || r < 0 || r >= FROWS ? -1 : r * FCOLS + c;
 }
@@ -221,7 +233,7 @@ function construirEscena() {
       const i = r * FCOLS + c;
       if (KIND[i] === K_CIELO && esBase(i + FCOLS < FN ? i + FCOLS : i)) SB[i] = 0;
     }
-  escenaLista = true;
+  escenaLista = VISTA_Z;
 }
 
 // estrellas del cielo
@@ -238,7 +250,7 @@ const TORM = Array.from({ length: 70 }, () => ({ x: rngF() * 1600 - 800, y: rngF
 // ---------------- render ASCII de un cuadro ----------------
 // st: luz, ventana[rgb], noche, alarma, tormenta, marchito, senal, fuegos, foco{x,y}
 function escenaFinal(t, st) {
-  if (!escenaLista) construirEscena();
+  if (escenaLista !== VISTA_Z) construirEscena();
   const parpadeo = Math.sin(t * 9) > 0;
   const borde = 640 - st.noche * 1500;
   for (let i = 0; i < FN; i++) {
@@ -640,6 +652,7 @@ function cajaRedonda(ctx, x, y, w, h, r) { ctx.beginPath(); if (ctx.roundRect) c
 // ctx es el lienzo de 2560x1440: la escena ASCII va a resolucion completa y
 // lo demas (sprites, textos) se dibuja con escala x2 en coordenadas de 1280x720.
 function dibujarFinal(ctx, t) {
+  aplicarVista(1);   // los finales van siempre a pantalla completa
   const { tipo } = finalActual, info = FINALES[tipo];
   const { st, T, barras, aviso, tareas } = guion(tipo, t);
   // sonidos de la nave: baja (aterrizaje) y despega (cohete), una vez cada uno

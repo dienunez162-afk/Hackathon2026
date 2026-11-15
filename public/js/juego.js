@@ -127,12 +127,14 @@
     const w = Math.min(window.innerWidth, disp * 1280 / alto), h = w * alto / 1280;
     stage.style.width = w + "px"; stage.style.height = h + "px";
     hud.style.transform = `scale(${w / 1280})`;
-    // durante la partida la escena sube según el alto de la franja de abajo, para que la base quede completa
-    // arriba de ella (lo que se recorta es cielo). En el menú y los finales la escena va completa.
-    const franja = $("franja"), subir = hud.hidden || !franja ? 0 : Math.round(franja.offsetHeight * SUBIR_ESCENA);
-    canvas.style.transform = subir ? `translateY(${-subir * w / 1280}px)` : "";
   }
-  const SUBIR_ESCENA = 0.48;   // fracción del alto de la franja que sube la escena
+  // zoom de la escena en la partida: lo que va de y = +360 (arriba) a y = -VISTA_ABAJO tiene que caber
+  // arriba de la franja de abajo. Se calcula con su alto real: si la franja cambia, la escena se ajusta sola.
+  const VISTA_ABAJO = 300;
+  function zoomEscena() {
+    const f = $("franja"), alto = f ? f.offsetTop : 720;
+    return Math.max(1, Math.min(1.8, (360 + VISTA_ABAJO) / Math.max(200, alto)));
+  }
   window.addEventListener("resize", ajustar);
   new MutationObserver(ajustar).observe(hud, { attributes: true, attributeFilter: ["hidden"] });
   // el cuadro de texto es bajo: cuando una pantalla crece (llamadas con varios pasos, informes),
@@ -211,7 +213,7 @@
     if (now - ultimaEscena < 1000 / 12) return false;
     ultimaEscena = now;
     const t = (now - juegoT0) / 1000;
-    const st = Object.assign({}, J ? J.est : {}, { noche: (J && (J.noche || J.est.noche)) || false, etiquetas: J ? J.escena === "plano" : false });
+    const st = Object.assign({}, J ? J.est : {}, { noche: (J && (J.noche || J.est.noche)) || false, etiquetas: J ? J.escena === "plano" : false, zoom: zoomEscena() });
     try { E.render(vctx, J ? J.escena : "exterior", t, st); } catch (e) { console.error(e); }
     vctx.fillStyle = "rgba(3,5,10,0.22)"; vctx.fillRect(0, 0, canvas.width, canvas.height);
     stage.classList.toggle("tiembla", !!st.sismo);
@@ -272,7 +274,7 @@
   const hit = (p, q) => p[0] >= q.x && p[0] <= q.x + q.w && p[1] >= q.y && p[1] <= q.y + q.h;
   // módulo del plano bajo el puntero (coordenadas centradas, y hacia arriba, como escenas.js)
   function moduloEn(p) {
-    const x = p[0] - W / 2, y = H / 2 - p[1];
+    const z = zoomEscena(), x = (p[0] - W / 2) * z, y = H / 2 - p[1] * z;   // de la pantalla a la escena (con su zoom)
     const m = E.MODULOS.find((m) => x >= m.x0 && x <= m.x1 && y >= m.y0 && y <= m.y1);
     return m ? m.id : null;
   }
