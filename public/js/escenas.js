@@ -611,15 +611,21 @@
     stampF(ctx);
   }
   const rgb = (c) => `rgb(${c[0]},${c[1]},${c[2]})`;
+  // st.zoom (> 1 en la partida): la escena se aleja para caber completa arriba de la franja (ver juego.js)
   function render(ctx, id, t, st) {
-    const esc = ESCENAS[id];
+    const esc = ESCENAS[id], z = st.zoom || 1;
+    aplicarVista(z);
     let encima = null;
     if (esc.render) encima = esc.render(ctx, t, st);
     else renderCeldas(ctx, esc, t, st);
     ctx.save(); ctx.scale(FC, FC); ctx.imageSmoothingEnabled = false;
+    // sprites: misma escala que la escena (se achican con el zoom, desde arriba al centro)
+    ctx.save(); ctx.translate(W / 2, 0); ctx.scale(1 / z, 1 / z); ctx.translate(-W / 2, 0);
     if (encima) encima();
     if (esc.sprites && !st.sinAstro) esc.sprites(ctx, t, st);   // los finales dibujan su propio astronauta
-    if (st.etiquetas !== false && esc.etiquetas) for (const e of esc.etiquetas(st)) if (e) dibujarEtiqueta(ctx, { txt: e[0], x: e[1], y: e[2], col: rgb(e[3]), lado: e[4], a: 1 });
+    ctx.restore();
+    // etiquetas: en su lugar de la escena pero con letra de tamaño normal
+    if (st.etiquetas !== false && esc.etiquetas) for (const e of esc.etiquetas(st)) if (e) dibujarEtiqueta(ctx, { txt: e[0], x: vistaX(e[1]), y: vistaY(e[2]), col: rgb(e[3]), lado: e[4], a: 1 });
     ctx.restore();
   }
 
