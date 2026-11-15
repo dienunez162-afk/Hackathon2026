@@ -4,7 +4,7 @@ Revisada el 15 de noviembre de 2026 (rama `correcciones-pendientes`). Probado en
 
 ## Solo Diego puede hacerlo (Supabase)
 Estado del proyecto `tsidieehhdwspeomdixs` el 15-nov (probado de punta a punta): **ya funciona** el registro con alias, el inicio de sesión desde el juego, guardar partidas, los récords, pedir unirse a una clase, aceptar al alumno y que el maestro vea o deje de ver sus partidas, y el aislamiento entre alumnos. «Confirm email» ya está desactivado y Supabase acepta el dominio `alumnos.g-nosis.local`. Falta:
-- [ ] Correr `0004_borrar_cuenta.sql` y luego `0005_permisos_funciones.sql` (el botón «Borrar mi cuenta» no funciona hasta el 0004).
+- [ ] Correr `0004_borrar_cuenta.sql` y luego `0005_permisos_funciones.sql` (comprobado hoy: ninguno de los dos está corrido; el botón «Borrar mi cuenta» no funciona hasta el 0004).
 - [ ] **Subir esta rama a main** y poner en Vercel `SUPABASE_URL`, `SUPABASE_ANON_KEY` y `DOMINIO_ALUMNOS` (los valores están en `space apps/supabase-sql/LEEME.md`); luego redeploy. Hoy producción corre un `main` sin el menú de cuentas y sin `config.js`.
 - [ ] **Borrar las cuentas de prueba** que dejé en el proyecto (Authentication > Users): alumnos `prueba_claude_090534` (3 partidas, pidió unirse a la clase E30F48), `prueba_b_090936`; maestro `maestro.prueba.claude@example.com` y su grupo «4B prueba». Con el 0004 corrido, el alumno se puede borrar desde el juego (contraseña de prueba `Prueba-123456`).
 - [ ] Crear el maestro y el grupo reales (`0003_datos_de_prueba.sql` sirve de plantilla).
@@ -27,6 +27,7 @@ Estado del proyecto `tsidieehhdwspeomdixs` el 15-nov (probado de punta a punta):
 - [ ] Elegir 2-3 diferenciadores para la demo (ver `docs/propuestas-diferenciadores.docx`).
 
 ## Hecho
+- [x] **Menú ☰ MENÚ arriba a la derecha del inicio**, desplegable, con el idioma (español/inglés) y la cuenta dentro. Usa el mismo arte que el resto del juego (etiqueta, panel pixel y botones `.op`), se escala con la pantalla, está en español e inglés y desaparece al empezar a jugar. El aviso de sonido se corre a su izquierda.
 - [x] **Supabase probado de punta a punta** (15-nov): cuenta de alumno, sesión en el juego (también tras refrescar), partidas y récords (la misión guardada desde el juego sube el contador), maestro con grupo y código, solicitud pendiente, aceptación, visibilidad del maestro solo tras aceptar y tras salir de la clase, un alumno no ve ni escribe datos de otro, errores de alias en español. Para probar el guardado jugando en automático: `?auto=1&vel=4&guardar=1`.
 - [x] **Herramientas del equipo ocultas.** Solo salen con `?equipo=1` (o `?auto=1`, `?final=...`).
 - [x] **Celulares.** En vertical aparece «Gira tu dispositivo para jugar»; en horizontal el juego se escala y se lee.
