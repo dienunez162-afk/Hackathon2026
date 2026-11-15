@@ -15,6 +15,20 @@ Lista revisada el 15 de noviembre de 2026, después de probar `gnosis-kappa.verc
   - probar `supabase/migrations/0001_mision_lunar.sql`, que nunca se ha corrido en una base real.
 - [ ] **Aviso de privacidad.** Es obligatorio en cuanto se guarden datos de niños en Supabase.
 
+## Supabase: cuentas, récords y clases (rama `supabase-cuentas-salon`)
+Decisiones tomadas el 15-nov: cuenta del niño con **alias + contraseña, sin correo**; para entrar a una clase el niño escribe el código y **el maestro lo aprueba**; récords personales = estrellas, estado final de las barras y respuestas a la primera.
+- [x] Menú hamburguesa en el menú principal (`public/js/cuenta.js`): crear cuenta, entrar, ver récords, pedir unirse a una clase. Funciona sin llaves (avisa que las cuentas no están activas).
+- [x] Migración `supabase/migrations/0002_cuentas_y_clases.sql` (borrador, **nunca se ha corrido**): alumno sin grupo, alias único, solicitudes de clase, funciones `buscar_clase`, `pedir_unirme`, `resolver_solicitud`, `salir_de_clase`, `registrar_partida` y la vista `v_records`.
+- [x] Al terminar una misión en modo manual con sesión iniciada se guarda la partida (si no hay red, queda en cola y se reintenta).
+- [ ] **Crear el proyecto de Supabase** y correr 0001 y 0002 en orden. Ahí: Authentication > Providers > Email > **desactivar «Confirm email»** (el correo del alias es inventado).
+- [ ] Poner en Vercel `SUPABASE_URL`, `SUPABASE_ANON_KEY` y `DOMINIO_ALUMNOS` (el build genera `public/js/config.js`). La service role key nunca va al navegador.
+- [ ] Probar con dos cuentas reales: que el alias repetido falle bien, que el maestro solo vea a quien aceptó y que el niño no lea datos de otros (RLS).
+- [ ] **Panel del maestro**: aceptar o rechazar solicitudes (`resolver_solicitud`), crear grupos y mostrar el código. Hoy es solo la maqueta en `diseno/panel-maestro`.
+- [ ] Guardar también `respuestas` y `pasos` (hoy solo se guarda el resumen de la partida) para que el panel tenga datos de aprendizaje.
+- [ ] Restablecer contraseña de un alumno desde el panel (Edge Function). Sin correo no hay otra forma.
+- [ ] La Edge Function `crear-alumno` (flujo antiguo) choca con el alias único global; retirarla o adaptarla.
+- [ ] Aviso de privacidad y consentimiento de padres antes de abrirlo a niños. Los récords los manda el navegador, así que un niño con conocimientos podría falsearlos: aceptable mientras no haya tablas de posiciones.
+
 ## Contenido (opcional)
 - [ ] **Voz en off para el niño.** Hoy solo se activa desde las herramientas del equipo. Ayudaría a 1° y 2° como botón visible.
 - [ ] **Minijuego del día 12 (E-D12a).** El grafo dice "mantener tres soportes en equilibrio", pero el juego usa "atrapar piezas".

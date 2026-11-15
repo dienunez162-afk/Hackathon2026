@@ -241,6 +241,7 @@
   function frame(now) {
     const dt = Math.min(0.1, (now - (last || now)) / 1000); last = now;
     let menuLike = true;
+    if (window.CUENTA) CUENTA.visible(estado === "menu");          // hamburguesa de cuenta solo en el menú principal
     if (estado === "menu") drawMenu(Math.max(0, (now - menuStart) / 1000));
     else if (estado === "aterrizaje") {
       const s = (now - seqStart) / 1000;
@@ -447,7 +448,7 @@
       st: { mision: 0 }, dia: 0, rama: null, noche: false, escena: "exterior", est: {}, esperaModulo: null, enMinijuego: false,
       cartas: {}, aprendidos: {}, repasos: [], pasados: ((historial && historial.repasos) || []).slice(), diferidos: [],
       preguntados: {}, preparado: false, log: [], marcas: {}, hechasL: new Set(), hechasA: new Set(),
-      cuenta: { ll: 0, llOk: 0, av: 0, avOk: 0, usos: 0, mj: 0, mjOk: 0 },
+      cuenta: { ll: 0, llOk: 0, av: 0, avOk: 0, usos: 0, mj: 0, mjOk: 0, pq: 0, pq1: 0 },
     };
     for (const b of BARRAS) J.st[b] = G.barras[b].inicio;
     for (const t of (historial && historial.cartas) || []) { J.cartas[t] = { usada: false, armada: false }; J.aprendidos[t] = -99; }
@@ -1049,7 +1050,7 @@
       const libres = opciones.map((_, i) => i).filter((i) => i !== correcta && !tachadas.has(i));
       const pa = intento === 1 ? pAuto : pAuto + (1 - pAuto) / 2;
       const i = await botones(cont, opciones.map((o, k) => ({ html: esc(o), dis: tachadas.has(k) })), { auto: () => (Math.random() < pa || !libres.length ? correcta : libres[Math.floor(Math.random() * libres.length)]), delay });
-      if (i === correcta) { marcar(cont, i, "ok"); if (window.SFX) SFX.play("acierto"); aviso.innerHTML = ""; return { ok: true, intentos: intento }; }
+      if (i === correcta) { marcar(cont, i, "ok"); if (window.SFX) SFX.play("acierto"); aviso.innerHTML = ""; if (J && J.cuenta) { J.cuenta.pq++; if (intento === 1) J.cuenta.pq1++; } return { ok: true, intentos: intento }; }
       if (window.SFX) SFX.play("error");
       tachadas.add(i);
       if (intento === 1) {
@@ -1059,6 +1060,7 @@
         marcar(cont, i, "ko"); marcar(cont, correcta, "ok");
         aviso.innerHTML = `<div class="res ko">Era «${esc(opciones[correcta])}». ${esc(q.explicacion || "")}${cobrarError(q.barra)}</div>`;
         hablar((q.explicacion || "").length + 20);
+        if (J && J.cuenta) J.cuenta.pq++;
         return { ok: false, intentos: 2 };
       }
     }
@@ -1284,6 +1286,13 @@
     const ex = n.exito;
     log(ex ? `Fin: ${n.titulo} (${n.estrellas} estrellas).` : `Fin: ${n.titulo}.`);
     J.musicaFinal = ex ? "final-bueno" : "final-malo";
+    // récords en la cuenta del niño (no se guardan las partidas del modo automático del equipo)
+    if (window.CUENTA && ui.modo === "manual") {
+      const lim100 = (x) => Math.max(0, Math.min(100, Math.round(+x || 0)));
+      CUENTA.guardarPartida({ version: (window.GRAFO && GRAFO.version) || "0", nivelReto: J.reto, nivelLectura: J.lectura, final: n.id, estrellas: ex ? Math.max(0, Math.min(3, n.estrellas | 0)) : 0,
+        diaFinal: Math.max(0, Math.min(14, J.dia | 0)), barras: { radiacion: lim100(J.st.radiacion), energia: lim100(J.st.energia), comida: lim100(J.st.comida), salud: lim100(J.st.salud) },
+        tareas: Math.max(0, J.st.mision | 0), pregTotal: J.cuenta.pq, pregPrimera: Math.min(J.cuenta.pq1, J.cuenta.pq) });
+    }
     await verCinematica(FINAL_DE[n.id] || (ex ? "relevo" : "apagon"));
     escena("exterior", { nave: !!ex });
     // "lo que aprendiste" ya va en la tarjeta de la cinemática (finales.js)

@@ -24,3 +24,11 @@ if (process.env.VERCEL || pedirVersion) {
   writeFileSync(ruta, html);
   console.log("index.html: scripts con ?v=" + version);
 }
+
+// 3. Llaves públicas de Supabase para el navegador (solo si están en el entorno; nunca la service role).
+if (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) {
+  const cfg = { url: process.env.SUPABASE_URL, anon: process.env.SUPABASE_ANON_KEY, dominio: process.env.DOMINIO_ALUMNOS || "alumnos.g-nosis.local" };
+  writeFileSync(join(raiz, "public", "js", "config.js"),
+    "/* generado por scripts/generar-datos.mjs desde las variables de entorno */\nwindow.GNOSIS_CONFIG = " + JSON.stringify(cfg) + ";\n");
+  console.log("public/js/config.js: Supabase activo");
+}

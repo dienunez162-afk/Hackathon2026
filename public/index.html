@@ -203,6 +203,29 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 #toast { position: absolute; right: 16px; bottom: 14px; width: 262px; font-size: 12.5px; padding: 10px 12px; box-sizing: border-box; background: var(--panel); border: 1px solid var(--crema); color: var(--crema); opacity: 0; transition: opacity 0.4s; pointer-events: none; }
 #toast.on { opacity: 1; }
 
+
+/* menú de cuenta (hamburguesa del menú principal): alias, récords y clase */
+#btn-menu-cuenta { position: absolute; left: 14px; top: 14px; z-index: 6; width: 44px; height: 44px; display: grid; place-content: center; gap: 5px; background: var(--panel); border: 1px solid var(--borde); border-radius: 6px; cursor: pointer; padding: 0; }
+#btn-menu-cuenta span { display: block; width: 22px; height: 3px; background: var(--casco); }
+#btn-menu-cuenta:hover, #btn-menu-cuenta:focus-visible { border-color: var(--cian); outline: none; }
+#panel-cuenta { position: absolute; left: 14px; top: 66px; z-index: 7; width: min(360px, calc(100% - 28px)); max-height: calc(100% - 90px); overflow: auto; box-sizing: border-box; padding: 14px 16px; background: var(--panel); border: 1px solid var(--borde); border-radius: 6px; font-size: 13px; line-height: 1.45; }
+#panel-cuenta h3 { margin: 0 0 8px; font-size: 16px; color: var(--cian); }
+#panel-cuenta h4 { margin: 12px 0 4px; font-size: 12px; letter-spacing: 0.12em; color: var(--lila); text-transform: uppercase; }
+#panel-cuenta p { margin: 6px 0; }
+#panel-cuenta label { display: block; margin: 8px 0; color: var(--dim); }
+#panel-cuenta input { display: block; width: 100%; box-sizing: border-box; margin-top: 3px; padding: 8px; font: inherit; font-size: 15px; color: var(--ink); background: rgba(0,0,0,0.5); border: 1px solid var(--borde); border-radius: 4px; }
+#panel-cuenta input:focus { outline: 2px solid var(--cian); }
+#panel-cuenta button { font: inherit; color: var(--ink); background: rgba(168,162,232,0.14); border: 1px solid var(--borde); border-radius: 4px; padding: 8px 12px; cursor: pointer; }
+#panel-cuenta button:hover, #panel-cuenta button:focus-visible { border-color: var(--cian); outline: none; }
+#panel-cuenta .cta-prim { background: rgba(120,245,255,0.16); border-color: var(--cian); margin-top: 4px; }
+#panel-cuenta .cta-sec { margin-top: 14px; }
+#panel-cuenta .cta-tabs { display: flex; gap: 6px; margin-bottom: 6px; }
+#panel-cuenta .cta-tabs [aria-selected="true"] { border-color: var(--cian); color: var(--cian); }
+#panel-cuenta .cta-nota { font-size: 12px; color: var(--dim); }
+#panel-cuenta .cta-msg.mal { color: var(--rojo); } #panel-cuenta .cta-msg.ok { color: var(--verde); }
+#panel-cuenta .cta-records { margin: 0; } #panel-cuenta .cta-records div { display: flex; justify-content: space-between; gap: 10px; padding: 3px 0; border-bottom: 1px dotted var(--faint); }
+#panel-cuenta .cta-records dt { color: var(--dim); } #panel-cuenta .cta-records dd { margin: 0; color: var(--crema); text-align: right; }
+#cta-cerrar { position: absolute; right: 8px; top: 8px; padding: 2px 8px !important; }
 /* herramientas del equipo (fuera del juego, plegadas) */
 #ctrl { width: 100%; box-sizing: border-box; background: rgb(8, 9, 18); border-top: 1px solid rgba(168, 162, 232, 0.18); font-size: 12px; color: var(--dim); }
 #ctrl summary { cursor: pointer; padding: 6px max(16px, env(safe-area-inset-left, 0px)); color: var(--faint); list-style: none; text-align: center; }
@@ -342,6 +365,8 @@ details.saber[open] summary { color: var(--ink); }
 <div id="app">
   <div id="stage">
     <canvas id="juego" width="2560" height="1440" aria-label="G-NOSIS: la Luna y la base dibujadas en ASCII"></canvas>
+    <button type="button" id="btn-menu-cuenta" aria-expanded="false" aria-controls="panel-cuenta" aria-label="Menú: mi cuenta, récords y clase" title="Mi cuenta, récords y clase" hidden><span></span><span></span><span></span></button>
+    <section id="panel-cuenta" role="dialog" aria-label="Mi cuenta" hidden><button type="button" id="cta-cerrar" aria-label="Cerrar">✕</button><div id="panel-cuerpo"></div></section>
     <div id="hud" hidden>
       <div id="franja" aria-hidden="true"></div>
       <div class="top">
@@ -433,6 +458,8 @@ details.saber[open] summary { color: var(--ink); }
 <script src="js/preguntas.js"></script>
 <script src="js/minijuegos.js"></script>
 <script src="js/bitacora.js"></script>
+<script src="js/config.js"></script>
+<script src="js/cuenta.js"></script>
 <script src="js/juego.js"></script>
 </body>
 </html>

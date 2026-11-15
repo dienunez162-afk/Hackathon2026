@@ -8,7 +8,7 @@
     "datos": "node scripts/generar-datos.mjs",
     "dev": "npm run datos && node scripts/servidor-local.js 3000",
     "dev:vercel": "npm run datos && vercel dev",
-    "check": "node scripts/generar-datos.mjs && node --check public/js/juego.js && node --check public/js/minijuegos.js && node --check public/js/escenas.js && node --check public/js/apis.js && node --check public/js/preguntas.js && node --check public/js/bitacora.js && node --check api/donki.js && node --check api/radlab.js && node --check api/osdr.js && npm test",
+    "check": "node scripts/generar-datos.mjs && node --check public/js/juego.js && node --check public/js/minijuegos.js && node --check public/js/escenas.js && node --check public/js/apis.js && node --check public/js/preguntas.js && node --check public/js/bitacora.js && node --check public/js/cuenta.js && node --check api/donki.js && node --check api/radlab.js && node --check api/osdr.js && npm test",
     "simular": "node herramientas/simulador-mision.js",
     "test": "node --test pruebas/preguntas.test.js"
   },
