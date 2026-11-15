@@ -703,6 +703,7 @@
     if (J.cartas[t]) return;
     J.cartas[t] = { usada: false, armada: false };
     pintarCartas(t);
+    if (window.SFX) SFX.play("carta-nueva");
     const k = R.temas[t].carta;
     const c = pantalla(`<span class="tag">NUEVA CARTA</span><h2 class="titulo">${esc(k.nombre)}</h2><p class="txt">${esc(k.frase)}</p>` +
       `<p class="sub">Se guardó en tu bitácora. ${k.uso.tipo === "escudo" ? `Es un escudo para la ${MINUS[k.uso.barra]}.` : `Suma ${k.uso.valor} de ${MINUS[k.uso.barra]}.`} Úsala en el momento justo.</p><div id="inf"></div><div class="ops" id="ops"></div>`);
@@ -755,6 +756,7 @@
     marca("ll");
     animo("alerta");
     await irA("control", { llamada: true }, "¡Suena la radio en");
+    if (window.SFX) SFX.play("llamada");
     let c = pantalla(`<span class="tag llamada">LLAMADA ENTRANTE</span><h2 class="titulo">((( Control de Misión )))</h2><p class="sub">${esc(R.temas[s.tema].nombre)}</p><div class="ops" id="ops"></div>`);
     await continuar(c.querySelector("#ops"), "Contestar ▸", 1100);
     if (s.escenario && s.escenario !== "control") escena(s.escenario, {});
@@ -778,6 +780,7 @@
     });
     const accOk = ia === pos;
     marcar(accs, ia, accOk ? "ok" : "ko");
+    if (window.SFX) SFX.play(accOk ? "acierto" : "error");
     const elegida = acc[ia];
     const ef = !accOk && conApoyo() ? suavizar(elegida.efectos) : elegida.efectos;
     aplicar(ef);
@@ -841,8 +844,8 @@
       const libres = ops.map((_, i) => i).filter((i) => i !== pos && !tachadas.has(i));
       const html = ops.map((o, x) => ({ html: esc(o.t), dis: tachadas.has(x) }));
       const i = await botones(accs, html, { auto: () => (Math.random() < pAuto || !libres.length ? pos : pick(libres)), delay: 2000 });
-      if (i === pos) { marcar(accs, i, "ok"); break; }
-      tachadas.add(i); marcar(accs, i, "ko");
+      if (i === pos) { marcar(accs, i, "ok"); if (window.SFX) SFX.play("acierto"); break; }
+      tachadas.add(i); marcar(accs, i, "ko"); if (window.SFX) SFX.play("error");
       aplicar(dano(porError));
       const clave = a.pistas.clave[intentos === 1 ? 0 : 1] || a.pistas.clave[0];
       c.querySelector("#res").innerHTML = `<div class="res ko">Eso no lo arregló. Dra. Ortiz: fíjate en esta pista: «${esc(clave)}».</div>`;

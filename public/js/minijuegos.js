@@ -12,6 +12,7 @@
   const barajar = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const pick = (a) => a[Math.floor(Math.random() * a.length)];
   const porNivel = (n, a) => a[Math.max(0, Math.min(2, n - 1))];
+  const sfx = (nombre) => { if (window.SFX) SFX.play(nombre); };   // efectos de sonido (sfx.js)
 
   // ---------- armazón comun: título, instrucciones, tiempo y cierre ----------
   function marco(op, titulo, instr) {
@@ -35,6 +36,8 @@
     function fin(gano, msg) {
       if (!vivo) return;
       vivo = false; clearInterval(id); limpiezas.forEach((f) => f());
+      if (window.SFX) SFX.pararTodo();
+      sfx(gano ? "gano" : "perdio");
       ui.estado.textContent = msg || (gano ? "¡Lo lograste!" : "No salió esta vez.");
       ui.estado.className = "mj-estado " + (gano ? "ok" : "ko");
       setTimeout(() => resolver({ gano }), 900);
@@ -66,10 +69,11 @@
       if (b.dataset.l != null) { ui.cuerpo.querySelectorAll("[data-l]").forEach((x) => x.classList.remove("sel")); b.classList.add("sel"); sel = +b.dataset.l; return; }
       if (sel == null) return s.estado("Primero toca un cable de la izquierda.");
       if (+b.dataset.r === sel) {
+        sfx("cable-conectar");
         b.disabled = true; b.classList.add("ok");
         const l = ui.cuerpo.querySelector(`[data-l="${sel}"]`); l.disabled = true; l.classList.add("ok"); l.classList.remove("sel");
         sel = null; if (++hechos === n) s.fin(true, "¡Todo conectado!");
-      } else { err++; b.classList.add("mal"); setTimeout(() => b.classList.remove("mal"), 400); s.estado(`Ese no es. Errores: ${err} de ${maxErr}.`); if (err > maxErr) s.fin(false, "Demasiadas conexiones equivocadas."); }
+      } else { sfx("error"); err++; b.classList.add("mal"); setTimeout(() => b.classList.remove("mal"), 400); s.estado(`Ese no es. Errores: ${err} de ${maxErr}.`); if (err > maxErr) s.fin(false, "Demasiadas conexiones equivocadas."); }
     });
     return s.promesa;
   }
@@ -86,15 +90,15 @@
       if (i === ultima || !s.vivo()) return; ultima = i;
       const el = ui.cuerpo.querySelector(`[data-i="${i}"]`);
       if (estado[i] === 0) { estado[i] = 1; limpias++; el.className = "celda limpia"; el.textContent = "·"; }
-      else if (estado[i] === 1) { estado[i] = 2; rayas++; el.className = "celda raya"; el.textContent = "x"; ui.cuerpo.querySelector(".rayas").textContent = rayas; }
+      else if (estado[i] === 1) { sfx("rayon"); estado[i] = 2; rayas++; el.className = "celda raya"; el.textContent = "x"; ui.cuerpo.querySelector(".rayas").textContent = rayas; }
       if (rayas > maxRayas) s.fin(false, "Rayaste demasiado el panel: ahora produce menos.");
       else if (limpias === C * F) s.fin(true, "¡Panel limpio y sin rayones de más!");
     };
     const panel = ui.cuerpo.querySelector(".mj-panel");
     const celdaEn = (e) => { const el = document.elementFromPoint(e.clientX, e.clientY); return el && el.dataset && el.dataset.i != null && panel.contains(el) ? +el.dataset.i : -1; };
-    panel.addEventListener("pointerdown", (e) => { abajo = true; ultima = -1; panel.setPointerCapture?.(e.pointerId); const i = celdaEn(e); if (i >= 0) tocar(i); });
+    panel.addEventListener("pointerdown", (e) => { abajo = true; ultima = -1; if (s.vivo() && window.SFX) SFX.bucle("limpiar-panel", true); panel.setPointerCapture?.(e.pointerId); const i = celdaEn(e); if (i >= 0) tocar(i); });
     panel.addEventListener("pointermove", (e) => { if (!abajo) return; const i = celdaEn(e); if (i >= 0) tocar(i); });
-    window.addEventListener("pointerup", () => { abajo = false; ultima = -1; });
+    window.addEventListener("pointerup", () => { abajo = false; ultima = -1; if (window.SFX) SFX.bucle("limpiar-panel", false); });
     return s.promesa;
   }
 
@@ -124,7 +128,7 @@
     s.cada(vel, () => {
       tick++;
       for (const o of cosas) o.r++;
-      for (const o of cosas.filter((o) => o.r === R - 1)) { if (o.c === pos) atrapadas++; else fallas++; }
+      for (const o of cosas.filter((o) => o.r === R - 1)) { if (o.c === pos) { atrapadas++; sfx("atrapar"); } else { fallas++; sfx("caer"); } }
       cosas = cosas.filter((o) => o.r < R - 1);
       if (tick % 3 === 0) cosas.push({ c: Math.floor(Math.random() * L), r: 0 });
       pintar();
@@ -164,7 +168,7 @@
     const s = sesion(op, ui, tiempoBase(op, porNivel(op.nivel, [24, 30, 36])));
     const mover = (d) => {
       if (!s.vivo() || muros[yo][d]) return;
-      yo += d === "n" ? -C : d === "s" ? C : d === "e" ? 1 : -1; pintar();
+      yo += d === "n" ? -C : d === "s" ? C : d === "e" ? 1 : -1; pintar(); sfx("paso");
       if (yo === meta) s.fin(true, "¡Llegaste al refugio y cerraste la compuerta!");
     };
     s.teclas((e) => { const m = { ArrowUp: "n", w: "n", ArrowDown: "s", s: "s", ArrowRight: "e", d: "e", ArrowLeft: "o", a: "o" }[e.key]; if (m) { e.preventDefault(); mover(m); } });
@@ -193,14 +197,14 @@
       el.classList.add("hoyo"); el.textContent = "( )";
       hoyos.set(i, setTimeout(() => {
         if (!s.vivo() || !hoyos.has(i)) return;
-        hoyos.delete(i); el.classList.remove("hoyo"); el.textContent = "▒▒"; fallas++; act();
+        hoyos.delete(i); el.classList.remove("hoyo"); el.textContent = "▒▒"; fallas++; act(); sfx("fuga-aire");
         if (fallas > maxFallas) s.fin(false, "Se escapó demasiado aire.");
       }, dura));
     });
     ui.cuerpo.addEventListener("click", (e) => {
       const b = e.target.closest("[data-i]"); if (!b || !s.vivo()) return; const i = +b.dataset.i;
       if (!hoyos.has(i)) return;
-      clearTimeout(hoyos.get(i)); hoyos.delete(i); b.classList.remove("hoyo"); b.textContent = "▒▒"; tapados++; act();
+      clearTimeout(hoyos.get(i)); hoyos.delete(i); b.classList.remove("hoyo"); b.textContent = "▒▒"; tapados++; act(); sfx("tapar");
       if (tapados >= meta) s.fin(true, "¡Base sellada!");
     });
     return s.promesa;
@@ -216,9 +220,10 @@
     ui.cuerpo.addEventListener("click", (e) => {
       const b = e.target.closest("[data-i]"); if (!b || b.disabled || !s.vivo()) return;
       if (+b.dataset.i === sig) {
+        sfx("acierto");
         b.disabled = true; b.classList.add("ok"); ui.cuerpo.querySelector(".mj-hechos").insertAdjacentHTML("beforeend", `<li>${esc(pasos[sig])}</li>`);
         if (++sig === n) s.fin(true, "¡Todo en el orden correcto!");
-      } else { err++; b.classList.add("mal"); setTimeout(() => b.classList.remove("mal"), 400); s.estado(`Ese paso va después. Errores: ${err} de ${maxErr}.`); if (err > maxErr) s.fin(false, "El orden no fue el correcto."); }
+      } else { sfx("error"); err++; b.classList.add("mal"); setTimeout(() => b.classList.remove("mal"), 400); s.estado(`Ese paso va después. Errores: ${err} de ${maxErr}.`); if (err > maxErr) s.fin(false, "El orden no fue el correcto."); }
     });
     return s.promesa;
   }
@@ -236,8 +241,8 @@
     z.style.left = zona0 + "%"; z.style.width = ancho + "%";
     const s = sesion(op, ui, tiempoBase(op, 22));
     const mover = (d) => { v = Math.max(0, Math.min(100, v + d)); a.style.left = v + "%"; };
-    ui.cuerpo.querySelector(".mj-botones").addEventListener("click", (e) => { const b = e.target.closest("[data-m]"); if (b) mover(+b.dataset.m); });
-    s.teclas((e) => { if (e.key === "ArrowLeft" || e.key === "-") mover(-6); if (e.key === "ArrowRight" || e.key === "+") mover(6); });
+    ui.cuerpo.querySelector(".mj-botones").addEventListener("click", (e) => { const b = e.target.closest("[data-m]"); if (b) { sfx("perilla"); mover(+b.dataset.m); } });
+    s.teclas((e) => { if (e.key === "ArrowLeft" || e.key === "-") { sfx("perilla"); mover(-6); } if (e.key === "ArrowRight" || e.key === "+") { sfx("perilla"); mover(6); } });
     s.cada(100, () => {
       mover((Math.random() - 0.5) * porNivel(op.nivel, [2.5, 4, 5.5]) + (op.meta === "enfriar" ? 0.6 : op.meta === "calentar" ? -0.6 : 0));
       if (v >= zona0 && v <= zona0 + ancho) dentro += 0.1;
@@ -263,8 +268,8 @@
     let ok = 0, err = 0;
     ui.cuerpo.addEventListener("click", (e) => {
       const b = e.target.closest("[data-i]"); if (!b || b.disabled || !s.vivo()) return;
-      if (objetivos.has(+b.dataset.i)) { b.disabled = true; b.classList.add("ok"); if (++ok === meta) s.fin(true, "¡Las encontraste todas!"); }
-      else { err++; b.classList.add("mal"); setTimeout(() => b.classList.remove("mal"), 400); s.estado(`Esa no. Errores: ${err} de ${maxErr}.`); if (err > maxErr) s.fin(false, "Demasiados errores."); }
+      if (objetivos.has(+b.dataset.i)) { sfx("encontrar"); b.disabled = true; b.classList.add("ok"); if (++ok === meta) s.fin(true, "¡Las encontraste todas!"); }
+      else { sfx("error"); err++; b.classList.add("mal"); setTimeout(() => b.classList.remove("mal"), 400); s.estado(`Esa no. Errores: ${err} de ${maxErr}.`); if (err > maxErr) s.fin(false, "Demasiados errores."); }
     });
     return s.promesa;
   }
@@ -329,13 +334,13 @@
       const x = yo % C, y = Math.floor(yo / C);
       const nx = x + (d === "e" ? 1 : d === "o" ? -1 : 0), ny = y + (d === "s" ? 1 : d === "n" ? -1 : 0);
       if (nx < 0 || ny < 0 || nx >= C || ny >= F) return;
-      yo = ny * C + nx; vistos.add(yo); bateria--; pintar();
+      yo = ny * C + nx; vistos.add(yo); bateria--; pintar(); sfx("rover-mover");
       if (hielos.has(yo)) return s.fin(true, "¡Encontraste hielo! Es agua para la base.");
       if (bateria <= 0) s.fin(false, "Se acabó la batería en la oscuridad.");
     };
     ui.cuerpo.querySelector(".mj-botones").addEventListener("click", (e) => {
       const b = e.target.closest("button"); if (!b) return;
-      if (b.dataset.radar) { if (!s.vivo()) return; bateria--; const d = cerca(); ui.cuerpo.querySelector(".rad").textContent = "Radar: " + (d <= 2 ? "¡muy cerca!" : d <= 4 ? "cerca" : "lejos"); pintar(); if (bateria <= 0) s.fin(false, "Se acabó la batería."); }
+      if (b.dataset.radar) { if (!s.vivo()) return; sfx("radar"); bateria--; const d = cerca(); ui.cuerpo.querySelector(".rad").textContent = "Radar: " + (d <= 2 ? "¡muy cerca!" : d <= 4 ? "cerca" : "lejos"); pintar(); if (bateria <= 0) s.fin(false, "Se acabó la batería."); }
       else mover(b.dataset.d);
     });
     s.teclas((e) => { const m = { ArrowUp: "n", w: "n", ArrowDown: "s", s: "s", ArrowRight: "e", d: "e", ArrowLeft: "o", a: "o" }[e.key]; if (m) { e.preventDefault(); mover(m); } });
@@ -361,7 +366,7 @@
     };
     ui.cuerpo.addEventListener("click", (e) => {
       const b = e.target.closest("button"); if (!b || !s.vivo()) return;
-      if (b.dataset.i != null) { const m = mods[+b.dataset.i]; m.on = !m.on; pintar(); return; }
+      if (b.dataset.i != null) { const m = mods[+b.dataset.i]; m.on = !m.on; sfx("interruptor"); pintar(); return; }
       const total = mods.filter((m) => m.on).reduce((a, m) => a + m.c, 0), sinEsencial = mods.find((m) => m.esencial && !m.on);
       if (sinEsencial) { err++; s.estado(`¡${sinEsencial.n} es indispensable! Afuera hay -133 °C. Errores: ${err} de ${maxErr}.`); }
       else if (total > tope) { err++; s.estado(`Todavía gastas ${total}. Apaga algo más. Errores: ${err} de ${maxErr}.`); }
@@ -387,7 +392,7 @@
       ui.cuerpo.innerHTML = `<p class="mj-tit2">${esc(c.nombre)}</p><p class="mj-ins">${esc(c.frase)}</p><div class="mj-opciones col">${opciones.map((o, i) => `<button type="button" class="op" data-i="${i}">${esc(o)}</button>`).join("")}</div>`;
       ui.cuerpo.querySelector(".mj-opciones").onclick = (e) => {
         const b = e.target.closest("[data-i]"); if (!b || !s.vivo()) return;
-        const ok = opciones[+b.dataset.i] === c.momento; b.classList.add(ok ? "ok" : "mal"); if (ok) bien++;
+        const ok = opciones[+b.dataset.i] === c.momento; b.classList.add(ok ? "ok" : "mal"); sfx(ok ? "acierto" : "error"); if (ok) bien++;
         k++;
         setTimeout(() => { if (k < qs.length) siguiente(); else s.fin(bien >= Math.ceil(qs.length / 2), `${bien} de ${qs.length} respuestas para la Tierra.`); }, 500);
       };

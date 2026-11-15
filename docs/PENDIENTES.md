@@ -3,8 +3,7 @@
 Lista revisada el 15 de noviembre de 2026, después del primer despliegue en Vercel.
 
 ## Revisar en Vercel (5 minutos)
-- [ ] **Llave de la NASA.** Abrir `/api/donki` en el dominio de Vercel. Si responde 502, poner `NASA_API_KEY` en Settings → Environment Variables y volver a desplegar. Sin la llave, el pronóstico usa datos de muestra.
-- [ ] **Las otras dos APIs.** `/api/radlab` y `/api/osdr` deben responder con datos. En "herramientas del equipo", la línea "Datos" debe decir `real` en las tres.
+- [ ] **Revisar las APIs en Vercel.** `/api/donki`, `/api/radlab` y `/api/osdr` deben responder con datos (ninguna pide llave). En "herramientas del equipo", la línea "Datos" debe decir `real` en las tres.
 
 ## Antes de enseñarlo o entregarlo
 - [ ] **Ocultar las herramientas del equipo.** Hoy cualquier niño puede abrirlas, ver los niveles o activar el modo automático. Mostrarlas solo con un parámetro como `?equipo=1`.
@@ -25,6 +24,8 @@ Lista revisada el 15 de noviembre de 2026, después del primer despliegue en Ver
 
 - [ ] **Escuchar la música nueva** y decir si el volumen y el estilo les gustan (no se pudo oír en las pruebas).
 - [ ] **Probar la dificultad con niños.** El balance sale del simulador; hay que ver si con niños reales se siente justo.
+
+- [ ] **Grabar los efectos de sonido** que faltan (lista en el README, sección "Efectos de sonido"). Ya está `limpiar-panel`.
 
 ## Para Space Apps
 - [ ] Revisar en la página del reto qué piden exactamente (normalmente un video corto de demo, la descripción del proyecto y qué datos de la NASA se usan). La tabla de APIs del README sirve para esto último.

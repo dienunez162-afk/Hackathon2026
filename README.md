@@ -19,12 +19,12 @@ El navegador llama a `/api/*` (funciones de Vercel) y nunca directo a la NASA. L
 
 | Ruta | Fuente | Llave | Uso en el juego |
 |---|---|---|---|
-| `/api/donki` | [DONKI](https://api.nasa.gov) (CME, tormentas geomagnéticas GST, llamaradas FLR) | `NASA_API_KEY` (sin ella usa `DEMO_KEY`, muy limitada) | Pronóstico del día 5 y probabilidad de la tormenta sorpresa (N-D12b) |
+| `/api/donki` | [DONKI](https://ccmc.gsfc.nasa.gov/DONKI-API/get/) de NASA CCMC (llamaradas FLR, CME, tormentas geomagnéticas GST) | No necesita (si CCMC falla, usa api.nasa.gov con `NASA_API_KEY`) | Pronóstico del día 5 y probabilidad de la tormenta sorpresa (N-D12b) |
 | `/api/radlab` | [RadLab](https://visualization.osdr.nasa.gov/radlab/) · CRaTER del LRO | No necesita | Gráfica de radiación del día 4, con 7 días reales |
 | `/api/osdr` | [OSDR](https://osdr.nasa.gov) (estudios biológicos) | No necesita | Estudio real de plantas en el informe del invernadero |
 
 Notas (noviembre de 2026):
-- `/DONKI/FLR` de api.nasa.gov responde 404. La función usa CME y GST, y vuelve a usar FLR cuando regrese.
+- DONKI se lee directo de `ccmc.gsfc.nasa.gov/DONKI-API/get/`, que no pide llave y sí trae las llamaradas (FLR). api.nasa.gov queda solo de respaldo.
 - CRaTER en RadLab tiene datos hasta junio de 2024. Por eso se usa mayo-junio de 2024 (`RADLAB_DESDE` / `RADLAB_HASTA`), que incluye las tormentas solares de mayo de 2024.
 - Si una API falla, `public/js/apis.js` usa una copia guardada de datos reales (RadLab, OSDR) o una muestra (DONKI), y el juego sigue.
 
@@ -49,6 +49,26 @@ Notas (noviembre de 2026):
 | `public/audio/final-malo.mp3` | Finales con evacuación |
 
 La música de fondo se genera en el navegador con Web Audio (original, sin licencias externas). Las pistas mp3 son del equipo. Para cambiar qué eventos ponen la alarma, edita `peligroDe()` en `public/js/juego.js`.
+
+## Efectos de sonido
+`public/js/sfx.js`. Si el efecto tiene archivo, suena `public/audio/sfx/<nombre>.mp3`; si no, suena uno corto provisional generado en código. Para poner el suyo: guarden el mp3 con ese nombre en `public/audio/sfx/` y agreguen el nombre a `ARCHIVOS` en `sfx.js`.
+
+| Nombre | Dónde suena | Archivo |
+|---|---|---|
+| `limpiar-panel` | Limpiar el polvo de los paneles: en bucle mientras se arrastra | ✅ del equipo |
+| `rayon` | Limpiar: pasar dos veces y rayar el panel | provisional |
+| `cable-conectar` | Cables: conexión correcta | provisional |
+| `atrapar` / `caer` | Atrapar cajas o piezas / se cae una | provisional |
+| `paso` | Laberinto al refugio: cada paso | provisional |
+| `tapar` / `fuga-aire` | Tapar agujeros / se escapa el aire | provisional |
+| `perilla` | Ajustar temperatura o alinear la nave | provisional |
+| `encontrar` | Buscar plantas enfermas, lechugas o la fuga | provisional |
+| `rover-mover` / `radar` | Rover en el cráter | provisional |
+| `interruptor` | Repartir la energía de noche | provisional |
+| `acierto` / `error` | Secuencias, preguntas de la Tierra, llamadas y averías | provisional |
+| `gano` / `perdio` | Al terminar cualquier minijuego | provisional |
+| `llamada` | Llamada entrante de Control de Misión | provisional |
+| `carta-nueva` | Se descubre una carta | provisional |
 
 ## Privacidad
 En modo Libre el progreso se guarda solo en el dispositivo (`localStorage`). En modo Salón, los alumnos usan un alias y un código, sin correo.
