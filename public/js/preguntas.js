@@ -27,12 +27,13 @@
     for (let i = orden.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [orden[i], orden[j]] = [orden[j], orden[i]]; }
     return { opciones: orden.map((i) => opciones[i]), correcta: orden.indexOf(indiceCorrecto) };
   }
-  // deja la correcta y los primeros distractores, según el nivel (2, 3 o 4 opciones)
+  // deja la correcta y los primeros distractores, según el nivel (3, 3 o 4 opciones).
+  // En el banco la 2ª opción es la plausible y la 3ª la fácil de descartar (del mismo tema).
   function recortarOpciones(opciones, indiceCorrecto, cuantas) {
     const correcta = opciones[indiceCorrecto], otras = opciones.filter((_, i) => i !== indiceCorrecto).slice(0, Math.max(1, cuantas - 1));
     return { opciones: [correcta, ...otras], indiceCorrecto: 0 };
   }
-  const opcionesPorNivel = (nivel) => ({ 1: 2, 2: 3, 3: 4 })[lim(nivel | 0, 1, 3)];
+  const opcionesPorNivel = (nivel) => ({ 1: 3, 2: 3, 3: 4 })[lim(nivel | 0, 1, 3)];
   // orden fijo por pregunta: misma pregunta, mismo orden de opciones en cada partida
   const barajarFijo = (opciones, indiceCorrecto, clave) => barajarConCorrecta(opciones, indiceCorrecto, semilla(clave));
 

@@ -1,5 +1,5 @@
 {
-  "version": "2.0",
+  "version": "0.5",
   "descripcion": "Preguntas y pasos de razonamiento de G-NOSIS. Solo usa hechos que ya aparecen en los informes del juego (grafo-mision-lunar.json). Cada pregunta depende de un dato de su «lectura» (el informe que se lee justo después de la pregunta). Fijas y deterministas: sin variantes por partida. Lo usa public/js/preguntas.js.",
   "reglas": {
     "llamadas": "Una llamada cada 2 o 3 días (entre los días 2 y 13). Se alternan situaciones (predice en dos pasos, evidencia y acción) y preguntas del banco; una por partida es de «consulta la bitácora». Al empezar una partida nueva hay una pregunta de repaso sobre algo guardado en «Lo aprendido».",
@@ -10,7 +10,7 @@
       "_nota": "Puntos que pierde la barra del tema al equivocarse. Nunca baja una barra de 10 (ni sube la radiación de 90) por una pregunta."
     },
     "opcionesPorNivel": {
-      "1": 2,
+      "1": 3,
       "2": 3,
       "3": 4
     },
@@ -19,7 +19,10 @@
     "bonusFrase": {
       "valor": 3,
       "_nota": "Tras acertar, «¿Qué frase lo prueba?». Si la elige bien: +3 a la barra más débil. Si no, no pasa nada."
-    }
+    },
+    "rotacion": "Sin azar: la pregunta de un tema y nivel es variantes[(partida - 1 + indiceDelEvento) % variantes.length]. Si ya salió en esta partida, se toma la siguiente. El repaso usa una variante distinta de la que el niño vio.",
+    "transferencia": "Solo en nivel 3 (reto). Dentro de la misión, una llamada puede ser de transferencia si en los últimos 5 retos hubo 4 o más bien (la misma ventana del nivel adaptativo).",
+    "opciones": "Nivel 1 y 2: 3 opciones (la correcta, una plausible y una fácil de descartar del mismo tema). Nivel 3: 4 opciones. En el banco, la 1ª opción es la correcta, la 2ª la plausible, la 3ª la fácil y la 4ª otra plausible."
   },
   "situaciones": {
     "S-radiacion": {
@@ -37,9 +40,9 @@
       "evidencia": {
         "correcta": "Una tormenta solar lanza partículas con mucha energía: eso es la radiación.",
         "distractores": [
-          "La noche lunar dura unos 14 días.",
-          "Los micrometeoritos viajan a más de 20 km por segundo.",
-          "Algunos sismos lunares duran varios minutos."
+          "El instrumento CRaTER mide la radiación cerca de la Luna desde 2009.",
+          "La NASA guarda cada tormenta del Sol en una base de datos llamada DONKI.",
+          "Una nube de material del Sol puede tardar varios días en llegar."
         ]
       },
       "pista": "Vuelve a leer el informe: dice qué se gasta o se daña primero."
@@ -59,9 +62,9 @@
       "evidencia": {
         "correcta": "El regolito tapa la luz que llega a los paneles.",
         "distractores": [
-          "Los micrometeoritos viajan a más de 20 km por segundo.",
-          "La noche lunar dura unos 14 días.",
-          "Las partículas más rápidas de una tormenta solar pueden llegar en menos de una hora."
+          "El polvo lunar es filoso como vidrio porque en la Luna no hay viento ni agua que lo desgaste.",
+          "En las misiones Apollo el polvo atascó mecanismos y rasgó trajes.",
+          "Si se respira, el polvo lunar puede dañar los pulmones."
         ]
       },
       "pista": "Vuelve a leer el informe: dice qué se gasta o se daña primero."
@@ -81,9 +84,9 @@
       "evidencia": {
         "correcta": "Lo que no está asegurado se cae, como las cajas de comida de los estantes.",
         "distractores": [
-          "Los micrometeoritos viajan a más de 20 km por segundo.",
-          "El polvo lunar es filoso como vidrio.",
-          "La noche lunar dura unos 14 días."
+          "Los astronautas de Apollo dejaron sismómetros que registraron sismos lunares.",
+          "Los sismos lunares más fuertes de poca profundidad fueron cerca del polo sur.",
+          "Un sismómetro es un aparato que mide los temblores."
         ]
       },
       "pista": "Vuelve a leer el informe: dice qué se gasta o se daña primero."
@@ -103,9 +106,9 @@
       "evidencia": {
         "correcta": "pueden romper un panel o hacer un agujero por donde se escapa el aire.",
         "distractores": [
-          "El polvo lunar es filoso como vidrio.",
-          "Algunos sismos lunares duran varios minutos.",
-          "Las partículas más rápidas de una tormenta solar pueden llegar en menos de una hora."
+          "Los micrometeoritos viajan en promedio a unos 20 km por segundo.",
+          "Las naves usan escudos Whipple de varias capas separadas.",
+          "Una base que dura meses recibe más golpes que una visita de días."
         ]
       },
       "pista": "Vuelve a leer el informe: dice qué se gasta o se daña primero."
@@ -125,9 +128,9 @@
       "evidencia": {
         "correcta": "Los paneles dejan de producir y la calefacción gasta energía para cuidar tu salud.",
         "distractores": [
-          "El polvo lunar es filoso como vidrio.",
-          "Los paneles producen más energía cuando la luz del Sol les llega de frente.",
-          "Las partículas más rápidas de una tormenta solar pueden llegar en menos de una hora."
+          "La noche lunar dura unos 14 días terrestres.",
+          "La NASA dice que sobrevivir la noche lunar es clave para vivir en la Luna.",
+          "Cerca del ecuador, la noche lunar baja a unos -133 °C."
         ]
       },
       "pista": "Vuelve a leer el informe: dice qué se gasta o se daña primero."
@@ -147,9 +150,9 @@
       "evidencia": {
         "correcta": "Ahí no hay luz, así que el rover no puede recargar sus baterías.",
         "distractores": [
-          "La Estación Espacial recicla cerca del 98% de su agua.",
-          "La noche lunar dura unos 14 días.",
-          "Los paneles producen más energía cuando la luz del Sol les llega de frente."
+          "Ese hielo es agua para beber y para fabricar oxígeno y combustible.",
+          "Hay evidencia de hielo cerca del polo sur de la Luna.",
+          "En los cráteres que nunca reciben Sol, la NASA midió menos de -246 °C."
         ]
       },
       "pista": "Vuelve a leer el informe: dice qué se gasta o se daña primero."
@@ -169,9 +172,9 @@
       "evidencia": {
         "correcta": "La luz gasta energía hoy, y las plantas dan comida en los próximos días.",
         "distractores": [
-          "La Estación Espacial recicla cerca del 98% de su agua.",
-          "Los paneles producen más energía cuando la luz del Sol les llega de frente.",
-          "La noche lunar dura unos 14 días."
+          "En 2015 los astronautas de la Estación Espacial comieron la primera lechuga cultivada en el espacio.",
+          "En 2016 unas flores de la Estación Espacial se llenaron de moho por exceso de agua.",
+          "En la Luna los envíos de comida serán poco frecuentes."
         ]
       },
       "pista": "Vuelve a leer el informe: dice qué se gasta o se daña primero."
@@ -191,9 +194,9 @@
       "evidencia": {
         "correcta": "Con el agua también se fabrica oxígeno: si se pierde agua, falta para respirar.",
         "distractores": [
-          "Cultivar gasta energía hoy, pero da comida en los próximos días.",
-          "En cráteres que nunca reciben Sol hay hielo.",
-          "Algunos sismos lunares duran varios minutos."
+          "La Estación Espacial recicla cerca del 98% de su agua, incluso el sudor.",
+          "Al separar el agua salen hidrógeno y oxígeno.",
+          "El agua de la base se recicla una y otra vez."
         ]
       },
       "pista": "Vuelve a leer el informe: dice qué se gasta o se daña primero."
@@ -213,9 +216,9 @@
       "evidencia": {
         "correcta": "Si no mira al Sol, le llega menos luz y produce menos.",
         "distractores": [
-          "El polvo lunar es filoso como vidrio.",
-          "La noche lunar dura unos 14 días.",
-          "Los micrometeoritos viajan a más de 20 km por segundo."
+          "En la Luna el Sol brilla unos 14 días seguidos y luego se oculta otros 14.",
+          "En la Estación Espacial los paneles giran para apuntar al Sol.",
+          "Sin Sol los paneles no producen energía."
         ]
       },
       "pista": "Vuelve a leer el informe: dice qué se gasta o se daña primero."
@@ -235,9 +238,9 @@
       "evidencia": {
         "correcta": "Un astronauta cansado comete más errores, y los errores dañan la base.",
         "distractores": [
-          "La noche lunar dura unos 14 días.",
-          "Las partículas más rápidas de una tormenta solar pueden llegar en menos de una hora.",
-          "Cultivar gasta energía hoy, pero da comida en los próximos días."
+          "En 1973 tres tripulaciones vivieron en Skylab, una tras otra.",
+          "Los astronautas de la Estación tienen programadas unas 8 horas y media para dormir.",
+          "Un equipo en la Tierra acompaña a los astronautas las 24 horas."
         ]
       },
       "pista": "Vuelve a leer el informe: dice qué se gasta o se daña primero."
@@ -299,134 +302,541 @@
   },
   "banco": [
     {
-      "id": "Q1-noche",
+      "id": "NL1-dura",
       "nivel": 1,
       "tipo": "dato",
       "tema": "noche_lunar",
-      "barra": "energia",
-      "informes": [
-        "F2-D9"
-      ],
+      "barra": "salud",
       "enunciado": "¿Cuánto dura la noche en la Luna?",
       "opciones": [
-        "Unos 14 días",
-        "Unos 28 días",
-        "Una noche, como en la Tierra",
-        "Unos 3 días"
+        "Unos 14 días terrestres",
+        "Unos 28 días terrestres",
+        "Unas 12 horas, como en la Tierra",
+        "Unos 7 días terrestres"
       ],
       "indiceCorrecto": 0,
       "lectura": "La noche lunar dura unos 14 días terrestres y la temperatura baja a unos -133 °C. Sin Sol los paneles no producen energía, así que hay que cargar las baterías antes.",
       "fraseEvidencia": "La noche lunar dura unos 14 días terrestres y la temperatura baja a unos -133 °C.",
       "explicacion": "En la Luna el Sol se oculta unos 14 días seguidos: hay que cargar las baterías antes.",
-      "fuente": "NASA – Noche lunar",
+      "fuente": "NASA LRO – Temperatura de la Luna (día y noche de 14 días)",
+      "url": "https://science.nasa.gov/wp-content/uploads/2024/01/lrolitho7temperaturevariation27may2014.pdf",
       "pista": "Busca un número de días en la primera oración."
     },
     {
-      "id": "Q1-frio",
+      "id": "NL1-paneles",
       "nivel": 1,
       "tipo": "dato",
       "tema": "noche_lunar",
       "barra": "salud",
-      "informes": [
-        "N-D11"
+      "enunciado": "¿Qué pasa con los paneles solares en la noche lunar?",
+      "opciones": [
+        "No producen energía",
+        "Producen la mitad de energía",
+        "Se cubren de hielo y se rompen",
+        "Producen más porque descansan"
       ],
+      "indiceCorrecto": 0,
+      "lectura": "Sin Sol los paneles no producen energía ni hay calor. La NASA dice que sobrevivir la noche lunar es clave para vivir en la Luna.",
+      "fraseEvidencia": "Sin Sol los paneles no producen energía ni hay calor.",
+      "explicacion": "Sin luz del Sol, los paneles no pueden hacer energía: solo queda la guardada.",
+      "fuente": "NASA – La noche lunar de 14 días sin Sol (LuSEE-Night)",
+      "url": "https://www.nasa.gov/solar-system/nasa-department-of-energy-join-forces-on-innovative-lunar-experiment/",
+      "pista": "Busca qué pasa «sin Sol»."
+    },
+    {
+      "id": "NL2-frio",
+      "nivel": 2,
+      "tipo": "dato",
+      "tema": "noche_lunar",
+      "barra": "salud",
       "enunciado": "¿A qué temperatura baja la noche lunar?",
       "opciones": [
         "A unos -133 °C",
-        "A menos de -198 °C",
-        "A unos 0 °C",
-        "A unos 20 °C"
+        "A unos -13 °C",
+        "A unos 20 °C",
+        "A menos de -246 °C"
       ],
       "indiceCorrecto": 0,
-      "lectura": "La noche lunar dura unos 14 días y la temperatura baja a unos -133 °C. La calefacción gasta energía, pero protege tu salud.",
-      "fraseEvidencia": "La noche lunar dura unos 14 días y la temperatura baja a unos -133 °C.",
-      "explicacion": "Con ese frío la calefacción gasta energía, pero protege tu salud.",
-      "fuente": "NASA – Noche lunar",
+      "lectura": "La noche lunar dura unos 14 días terrestres y la temperatura baja a unos -133 °C. Sin Sol los paneles no producen energía, así que hay que cargar las baterías antes.",
+      "fraseEvidencia": "La noche lunar dura unos 14 días terrestres y la temperatura baja a unos -133 °C.",
+      "explicacion": "Cerca del ecuador, la noche lunar baja a unos -133 °C: mucho más frío que cualquier congelador.",
+      "fuente": "NASA Science – El clima en la Luna",
+      "url": "https://science.nasa.gov/moon/weather-on-the-moon/",
       "pista": "El texto da un número con «°C»."
     },
     {
-      "id": "Q1-paneles",
+      "id": "NL2-baterias",
+      "nivel": 2,
+      "tipo": "causa",
+      "tema": "noche_lunar",
+      "barra": "salud",
+      "enunciado": "¿Por qué hay que cargar las baterías antes de la noche lunar?",
+      "opciones": [
+        "Porque sin Sol los paneles no producen energía",
+        "Porque el frío vacía las baterías de golpe",
+        "Porque de noche llegan más micrometeoritos",
+        "Porque de noche los paneles se llenan de polvo"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "La noche lunar dura unos 14 días terrestres y la temperatura baja a unos -133 °C. Sin Sol los paneles no producen energía, así que hay que cargar las baterías antes.",
+      "fraseEvidencia": "Sin Sol los paneles no producen energía, así que hay que cargar las baterías antes.",
+      "explicacion": "Durante unos 14 días no hay Sol: la energía de la noche es la que guardaste antes.",
+      "fuente": "NASA – La noche lunar de 14 días sin Sol (LuSEE-Night)",
+      "url": "https://www.nasa.gov/solar-system/nasa-department-of-energy-join-forces-on-innovative-lunar-experiment/",
+      "pista": "Busca qué dice el texto sobre los paneles sin Sol."
+    },
+    {
+      "id": "NL3-calefaccion",
+      "nivel": 3,
+      "tipo": "causa",
+      "tema": "noche_lunar",
+      "barra": "salud",
+      "enunciado": "En la noche lunar apagas la calefacción para ahorrar. ¿Por qué empeora tu SALUD?",
+      "opciones": [
+        "Afuera hay unos -133 °C y sin calor el cuerpo sufre",
+        "Porque sin calefacción sube la radiación",
+        "Porque sin calefacción se caen las cajas de comida",
+        "Porque la calefacción también fabrica oxígeno"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Durante la noche lunar, de unos 14 días, la temperatura baja a unos -133 °C. Sin calefacción, la salud del capitán baja rápido.",
+      "fraseEvidencia": "Durante la noche lunar, de unos 14 días, la temperatura baja a unos -133 °C.",
+      "explicacion": "Con ese frío, la calefacción gasta energía pero protege tu salud.",
+      "fuente": "NASA Science – El clima en la Luna",
+      "url": "https://science.nasa.gov/moon/weather-on-the-moon/",
+      "pista": "Busca la temperatura de la noche lunar."
+    },
+    {
+      "id": "NL3-T-plan",
+      "nivel": 3,
+      "tipo": "transferencia",
+      "tema": "noche_lunar",
+      "barra": "salud",
+      "enunciado": "Faltan 10 días de noche lunar y tus baterías están a la mitad. ¿Qué plan funciona mejor?",
+      "opciones": [
+        "Apagar lo que no sea necesario y guardar energía para la calefacción",
+        "Usar todo hoy: mañana los paneles vuelven a cargar",
+        "Esperar a que los paneles carguen con la luz de las estrellas",
+        "Encender todo para que la base guarde el calor"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Cada aparato encendido gasta energía. En la noche lunar, de unos 14 días, no hay Sol para recargar los paneles, así que ahorrar es parte del trabajo.",
+      "fraseEvidencia": "En la noche lunar, de unos 14 días, no hay Sol para recargar los paneles, así que ahorrar es parte del trabajo.",
+      "explicacion": "La regla: sin Sol no entra energía nueva. Si faltan muchos días, hay que repartir la que queda.",
+      "fuente": "NASA – La noche lunar de 14 días sin Sol (LuSEE-Night)",
+      "url": "https://www.nasa.gov/solar-system/nasa-department-of-energy-join-forces-on-innovative-lunar-experiment/",
+      "pista": "La regla está en la segunda oración. Piensa: ¿entra energía nueva de noche?"
+    },
+    {
+      "id": "ES1-frente",
       "nivel": 1,
       "tipo": "dato",
       "tema": "energia_solar",
       "barra": "energia",
-      "informes": [
-        "F1-D1"
-      ],
       "enunciado": "¿Cuándo produce más energía un panel solar?",
       "opciones": [
         "Cuando la luz del Sol le llega de frente",
-        "Cuando hace frío",
-        "Cuando tiene regolito encima",
-        "De noche, cuando descansa"
+        "Cuando la luz le llega de lado",
+        "Cuando está a la sombra de la base",
+        "Cuando tiene un poco de polvo encima"
       ],
       "indiceCorrecto": 0,
       "lectura": "Los paneles producen más energía cuando la luz del Sol les llega de frente. En la Luna el Sol brilla unos 14 días seguidos y luego se oculta otros 14.",
       "fraseEvidencia": "Los paneles producen más energía cuando la luz del Sol les llega de frente.",
-      "explicacion": "Un panel convierte la luz en energía: si no mira al Sol, produce menos.",
-      "fuente": "NASA – Fenómenos lunares",
+      "explicacion": "Con la luz de frente le llega más luz al panel, y produce más.",
+      "fuente": "NASA – Paneles solares de la Estación Espacial",
+      "url": "https://www.nasa.gov/podcasts/houston-we-have-a-podcast/station-solar-arrays/",
       "pista": "Busca cómo debe llegarle la luz."
     },
     {
-      "id": "Q1-refugio",
+      "id": "ES1-sol14",
+      "nivel": 1,
+      "tipo": "dato",
+      "tema": "energia_solar",
+      "barra": "energia",
+      "enunciado": "¿Cuántos días seguidos brilla el Sol en la Luna?",
+      "opciones": [
+        "Unos 14 días",
+        "Unas 12 horas",
+        "Unos 28 días",
+        "Unos 3 días"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Los paneles producen más energía cuando la luz del Sol les llega de frente. En la Luna el Sol brilla unos 14 días seguidos y luego se oculta otros 14.",
+      "fraseEvidencia": "En la Luna el Sol brilla unos 14 días seguidos y luego se oculta otros 14.",
+      "explicacion": "En la Luna el día y la noche duran unos 14 días terrestres cada uno.",
+      "fuente": "NASA LRO – Temperatura de la Luna (día y noche de 14 días)",
+      "url": "https://science.nasa.gov/wp-content/uploads/2024/01/lrolitho7temperaturevariation27may2014.pdf",
+      "pista": "Busca un número de días en la segunda oración."
+    },
+    {
+      "id": "ES2-chueco",
+      "nivel": 2,
+      "tipo": "causa",
+      "tema": "energia_solar",
+      "barra": "energia",
+      "enunciado": "Un panel quedó chueco y ya no mira al Sol. ¿Por qué produce menos?",
+      "opciones": [
+        "Porque le llega menos luz",
+        "Porque se calienta demasiado",
+        "Porque se le mete polvo por dentro",
+        "Porque se descarga la batería"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Los paneles producen más energía cuando la luz del Sol les llega de frente. En la Luna el Sol brilla unos 14 días seguidos y luego se oculta otros 14.",
+      "fraseEvidencia": "Los paneles producen más energía cuando la luz del Sol les llega de frente.",
+      "explicacion": "Si no mira al Sol, le llega menos luz y produce menos energía.",
+      "fuente": "NASA – Paneles solares de la Estación Espacial",
+      "url": "https://www.nasa.gov/podcasts/houston-we-have-a-podcast/station-solar-arrays/",
+      "pista": "Busca cómo debe llegarle la luz al panel."
+    },
+    {
+      "id": "ES2-iss",
+      "nivel": 2,
+      "tipo": "dato",
+      "tema": "energia_solar",
+      "barra": "energia",
+      "enunciado": "En la Estación Espacial, ¿hacia dónde giran los paneles solares?",
+      "opciones": [
+        "Hacia el Sol",
+        "Hacia la Tierra",
+        "Hacia la Luna",
+        "Hacia la sombra, para no calentarse"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "En la Estación Espacial, los paneles solares giran para apuntar al Sol: así producen más energía.",
+      "fraseEvidencia": "En la Estación Espacial, los paneles solares giran para apuntar al Sol: así producen más energía.",
+      "explicacion": "Los paneles de la Estación siguen al Sol para producir más.",
+      "fuente": "NASA – Paneles solares de la Estación Espacial",
+      "url": "https://www.nasa.gov/podcasts/houston-we-have-a-podcast/station-solar-arrays/",
+      "pista": "Busca la palabra «apuntar»."
+    },
+    {
+      "id": "ES3-baterias",
+      "nivel": 3,
+      "tipo": "causa",
+      "tema": "energia_solar",
+      "barra": "energia",
+      "enunciado": "¿Por qué una base lunar necesita baterías aunque tenga paneles solares?",
+      "opciones": [
+        "Porque el Sol se oculta unos 14 días seguidos",
+        "Porque los paneles se gastan cada día",
+        "Porque los paneles solo funcionan en la Tierra",
+        "Porque las baterías dan más luz que el Sol"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Los paneles producen más energía cuando la luz del Sol les llega de frente. En la Luna el Sol brilla unos 14 días seguidos y luego se oculta otros 14.",
+      "fraseEvidencia": "En la Luna el Sol brilla unos 14 días seguidos y luego se oculta otros 14.",
+      "explicacion": "Durante los 14 días sin Sol, la energía sale de las baterías.",
+      "fuente": "NASA LRO – Temperatura de la Luna (día y noche de 14 días)",
+      "url": "https://science.nasa.gov/wp-content/uploads/2024/01/lrolitho7temperaturevariation27may2014.pdf",
+      "pista": "Busca qué pasa después de los 14 días de Sol."
+    },
+    {
+      "id": "ES3-T-amanecer",
+      "nivel": 3,
+      "tipo": "transferencia",
+      "tema": "energia_solar",
+      "barra": "energia",
+      "enunciado": "Al amanecer en la Luna, el Sol sale muy bajo, cerca del horizonte. ¿Cómo pones los paneles?",
+      "opciones": [
+        "Inclinados hacia el horizonte, de frente al Sol",
+        "Acostados, mirando hacia arriba",
+        "Mirando hacia el lado contrario al Sol",
+        "Da igual: la luz llega igual de todos lados"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Los paneles producen más energía cuando la luz del Sol les llega de frente. En la Luna el Sol brilla unos 14 días seguidos y luego se oculta otros 14.",
+      "fraseEvidencia": "Los paneles producen más energía cuando la luz del Sol les llega de frente.",
+      "explicacion": "La regla es «de frente al Sol». Si el Sol está bajo, el panel se inclina hacia él.",
+      "fuente": "NASA – Paneles solares de la Estación Espacial",
+      "url": "https://www.nasa.gov/podcasts/houston-we-have-a-podcast/station-solar-arrays/",
+      "pista": "Usa la regla de la primera oración con el Sol bajito."
+    },
+    {
+      "id": "RA1-refugio",
       "nivel": 1,
       "tipo": "dato",
       "tema": "radiacion",
       "barra": "radiacion",
-      "informes": [
-        "E-D6"
-      ],
-      "enunciado": "¿Qué frena las partículas de una tormenta solar?",
+      "enunciado": "¿Qué frena las partículas de una tormenta solar en la base?",
       "opciones": [
         "Las paredes más gruesas del refugio",
         "El campo magnético de la Luna",
-        "La oscuridad de la noche",
-        "El hielo de los cráteres"
+        "Las luces de la base encendidas",
+        "La calefacción a todo lo que da"
       ],
       "indiceCorrecto": 0,
       "lectura": "Las partículas más rápidas de una tormenta solar pueden llegar en menos de una hora. El refugio tiene paredes más gruesas que frenan esas partículas.",
       "fraseEvidencia": "El refugio tiene paredes más gruesas que frenan esas partículas.",
-      "explicacion": "Ir al refugio a tiempo es la mejor protección.",
-      "fuente": "NASA DONKI – SEP",
+      "explicacion": "Las paredes gruesas del refugio frenan las partículas del Sol.",
+      "fuente": "NASA – LRO ayuda a los astronautas a protegerse",
+      "url": "https://www.nasa.gov/mission_pages/LRO/news/lro_environment_prt.htm",
       "pista": "Busca qué tiene el refugio que no tienen otros cuartos."
     },
     {
-      "id": "Q1-hielo",
+      "id": "RA1-falta",
+      "nivel": 1,
+      "tipo": "dato",
+      "tema": "radiacion",
+      "barra": "radiacion",
+      "enunciado": "¿Qué le falta a la Luna para protegerse de la radiación?",
+      "opciones": [
+        "Un campo magnético y una atmósfera gruesa",
+        "Más hielo en sus cráteres",
+        "Más polvo en la superficie",
+        "Un día más largo"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "El instrumento CRaTER mide la radiación cerca de la Luna desde 2009. La Luna no tiene campo magnético ni atmósfera gruesa que la proteja, por eso hay que vigilar la radiación y tener un refugio de paredes gruesas.",
+      "fraseEvidencia": "La Luna no tiene campo magnético ni atmósfera gruesa que la proteja, por eso hay que vigilar la radiación y tener un refugio de paredes gruesas.",
+      "explicacion": "La Tierra tiene un escudo invisible (su campo magnético) y aire grueso; la Luna no.",
+      "fuente": "NASA Science – El clima en la Luna",
+      "url": "https://science.nasa.gov/moon/weather-on-the-moon/",
+      "pista": "Busca qué cosas no tiene la Luna."
+    },
+    {
+      "id": "RA2-rapidas",
+      "nivel": 2,
+      "tipo": "dato",
+      "tema": "radiacion",
+      "barra": "radiacion",
+      "enunciado": "¿Qué tan rápido pueden llegar las partículas más rápidas de una tormenta solar?",
+      "opciones": [
+        "En menos de una hora",
+        "En unos 3 días",
+        "En unos 14 días",
+        "En una semana"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Las partículas más rápidas de una tormenta solar pueden llegar en menos de una hora. El refugio tiene paredes más gruesas que frenan esas partículas.",
+      "fraseEvidencia": "Las partículas más rápidas de una tormenta solar pueden llegar en menos de una hora.",
+      "explicacion": "Llegan tan rápido que hay que ir al refugio en cuanto suena la alerta.",
+      "fuente": "NASA Science – Tormentas y llamaradas solares",
+      "url": "https://science.nasa.gov/sun/solar-storms-and-flares/",
+      "pista": "Busca la palabra «rápidas»."
+    },
+    {
+      "id": "RA2-crater",
+      "nivel": 2,
+      "tipo": "dato",
+      "tema": "radiacion",
+      "barra": "radiacion",
+      "enunciado": "¿Desde qué año mide el instrumento CRaTER la radiación cerca de la Luna?",
+      "opciones": [
+        "Desde 2009",
+        "Desde 1969",
+        "Desde 2016",
+        "Desde 1973"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "El instrumento CRaTER mide la radiación cerca de la Luna desde 2009. La Luna no tiene campo magnético ni atmósfera gruesa que la proteja, por eso hay que vigilar la radiación y tener un refugio de paredes gruesas.",
+      "fraseEvidencia": "El instrumento CRaTER mide la radiación cerca de la Luna desde 2009.",
+      "explicacion": "CRaTER viaja en la nave LRO de la NASA, que llegó a la Luna en 2009.",
+      "fuente": "NASA – Misión LRO (instrumento CRaTER)",
+      "url": "https://science.nasa.gov/mission/lro/",
+      "pista": "Busca un año en la primera oración."
+    },
+    {
+      "id": "RA3-noche",
+      "nivel": 3,
+      "tipo": "causa",
+      "tema": "radiacion",
+      "barra": "radiacion",
+      "enunciado": "¿Llega radiación a la base durante la noche lunar?",
+      "opciones": [
+        "Sí: los rayos cósmicos vienen de todas direcciones",
+        "No: sin Sol no hay radiación",
+        "Solo si ese día hay una tormenta solar",
+        "No: el frío de la noche la frena"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "La radiación llega aunque sea de noche: los rayos cósmicos vienen de todas direcciones. El refugio de paredes gruesas te protege de día y de noche.",
+      "fraseEvidencia": "La radiación llega aunque sea de noche: los rayos cósmicos vienen de todas direcciones.",
+      "explicacion": "Los rayos cósmicos no vienen solo del Sol: llegan de día y de noche.",
+      "fuente": "NASA NTRS – Radiación en la superficie lunar",
+      "url": "https://ntrs.nasa.gov/citations/20210021039",
+      "pista": "Busca de dónde vienen los rayos cósmicos."
+    },
+    {
+      "id": "RA3-cme",
+      "nivel": 3,
+      "tipo": "causa",
+      "tema": "radiacion",
+      "barra": "radiacion",
+      "enunciado": "Hoy salió del Sol una nube de material (una CME) hacia la Luna. ¿Cuándo debes tener listo el refugio?",
+      "opciones": [
+        "Pronto: puede llegar en unas 15 horas",
+        "En un mes: las CME son muy lentas",
+        "Solo cuando ya se sienta el calor",
+        "Nunca: las CME no traen partículas"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Una nube de material del Sol (CME) puede llegar en apenas unas 15 horas; las más lentas tardan varios días. Si la detectas a tiempo, puedes preparar el refugio antes.",
+      "fraseEvidencia": "Una nube de material del Sol (CME) puede llegar en apenas unas 15 horas; las más lentas tardan varios días.",
+      "explicacion": "Algunas CME son rápidas: con el aviso, conviene preparar el refugio desde el principio.",
+      "fuente": "NASA Science – Tormentas y llamaradas solares",
+      "url": "https://science.nasa.gov/sun/solar-storms-and-flares/",
+      "pista": "Busca el tiempo más corto que dice el texto."
+    },
+    {
+      "id": "RA3-T-rover",
+      "nivel": 3,
+      "tipo": "transferencia",
+      "tema": "radiacion",
+      "barra": "radiacion",
+      "enunciado": "Es de noche y un astronauta está afuera manejando el rover. Suena la alerta de tormenta solar. ¿Qué le dices?",
+      "opciones": [
+        "Que regrese al refugio ahora",
+        "Que espere afuera a que salga el Sol",
+        "Que se quede a la sombra del rover",
+        "Que apague las luces del rover"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "La radiación llega aunque sea de noche: los rayos cósmicos vienen de todas direcciones. El refugio de paredes gruesas te protege de día y de noche.",
+      "fraseEvidencia": "El refugio de paredes gruesas te protege de día y de noche.",
+      "explicacion": "La regla: la radiación llega de noche también, y lo que protege es el refugio, no la oscuridad.",
+      "fuente": "NASA NTRS – Radiación en la superficie lunar",
+      "url": "https://ntrs.nasa.gov/citations/20210021039",
+      "pista": "La regla está en el texto; aplícala a alguien que está afuera de noche."
+    },
+    {
+      "id": "HA1-donde",
       "nivel": 1,
       "tipo": "dato",
       "tema": "hielo_agua",
       "barra": "comida",
-      "informes": [
-        "E-D11"
-      ],
       "enunciado": "¿Dónde hay hielo en la Luna?",
       "opciones": [
-        "En cráteres que nunca reciben Sol",
+        "En cráteres donde nunca da el Sol",
         "En la cima de las montañas",
-        "Bajo los paneles solares",
-        "En toda la superficie durante la noche"
+        "En toda la superficie durante el día",
+        "Debajo de los paneles solares"
       ],
       "indiceCorrecto": 0,
-      "lectura": "En cráteres que nunca reciben Sol hay hielo, a menos de -198 °C. Con él se obtiene agua, y separándola, oxígeno para respirar y combustible para cohetes.",
-      "fraseEvidencia": "En cráteres que nunca reciben Sol hay hielo, a menos de -198 °C.",
-      "explicacion": "Donde nunca da el Sol hace tanto frío que el hielo dura.",
-      "fuente": "NASA – Hielo lunar",
+      "lectura": "Hay evidencia de hielo en cráteres sombreados cerca del polo sur de la Luna, donde nunca da el Sol. Ese hielo es agua para beber y para fabricar oxígeno y combustible.",
+      "fraseEvidencia": "Hay evidencia de hielo en cráteres sombreados cerca del polo sur de la Luna, donde nunca da el Sol.",
+      "explicacion": "En los cráteres siempre en sombra hace tanto frío que el hielo dura.",
+      "fuente": "NASA – La región del polo sur lunar",
+      "url": "https://www.nasa.gov/reference/moonbase-environment/",
       "pista": "Busca un lugar donde nunca da el Sol."
     },
     {
-      "id": "Q1-skylab",
+      "id": "HA1-sirve",
+      "nivel": 1,
+      "tipo": "dato",
+      "tema": "hielo_agua",
+      "barra": "comida",
+      "enunciado": "¿Para qué sirve el hielo de la Luna?",
+      "opciones": [
+        "Para tener agua y fabricar oxígeno y combustible",
+        "Para enfriar los paneles solares",
+        "Para construir las paredes del refugio",
+        "Para limpiar el polvo de los trajes"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Hay evidencia de hielo en cráteres sombreados cerca del polo sur de la Luna, donde nunca da el Sol. Ese hielo es agua para beber y para fabricar oxígeno y combustible.",
+      "fraseEvidencia": "Ese hielo es agua para beber y para fabricar oxígeno y combustible.",
+      "explicacion": "Con el hielo se obtiene agua; separándola, oxígeno y combustible para cohetes.",
+      "fuente": "NASA – La región del polo sur lunar",
+      "url": "https://www.nasa.gov/reference/moonbase-environment/",
+      "pista": "Busca la segunda oración."
+    },
+    {
+      "id": "HA2-polo",
+      "nivel": 2,
+      "tipo": "dato",
+      "tema": "hielo_agua",
+      "barra": "comida",
+      "enunciado": "¿Cerca de qué lugar de la Luna hay evidencia de hielo?",
+      "opciones": [
+        "Cerca del polo sur",
+        "Cerca del ecuador",
+        "Donde aterrizó Apollo 11",
+        "En el centro de la cara que vemos"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Hay evidencia de hielo en cráteres sombreados cerca del polo sur de la Luna, donde nunca da el Sol. Ese hielo es agua para beber y para fabricar oxígeno y combustible.",
+      "fraseEvidencia": "Hay evidencia de hielo en cráteres sombreados cerca del polo sur de la Luna, donde nunca da el Sol.",
+      "explicacion": "La misión LCROSS de la NASA encontró agua en un cráter cerca del polo sur.",
+      "fuente": "NASA – Misión LCROSS (agua en un cráter)",
+      "url": "https://science.nasa.gov/mission/lcross/",
+      "pista": "Busca un lugar de la Luna en la primera oración."
+    },
+    {
+      "id": "HA2-rover",
+      "nivel": 2,
+      "tipo": "causa",
+      "tema": "hielo_agua",
+      "barra": "comida",
+      "enunciado": "¿Por qué el rover no puede recargar sus baterías dentro de un cráter con hielo?",
+      "opciones": [
+        "Porque ahí nunca da el Sol",
+        "Porque el hielo descarga las baterías",
+        "Porque ahí hay demasiado polvo",
+        "Porque la radiación apaga el rover"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "En los cráteres donde nunca da el Sol hay hielo: agua para la base. Ahí no hay luz, así que el rover no puede recargar sus baterías.",
+      "fraseEvidencia": "Ahí no hay luz, así que el rover no puede recargar sus baterías.",
+      "explicacion": "Sin luz del Sol, los paneles del rover no cargan.",
+      "fuente": "NASA – La región del polo sur lunar",
+      "url": "https://www.nasa.gov/reference/moonbase-environment/",
+      "pista": "Busca qué no hay en esos cráteres."
+    },
+    {
+      "id": "HA3-frio",
+      "nivel": 3,
+      "tipo": "dato",
+      "tema": "hielo_agua",
+      "barra": "comida",
+      "enunciado": "¿El hielo de los cráteres sin Sol está más frío o más caliente que la noche lunar normal?",
+      "opciones": [
+        "Más frío: la NASA midió menos de -246 °C",
+        "Más caliente: unos 0 °C",
+        "Igual: unos -133 °C",
+        "Más caliente: el hielo guarda el calor del día"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "De noche, cerca del ecuador, la Luna baja a unos -133 °C. En los cráteres que nunca reciben Sol, la NASA midió menos de -246 °C.",
+      "fraseEvidencia": "En los cráteres que nunca reciben Sol, la NASA midió menos de -246 °C.",
+      "explicacion": "Ahí nunca llega el Sol, así que es más frío que la noche cerca del ecuador.",
+      "fuente": "NASA Science – El clima en la Luna",
+      "url": "https://science.nasa.gov/moon/weather-on-the-moon/",
+      "pista": "Compara los dos números del texto."
+    },
+    {
+      "id": "HA3-T-oxigeno",
+      "nivel": 3,
+      "tipo": "transferencia",
+      "tema": "hielo_agua",
+      "barra": "comida",
+      "enunciado": "Encontraste hielo y en la base empieza a faltar oxígeno. ¿Qué te conviene hacer con el hielo?",
+      "opciones": [
+        "Derretirlo y separar el agua para sacar oxígeno",
+        "Guardarlo congelado para enfriar la base",
+        "Ponerlo sobre los paneles para limpiarlos",
+        "Dejarlo en el cráter: el hielo no sirve para respirar"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Hay evidencia de hielo en cráteres sombreados cerca del polo sur de la Luna, donde nunca da el Sol. Ese hielo es agua para beber y para fabricar oxígeno y combustible.",
+      "fraseEvidencia": "Ese hielo es agua para beber y para fabricar oxígeno y combustible.",
+      "explicacion": "La regla: el hielo es agua, y del agua se fabrica oxígeno.",
+      "fuente": "NASA – La región del polo sur lunar",
+      "url": "https://www.nasa.gov/reference/moonbase-environment/",
+      "pista": "Piensa qué se puede fabricar con el agua del hielo."
+    },
+    {
+      "id": "SA1-skylab",
       "nivel": 1,
       "tipo": "dato",
       "tema": "salud_astronauta",
       "barra": "salud",
-      "informes": [
-        "INICIO"
-      ],
       "enunciado": "¿Cuántas tripulaciones vivieron en Skylab, una tras otra?",
       "opciones": [
         "Tres",
         "Dos",
-        "Catorce",
+        "Cinco",
         "Una"
       ],
       "indiceCorrecto": 0,
@@ -434,108 +844,246 @@
       "fraseEvidencia": "En 1973 tres tripulaciones vivieron en Skylab, una tras otra: 28, 59 y 84 días.",
       "explicacion": "Cada tripulación cuidó la estación hasta que llegó la siguiente, como tú hasta el relevo.",
       "fuente": "NASA – Historia de Skylab",
+      "url": "https://www.nasa.gov/humans-in-space/part-i-the-history-of-skylab/",
       "pista": "Cuenta cuántos números de días aparecen."
     },
     {
-      "id": "Q2-polvo",
+      "id": "SA1-cansado",
+      "nivel": 1,
+      "tipo": "dato",
+      "tema": "salud_astronauta",
+      "barra": "salud",
+      "enunciado": "¿Qué le pasa a un astronauta muy cansado?",
+      "opciones": [
+        "Comete más errores",
+        "Necesita menos comida",
+        "Corre más rápido",
+        "Ve mejor en la oscuridad"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Dormir y descansar son parte del plan diario de los astronautas: un astronauta cansado comete más errores.",
+      "fraseEvidencia": "Dormir y descansar son parte del plan diario de los astronautas: un astronauta cansado comete más errores.",
+      "explicacion": "Por eso descansar también es parte de la misión.",
+      "fuente": "NASA – Riesgo de errores por falta de sueño",
+      "url": "https://humanresearchroadmap.nasa.gov/evidence/reports/Sleep.pdf",
+      "pista": "Busca qué pasa cuando un astronauta está cansado."
+    },
+    {
+      "id": "SA2-dormir",
+      "nivel": 2,
+      "tipo": "dato",
+      "tema": "salud_astronauta",
+      "barra": "salud",
+      "enunciado": "¿Cuánto tiempo para dormir tienen programado los astronautas de la Estación?",
+      "opciones": [
+        "Unas 8 horas y media",
+        "Unas 4 horas",
+        "Unas 12 horas",
+        "Unas 6 horas"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Los astronautas de la Estación Espacial tienen programadas unas 8 horas y media para dormir. Un astronauta cansado comete más errores.",
+      "fraseEvidencia": "Los astronautas de la Estación Espacial tienen programadas unas 8 horas y media para dormir.",
+      "explicacion": "Un capitán descansado comete menos errores.",
+      "fuente": "NASA – Cómo duermen los astronautas",
+      "url": "https://ntrs.nasa.gov/api/citations/20230003360/downloads/2023%20SLTBR%20Lausanne.pdf",
+      "pista": "Busca un número de horas."
+    },
+    {
+      "id": "SA2-ultima",
+      "nivel": 2,
+      "tipo": "dato",
+      "tema": "salud_astronauta",
+      "barra": "salud",
+      "enunciado": "¿Cuántos días se quedó la última tripulación de Skylab?",
+      "opciones": [
+        "84 días",
+        "28 días",
+        "14 días",
+        "59 días"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "En 1973 tres tripulaciones vivieron en Skylab, una tras otra: 28, 59 y 84 días. Cada una cuidó la estación hasta que llegó la siguiente. Igual que ellos, cuida la base y cuídate: un astronauta cansado comete más errores.",
+      "fraseEvidencia": "En 1973 tres tripulaciones vivieron en Skylab, una tras otra: 28, 59 y 84 días.",
+      "explicacion": "Las tres tripulaciones se quedaron 28, 59 y 84 días: la última fue la más larga.",
+      "fuente": "NASA – Historia de Skylab",
+      "url": "https://www.nasa.gov/humans-in-space/part-i-the-history-of-skylab/",
+      "pista": "Los números van en orden: la última es la del final."
+    },
+    {
+      "id": "SA3-control",
+      "nivel": 3,
+      "tipo": "causa",
+      "tema": "salud_astronauta",
+      "barra": "salud",
+      "enunciado": "¿Por qué Control de Misión cuida que duermas aunque haya trabajo?",
+      "opciones": [
+        "Porque un astronauta cansado comete más errores",
+        "Porque dormir recarga los paneles",
+        "Porque de noche no hay oxígeno",
+        "Porque dormir gasta menos agua"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Responder a la Tierra también cansa: el trabajo de un astronauta no es solo reparar. Control de Misión cuida tu descanso porque un astronauta cansado comete más errores.",
+      "fraseEvidencia": "Control de Misión cuida tu descanso porque un astronauta cansado comete más errores.",
+      "explicacion": "Los errores dañan la base: descansar es parte del trabajo.",
+      "fuente": "NASA – Riesgo de errores por falta de sueño",
+      "url": "https://humanresearchroadmap.nasa.gov/evidence/reports/Sleep.pdf",
+      "pista": "Busca la palabra «porque»."
+    },
+    {
+      "id": "SA3-T-reparar",
+      "nivel": 3,
+      "tipo": "transferencia",
+      "tema": "salud_astronauta",
+      "barra": "salud",
+      "enunciado": "Mañana tienes una reparación difícil y hoy ya terminaste lo urgente. ¿Qué te conviene hacer esta noche?",
+      "opciones": [
+        "Dormir tus horas para no equivocarte mañana",
+        "Quedarte despierto practicando la reparación",
+        "Hacer la reparación de una vez, de noche",
+        "Tomar menos agua para no despertarte"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Los astronautas de la Estación Espacial tienen programadas unas 8 horas y media para dormir. Un astronauta cansado comete más errores.",
+      "fraseEvidencia": "Un astronauta cansado comete más errores.",
+      "explicacion": "La regla: cansado te equivocas más. Para una tarea difícil, conviene llegar descansado.",
+      "fuente": "NASA – Riesgo de errores por falta de sueño",
+      "url": "https://humanresearchroadmap.nasa.gov/evidence/reports/Sleep.pdf",
+      "pista": "Aplica la regla de la segunda oración a la reparación de mañana."
+    },
+    {
+      "id": "PL1-como",
+      "nivel": 1,
+      "tipo": "dato",
+      "tema": "polvo_lunar",
+      "barra": "salud",
+      "enunciado": "¿Cómo es el polvo lunar?",
+      "opciones": [
+        "Filoso como vidrio",
+        "Suave como harina",
+        "Pegajoso como lodo",
+        "Mojado como arena de playa"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "El polvo lunar es filoso como vidrio porque en la Luna no hay viento ni agua que lo desgaste. En las misiones Apollo atascó mecanismos y rasgó trajes, y si se respira puede dañar los pulmones.",
+      "fraseEvidencia": "El polvo lunar es filoso como vidrio porque en la Luna no hay viento ni agua que lo desgaste.",
+      "explicacion": "Sus granitos tienen orillas filosas, como pedacitos de vidrio.",
+      "fuente": "NASA – El polvo, un problema de otro mundo",
+      "url": "https://www.nasa.gov/humans-in-space/dust-an-out-of-this-world-problem/",
+      "pista": "Busca con qué lo compara el texto."
+    },
+    {
+      "id": "PL1-apollo",
+      "nivel": 1,
+      "tipo": "dato",
+      "tema": "polvo_lunar",
+      "barra": "salud",
+      "enunciado": "En las misiones Apollo, ¿qué hizo el polvo lunar?",
+      "opciones": [
+        "Atascó mecanismos y rasgó trajes",
+        "Hizo agujeros en la nave",
+        "Congeló los trajes",
+        "Apagó la radio"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "El polvo lunar es filoso como vidrio porque en la Luna no hay viento ni agua que lo desgaste. En las misiones Apollo atascó mecanismos y rasgó trajes, y si se respira puede dañar los pulmones.",
+      "fraseEvidencia": "En las misiones Apollo atascó mecanismos y rasgó trajes, y si se respira puede dañar los pulmones.",
+      "explicacion": "Las misiones Apollo reportaron trajes gastados y piezas atascadas por el polvo.",
+      "fuente": "NASA – Efectos del polvo lunar en las misiones Apollo",
+      "url": "https://ntrs.nasa.gov/api/citations/20050160460/downloads/20050160460.pdf",
+      "pista": "Busca la oración que habla de Apollo."
+    },
+    {
+      "id": "PL2-filoso",
       "nivel": 2,
       "tipo": "causa",
       "tema": "polvo_lunar",
-      "barra": "energia",
-      "informes": [
-        "F1-D2a"
-      ],
+      "barra": "salud",
       "enunciado": "¿Por qué el polvo lunar es filoso como vidrio?",
       "opciones": [
         "En la Luna no hay viento ni agua que lo desgaste",
-        "Lo golpean los micrometeoritos",
         "El frío de la noche lo endurece",
-        "La radiación lo afila"
+        "La radiación del Sol lo afila",
+        "Los astronautas lo pisaron mucho"
       ],
       "indiceCorrecto": 0,
-      "lectura": "El polvo lunar es filoso como vidrio porque en la Luna no hay viento ni agua que lo desgaste. En las misiones Apollo atascó mecanismos y rasgó trajes, y si se respira daña los pulmones.",
+      "lectura": "El polvo lunar es filoso como vidrio porque en la Luna no hay viento ni agua que lo desgaste. En las misiones Apollo atascó mecanismos y rasgó trajes, y si se respira puede dañar los pulmones.",
       "fraseEvidencia": "El polvo lunar es filoso como vidrio porque en la Luna no hay viento ni agua que lo desgaste.",
-      "explicacion": "Sin viento ni agua, los granos nunca se redondean. Por eso se limpia sin tallar.",
-      "fuente": "NASA – Misiones Apollo",
-      "pista": "El texto dice qué cosas faltan en la Luna."
+      "explicacion": "En la Tierra el viento y el agua redondean los granos; en la Luna no.",
+      "fuente": "NASA – Por qué el polvo lunar es filoso (VIPER)",
+      "url": "https://www.nasa.gov/centers-and-facilities/ames/when-the-moon-dust-settles-it-wont-settle-in-vipers-wheels/",
+      "pista": "Busca la palabra «porque»."
     },
     {
-      "id": "Q2-apollo",
+      "id": "PL2-pulmones",
       "nivel": 2,
       "tipo": "dato",
       "tema": "polvo_lunar",
       "barra": "salud",
-      "informes": [
-        "F1-D2a"
-      ],
-      "enunciado": "En las misiones Apollo, ¿qué hizo el polvo lunar?",
+      "enunciado": "Si un astronauta respira polvo lunar, ¿qué le puede pasar?",
       "opciones": [
-        "Atascó mecanismos y rasgó trajes",
-        "Hizo agujeros por donde se escapó el aire",
-        "Apagó los paneles por 14 días",
-        "Llenó de moho las plantas"
+        "Le puede dañar los pulmones",
+        "Nada: es igual al polvo de casa",
+        "Le da más energía",
+        "Se le congela la garganta"
       ],
       "indiceCorrecto": 0,
-      "lectura": "El polvo lunar es filoso como vidrio porque en la Luna no hay viento ni agua que lo desgaste. En las misiones Apollo atascó mecanismos y rasgó trajes, y si se respira daña los pulmones.",
-      "fraseEvidencia": "En las misiones Apollo atascó mecanismos y rasgó trajes, y si se respira daña los pulmones.",
-      "explicacion": "Además, si se respira daña los pulmones: hay que mantenerlo fuera de la base.",
-      "fuente": "NASA – Misiones Apollo",
-      "pista": "Busca la oración que habla de Apollo."
+      "lectura": "El polvo lunar es filoso como vidrio porque en la Luna no hay viento ni agua que lo desgaste. En las misiones Apollo atascó mecanismos y rasgó trajes, y si se respira puede dañar los pulmones.",
+      "fraseEvidencia": "En las misiones Apollo atascó mecanismos y rasgó trajes, y si se respira puede dañar los pulmones.",
+      "explicacion": "Por eso hay que mantener el polvo fuera de la base.",
+      "fuente": "NASA Science – Peligros del regolito lunar",
+      "url": "https://science.nasa.gov/biological-physical/what-hazards-are-caused-by-lunar-regolith/",
+      "pista": "Busca qué pasa «si se respira»."
     },
     {
-      "id": "Q2-cme",
-      "nivel": 2,
-      "tipo": "dato",
-      "tema": "radiacion",
-      "barra": "radiacion",
-      "informes": [
-        "E-D5"
-      ],
-      "enunciado": "Hoy salió del Sol una nube de material (una CME). ¿En cuánto tiempo suele llegar?",
+      "id": "PL3-paneles",
+      "nivel": 3,
+      "tipo": "causa",
+      "tema": "polvo_lunar",
+      "barra": "salud",
+      "enunciado": "¿Por qué los paneles con polvo dan menos energía?",
       "opciones": [
-        "De 1 a 3 días",
-        "En menos de una hora",
-        "En unos 14 días",
-        "En unos 28 días"
+        "El polvo tapa la luz que les llega",
+        "El polvo los calienta y se apagan",
+        "El polvo los vuelve imanes",
+        "El polvo trae radiación"
       ],
       "indiceCorrecto": 0,
-      "lectura": "Una nube de material del Sol (eyección de masa coronal) suele tardar de 1 a 3 días en llegar. Si la detectas a tiempo, puedes preparar el refugio antes.",
-      "fraseEvidencia": "Una nube de material del Sol (eyección de masa coronal) suele tardar de 1 a 3 días en llegar.",
-      "explicacion": "Si la detectas a tiempo, puedes preparar el refugio antes de que llegue.",
-      "fuente": "NASA DONKI – CME",
-      "pista": "Ojo: la nube de material no es lo mismo que las partículas más rápidas."
+      "lectura": "El polvo lunar tapa la luz que llega a los paneles: les llega menos luz y producen menos energía.",
+      "fraseEvidencia": "El polvo lunar tapa la luz que llega a los paneles: les llega menos luz y producen menos energía.",
+      "explicacion": "Menos luz en el panel = menos energía.",
+      "fuente": "NASA – El polvo lunar en los paneles solares",
+      "url": "https://ntrs.nasa.gov/api/citations/20240003496/downloads/TM-20240003496.pdf",
+      "pista": "Busca qué tapa el polvo."
     },
     {
-      "id": "Q2-sep",
-      "nivel": 2,
-      "tipo": "dato",
-      "tema": "radiacion",
-      "barra": "radiacion",
-      "informes": [
-        "E-D6"
-      ],
-      "enunciado": "¿Qué tan rápido pueden llegar las partículas más rápidas de una tormenta solar?",
+      "id": "PL3-T-visor",
+      "nivel": 3,
+      "tipo": "transferencia",
+      "tema": "polvo_lunar",
+      "barra": "salud",
+      "enunciado": "El visor de tu casco quedó lleno de polvo lunar. ¿Cómo lo limpias?",
       "opciones": [
-        "En menos de una hora",
-        "De 1 a 3 días",
-        "En unos 14 días"
+        "Con cuidado y sin tallar, para no rayarlo",
+        "Tallando fuerte para terminar rápido",
+        "Con un trapo con arena, para pulirlo",
+        "Como sea: el polvo lunar es suave"
       ],
       "indiceCorrecto": 0,
-      "lectura": "Las partículas más rápidas de una tormenta solar pueden llegar en menos de una hora. El refugio tiene paredes más gruesas que frenan esas partículas.",
-      "fraseEvidencia": "Las partículas más rápidas de una tormenta solar pueden llegar en menos de una hora.",
-      "explicacion": "Llegan tan rápido que hay que ir al refugio en cuanto suena la alerta.",
-      "fuente": "NASA DONKI – SEP",
-      "pista": "Busca la palabra «rápidas»."
+      "lectura": "El polvo lunar es filoso como vidrio porque en la Luna no hay viento ni agua que lo desgaste. En las misiones Apollo atascó mecanismos y rasgó trajes, y si se respira puede dañar los pulmones.",
+      "fraseEvidencia": "El polvo lunar es filoso como vidrio porque en la Luna no hay viento ni agua que lo desgaste.",
+      "explicacion": "La regla: el polvo es filoso como vidrio. Tallar fuerte raya el visor (en Apollo 17 un visor quedó tan rayado que no se veía).",
+      "fuente": "NASA – Efectos del polvo lunar en las misiones Apollo",
+      "url": "https://ntrs.nasa.gov/api/citations/20050160460/downloads/20050160460.pdf",
+      "pista": "Si el polvo es como vidrio, ¿qué pasa si tallas fuerte?"
     },
     {
-      "id": "Q2-agua",
-      "nivel": 2,
+      "id": "AR1-98",
+      "nivel": 1,
       "tipo": "dato",
       "tema": "agua_reciclaje",
-      "barra": "comida",
-      "informes": [
-        "E-D7"
-      ],
+      "barra": "salud",
       "enunciado": "¿Cuánta de su agua recicla la Estación Espacial?",
       "opciones": [
         "Cerca del 98%",
@@ -546,350 +1094,501 @@
       "indiceCorrecto": 0,
       "lectura": "La Estación Espacial recicla cerca del 98% de su agua, incluso el sudor. Además, el oxígeno para respirar se obtiene separando el agua en hidrógeno y oxígeno.",
       "fraseEvidencia": "La Estación Espacial recicla cerca del 98% de su agua, incluso el sudor.",
-      "explicacion": "El agua se usa una y otra vez; por eso una fuga es tan grave.",
-      "fuente": "NASA – Soporte de vida de la ISS",
+      "explicacion": "Casi toda el agua se usa una y otra vez.",
+      "fuente": "NASA – Récord de reciclaje de agua en la Estación Espacial",
+      "url": "https://www.nasa.gov/missions/station/iss-research/nasa-achieves-water-recovery-milestone-on-international-space-station/",
       "pista": "Busca el número con «%»."
     },
     {
-      "id": "Q2-oxigeno",
-      "nivel": 2,
-      "tipo": "causa",
+      "id": "AR1-oxigeno",
+      "nivel": 1,
+      "tipo": "dato",
       "tema": "agua_reciclaje",
       "barra": "salud",
-      "informes": [
-        "E-D7"
-      ],
-      "enunciado": "¿Cómo se obtiene el oxígeno para respirar?",
+      "enunciado": "¿De dónde sale el oxígeno para respirar en la Estación Espacial?",
       "opciones": [
-        "Separando el agua en hidrógeno y oxígeno",
-        "Del regolito que cubre la base",
+        "De separar el agua",
+        "Del polvo lunar",
         "De los paneles solares",
-        "Del hielo, sin hacerle nada"
+        "Solo de las plantas"
       ],
       "indiceCorrecto": 0,
       "lectura": "La Estación Espacial recicla cerca del 98% de su agua, incluso el sudor. Además, el oxígeno para respirar se obtiene separando el agua en hidrógeno y oxígeno.",
       "fraseEvidencia": "Además, el oxígeno para respirar se obtiene separando el agua en hidrógeno y oxígeno.",
-      "explicacion": "Si se pierde agua, también falta para fabricar oxígeno.",
-      "fuente": "NASA – Soporte de vida de la ISS",
+      "explicacion": "El agua se separa en hidrógeno y oxígeno; el oxígeno se respira.",
+      "fuente": "NASA – Cómo se fabrica el oxígeno en la Estación",
+      "url": "https://www.nasa.gov/podcasts/houston-we-have-a-podcast/advanced-oxygen-generation/",
       "pista": "Busca la palabra «oxígeno» en el texto."
     },
     {
-      "id": "Q2-sismo",
+      "id": "AR2-fuga",
       "nivel": 2,
-      "tipo": "dato",
-      "tema": "sismos",
-      "barra": "comida",
-      "informes": [
-        "E-D12a"
-      ],
-      "enunciado": "¿Cuánto pueden durar algunos sismos lunares?",
-      "opciones": [
-        "Varios minutos",
-        "Menos de un segundo",
-        "Unos 14 días"
-      ],
-      "indiceCorrecto": 0,
-      "lectura": "Algunos sismos lunares duran varios minutos, más que muchos terremotos en la Tierra. Los sismómetros de Apollo los registraron. Asegurar los objetos evita perder comida y equipo.",
-      "fraseEvidencia": "Algunos sismos lunares duran varios minutos, más que muchos terremotos en la Tierra.",
-      "explicacion": "Un sismo largo tira lo que no está asegurado: hay que sujetar las cajas.",
-      "fuente": "NASA – Sismómetros Apollo",
-      "pista": "Compara con los terremotos de la Tierra."
-    },
-    {
-      "id": "Q2-polo",
-      "nivel": 2,
-      "tipo": "dato",
-      "tema": "sismos",
-      "barra": "comida",
-      "informes": [
-        "F1-D2b"
-      ],
-      "enunciado": "¿Dónde fueron los sismos lunares más fuertes de poca profundidad?",
-      "opciones": [
-        "Cerca del polo sur",
-        "Cerca del ecuador",
-        "Donde aterrizó Apollo"
-      ],
-      "indiceCorrecto": 0,
-      "lectura": "Los astronautas de Apollo dejaron sismómetros que registraron sismos lunares. Algunos duran varios minutos, y los más fuertes de poca profundidad fueron cerca del polo sur.",
-      "fraseEvidencia": "Algunos duran varios minutos, y los más fuertes de poca profundidad fueron cerca del polo sur.",
-      "explicacion": "Los sismómetros que dejó Apollo los registraron.",
-      "fuente": "NASA – Sismómetros Apollo",
-      "pista": "Busca un lugar de la Luna en la última oración."
-    },
-    {
-      "id": "Q2-carga",
-      "nivel": 2,
-      "tipo": "dato",
-      "tema": "invernadero",
-      "barra": "comida",
-      "informes": [
-        "R-D8"
-      ],
-      "enunciado": "¿Cada cuánto llegan naves de carga a la Estación Espacial?",
-      "opciones": [
-        "Cada pocos meses",
-        "Cada semana",
-        "Una vez al año"
-      ],
-      "indiceCorrecto": 0,
-      "lectura": "A la Estación Espacial llegan naves de carga cada pocos meses. En la Luna serán menos frecuentes, así que no puedes depender solo de ellas: también hay que cultivar.",
-      "fraseEvidencia": "A la Estación Espacial llegan naves de carga cada pocos meses.",
-      "explicacion": "En la Luna llegarán aún menos: no puedes depender solo de ellas, hay que cultivar.",
-      "fuente": "NASA – Comida espacial",
-      "pista": "Está en la primera oración."
-    },
-    {
-      "id": "Q2-dormir",
-      "nivel": 2,
-      "tipo": "dato",
-      "tema": "salud_astronauta",
-      "barra": "salud",
-      "informes": [
-        "R-D13"
-      ],
-      "enunciado": "¿Cuánto tiempo tienen programado para dormir los astronautas de la Estación?",
-      "opciones": [
-        "Unas 8 horas y media",
-        "Unas 14 horas",
-        "Unas 4 horas"
-      ],
-      "indiceCorrecto": 0,
-      "lectura": "Los astronautas de la Estación Espacial tienen programadas unas 8 horas y media para dormir. Un capitán descansado comete menos errores.",
-      "fraseEvidencia": "Los astronautas de la Estación Espacial tienen programadas unas 8 horas y media para dormir.",
-      "explicacion": "Un capitán descansado comete menos errores.",
-      "fuente": "NASA – Vida en la ISS",
-      "pista": "Busca un número de horas."
-    },
-    {
-      "id": "Q3-meteorito",
-      "nivel": 3,
       "tipo": "causa",
-      "tema": "micrometeoritos",
-      "barra": "energia",
-      "informes": [
-        "E-D8a"
-      ],
-      "enunciado": "¿Por qué una piedrita del espacio puede hacer un agujero en la base?",
-      "opciones": [
-        "Viaja a más de 20 km por segundo",
-        "Viaja a unos 20 km por hora",
-        "Está a menos de -198 °C",
-        "Trae partículas del Sol"
-      ],
-      "indiceCorrecto": 0,
-      "lectura": "Los micrometeoritos viajan a más de 20 km por segundo, por eso una piedrita puede hacer un agujero. Una base que dura meses recibe más golpes que una visita de días como Apollo.",
-      "fraseEvidencia": "Los micrometeoritos viajan a más de 20 km por segundo, por eso una piedrita puede hacer un agujero.",
-      "explicacion": "Lo peligroso no es su tamaño sino su velocidad.",
-      "fuente": "NASA – Micrometeoroides",
-      "pista": "Fíjate bien en la unidad: ¿por segundo o por hora?"
-    },
-    {
-      "id": "Q3-campo",
-      "nivel": 3,
-      "tipo": "causa",
-      "tema": "radiacion",
-      "barra": "radiacion",
-      "informes": [
-        "F1-D4"
-      ],
-      "enunciado": "¿Por qué en la Luna hay que vigilar la radiación?",
-      "opciones": [
-        "No tiene campo magnético ni atmósfera gruesa",
-        "Su noche dura unos 14 días",
-        "Hay hielo en sus cráteres",
-        "Tiene sismos que duran minutos"
-      ],
-      "indiceCorrecto": 0,
-      "lectura": "El instrumento CRaTER mide la radiación cerca de la Luna desde 2009. La Luna no tiene campo magnético ni atmósfera gruesa que la proteja, por eso hay que vigilar la radiación y tener un refugio de paredes gruesas.",
-      "fraseEvidencia": "La Luna no tiene campo magnético ni atmósfera gruesa que la proteja, por eso hay que vigilar la radiación y tener un refugio de paredes gruesas.",
-      "explicacion": "En la Tierra el campo magnético y el aire nos protegen; en la Luna, solo el refugio.",
-      "fuente": "RadLab – CRaTER (LRO)",
-      "pista": "Busca qué le falta a la Luna para protegerse."
-    },
-    {
-      "id": "Q3-moho",
-      "nivel": 3,
-      "tipo": "causa",
-      "tema": "invernadero",
-      "barra": "comida",
-      "informes": [
-        "E-D8b"
-      ],
-      "enunciado": "En 2016, ¿por qué se llenaron de moho unas flores de la Estación Espacial?",
-      "opciones": [
-        "Por exceso de agua",
-        "Por falta de luz",
-        "Por la radiación del Sol",
-        "Porque un sismo las movió"
-      ],
-      "indiceCorrecto": 0,
-      "lectura": "En 2016 unas flores de la Estación Espacial se llenaron de moho por exceso de agua. Las plantas necesitan la cantidad justa de agua; cultivar bien hace a la base menos dependiente de los envíos.",
-      "fraseEvidencia": "En 2016 unas flores de la Estación Espacial se llenaron de moho por exceso de agua.",
-      "explicacion": "Las plantas necesitan la cantidad justa de agua: de más trae moho.",
-      "fuente": "NASA – Experimento Veggie",
-      "pista": "Busca el año 2016."
-    },
-    {
-      "id": "Q3-noche-rad",
-      "nivel": 3,
-      "tipo": "causa",
-      "tema": "radiacion",
-      "barra": "radiacion",
-      "informes": [
-        "E-D13"
-      ],
-      "enunciado": "¿Llega radiación a la base durante la noche lunar?",
-      "opciones": [
-        "Sí: los rayos cósmicos vienen de todas direcciones",
-        "No: sin Sol no hay radiación",
-        "Solo si hay polvo en el aire",
-        "No: el frío la frena"
-      ],
-      "indiceCorrecto": 0,
-      "lectura": "La radiación llega aunque sea de noche: los rayos cósmicos vienen de todas direcciones. El refugio de paredes gruesas te protege de día y de noche.",
-      "fraseEvidencia": "La radiación llega aunque sea de noche: los rayos cósmicos vienen de todas direcciones.",
-      "explicacion": "El refugio de paredes gruesas te protege de día y de noche.",
-      "fuente": "RadLab – CRaTER",
-      "pista": "Busca de dónde vienen los rayos cósmicos."
-    },
-    {
-      "id": "Q3-crater",
-      "nivel": 3,
-      "tipo": "dato",
-      "tema": "hielo_agua",
-      "barra": "comida",
-      "informes": [
-        "E-D11"
-      ],
-      "enunciado": "¿A qué temperatura está el hielo de los cráteres sin Sol?",
-      "opciones": [
-        "A menos de -198 °C",
-        "A unos -133 °C",
-        "A unos 0 °C",
-        "A unos -20 °C"
-      ],
-      "indiceCorrecto": 0,
-      "lectura": "En cráteres que nunca reciben Sol hay hielo, a menos de -198 °C. Con él se obtiene agua, y separándola, oxígeno para respirar y combustible para cohetes.",
-      "fraseEvidencia": "En cráteres que nunca reciben Sol hay hielo, a menos de -198 °C.",
-      "explicacion": "Es más frío que la noche lunar (unos -133 °C): por eso el hielo dura.",
-      "fuente": "NASA – Hielo lunar",
-      "pista": "No la confundas con la temperatura de la noche lunar."
-    },
-    {
-      "id": "Q3-capas",
-      "nivel": 3,
-      "tipo": "dato",
-      "tema": "micrometeoritos",
-      "barra": "salud",
-      "informes": [
-        "N-D12a"
-      ],
-      "enunciado": "¿Qué necesita una base que dura meses para aguantar los micrometeoritos?",
-      "opciones": [
-        "Paredes con varias capas o cubiertas de regolito",
-        "Cerrar las compuertas del refugio",
-        "Apagar los aparatos de noche",
-        "Limpiar los paneles sin tallar"
-      ],
-      "indiceCorrecto": 0,
-      "lectura": "Los micrometeoritos viajan a más de 20 km por segundo. Una base que dura meses recibe más golpes, por eso necesita paredes con varias capas o cubiertas de regolito.",
-      "fraseEvidencia": "Una base que dura meses recibe más golpes, por eso necesita paredes con varias capas o cubiertas de regolito.",
-      "explicacion": "Cerrar compuertas sirve en una tormenta solar, no contra las piedritas.",
-      "fuente": "NASA – Micrometeoroides",
-      "pista": "Busca qué necesitan las paredes."
-    },
-    {
-      "id": "T3-calefaccion",
-      "nivel": 3,
-      "tipo": "transferencia",
-      "tema": "noche_lunar",
-      "barra": "salud",
-      "informes": [
-        "E-D12b"
-      ],
-      "enunciado": "En la noche lunar apagas la calefacción para ahorrar. ¿Por qué empeora tu barra de SALUD?",
-      "opciones": [
-        "Sin calefacción, a unos -133 °C la salud baja rápido",
-        "Porque sube la radiación",
-        "Porque se caen las cajas de comida",
-        "Porque los paneles se rayan"
-      ],
-      "indiceCorrecto": 0,
-      "lectura": "Durante la noche lunar, de unos 14 días, la temperatura baja a unos -133 °C. Sin calefacción, la salud del capitán baja rápido.",
-      "fraseEvidencia": "Sin calefacción, la salud del capitán baja rápido.",
-      "explicacion": "Ahorrar energía es bueno, pero la calefacción protege tu salud en el frío.",
-      "fuente": "NASA – Noche lunar",
-      "pista": "¿Qué temperatura hace de noche?"
-    },
-    {
-      "id": "T3-tormenta-noche",
-      "nivel": 3,
-      "tipo": "transferencia",
-      "tema": "radiacion",
-      "barra": "radiacion",
-      "informes": [
-        "E-D13"
-      ],
-      "enunciado": "¿Qué harías si la alerta de tormenta solar suena en plena noche lunar?",
-      "opciones": [
-        "Ir al refugio igual: protege de día y de noche",
-        "Esperar al día: de noche no llega radiación",
-        "Limpiar primero los paneles",
-        "Prender la calefacción y quedarte afuera"
-      ],
-      "indiceCorrecto": 0,
-      "lectura": "La radiación llega aunque sea de noche: los rayos cósmicos vienen de todas direcciones. El refugio de paredes gruesas te protege de día y de noche.",
-      "fraseEvidencia": "El refugio de paredes gruesas te protege de día y de noche.",
-      "explicacion": "La radiación llega aunque sea de noche.",
-      "fuente": "RadLab – CRaTER",
-      "pista": "¿El texto dice que el refugio solo sirve de día?"
-    },
-    {
-      "id": "T3-fuga",
-      "nivel": 3,
-      "tipo": "transferencia",
       "tema": "agua_reciclaje",
       "barra": "salud",
-      "informes": [
-        "N-D8a"
-      ],
-      "enunciado": "Una fuga hace que pierdas agua. ¿Por qué también baja tu SALUD?",
+      "enunciado": "¿Por qué una fuga de agua también es un problema para respirar?",
       "opciones": [
-        "Con el agua se fabrica el oxígeno para respirar",
-        "El agua mueve los paneles",
-        "El agua calienta la base de noche",
-        "El agua frena el polvo lunar"
+        "Porque con el agua se fabrica el oxígeno",
+        "Porque el agua calienta el aire",
+        "Porque el agua limpia el polvo del aire",
+        "Porque el vapor apaga los paneles"
       ],
       "indiceCorrecto": 0,
       "lectura": "El agua de la base se recicla una y otra vez: la Estación Espacial recupera casi toda, cerca del 98%. Si se pierde agua, también falta para fabricar oxígeno, que se obtiene separando el agua.",
       "fraseEvidencia": "Si se pierde agua, también falta para fabricar oxígeno, que se obtiene separando el agua.",
       "explicacion": "Agua y aire van juntos: por eso una fuga es tan grave.",
-      "fuente": "NASA – Soporte de vida de la ISS",
-      "pista": "¿Qué se fabrica con el agua?"
+      "fuente": "NASA – Cómo se fabrica el oxígeno en la Estación",
+      "url": "https://www.nasa.gov/podcasts/houston-we-have-a-podcast/advanced-oxygen-generation/",
+      "pista": "Busca qué falta «si se pierde agua»."
     },
     {
-      "id": "T3-cultivo",
+      "id": "AR2-gases",
+      "nivel": 2,
+      "tipo": "dato",
+      "tema": "agua_reciclaje",
+      "barra": "salud",
+      "enunciado": "Al separar el agua, ¿qué dos gases salen?",
+      "opciones": [
+        "Hidrógeno y oxígeno",
+        "Oxígeno y helio",
+        "Nitrógeno y oxígeno",
+        "Hidrógeno y dióxido de carbono"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "La Estación Espacial recicla cerca del 98% de su agua, incluso el sudor. Además, el oxígeno para respirar se obtiene separando el agua en hidrógeno y oxígeno.",
+      "fraseEvidencia": "Además, el oxígeno para respirar se obtiene separando el agua en hidrógeno y oxígeno.",
+      "explicacion": "El agua está hecha de hidrógeno y oxígeno.",
+      "fuente": "NASA – Cómo se fabrica el oxígeno en la Estación",
+      "url": "https://www.nasa.gov/podcasts/houston-we-have-a-podcast/advanced-oxygen-generation/",
+      "pista": "Busca la palabra «separando»."
+    },
+    {
+      "id": "AR3-reciclar",
+      "nivel": 3,
+      "tipo": "causa",
+      "tema": "agua_reciclaje",
+      "barra": "salud",
+      "enunciado": "En una base lejana, ¿por qué conviene recuperar casi toda el agua?",
+      "opciones": [
+        "Porque el agua también sirve para fabricar oxígeno",
+        "Porque el agua reciclada pesa menos",
+        "Porque el agua de la Luna es salada",
+        "Porque así los paneles cargan más rápido"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "El agua de la base se recicla una y otra vez: la Estación Espacial recupera casi toda, cerca del 98%. Si se pierde agua, también falta para fabricar oxígeno, que se obtiene separando el agua.",
+      "fraseEvidencia": "Si se pierde agua, también falta para fabricar oxígeno, que se obtiene separando el agua.",
+      "explicacion": "Cada gota sirve dos veces: para beber y para respirar.",
+      "fuente": "NASA – Cómo se fabrica el oxígeno en la Estación",
+      "url": "https://www.nasa.gov/podcasts/houston-we-have-a-podcast/advanced-oxygen-generation/",
+      "pista": "Busca qué más se fabrica con el agua."
+    },
+    {
+      "id": "AR3-T-filtro",
       "nivel": 3,
       "tipo": "transferencia",
+      "tema": "agua_reciclaje",
+      "barra": "salud",
+      "enunciado": "Un filtro de reciclaje se descompuso y la base pierde un poco de agua cada día. ¿Qué gas para respirar puede empezar a faltar?",
+      "opciones": [
+        "Oxígeno",
+        "Nitrógeno",
+        "Helio",
+        "Dióxido de carbono"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "La Estación Espacial recicla cerca del 98% de su agua, incluso el sudor. Además, el oxígeno para respirar se obtiene separando el agua en hidrógeno y oxígeno.",
+      "fraseEvidencia": "Además, el oxígeno para respirar se obtiene separando el agua en hidrógeno y oxígeno.",
+      "explicacion": "La regla: el oxígeno sale del agua. Si se pierde agua, después falta oxígeno.",
+      "fuente": "NASA – Cómo se fabrica el oxígeno en la Estación",
+      "url": "https://www.nasa.gov/podcasts/houston-we-have-a-podcast/advanced-oxygen-generation/",
+      "pista": "Aplica la segunda oración: ¿qué sale del agua?"
+    },
+    {
+      "id": "SI1-dura",
+      "nivel": 1,
+      "tipo": "dato",
+      "tema": "sismos",
+      "barra": "comida",
+      "enunciado": "¿Cuánto pueden durar algunos sismos lunares?",
+      "opciones": [
+        "Varios minutos",
+        "Menos de un segundo",
+        "Unos 14 días",
+        "Todo un día"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Los astronautas de Apollo dejaron sismómetros que registraron sismos lunares. Algunos duran varios minutos, y los más fuertes de poca profundidad fueron cerca del polo sur.",
+      "fraseEvidencia": "Algunos duran varios minutos, y los más fuertes de poca profundidad fueron cerca del polo sur.",
+      "explicacion": "Algunos sismos lunares de poca profundidad duraron más de 10 minutos.",
+      "fuente": "NASA – Guía Apollo para maestros (sismos lunares)",
+      "url": "https://www.nasa.gov/wp-content/uploads/2019/07/apollo-show-educators-guide.pdf",
+      "pista": "Busca cuánto «duran»."
+    },
+    {
+      "id": "SI1-aparato",
+      "nivel": 1,
+      "tipo": "dato",
+      "tema": "sismos",
+      "barra": "comida",
+      "enunciado": "¿Qué aparatos dejaron los astronautas de Apollo para registrar sismos?",
+      "opciones": [
+        "Sismómetros",
+        "Telescopios",
+        "Termómetros",
+        "Paneles solares"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Los astronautas de Apollo dejaron sismómetros que registraron sismos lunares. Algunos duran varios minutos, y los más fuertes de poca profundidad fueron cerca del polo sur.",
+      "fraseEvidencia": "Los astronautas de Apollo dejaron sismómetros que registraron sismos lunares.",
+      "explicacion": "Un sismómetro mide los temblores.",
+      "fuente": "NASA – Guía Apollo para maestros (sismos lunares)",
+      "url": "https://www.nasa.gov/wp-content/uploads/2019/07/apollo-show-educators-guide.pdf",
+      "pista": "Busca la primera oración."
+    },
+    {
+      "id": "SI2-polo",
+      "nivel": 2,
+      "tipo": "dato",
+      "tema": "sismos",
+      "barra": "comida",
+      "enunciado": "¿Dónde fueron los sismos lunares más fuertes de poca profundidad?",
+      "opciones": [
+        "Cerca del polo sur",
+        "Cerca del ecuador",
+        "Donde aterrizó Apollo 11",
+        "En el centro de la cara que vemos"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Los astronautas de Apollo dejaron sismómetros que registraron sismos lunares. Algunos duran varios minutos, y los más fuertes de poca profundidad fueron cerca del polo sur.",
+      "fraseEvidencia": "Algunos duran varios minutos, y los más fuertes de poca profundidad fueron cerca del polo sur.",
+      "explicacion": "El sismo de poca profundidad más fuerte que se registró fue en la región del polo sur.",
+      "fuente": "NASA – Sismos lunares cerca del polo sur",
+      "url": "https://www.nasa.gov/solar-system/moon/shrinking-moon-causing-moonquakes-and-faults-near-lunar-south-pole/",
+      "pista": "Busca un lugar de la Luna en la última oración."
+    },
+    {
+      "id": "SI2-cajas",
+      "nivel": 2,
+      "tipo": "causa",
+      "tema": "sismos",
+      "barra": "comida",
+      "enunciado": "¿Por qué en un sismo lunar se caen las cajas de los estantes?",
+      "opciones": [
+        "Porque el sismo dura minutos y lo suelto se mueve",
+        "Porque la Luna no tiene gravedad",
+        "Porque el frío rompe los estantes",
+        "Porque los sismos atraen el metal"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Algunos sismos lunares duran varios minutos, más que muchos terremotos en la Tierra. Los sismómetros de Apollo los registraron. Asegurar los objetos evita perder comida y equipo.",
+      "fraseEvidencia": "Algunos sismos lunares duran varios minutos, más que muchos terremotos en la Tierra.",
+      "explicacion": "Lo que no está asegurado se cae: por eso hay que sujetar las cosas.",
+      "fuente": "NASA – Guía Apollo para maestros (sismos lunares)",
+      "url": "https://www.nasa.gov/wp-content/uploads/2019/07/apollo-show-educators-guide.pdf",
+      "pista": "Busca cuánto duran los sismos lunares."
+    },
+    {
+      "id": "SI3-tierra",
+      "nivel": 3,
+      "tipo": "dato",
+      "tema": "sismos",
+      "barra": "comida",
+      "enunciado": "Comparados con muchos terremotos de la Tierra, ¿cómo son algunos sismos lunares?",
+      "opciones": [
+        "Duran más tiempo",
+        "Duran menos tiempo",
+        "Duran exactamente igual",
+        "No se pueden medir"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Algunos sismos lunares duran varios minutos, más que muchos terremotos en la Tierra. Los sismómetros de Apollo los registraron. Asegurar los objetos evita perder comida y equipo.",
+      "fraseEvidencia": "Algunos sismos lunares duran varios minutos, más que muchos terremotos en la Tierra.",
+      "explicacion": "En la Tierra muchas vibraciones se apagan en medio minuto; en la Luna siguen minutos.",
+      "fuente": "NASA – Guía Apollo para maestros (sismos lunares)",
+      "url": "https://www.nasa.gov/wp-content/uploads/2019/07/apollo-show-educators-guide.pdf",
+      "pista": "Compara con la Tierra en la primera oración."
+    },
+    {
+      "id": "SI3-T-polo",
+      "nivel": 3,
+      "tipo": "transferencia",
+      "tema": "sismos",
+      "barra": "comida",
+      "enunciado": "Van a construir una base cerca del polo sur de la Luna. ¿Qué harías con los estantes y el equipo?",
+      "opciones": [
+        "Fijarlos bien desde el principio",
+        "Dejarlos sueltos: ahí casi no tiembla",
+        "Guardarlos solo en el refugio contra la radiación",
+        "Esperar al primer sismo para decidir"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Los astronautas de Apollo dejaron sismómetros que registraron sismos lunares. Algunos duran varios minutos, y los más fuertes de poca profundidad fueron cerca del polo sur. Asegurar los objetos evita perder comida y equipo.",
+      "fraseEvidencia": "Algunos duran varios minutos, y los más fuertes de poca profundidad fueron cerca del polo sur.",
+      "explicacion": "La regla: cerca del polo sur hubo los sismos poco profundos más fuertes, y duran minutos. Hay que asegurar todo antes.",
+      "fuente": "NASA – Sismos lunares cerca del polo sur",
+      "url": "https://www.nasa.gov/solar-system/moon/shrinking-moon-causing-moonquakes-and-faults-near-lunar-south-pole/",
+      "pista": "Busca dónde fueron los sismos más fuertes."
+    },
+    {
+      "id": "IN1-lechuga",
+      "nivel": 1,
+      "tipo": "dato",
       "tema": "invernadero",
       "barra": "energia",
-      "informes": [
-        "N-D5"
+      "enunciado": "¿Qué comieron en 2015 los astronautas de la Estación Espacial?",
+      "opciones": [
+        "La primera lechuga cultivada en el espacio",
+        "La primera pizza hecha en el espacio",
+        "Fresas traídas de la Luna",
+        "Pan horneado en la estación"
       ],
+      "indiceCorrecto": 0,
+      "lectura": "En la Luna los envíos de comida serán poco frecuentes, así que la base tendrá que cultivar para ser autosuficiente. En 2015 los astronautas de la Estación Espacial comieron la primera lechuga cultivada en el espacio.",
+      "fraseEvidencia": "En 2015 los astronautas de la Estación Espacial comieron la primera lechuga cultivada en el espacio.",
+      "explicacion": "Fue la primera verdura cultivada y comida en el espacio.",
+      "fuente": "NASA Science – Primera verdura comida en el espacio",
+      "url": "https://science.nasa.gov/science-cast-historic-vegetable-moment-space-station-0",
+      "pista": "Busca el año 2015."
+    },
+    {
+      "id": "IN1-necesitan",
+      "nivel": 1,
+      "tipo": "dato",
+      "tema": "invernadero",
+      "barra": "energia",
+      "enunciado": "¿Qué necesitan las plantas del invernadero para crecer bien?",
+      "opciones": [
+        "Luz y la cantidad justa de agua",
+        "Mucha agua: entre más, mejor",
+        "Oscuridad y frío",
+        "Polvo lunar encima"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Las plantas del invernadero necesitan luz y la cantidad justa de agua. En 2016 unas flores de la Estación Espacial se llenaron de moho por exceso de agua.",
+      "fraseEvidencia": "Las plantas del invernadero necesitan luz y la cantidad justa de agua.",
+      "explicacion": "Con luz y el agua justa, las plantas dan comida.",
+      "fuente": "NASA – Cultivar plantas en el espacio",
+      "url": "https://www.nasa.gov/exploration-research-and-technology/growing-plants-in-space/",
+      "pista": "Busca la primera oración."
+    },
+    {
+      "id": "IN2-moho",
+      "nivel": 2,
+      "tipo": "causa",
+      "tema": "invernadero",
+      "barra": "energia",
+      "enunciado": "En 2016, ¿por qué se llenaron de moho unas flores de la Estación Espacial?",
+      "opciones": [
+        "Por exceso de agua",
+        "Por falta de luz",
+        "Por la radiación del Sol",
+        "Porque nadie las cosechó"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "En 2016 unas flores de la Estación Espacial se llenaron de moho por exceso de agua. Las plantas necesitan la cantidad justa de agua; cultivar bien hace a la base menos dependiente de los envíos.",
+      "fraseEvidencia": "En 2016 unas flores de la Estación Espacial se llenaron de moho por exceso de agua.",
+      "explicacion": "Les dieron demasiada agua y salió un hongo.",
+      "fuente": "NASA – Cultivar plantas en el espacio",
+      "url": "https://www.nasa.gov/exploration-research-and-technology/growing-plants-in-space/",
+      "pista": "Busca el año 2016."
+    },
+    {
+      "id": "IN2-cultivar",
+      "nivel": 2,
+      "tipo": "causa",
+      "tema": "invernadero",
+      "barra": "energia",
+      "enunciado": "¿Por qué una base en la Luna tiene que cultivar comida?",
+      "opciones": [
+        "Porque los envíos de comida serán poco frecuentes",
+        "Porque la comida de la Tierra no sirve en la Luna",
+        "Porque las plantas dan energía a los paneles",
+        "Porque cultivar no gasta nada"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "En la Luna los envíos de comida serán poco frecuentes, así que la base tendrá que cultivar para ser autosuficiente. En 2015 los astronautas de la Estación Espacial comieron la primera lechuga cultivada en el espacio.",
+      "fraseEvidencia": "En la Luna los envíos de comida serán poco frecuentes, así que la base tendrá que cultivar para ser autosuficiente.",
+      "explicacion": "Una base que produce su comida depende menos de los envíos.",
+      "fuente": "NASA – Cultivar plantas en el espacio",
+      "url": "https://www.nasa.gov/exploration-research-and-technology/growing-plants-in-space/",
+      "pista": "Busca la palabra «envíos»."
+    },
+    {
+      "id": "IN3-luces",
+      "nivel": 3,
+      "tipo": "causa",
+      "tema": "invernadero",
+      "barra": "energia",
       "enunciado": "Prender las luces de cultivo baja tu ENERGÍA. ¿Por qué vale la pena?",
       "opciones": [
         "Gasta energía hoy, pero da comida en los próximos días",
-        "Las luces cargan los paneles",
+        "Las luces también recargan las baterías",
         "Las luces frenan la radiación",
-        "Las plantas dan energía esa misma noche"
+        "Las plantas devuelven la energía esa misma noche"
       ],
       "indiceCorrecto": 0,
       "lectura": "Cultivar gasta energía hoy, pero da comida en los próximos días. En la Luna los envíos de comida serán poco frecuentes, por eso cultivar es clave.",
       "fraseEvidencia": "Cultivar gasta energía hoy, pero da comida en los próximos días.",
       "explicacion": "Es una inversión: pierdes un poco hoy para tener comida después.",
-      "fuente": "NASA – Comida espacial",
+      "fuente": "NASA – Cultivar plantas en el espacio",
+      "url": "https://www.nasa.gov/exploration-research-and-technology/growing-plants-in-space/",
       "pista": "Busca qué pasa «hoy» y qué pasa «en los próximos días»."
+    },
+    {
+      "id": "IN3-T-mojada",
+      "nivel": 3,
+      "tipo": "transferencia",
+      "tema": "invernadero",
+      "barra": "energia",
+      "enunciado": "Tus plantas se ven tristes y la tierra está muy mojada. ¿Qué haces?",
+      "opciones": [
+        "Regar menos y dejar que se seque un poco",
+        "Regar el doble para que se recuperen",
+        "Apagar las luces para que descansen",
+        "Moverlas al refugio"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Las plantas del invernadero necesitan luz y la cantidad justa de agua. En 2016 unas flores de la Estación Espacial se llenaron de moho por exceso de agua.",
+      "fraseEvidencia": "En 2016 unas flores de la Estación Espacial se llenaron de moho por exceso de agua.",
+      "explicacion": "La regla: demasiada agua enferma a las plantas. Si la tierra está muy mojada, hay que regar menos.",
+      "fuente": "NASA – Cultivar plantas en el espacio",
+      "url": "https://www.nasa.gov/exploration-research-and-technology/growing-plants-in-space/",
+      "pista": "¿Qué les pasó a las flores con mucha agua?"
+    },
+    {
+      "id": "MM1-agujero",
+      "nivel": 1,
+      "tipo": "causa",
+      "tema": "micrometeoritos",
+      "barra": "salud",
+      "enunciado": "¿Por qué una piedrita del espacio puede hacer un agujero en la base?",
+      "opciones": [
+        "Porque viaja muy rápido",
+        "Porque está muy caliente",
+        "Porque es muy grande",
+        "Porque trae radiación"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Los micrometeoritos viajan en promedio a unos 20 km por segundo: por eso una piedrita puede hacer un agujero.",
+      "fraseEvidencia": "Los micrometeoritos viajan en promedio a unos 20 km por segundo: por eso una piedrita puede hacer un agujero.",
+      "explicacion": "Lo peligroso no es su tamaño sino su velocidad.",
+      "fuente": "NASA – Memorando técnico 102287 (micrometeoroides)",
+      "url": "https://ntrs.nasa.gov/api/citations/19890016664/downloads/19890016664.pdf",
+      "pista": "Busca la palabra «por eso»."
+    },
+    {
+      "id": "MM1-que",
+      "nivel": 1,
+      "tipo": "dato",
+      "tema": "micrometeoritos",
+      "barra": "salud",
+      "enunciado": "¿Qué es un micrometeorito?",
+      "opciones": [
+        "Una piedrita del espacio que viaja muy rápido",
+        "Una tormenta del Sol",
+        "Un sismo pequeño",
+        "Un pedazo de hielo de un cráter"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Los micrometeoritos viajan en promedio a unos 20 km por segundo: por eso una piedrita puede hacer un agujero.",
+      "fraseEvidencia": "Los micrometeoritos viajan en promedio a unos 20 km por segundo: por eso una piedrita puede hacer un agujero.",
+      "explicacion": "Son piedritas muy pequeñas que viajan rapidísimo.",
+      "fuente": "NASA – Micrometeoroides y basura espacial (White Sands)",
+      "url": "https://www.nasa.gov/centers-and-facilities/white-sands/micrometeoroids-and-orbital-debris-mmod/",
+      "pista": "Busca «piedrita» en el texto."
+    },
+    {
+      "id": "MM2-velocidad",
+      "nivel": 2,
+      "tipo": "dato",
+      "tema": "micrometeoritos",
+      "barra": "salud",
+      "enunciado": "¿A qué velocidad viajan en promedio los micrometeoritos?",
+      "opciones": [
+        "A unos 20 km por segundo",
+        "A unos 20 km por hora",
+        "A unos 20 metros por segundo",
+        "A unos 2 km por hora"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Los micrometeoritos viajan en promedio a unos 20 km por segundo: por eso una piedrita puede hacer un agujero.",
+      "fraseEvidencia": "Los micrometeoritos viajan en promedio a unos 20 km por segundo: por eso una piedrita puede hacer un agujero.",
+      "explicacion": "20 km en un solo segundo: mucho más rápido que una bala.",
+      "fuente": "NASA – Memorando técnico 102287 (micrometeoroides)",
+      "url": "https://ntrs.nasa.gov/api/citations/19890016664/downloads/19890016664.pdf",
+      "pista": "Fíjate bien en la unidad: ¿por segundo o por hora?"
+    },
+    {
+      "id": "MM2-meses",
+      "nivel": 2,
+      "tipo": "causa",
+      "tema": "micrometeoritos",
+      "barra": "salud",
+      "enunciado": "¿Por qué una base que dura meses recibe más golpes que una visita corta como Apollo?",
+      "opciones": [
+        "Porque pasa más tiempo expuesta",
+        "Porque los micrometeoritos buscan las bases",
+        "Porque la base atrae piedras con su energía",
+        "Porque en los meses hay más tormentas solares"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Los micrometeoritos golpean todo el tiempo lo que está en el espacio. Una base que dura meses recibe más golpes que una visita de días como Apollo.",
+      "fraseEvidencia": "Una base que dura meses recibe más golpes que una visita de días como Apollo.",
+      "explicacion": "Los golpes llegan todo el tiempo: entre más tiempo estés, más recibes.",
+      "fuente": "NASA – Micrometeoroides y basura espacial (White Sands)",
+      "url": "https://www.nasa.gov/centers-and-facilities/white-sands/micrometeoroids-and-orbital-debris-mmod/",
+      "pista": "Compara cuánto tiempo dura cada misión."
+    },
+    {
+      "id": "MM3-escudo",
+      "nivel": 3,
+      "tipo": "dato",
+      "tema": "micrometeoritos",
+      "barra": "salud",
+      "enunciado": "¿Cómo se protegen las naves contra los micrometeoritos?",
+      "opciones": [
+        "Con escudos de varias capas separadas",
+        "Con imanes que los desvían",
+        "Con luces que los espantan",
+        "Pintándolas de blanco"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Desde hace muchos años las naves usan escudos Whipple: varias capas separadas que las protegen de los micrometeoritos.",
+      "fraseEvidencia": "Desde hace muchos años las naves usan escudos Whipple: varias capas separadas que las protegen de los micrometeoritos.",
+      "explicacion": "Los escudos Whipple tienen varias capas: la de afuera recibe el golpe primero.",
+      "fuente": "NASA NTRS – Escudos Whipple",
+      "url": "https://ntrs.nasa.gov/citations/20090024821",
+      "pista": "Busca cómo son los escudos Whipple."
+    },
+    {
+      "id": "MM3-T-pared",
+      "nivel": 3,
+      "tipo": "transferencia",
+      "tema": "micrometeoritos",
+      "barra": "salud",
+      "enunciado": "Vas a diseñar un módulo nuevo para una base que durará años. ¿Qué pared eliges?",
+      "opciones": [
+        "Una pared con varias capas separadas",
+        "Una pared delgada, para que pese poco",
+        "Una pared de vidrio, para ver afuera",
+        "Cualquiera: los micrometeoritos son muy pequeños"
+      ],
+      "indiceCorrecto": 0,
+      "lectura": "Desde hace muchos años las naves usan escudos Whipple: varias capas separadas que las protegen de los micrometeoritos.",
+      "fraseEvidencia": "Desde hace muchos años las naves usan escudos Whipple: varias capas separadas que las protegen de los micrometeoritos.",
+      "explicacion": "La regla: las capas separadas protegen de los golpes. Una base de años recibe muchos golpes.",
+      "fuente": "NASA NTRS – Escudos Whipple",
+      "url": "https://ntrs.nasa.gov/citations/20090024821",
+      "pista": "Usa la regla de los escudos Whipple para tu módulo."
     }
+  ],
+  "_todoNASA": [
+    "TODO verificar con NASA: «Una CME suele tardar de 1 a 3 días» (informe E-D5). NASA Science dice: desde unas 15 horas hasta varios días. Se quitó la pregunta Q2-cme; RA3-cme usa el dato de NASA.",
+    "TODO verificar con NASA: «hielo a menos de -198 °C» (informe E-D11). NASA (LRO) midió menos de -246 °C en cráteres en sombra. Se quitó la pregunta Q3-crater; HA3-frio usa el dato de NASA.",
+    "TODO verificar con NASA: «naves de carga cada pocos meses» (informe R-D8). No se encontró una fuente NASA con esa frecuencia. Se quitó la pregunta Q2-carga.",
+    "TODO verificar con NASA: «micrometeoritos a más de 20 km por segundo» (informes E-D8a y N-D12a). El memorando técnico de NASA da un promedio de 20 km/s; las preguntas dicen «unos 20 km por segundo».",
+    "TODO verificar con NASA: «cubiertas de regolito» como protección contra micrometeoritos (informe N-D12a). No se usa en el banco.",
+    "TODO verificar con NASA: «Skylab se sobrecalentó y abrieron una sombrilla gigante» (informe N-D8b). No se usa en el banco."
   ]
 }
