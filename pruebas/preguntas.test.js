@@ -82,12 +82,42 @@ test("medidor de radiación: zonas y tendencia", () => {
   assert.equal(P.tendencia([1, 1, 1, 1, 1, 1, 1]).bajo, false);
 });
 
-test("pregunta de bitácora: la llamarada más fuerte es la respuesta", () => {
+test("pregunta de bitácora: se pregunta el día de la llamarada más fuerte, en palabras", () => {
   const datos = { donki: { llamaradas: [{ fecha: "2026-11-01", clase: "C2.0" }, { fecha: "2026-11-05", clase: "M3.5" }, { fecha: "2026-11-08", clase: "M1.1" }] } };
-  const q = P.preguntaBitacora(datos, semilla(3));
+  const q = P.preguntaBitacora(datos);
   assert.equal(P.validarPregunta(q), null);
-  assert.equal(q.opciones[q.indiceCorrecto], "M3.5");
-  assert.ok(q.opciones.every((c, i) => i === q.indiceCorrecto || P.claseNum(c) < P.claseNum("M3.5")));
+  assert.equal(q.opciones[q.indiceCorrecto], "el 5 de noviembre");
+  assert.ok(q.fraseEvidencia.includes("M3.5") && q.fraseEvidencia.includes("fuerte"), "conserva el dato real y la versión en palabras");
+  assert.equal(P.fuerzaDe("C1.3"), "suave");
+  assert.equal(P.fuerzaDe("M3.5"), "fuerte");
+});
+
+test("cada pregunta del banco depende de su lectura: la frase de evidencia está en el texto", () => {
+  for (const p of DATOS.banco) {
+    assert.ok(p.lectura && p.lectura.includes(p.fraseEvidencia), p.id);
+    assert.ok(p.pista && p.pista.length < 90, p.id + " pista corta");
+    assert.ok(!p.enunciado.toLowerCase().includes(p.opciones[p.indiceCorrecto].toLowerCase()), p.id + ": el enunciado no debe traer la respuesta");
+  }
+});
+
+test("las preguntas de transferencia solo están en el nivel 3", () => {
+  for (const p of DATOS.banco.filter((q) => q.tipo === "transferencia")) assert.equal(p.nivel, 3, p.id);
+});
+
+test("las preguntas son fijas: mismo orden y misma pregunta en cada partida", () => {
+  const p = DATOS.banco[0];
+  const a = P.barajarFijo(p.opciones, p.indiceCorrecto, p.id), b = P.barajarFijo(p.opciones, p.indiceCorrecto, p.id);
+  assert.deepEqual(a, b);
+  assert.equal(a.opciones[a.correcta], p.opciones[p.indiceCorrecto]);
+  assert.equal(P.elegirPregunta(DATOS.banco, 2, []).id, P.elegirPregunta(DATOS.banco, 2, []).id);
+});
+
+test("la evidencia de cada situación está en su informe y sus distractores no", () => {
+  for (const [id, x] of Object.entries(DATOS.situaciones)) {
+    const c = x.evidencia.correcta.replace(/\.$/, "");
+    assert.ok(x.informe.includes(c) || x.informe.includes(c.charAt(0).toLowerCase() + c.slice(1)) || id === "S-polvo_lunar", id);
+    for (const d of x.evidencia.distractores) assert.ok(!x.informe.includes(d.replace(/\.$/, "")), id + ": " + d);
+  }
 });
 
 test("pregunta de bitácora sin llamaradas usa la radiación de RadLab", () => {
@@ -97,7 +127,7 @@ test("pregunta de bitácora sin llamaradas usa la radiación de RadLab", () => {
 });
 
 test("repaso: usa una pregunta del mismo tema si existe", () => {
-  const q = P.preguntaRepaso([{ titulo: "Radiación", tema: "radiacion", texto: "x" }], DATOS.banco, 2, [], semilla(5));
+  const q = P.preguntaRepaso([{ titulo: "Radiación", tema: "radiacion", texto: "x" }], DATOS.banco, 2, []);
   assert.equal(q.tipo, "repaso");
   assert.equal(q.tema, "radiacion");
   assert.equal(P.validarPregunta(q), null);

@@ -278,6 +278,13 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
 .op:not(.prim) { background: rgb(30, 32, 70); border: 2px solid rgb(14, 13, 34); box-shadow: inset 2px 2px 0 rgba(198, 190, 250, 0.28), inset -2px -3px 0 rgba(6, 6, 20, 0.55); }
 .op:not(.prim):hover:not([disabled]) { border-color: var(--tema, var(--crema)); }
 .op.ok { border-color: var(--verde) !important; } .op.ko, .op.mal { border-color: var(--rojo) !important; }
+.lectura { border-left: 3px solid var(--tema, var(--lila)); background: rgba(255, 255, 255, 0.04); padding: 4px 10px 6px; display: grid; gap: 2px; }
+.lectura .txt { font-size: 15.5px; }
+.pregunta-antes { color: var(--crema); }
+details.saber summary { cursor: pointer; font-size: 12px; color: var(--dim); }
+details.saber[open] summary { color: var(--ink); }
+.pista-txt { margin: 0; font-size: 14px; color: var(--ambar); border-left: 3px solid var(--ambar); padding: 2px 0 2px 8px; }
+.aviso-pista:empty { display: none; }
 .res { border-width: 2px; box-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.06); }
 /* retrato con el marco del color del tema */
 .retrato { border: 3px solid var(--tema, var(--lila)); box-shadow: 0 0 0 2px rgb(24, 22, 52); }
@@ -287,16 +294,17 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
    El HUD mide 1280 x 960: arriba la escena (1280 x 720) se ve completa; abajo, en 240 px,
    el panel de sistemas (2 x 2 barras) y el cuadro de texto. ajustar() en juego.js reduce la escena para que quepa. */
 #hud { height: 720px; }
-#franja { position: absolute; left: 0; top: 520px; width: 1280px; height: 200px; background: rgb(8, 9, 20); box-shadow: inset 0 3px 0 rgb(152, 142, 224), inset 0 6px 0 rgb(74, 66, 142), inset 0 9px 0 rgb(14, 13, 34); pointer-events: none; }
-.izq { left: 10px; top: 528px; bottom: auto; width: 500px; height: 186px; padding: 2px 8px 4px; background: none; border: 16px solid transparent; border-image: url(img/dialogo/panel-normal.png) 32 fill / 32px / 0 stretch; image-rendering: pixelated; }
+#franja { position: absolute; left: 0; top: 464px; width: 1280px; height: 256px; background: rgb(8, 9, 20); box-shadow: inset 0 3px 0 rgb(152, 142, 224), inset 0 6px 0 rgb(74, 66, 142), inset 0 9px 0 rgb(14, 13, 34); pointer-events: none; }
+.izq { left: 10px; top: 472px; bottom: auto; width: 500px; height: 242px; padding: 2px 8px 4px; background: none; border: 16px solid transparent; border-image: url(img/dialogo/panel-normal.png) 32 fill / 32px / 0 stretch; image-rendering: pixelated; }
 .izq h3 { padding: 0; margin: 0 0 2px; }
 .izq #extra { position: absolute; right: 2px; top: 1px; border: 0; padding: 0; font-size: 11px; }
+#barras { margin-top: 10px; row-gap: 10px; }
 .izq #extra span:not(:first-child) { display: none; }
 #barras { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
 .barra { margin-bottom: 0; }
-#consola { left: 522px; top: 526px; bottom: auto; width: 748px; height: 190px; max-height: none; gap: 8px; scrollbar-width: thin; scrollbar-color: var(--tema, var(--lila)) transparent; }
+#consola { left: 522px; top: 470px; bottom: auto; width: 748px; height: 246px; max-height: none; gap: 8px; scrollbar-width: thin; scrollbar-color: var(--tema, var(--lila)) transparent; }
 #consola .titulo { font-size: 20px; }
-#toast { bottom: 214px; }
+#toast { bottom: 270px; }
 @media (prefers-reduced-motion: reduce) { #consola.tema-catastrofe, #mj.tema-catastrofe, .tag.alarma, .carta.nueva, .barra.pulsa .ascii, #stage.tiembla, .cable.mal { animation: none; } }
 </style>
 </head>
@@ -350,6 +358,8 @@ body { margin: 0; background: var(--negro); color: var(--ink); font-family: var(
       <label class="ctl" for="c-hab">Habilidad <input id="c-hab" type="range" min="10" max="100" step="5" value="70"><output id="o-hab">70%</output></label>
       <label class="ctl" for="c-comp">Comprensión <input id="c-comp" type="range" min="10" max="100" step="5" value="65"><output id="o-comp">65%</output></label>
       <div class="ctl"><button type="button" id="c-voz" aria-pressed="false">Voz en off (lectura 1)</button></div>
+      <div class="ctl"><button type="button" id="c-sintexto" aria-pressed="false" title="Oculta los textos de lectura para comparar aciertos con y sin leer (también con ?sintexto=1)">Prueba: texto oculto</button></div>
+      <div class="ctl ancho"><span>Prueba de lectura (aciertos al primer intento):</span><output id="c-lectura">—</output></div>
       <div class="ctl"><button type="button" id="c-reiniciar">Nueva partida</button><button type="button" id="c-menu">Menú</button><button type="button" id="c-borrar">Borrar progreso</button></div>
       <div class="ctl" role="group" aria-label="Ver un final"><span>Finales</span>
         <button type="button" data-final="perfecta">3★</button><button type="button" data-final="verde">2★</button><button type="button" data-final="relevo">1★</button>

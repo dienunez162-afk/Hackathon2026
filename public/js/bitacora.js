@@ -84,12 +84,12 @@
     const izq = `<h3 class="bt-tit">Clima espacial real</h3>
       <p class="bt-mini">NASA DONKI · últimos 30 días · ${etiqueta(est.donki)}</p>
       <ul class="bt-datos">
-        <li><b>${fl.length}</b> llamaradas solares${fuerte ? `; la más fuerte fue <b>${esc(fuerte.clase)}</b> el ${esc(String(fuerte.fecha).slice(0, 10))}` : ""}</li>
+        <li><b>${fl.length}</b> llamaradas solares${fuerte ? `; la más fuerte fue <b>${esc(fuerte.clase)} · ${esc(PREGUNTAS.fuerzaDe(fuerte.clase))}</b> ${esc(PREGUNTAS.fechaTxt(fuerte.fecha))}` : ""}</li>
         <li><b>${(dk.cmes || []).length}</b> nubes de material del Sol (CME)</li>
         <li>Tormenta geomagnética más fuerte: <b>Kp ${kp || "—"}</b> ${kp >= 6 ? "(¡fuerte!)" : kp >= 5 ? "(moderada)" : ""}</li>
       </ul>
-      <p class="bt-mini">Últimas llamaradas: ${fl.slice(0, 5).map((f) => `${esc(f.clase)} (${esc(String(f.fecha).slice(5, 10))})`).join(" · ") || "—"}</p>
-      <p class="bt-mini">Las llamaradas M y X son las fuertes. Una CME tarda de 1 a 3 días en llegar a la Luna.</p>`;
+      <p class="bt-mini">Últimas llamaradas: ${fl.slice(0, 5).map((f) => `${esc(f.clase)} · ${esc(PREGUNTAS.fuerzaDe(f.clase))} (${esc(PREGUNTAS.fechaTxt(f.fecha))})`).join(" · ") || "—"}</p>
+      <p class="bt-mini">Las llamaradas A, B y C son suaves; M y X son fuertes. Una CME tarda de 1 a 3 días en llegar a la Luna.</p>`;
     const serie = (rl && rl.serie) || [], base = (rl && rl.base) || 1;
     const maxL = Math.log10(Math.max(1.5, ...serie.map((x) => x.dosis / base)));
     const barras = serie.map((x) => { const r = x.dosis / base, h = Math.max(4, Math.round(100 * Math.log10(Math.max(1, r)) / maxL)); return `<i title="${esc(x.fecha)}: ${r.toFixed(1)} veces lo normal" style="height:${h}%;background:${r > 3 ? "#c8344a" : r > 1.5 ? "#d98a1c" : "#3c9a5a"}"></i>`; }).join("");

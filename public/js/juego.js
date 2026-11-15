@@ -78,6 +78,8 @@
   const ui = {
     uso: guardadoUso.uso || "libre", grado: guardadoUso.grado || 4,
     modo: qs.get("auto") ? "auto" : "manual", vel: +qs.get("vel") || 1, hab: 0.7, comp: 0.65, voz: false,
+    // prueba de lectura (solo equipo): oculta los textos para comparar aciertos con y sin leer
+    sinTexto: qs.get("sintexto") === "1", lecturaStats: { con: { ok: 0, n: 0 }, sin: { ok: 0, n: 0 } },
   };
   const app = $("app"), stage = $("stage"), hud = $("hud"), ctrl = $("ctrl"), $c = $("consola"), $mj = $("mj");
   function pintarCtl() {
@@ -87,6 +89,9 @@
     ctrl.querySelectorAll("[data-modo]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.modo === ui.modo)));
     ctrl.querySelectorAll("[data-vel]").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.vel === ui.vel)));
     $("c-voz").setAttribute("aria-pressed", String(ui.voz));
+    $("c-sintexto").setAttribute("aria-pressed", String(ui.sinTexto));
+    const ls = ui.lecturaStats, pct = (x) => (x.n ? Math.round(100 * x.ok / x.n) + "%" : "—");
+    $("c-lectura").textContent = `con texto ${ls.con.ok}/${ls.con.n} (${pct(ls.con)}) · sin texto ${ls.sin.ok}/${ls.sin.n} (${pct(ls.sin)})`;
     $("o-hab").textContent = Math.round(ui.hab * 100) + "%";
     $("o-comp").textContent = Math.round(ui.comp * 100) + "%";
     $("c-apis").textContent = `DONKI: ${APIS.estado.donki} · RadLab: ${APIS.estado.radlab} · OSDR: ${APIS.estado.osdr}`;
@@ -98,6 +103,7 @@
     else if (b.dataset.modo) ui.modo = b.dataset.modo;
     else if (b.dataset.vel) ui.vel = +b.dataset.vel;
     else if (b.id === "c-voz") ui.voz = !ui.voz;
+    else if (b.id === "c-sintexto") ui.sinTexto = !ui.sinTexto;
     else if (b.id === "c-reiniciar") {
       if (estado === "menu") elegir("JUGAR");
       else { abortar(); if (typeof finalActual !== "undefined") finalActual = null; entrarJuego(); }   // también desde un final o el alunizaje
@@ -623,7 +629,7 @@
     escena("plano", { resaltar: mod || null, alarma: !!(estados && estados.alarma) });
     const fuera = destino === "exterior" || destino === "crater";
     const tema = estados && estados.alarma ? "catastrofe" : estados && estados.llamada || motivo === MOTIVO.control_mision ? "llamada" : motivo === MOTIVO.evento ? "alerta" : "normal";
-    const c = pantalla(`<span class="tag">PLANO DE LA BASE</span><p class="txt">${motivo ? esc(motivo) + " " : ""}<b>${esc(NOMBRE_ESC[destino] || destino)}</b>.</p>` +
+    const c = pantalla(`<span class="tag">PLANO DE LA BASE</span><p class="txt">${motivo ? esc(motivo) + " " : ""}<b>${esc(NOMBRE_ESC[destino] || destino)}</b>${motivo && /¡[^!]*$/.test(motivo) ? "!" : "."}</p>` +
       `<p class="sub">${mod ? "Toca en el plano el módulo que parpadea, o el botón." : fuera ? "Ponte el traje: vas a salir de la base." : ""}</p><div class="ops" id="ops"></div>`, null, tema);
     J.esperaModulo = mod || null;
     try { await continuar(c.querySelector("#ops"), fuera ? "Salir ▸" : "Ir ▸", 1300); } finally { J.esperaModulo = null; }
@@ -823,30 +829,49 @@
     await continuar(c.querySelector("#ops"), "Continuar ▸", 2200);
   }
 
+  // el texto que se lee para contestar: corto, y lo extra en «Saber más» (cerrado por defecto)
+  function lectura(texto, extra = "", titulo = "LEE Y BUSCA LA RESPUESTA") {
+    if (ui.sinTexto) return `<div class="lectura"><span class="paso">${titulo}</span><p class="txt sub">[Texto oculto: prueba sin lectura]</p></div>`;
+    return `<div class="lectura"><span class="paso">${titulo}</span><p class="txt">${esc(texto)}</p>` +
+      (extra ? `<details class="saber"><summary>Saber más</summary>${extra}</details>` : "") + `</div>`;
+  }
+  // pregunta del banco ligada a un informe: fija (la primera sin usar, la más cercana al nivel); transferencia solo en nivel 3
+  function preguntaDeInforme(id) {
+    const ok = PD.banco.filter((q) => (q.informes || []).includes(id) && !J.usadas.includes(q.id) && (q.tipo !== "transferencia" || J.reto >= 3));
+    ok.sort((x, y) => Math.abs(x.nivel - J.reto) - Math.abs(y.nivel - J.reto) || x.nivel - y.nivel);
+    return ok[0] || null;
+  }
   async function informe(n) {
     const t = n.informe.tema;
     if (J.aprendidos[t] == null || J.aprendidos[t] < 0) J.aprendidos[t] = J.aprendidos[t] == null ? n.dia : J.aprendidos[t];
     if (window.BITACORA) BITACORA.registrar("informe", n.id, { titulo: n.titulo, texto: n.informe.texto, fuente: n.informe.fuente, tema: t });
     const nueva = !J.cartas[t];
     const k = R.temas[t].carta;
-    // en el invernadero, un estudio real de NASA OSDR sobre plantas en el espacio
+    // en el invernadero, un estudio real de NASA OSDR sobre plantas en el espacio (va en «Saber más»)
     const est = t === "invernadero" ? APIS.estudio() : null;
-    const textoInforme = `<p class="txt" style="font-size:15px">${esc(n.informe.texto)}</p><p class="sub">Fuente: ${esc(n.informe.fuente || "NASA")} · se guardó en tu bitácora</p>` +
+    const saber = `<p class="sub">Fuente: ${esc(n.informe.fuente || "NASA")} · se guardó en tu bitácora.</p>` +
       (est ? `<p class="sub">La NASA lo estudia de verdad: «${esc(est.titulo)}» (${esc(est.id)}${est.mision ? ", misión " + esc(est.mision) : ""}). <a href="${esc(est.url)}" target="_blank" rel="noopener" style="color:var(--cian)">Ver el estudio</a></p>` : "");
-    let c;
+    let cab;
     if (nueva) {
       J.cartas[t] = { usada: false, armada: false };
       if (window.BITACORA) BITACORA.registrar("carta", t, {});
       pintarCartas(t);
       if (window.SFX) SFX.play("carta-nueva");
-      c = pantalla(`<span class="tag">NUEVA CARTA · INFORME</span><h2 class="titulo">${esc(k.nombre)}</h2><p class="txt">${esc(k.frase)}</p>` +
-        `<p class="sub">${k.uso.tipo === "escudo" ? `Es un escudo para la ${MINUS[k.uso.barra]}.` : `Suma ${k.uso.valor} de ${MINUS[k.uso.barra]}.`} Úsala en el momento justo.</p>` + textoInforme + `<div class="ops" id="ops"></div>`, "cientifica");
-      voz(k.nombre + ". " + k.frase + " " + n.informe.texto);
+      cab = `<span class="tag">NUEVA CARTA · INFORME</span><h2 class="titulo">${esc(k.nombre)}</h2>` +
+        `<p class="sub">${esc(k.frase)} ${k.uso.tipo === "escudo" ? `Es un escudo para la ${MINUS[k.uso.barra]}.` : `Suma ${k.uso.valor} de ${MINUS[k.uso.barra]}.`}</p>`;
       log(`Nueva carta: ${k.nombre}.`);
-    } else {
-      c = pantalla(`<span class="tag">INFORME</span><h2 class="titulo">${esc(n.titulo)}</h2>` + textoInforme + `<div class="ops" id="ops"></div>`, "cientifica");
-      voz(n.informe.texto);
+    } else cab = `<span class="tag">INFORME</span><h2 class="titulo">${esc(n.titulo)}</h2>`;
+    const q = preguntaDeInforme(n.id);
+    if (q) {
+      J.usadas.push(q.id);
+      const c = pantalla(cab + `<p class="txt pregunta-antes"><b>Busca en el texto:</b> ${esc(q.enunciado)}</p>` + lectura(n.informe.texto, saber) +
+        `<div class="ops col" id="ops"></div><div id="res"></div>`, "cientifica");
+      voz(q.enunciado + (ui.sinTexto ? "" : " " + n.informe.texto));
+      await responderBanco(c, q, "INFORME");
+      return;
     }
+    const c = pantalla(cab + lectura(n.informe.texto, saber, "INFORME") + `<div class="ops" id="ops"></div>`, "cientifica");
+    voz(n.informe.texto);
     await continuar(c.querySelector("#ops"), "Continuar ▸", 2600);
   }
 
@@ -897,6 +922,39 @@
     return ok;
   }
 
+  // costo pequeño del primer error (se ve al instante): radiación sube, las demás bajan; nunca pasa de 10 / 90
+  function cobrarPista(barra) {
+    const b = barra || masDebil(J.st), n = (PD.reglas && PD.reglas.costoPista) || 2;
+    const d = b === "radiacion" ? lim(Math.min(n, 90 - J.st[b]), 0, n) : -lim(Math.min(n, J.st[b] - 10), 0, n);
+    if (d) { const antes = { ...J.st }; J.st[b] = lim(J.st[b] + d, 0, 100); mostrarDeltas(antes); }
+    return d ? ` <span class="malo">${d > 0 ? "+" : ""}${d} ${MINUS[b]}</span>` : "";
+  }
+  // pregunta con UN reintento que cuesta (nunca gratis ni ilimitado):
+  //   1.er error: se tacha la opción, aparece la pista y cuesta un poco (cobrarPista);
+  //   2.º error: se muestra la respuesta y la explicación, se cobra el costo normal y se sigue.
+  async function preguntar(cont, q, { delay = 2000, pAuto = ui.comp } = {}) {
+    const { opciones, correcta } = q, tachadas = new Set();
+    let aviso = cont.nextElementSibling;
+    if (!aviso || !aviso.classList.contains("aviso-pista")) { aviso = document.createElement("div"); aviso.className = "aviso-pista"; cont.after(aviso); }
+    for (let intento = 1; intento <= 2; intento++) {
+      const libres = opciones.map((_, i) => i).filter((i) => i !== correcta && !tachadas.has(i));
+      const pa = intento === 1 ? pAuto : pAuto + (1 - pAuto) / 2;
+      const i = await botones(cont, opciones.map((o, k) => ({ html: esc(o), dis: tachadas.has(k) })), { auto: () => (Math.random() < pa || !libres.length ? correcta : libres[Math.floor(Math.random() * libres.length)]), delay });
+      if (i === correcta) { marcar(cont, i, "ok"); if (window.SFX) SFX.play("acierto"); aviso.innerHTML = ""; return { ok: true, intentos: intento }; }
+      if (window.SFX) SFX.play("error");
+      tachadas.add(i);
+      if (intento === 1) {
+        aviso.innerHTML = `<p class="pista-txt"><b>Pista:</b> ${esc(q.pista || "Vuelve a leer el texto con calma.")}${cobrarPista(q.barra)}</p>`;
+        hablar(30);
+      } else {
+        marcar(cont, i, "ko"); marcar(cont, correcta, "ok");
+        aviso.innerHTML = `<div class="res ko">Era «${esc(opciones[correcta])}». ${esc(q.explicacion || "")}${cobrarError(q.barra)}</div>`;
+        hablar((q.explicacion || "").length + 20);
+        return { ok: false, intentos: 2 };
+      }
+    }
+  }
+
   async function llamada(n, idx) {
     // se alternan: situación (predice, evidencia, actúa) y pregunta; la tercera es de «consulta la bitácora»
     const tipo = idx === 2 ? "bitacora" : idx % 2 === 0 ? "situacion" : "pregunta";
@@ -913,73 +971,106 @@
     const sel = elegirTema(idx); if (sel) return llamadaSituacion(sel);
   }
 
-  // pregunta del banco, de bitácora o de repaso: respuesta, costo si falla, explicación y evidencia
+  // pregunta del banco, de bitácora o de repaso: la pregunta, luego el texto donde está la respuesta, luego las opciones.
+  // El repaso no muestra el texto (es memoria) pero deja abrir «Lo aprendido»; la de bitácora abre «Datos NASA».
   async function preguntaCtrl(q, tag) {
+    const enBitacora = q.tipo === "bitacora" ? "datos" : q.tipo === "repaso" ? "aprendido" : null;
+    const c = pantalla(`<span class="tag llamada">${esc(tag)}</span><p class="txt pregunta-antes">${esc(q.enunciado)}</p>` +
+      (enBitacora ? `<p><button type="button" class="op" id="abrir-bt">Abrir la bitácora ▸</button></p>` : q.lectura ? lectura(q.lectura) : "") +
+      `<div class="ops col" id="ops"></div><div id="res"></div>`, "control");
+    voz(q.enunciado + (q.lectura && !enBitacora && !ui.sinTexto ? " " + q.lectura : ""));
+    if (enBitacora) c.querySelector("#abrir-bt").addEventListener("click", () => window.BITACORA && BITACORA.abrir(enBitacora));
+    const r = await responderBanco(c, q, tag);
+    J.cuenta.ll++; if (r.ok && r.intentos === 1) J.cuenta.llOk++;
+  }
+  // contesta una pregunta del banco ya pintada en la pantalla c (opciones en #ops): reintento con pista,
+  // y la explicación y la evidencia SOLO después de contestar
+  async function responderBanco(c, q, tag) {
     const fija = q.tipo === "bitacora" || q.tipo === "repaso" && q.id.startsWith("R-") && !PD.banco.some((p) => "R-" + p.id === q.id);
     const base = fija ? { opciones: q.opciones.slice(0, Math.max(2, PQ.opcionesPorNivel(J.reto))), indiceCorrecto: q.indiceCorrecto } : PQ.recortarOpciones(q.opciones, q.indiceCorrecto, PQ.opcionesPorNivel(J.reto));
-    const bj = PQ.barajarConCorrecta(base.opciones, base.indiceCorrecto);
-    const c = pantalla(`<span class="tag llamada">${esc(tag)}</span><p class="txt">${esc(q.enunciado)}</p>` +
-      (q.tipo === "bitacora" ? `<p><button type="button" class="op" id="abrir-bt">Abrir la bitácora ▸</button></p>` : "") +
-      `<div class="ops col" id="ops"></div><div id="res"></div>`, "control");
-    voz(q.enunciado);
-    if (q.tipo === "bitacora") c.querySelector("#abrir-bt").addEventListener("click", () => window.BITACORA && BITACORA.abrir("datos"));
-    const ok = await elegirRespuesta(c.querySelector("#ops"), bj.opciones, bj.correcta, 2300);
+    const bj = PQ.barajarFijo(base.opciones, base.indiceCorrecto, q.id);
+    const r = await preguntar(c.querySelector("#ops"), { opciones: bj.opciones, correcta: bj.correcta, pista: q.pista, explicacion: q.explicacion, barra: q.barra }, { delay: 2300 });
     if (window.BITACORA && BITACORA.abierta()) BITACORA.cerrar();
-    const costo = ok ? "" : cobrarError(q.barra);
-    J.cuenta.ll++; if (ok) J.cuenta.llOk++;
-    c.querySelector("#res").innerHTML = `<div class="res ${ok ? "ok" : "ko"}">${ok ? "¡Correcto!" : `La respuesta era: <b>${esc(bj.opciones[bj.correcta])}</b>.`}${costo}<br>${esc(q.explicacion)}` +
-      `<br><span class="sub">Evidencia: «${esc(q.fraseEvidencia)}» · ${esc(q.fuente)}</span></div><div class="ops" id="ops2"></div>`;
+    c.querySelector("#res").innerHTML = `<div class="res ${r.ok ? "ok" : "ko"}">${r.ok ? (r.intentos === 1 ? "¡Correcto!" : "¡Correcto, con pista!") + " " + esc(q.explicacion) : "Ahora ya lo sabes."}` +
+      `<br><span class="sub">Evidencia: «${esc(q.fraseEvidencia)}» · ${esc(q.fuente)}</span></div><div id="frase"></div><div class="ops" id="ops2"></div>`;
     hablar(q.explicacion.length);
+    if (r.ok && q.lectura && q.tipo !== "repaso") await fraseQueLoPrueba(c.querySelector("#frase"), q);
     aprender("q-" + q.id.replace(/^R-/, ""), q.tema && R.temas[q.tema] ? R.temas[q.tema].nombre : "Pregunta de Control", q.explicacion + " " + q.fraseEvidencia, "Control de Misión", q.tema);
-    log(`${tag} (${q.id}): ${ok ? "correcta" : "incorrecta"}.`);
-    registrarReto(ok);
-    await continuar(c.querySelector("#ops2"), "Colgar ▸", 2600);
+    log(`${tag} (${q.id}): ${r.ok ? (r.intentos === 1 ? "correcta" : "correcta con pista") : "incorrecta"}${ui.sinTexto ? " [sin texto]" : ""}.`);
+    registrarReto(r.ok && r.intentos === 1);
+    if (q.lectura && q.tipo !== "repaso" && q.tipo !== "bitacora") contarLectura(r.ok && r.intentos === 1);
+    await continuar(c.querySelector("#ops2"), tag === "INFORME" ? "Continuar ▸" : "Colgar ▸", 2600);
+    return r;
   }
 
-  // situación: predice en dos pasos (qué cambia primero y qué después), qué dato lo prueba, actúa, mira qué pasó
+  // estadística de la prueba de lectura (panel del equipo): aciertos al primer intento con y sin texto
+  function contarLectura(ok) { const x = ui.lecturaStats[ui.sinTexto ? "sin" : "con"]; x.n++; if (ok) x.ok++; pintarCtl(); }
+  // tras acertar: «¿Qué frase lo prueba?» con 3 o 4 frases (las del texto y, si faltan, de otros informes).
+  // Acertar da un bonus pequeño (+3 a la barra más débil); fallar no cuesta nada. Fijo por pregunta.
+  const oraciones = (t) => String(t).split(/(?<=[.!?])\s+/).filter((x) => x.length > 8);
+  async function fraseQueLoPrueba(caja, q) {
+    const propias = oraciones(q.lectura), correcta = propias.find((o) => o.includes(q.fraseEvidencia) || q.fraseEvidencia.includes(o)) || q.fraseEvidencia;
+    const otras = propias.filter((o) => o !== correcta);
+    for (const p of PD.banco) { if (otras.length >= 3) break; if (p.id !== q.id && p.tema !== q.tema && !otras.includes(p.fraseEvidencia)) otras.push(p.fraseEvidencia); }
+    const bj = PQ.barajarFijo([correcta, ...otras.slice(0, 3)], 0, q.id + "-frase");
+    caja.innerHTML = `<span class="paso">BONUS · ¿QUÉ FRASE LO PRUEBA?</span><div class="ops col" id="fr"></div><div id="fr-res"></div>`;
+    const ok = await elegirRespuesta(caja.querySelector("#fr"), bj.opciones, bj.correcta, 2000);
+    const bonus = (PD.reglas.bonusFrase && PD.reglas.bonusFrase.valor) || 3, b = masDebil(J.st);
+    if (ok) { aplicar({ barraMasBaja: bonus }); J.cuenta.frases = (J.cuenta.frases || 0) + 1; }
+    caja.querySelector("#fr-res").innerHTML = `<p class="sub">${ok ? `¡Bien leído! +${bonus} de ${MINUS[b]}.` : "Esa no era; la de arriba en verde lo prueba. No pasa nada."}</p>`;
+  }
+
+  // situación: un paso por pantalla (cabe en la franja). Primero la pregunta, luego el informe de Control,
+  // luego las opciones. El porqué se muestra solo al final, cuando ya contestó todo.
   async function llamadaSituacion(sel) {
-    const s = R.situaciones.find((x) => x.tema === sel.tema), x = PD.situaciones[s.id], nv = String(J.lectura);
+    const s = R.situaciones.find((x) => x.tema === sel.tema), x = s && PD.situaciones[s.id], nv = String(J.lectura);
     if (!s || !x) return;
     J.preguntados[s.tema] = (J.preguntados[s.tema] || 0) + 1;
     if (s.escenario && s.escenario !== "control") escena(s.escenario, {});
-    const c = pantalla(`<span class="tag llamada">LLAMADA · CONTROL DE MISIÓN</span><p class="txt">${esc(x.situacion[nv])}</p>` +
-      `<span class="paso">1 · PREDICE: ¿QUÉ BARRA CAMBIA PRIMERO?</span><div class="ops" id="p1"></div><div id="p2w"></div><div id="p3w"></div><div id="act"></div><div id="res"></div>`, "control");
-    voz(x.situacion[nv]);
-    const ok1 = await elegirRespuesta(c.querySelector("#p1"), BARRAS.map((b) => MAYUS[b]), BARRAS.indexOf(x.cadena[0]), 1900);
+    const cab = `<span class="tag llamada">LLAMADA · CONTROL DE MISIÓN</span><p class="txt">${esc(x.situacion[nv])}</p>`;
+    const pista = { pista: x.pista, explicacion: x.porQue, barra: s.prediccion.barra };
+    // 1a · qué barra cambia primero
+    let c = pantalla(cab + `<span class="paso">1 · PREDICE: ¿QUÉ BARRA CAMBIA PRIMERO?</span>` + lectura(x.informe, "", "INFORME DE CONTROL") + `<div class="ops" id="p"></div>`, "control");
+    voz(x.situacion[nv] + (ui.sinTexto ? "" : " " + x.informe));
+    const ok1 = (await preguntar(c.querySelector("#p"), Object.assign({ opciones: BARRAS.map((b) => MAYUS[b]), correcta: BARRAS.indexOf(x.cadena[0]) }, pista), { delay: 1900 })).ok;
+    await espera(700);
+    // 1b · y después
     const resto = BARRAS.filter((b) => b !== x.cadena[0]);
-    c.querySelector("#p2w").innerHTML = `<span class="paso">… ¿Y QUÉ BARRA CAMBIA DESPUÉS?</span><div class="ops" id="p2"></div>`;
-    const ok2 = await elegirRespuesta(c.querySelector("#p2"), resto.map((b) => MAYUS[b]), resto.indexOf(x.cadena[1]), 1900);
+    c = pantalla(cab + `<span class="paso">… PRIMERO CAMBIA ${MAYUS[x.cadena[0]]}. ¿QUÉ BARRA CAMBIA DESPUÉS?</span>` + lectura(x.informe, "", "INFORME DE CONTROL") + `<div class="ops" id="p"></div>`, "control");
+    const ok2 = (await preguntar(c.querySelector("#p"), Object.assign({ opciones: resto.map((b) => MAYUS[b]), correcta: resto.indexOf(x.cadena[1]) }, pista), { delay: 1900 })).ok;
     const predOk = ok1 && ok2;
-    const costoPred = predOk ? "" : cobrarError(s.prediccion.barra);
-    c.querySelector("#p2w").insertAdjacentHTML("beforeend", `<p class="sub">${esc(x.porQue)}${costoPred}</p>`);
-    // evidencia
-    const ev = PQ.barajarConCorrecta([x.evidencia.correcta, ...x.evidencia.distractores.slice(0, PQ.opcionesPorNivel(J.reto) - 1)], 0);
-    c.querySelector("#p3w").innerHTML = `<span class="paso">2 · ¿QUÉ DATO LO PRUEBA?</span><div class="ops col" id="p3"></div>`;
-    const evOk = await elegirRespuesta(c.querySelector("#p3"), ev.opciones, ev.correcta, 2100);
-    const costoEv = evOk ? "" : cobrarError(s.prediccion.barra);
-    // actúa
-    const acc = barajar(s.acciones.slice(0, J.reto + 1).map((a, i) => ({ ...a, i })));
-    c.querySelector("#act").innerHTML = `<span class="paso">3 · ACTÚA</span><div class="ops col" id="accs"></div>`;
-    const accs = c.querySelector("#accs"), pos = acc.findIndex((a) => a.i === s.correcta);
+    contarLectura(predOk);
+    await espera(700);
+    // 2 · qué dato lo prueba (sin el texto: lo acaba de leer)
+    const ev = PQ.barajarFijo([x.evidencia.correcta, ...x.evidencia.distractores.slice(0, PQ.opcionesPorNivel(J.reto) - 1)], 0, s.id + "-ev");
+    c = pantalla(cab + `<span class="paso">2 · ¿QUÉ DATO DEL INFORME LO PRUEBA?</span><div class="ops col" id="p"></div>`, "control");
+    const evOk = (await preguntar(c.querySelector("#p"), { opciones: ev.opciones, correcta: ev.correcta, pista: "La prueba está en el informe de esta llamada, no en otros.", explicacion: "La prueba era: " + x.evidencia.correcta, barra: s.prediccion.barra }, { delay: 2100 })).ok;
+    await espera(700);
+    // 3 · actúa (una sola oportunidad: tiene efectos en la base)
+    const acc0 = s.acciones.slice(0, J.reto + 1).map((a, i) => ({ ...a, i }));
+    const fijo = PQ.barajarFijo(acc0, acc0.findIndex((a) => a.i === s.correcta), s.id + "-acc"), acc = fijo.opciones;
+    c = pantalla(cab + `<span class="paso">3 · ACTÚA</span><div class="ops col" id="accs"></div><div id="res"></div>`, "control");
+    const accs = c.querySelector("#accs"), pos = fijo.correcta;
     const accOk = await elegirRespuesta(accs, acc.map((a) => a.texto), pos, 2300, lim(ui.comp + (predOk ? 0.1 : -0.1), 0.02, 0.98));
     const elegida = acc[accs.querySelector(".elegida") ? +accs.querySelector(".elegida").dataset.i : pos];
     const ef = !accOk && conApoyo() ? suavizar(elegida.efectos) : elegida.efectos;
     aplicar(ef);
     J.cuenta.ll++; if (accOk) J.cuenta.llOk++;
-    let html = `<span class="paso">4 · MIRA QUÉ PASÓ</span><div class="res ${accOk ? "ok" : "ko"}">${efectosTxt(ef)}${costoEv ? ` · por el dato equivocado:${costoEv}` : ""}`;
+    // 4 · mira qué pasó: ahora sí, el porqué
+    let html = `<span class="paso">4 · MIRA QUÉ PASÓ</span><div class="res ${accOk ? "ok" : "ko"}">${efectosTxt(ef)}`;
     if (accOk && predOk && evOk) {
       const b = masDebil(J.st);
       if (zona(b, J.st[b]) !== "verde") { aplicar({ barraMasBaja: R.powerups.recarga.valor }); html += `<br>¡Bien, capitán! Ganaste <b>Recarga</b>: +${R.powerups.recarga.valor} de ${MINUS[b]}.`; }
       else { J.preparado = true; pintarExtra(); html += `<br>¡Bien, capitán! Ganaste <b>Pronóstico</b>: mañana estarás preparado.`; }
     }
-    html += `<br>${esc(s.explicacion[nv])}</div><div class="res"><span class="paso">INFORME DE CONTROL</span><br>${esc(x.informe)}<br><span class="sub">Se guardó en tu bitácora.</span></div>`;
+    html += `<br><b>Por qué:</b> ${esc(x.porQue)}<br>${esc(s.explicacion[nv])}<br><span class="sub">El informe se guardó en tu bitácora.</span></div>`;
     if (!accOk) { const it = sel.intentos || 1; if (it < 2) J.repasos.push({ tema: s.tema, disponible: J.dia + 2, intentos: it }); else J.diferidos.push(s.tema); }
-    c.querySelector("#res").innerHTML = html + `<div class="ops" id="ops"></div>`;
-    hablar(s.explicacion[nv].length + x.informe.length);
-    voz(s.explicacion[nv] + " " + x.informe);
+    c = pantalla(cab + html + `<div class="ops" id="ops"></div>`, "control");
+    hablar(s.explicacion[nv].length + x.porQue.length);
+    voz(x.porQue + " " + s.explicacion[nv]);
     if (window.BITACORA) BITACORA.registrar("informe", "ll-" + s.id, { titulo: "Control de Misión: " + R.temas[s.tema].nombre, texto: x.informe, fuente: "Control de Misión", tema: s.tema });
     aprender("ll-" + s.tema, R.temas[s.tema].nombre, s.explicacion[nv] + " " + x.porQue, "Control de Misión", s.tema);
-    log(`Llamada (${R.temas[s.tema].nombre}): predicción ${predOk ? "bien" : "mal"}, dato ${evOk ? "bien" : "mal"}, acción ${accOk ? "bien" : "mal"}.`);
+    log(`Llamada (${R.temas[s.tema].nombre}): predicción ${predOk ? "bien" : "mal"}, dato ${evOk ? "bien" : "mal"}, acción ${accOk ? "bien" : "mal"}${ui.sinTexto ? " [sin texto]" : ""}.`);
     registrarReto(accOk && predOk);
     await continuar(c.querySelector("#ops"), "Colgar ▸", 2600);
   }
@@ -991,7 +1082,7 @@
     const conCarta = pool.filter((a) => a.temas.some((t) => J.cartas[t]));
     const a = pick(conCarta.length ? conCarta : pool);
     const carta = a.temas.find((t) => J.cartas[t]);
-    const A = R.reglas.averias, NV = A.niveles[nv], b = a.barra, INT = PD.reglas.intentosAveria || 2;
+    const A = R.reglas.averias, NV = A.niveles[nv], b = a.barra, INT = 2;   // un reintento con pista y costo (sin reintento gratis)
     const dano = (v) => ({ [b]: b === "radiacion" ? v : -v });
     marca("av");
     animo("peligro");
@@ -1016,7 +1107,7 @@
     }
     const apoyo = conApoyo(), porError = apoyo ? Math.round(A.danoPorError / 2) : A.danoPorError;
     // un paso con intentos limitados: cada error cuesta; al acabarse, la Dra. Ortiz da la respuesta
-    async function paso(caja, titulo, opciones, correcta) {
+    async function paso(caja, titulo, opciones, correcta, pista) {
       caja.innerHTML = `<span class="paso">${titulo}</span><div class="ops col"></div><div class="aviso-int"></div>`;
       const ops = caja.querySelector(".ops"), aviso = caja.querySelector(".aviso-int"), tachadas = new Set();
       for (let intento = 1; intento <= INT; intento++) {
@@ -1025,21 +1116,27 @@
         const i = await botones(ops, opciones.map((o, k) => ({ html: esc(o), dis: tachadas.has(k) })), { auto: () => (Math.random() < pAuto || !libres.length ? correcta : pick(libres)), delay: 2000 });
         if (i === correcta) { marcar(ops, i, "ok"); if (window.SFX) SFX.play("acierto"); return intento; }
         tachadas.add(i); marcar(ops, i, "ko"); if (window.SFX) SFX.play("error");
-        aplicar(dano(porError));
-        aviso.innerHTML = intento < INT ? `<p class="sub">No es eso. Te queda ${INT - intento} intento. Vuelve a leer las pistas.</p>` : "";
-        hablar(30);
+        if (intento < INT) {
+          // primer error: pista corta y costo pequeño, visible al instante
+          const pc = Math.max(1, Math.round(porError / 2));
+          aplicar(dano(pc));
+          aviso.innerHTML = `<p class="pista-txt"><b>Pista:</b> ${esc(pista)} <span class="malo">${b === "radiacion" ? "+" : "−"}${pc} ${MINUS[b]}</span></p>`;
+          hablar(30);
+        }
       }
+      // segundo error: explicación, costo normal y se sigue (el niño nunca se queda atascado)
       aplicar(dano(porError));
-      ops.innerHTML = `<div class="res ko">Se acabaron los intentos. Dra. Ortiz: era «${esc(opciones[correcta])}». La avería tardó más y costó más.</div>`;
-      hablar(opciones[correcta].length + 40);
-      await espera(1200);
+      ops.innerHTML = `<div class="res ko">Dra. Ortiz: era «${esc(opciones[correcta])}». ${esc(a.explicacion)} <span class="malo">${b === "radiacion" ? "+" : "−"}${porError} ${MINUS[b]}</span></div>`;
+      aviso.innerHTML = "";
+      hablar(opciones[correcta].length + a.explicacion.length);
+      await espera(1600);
       return INT + 1;
     }
     const causas = PQ.recortarOpciones(PD.averias.causas[a.id], 0, PQ.opcionesPorNivel(J.reto));
     const bc = PQ.barajarConCorrecta(causas.opciones, 0);
-    const iCausa = await paso(c.querySelector("#causa"), "1 · ¿CUÁL ES LA CAUSA?", bc.opciones, bc.correcta);
+    const iCausa = await paso(c.querySelector("#causa"), "1 · ¿CUÁL ES LA CAUSA?", bc.opciones, bc.correcta, `Vuelve a leer esta pista: «${a.pistas.clave[0]}».`);
     const ops = barajar(a.acciones.slice(0, NV.acciones).map((t, i) => ({ t, i })));
-    const iRep = await paso(c.querySelector("#rep"), "2 · ¿QUÉ REPARAS?", ops.map((o) => o.t), ops.findIndex((o) => o.i === a.correcta));
+    const iRep = await paso(c.querySelector("#rep"), "2 · ¿QUÉ REPARAS?", ops.map((o) => o.t), ops.findIndex((o) => o.i === a.correcta), "Repara lo que causa el problema, no lo que se ve al final.");
     J.est = Object.assign({}, J.est, { alarma: false });
     animo("calma");
     J.cuenta.av++;
