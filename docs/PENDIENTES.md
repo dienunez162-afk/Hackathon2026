@@ -10,7 +10,7 @@ Revisada el 15 de noviembre de 2026 (rama `correcciones-pendientes`). Probado en
 
 ## Código que sigue pendiente
 - [ ] Probar en el panel, con la migración 0006 corrida, **Restablecer contraseña** y **Quitar de la clase** (hoy solo se comprobó que avisan bien cuando falta).
-- [ ] El panel del maestro es solo en español.
+- [x] El panel del maestro ya está en español e inglés (selector ES | EN, comparte la preferencia con el juego).
 - [ ] Un maestro puede registrarse sin verificar que lo sea (cualquiera puede crear una cuenta de maestro; solo verá a quien lo acepte). Valorar una lista de correos permitidos.
 - [ ] «Un dato que cambia el día»: falta mostrarlo también en la tarjeta final de la misión y volver a correr el simulador de balance con los +3/+6 de radiación (máximo 3 días por misión).
 
