@@ -11,7 +11,7 @@ window.GNOSIS_SUPABASE = (() => {
   const avisos = [];
   const avisar = (e) => { estado = e; avisos.forEach((f) => { try { f(e); } catch (err) { /* nada */ } }); };
   function leerConfig() {
-    return config || (config = fetch("/api/config").then((r) => r.json()).then((j) => (j && j.supabase) || null).catch(() => null));
+    return config || (config = fetch("/api/config", { cache: "no-store" }).then((r) => r.json()).then((j) => (j && j.supabase) || null).catch(() => null));
   }
   async function probar() {
     const c = await leerConfig();

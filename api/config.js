@@ -2,7 +2,7 @@
 // Solo manda la URL del proyecto y la publishable key (la "anon"): están hechas para el navegador
 // y los datos los protege la RLS de supabase/migrations. Nunca manda la service role / secret key:
 // si alguien la pone por error en SUPABASE_ANON_KEY, esta función se niega a publicarla.
-// Variables en Vercel: SUPABASE_URL, SUPABASE_ANON_KEY, DOMINIO_ALUMNOS.
+// Variables en Vercel (opcionales): SUPABASE_URL, SUPABASE_ANON_KEY, DOMINIO_ALUMNOS.
 // Respuesta: { supabase: { url, llave, dominioAlumnos } | null, falta: [...] }
 const { responder } = require("./_util");
 
@@ -14,10 +14,19 @@ function esSecreta(llave) {
   return false;
 }
 
+// Valores del proyecto de G-NOSIS. La publishable key es PÚBLICA por diseño (va al navegador de todos modos),
+// así que puede vivir en el repo. Si en Vercel se definen las variables, esas ganan.
+const POR_DEFECTO = {
+  SUPABASE_URL: "https://tsidieehhdwspeomdixs.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_Fi-qV27KlO1n5Z_GFUwWJg__x-KvpHX",
+  DOMINIO_ALUMNOS: "alumnos.g-nosis.local",
+};
+const leer = (k) => (process.env[k] || POR_DEFECTO[k] || "").trim();
+
 module.exports = (req, res) => {
-  const url = (process.env.SUPABASE_URL || "").trim().replace(/\/+$/, "");
-  const llave = (process.env.SUPABASE_ANON_KEY || "").trim();
-  const dominio = (process.env.DOMINIO_ALUMNOS || "").trim();
+  const url = leer("SUPABASE_URL").replace(/\/+$/, "");
+  const llave = leer("SUPABASE_ANON_KEY");
+  const dominio = leer("DOMINIO_ALUMNOS");
   if (llave && esSecreta(llave)) {
     return responder(res, 500, { supabase: null, error: "SUPABASE_ANON_KEY tiene una llave SECRETA. Cámbiala por la publishable (sb_publishable_...)." });
   }

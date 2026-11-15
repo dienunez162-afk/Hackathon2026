@@ -18,7 +18,7 @@ Parámetros de prueba: `?auto=1&vel=4` juega solo; `?final=apagon` abre un final
 2. En Settings > Environment Variables, pon las variables de `.env.example`.
 
 ## Supabase (modo Salón)
-- Variables en Vercel (Settings › Environment Variables, en todos los entornos, y luego *Redeploy*): `SUPABASE_URL`, `SUPABASE_ANON_KEY` (la publishable, `sb_publishable_...`) y `DOMINIO_ALUMNOS`.
+- La URL del proyecto, la publishable key (`sb_publishable_...`, pública por diseño) y `DOMINIO_ALUMNOS` ya vienen en `api/config.js`: no hay que configurar nada en Vercel. Si se definen las variables `SUPABASE_URL`, `SUPABASE_ANON_KEY` o `DOMINIO_ALUMNOS` en Vercel, esas ganan.
 - El juego las lee en `/api/config` (`api/config.js`), que solo publica la URL y la llave pública; si alguien pone la llave secreta por error, se niega a mandarla.
 - `public/js/supabase.js` prueba la conexión al cargar. El estado se ve en «herramientas del equipo» › Datos: `Supabase: conectado`, `sin configurar` o `llave rechazada`.
 - La secret / service role key y la contraseña de la base nunca van en Vercel ni en el repo.
