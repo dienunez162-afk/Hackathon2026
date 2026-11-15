@@ -642,6 +642,12 @@ function cajaRedonda(ctx, x, y, w, h, r) { ctx.beginPath(); if (ctx.roundRect) c
 function dibujarFinal(ctx, t) {
   const { tipo } = finalActual, info = FINALES[tipo];
   const { st, T, barras, aviso, tareas } = guion(tipo, t);
+  // sonidos de la nave: baja (aterrizaje) y despega (cohete), una vez cada uno
+  if (window.SFX) {
+    const s = finalActual.sonidos || (finalActual.sonidos = {});
+    if (!s.baja && t >= T.baja0 && t < T.baja1) { s.baja = true; SFX.play("aterrizaje", 1); }
+    if (!s.despega && t >= T.despega && t < T.tarjeta) { s.despega = true; SFX.play("despegue"); }
+  }
   const ins = insercion(tipo, t);
   if (ins) window.GNOSIS_ESCENAS.render(ctx, ins.id, t, Object.assign({ etiquetas: false }, ins.st));   // toma dentro de la base
   else { escenaFinal(t, st); stampF(ctx); }

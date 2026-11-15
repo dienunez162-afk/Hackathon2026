@@ -11,21 +11,34 @@
 (() => {
   "use strict";
   // efectos que ya tienen archivo grabado por el equipo
-  const ARCHIVOS = ["limpiar-panel", "cable-conectar"];
-  // archivos con varias tomas separadas por silencio: [inicio, fin] en segundos.
+  const ARCHIVOS = ["limpiar-panel", "cable-conectar", "tapar", "rayon", "rover-mover", "plantas", "sismo", "despegue", "aterrizaje", "interruptor"];
+  // efectos que usan el archivo de otro (para no repetir el mismo mp3)
+  const FUENTE = { interruptor: "cable-conectar" };
+  // pedazos de cada archivo: [inicio, fin] en segundos (los mp3 traen silencios o varias tomas).
   // Cada vez que suena se usa la siguiente toma, para que no se oiga siempre igual.
   const TOMAS = {
     "cable-conectar": [[0.45, 1.3], [2.4, 4.1], [5.0, 6.7], [8.2, 9.2]],
+    interruptor: [[0.4, 1.3], [8.0, 9.2]],
+    tapar: [[0.4, 1.1], [2.9, 3.6], [5.4, 6.1], [8.1, 9.1], [10.6, 11.4], [13.1, 13.9], [19.1, 20.1], [21.6, 22.7]],
+    rayon: [[0.4, 1.4]],
+    "rover-mover": [[2, 2.7], [6, 6.7], [10, 10.7], [14, 14.7], [18, 18.7], [22, 22.7]],
+    plantas: [[2.1, 3.3]],
+    sismo: [[0.6, 7.0]],
+    despegue: [[0, 4.8]],
+    // 0: alunizaje de la intro (el golpe fuerte cae al tocar el suelo, ~9 s) · 1: solo el final, para naves que bajan en 3 s
+    aterrizaje: [[0.2, 12.5], [6.6, 11.5]],
   };
   const turno = {};
   const VOL = 0.55;
+  const VOLUMEN = { despegue: 0.7, aterrizaje: 0.6, sismo: 0.5, "rover-mover": 0.35 };   // los demás: VOL
 
   const listo = () => typeof musicaIniciada === "undefined" || musicaIniciada;   // el navegador pide un toque antes de sonar
   const mudo = () => typeof silenciado !== "undefined" && silenciado;
 
   // ---------- archivos ----------
   const audios = {};
-  for (const n of ARCHIVOS.filter((x) => !TOMAS[x])) { const a = new Audio(`audio/sfx/${n}.mp3`); a.preload = "auto"; a.volume = VOL; audios[n] = a; }
+  const archivo = (n) => `audio/sfx/${FUENTE[n] || n}.mp3`;
+  for (const n of ARCHIVOS.filter((x) => !TOMAS[x])) { const a = new Audio(archivo(n)); a.preload = "auto"; a.volume = VOL; audios[n] = a; }
 
   // ---------- provisionales generados (Web Audio) ----------
   let ac = null;
@@ -39,19 +52,22 @@
     return c;
   }
   // los archivos con varias tomas se decodifican una vez y se toca solo el pedazo de cada toma
-  const buffers = {};
+  const buffers = {}, sonando = {};
   for (const n of Object.keys(TOMAS)) {
-    fetch(`audio/sfx/${n}.mp3`).then((r) => r.arrayBuffer())
+    fetch(archivo(n)).then((r) => r.arrayBuffer())
       .then((b) => new Promise((ok, mal) => { const c = crearAC(); if (!c) return mal(); c.decodeAudioData(b, ok, mal); }))
       .then((buf) => { buffers[n] = buf; }).catch(() => {});
   }
-  function tocarToma(nombre) {
+  function tocarToma(nombre, cual) {
     const c = ctx(), buf = buffers[nombre], tomas = TOMAS[nombre];
     if (!c || !buf) return false;
-    const k = (turno[nombre] = ((turno[nombre] ?? -1) + 1) % tomas.length), [ini, fin] = tomas[k];
-    const s = c.createBufferSource(), g = c.createGain();
-    s.buffer = buf; g.gain.value = VOL; s.connect(g); g.connect(c.destination);
-    s.start(c.currentTime + 0.01, ini, fin - ini);
+    const k = cual != null ? cual % tomas.length : (turno[nombre] = ((turno[nombre] ?? -1) + 1) % tomas.length), [ini, fin] = tomas[k];
+    const s = c.createBufferSource(), g = c.createGain(), dur = fin - ini, v = VOLUMEN[nombre] ?? VOL;
+    s.buffer = buf; s.connect(g); g.connect(c.destination);
+    const t = c.currentTime + 0.01;
+    g.gain.setValueAtTime(v, t); g.gain.setValueAtTime(v, t + Math.max(0, dur - 0.25)); g.gain.linearRampToValueAtTime(0.0001, t + dur);   // sin cortes bruscos
+    s.start(t, ini, dur);
+    (sonando[nombre] = sonando[nombre] || new Set()).add(s); s.onended = () => sonando[nombre].delete(s);
     return true;
   }
   function tono(c, t, f0, f1, dur, tipo, vol) {
@@ -93,9 +109,10 @@
   window.SFX = {
     nombres: Object.keys(SINT),
     tieneArchivo: (n) => ARCHIVOS.includes(n),
-    play(nombre) {
+    // play("aterrizaje", 1) toca una toma en particular; sin número, la siguiente
+    play(nombre, cual) {
       if (!listo() || mudo()) return;
-      if (TOMAS[nombre]) { if (tocarToma(nombre)) return; }   // una sola toma del archivo
+      if (TOMAS[nombre]) { if (tocarToma(nombre, cual)) return; }   // una sola toma del archivo
       const a = TOMAS[nombre] ? null : audios[nombre];
       if (a) {
         const c = a.paused ? a : a.cloneNode(); c.volume = VOL; c.currentTime = 0;
@@ -112,6 +129,8 @@
       if (on && listo() && !mudo()) { a.loop = true; a.volume = VOL; if (a.paused) { const p = a.play(); if (p) p.catch(() => {}); } }
       else if (!on && !a.paused) a.pause();
     },
+    // corta un sonido largo (p. ej. el alunizaje si se salta la secuencia)
+    parar(nombre) { for (const s of sonando[nombre] || []) { try { s.stop(); } catch (e) { /* ya terminó */ } } },
     pararTodo() { for (const n of Object.keys(bucles)) this.bucle(n, false); for (const a of Object.values(audios)) if (a.loop && !a.paused) a.pause(); },
   };
 })();

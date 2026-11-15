@@ -61,7 +61,7 @@
     "E-D11": { tipo: "rover" }, "N-D13": { tipo: "rover", guia: true },
     "E-D12a": { tipo: "atrapar", objeto: "pieza", titulo: "¡Sujeta las piezas que se caen!" },
     "E-D12b": { tipo: "cables", titulo: "Reconecta la calefacción" }, "N-D11": { tipo: "ajustar", meta: "calentar" },
-    "N-D12a": { tipo: "secuencia", pasos: PANEL, titulo: "Repara el panel en orden" }, "F3-D14": { tipo: "ajustar", que: "alineacion", titulo: "Guía a la nave del relevo" },
+    "N-D12a": { tipo: "secuencia", pasos: PANEL, titulo: "Repara el panel en orden" }, "F3-D14": { tipo: "ajustar", que: "alineacion", movil: true, titulo: "Guía a la nave del relevo" },
   };
   const FINAL_DE = { "FIN-3": "perfecta", "FIN-2": "verde", "FIN-1": "relevo", "FAIL-energia": "apagon", "FAIL-comida": "despensa", "FAIL-radiacion": "radiacion", "FAIL-salud": "agotado" };
   const RECORRIDO = [
@@ -190,8 +190,9 @@
     seqT0 = (performance.now() - menuStart) / 1000;
     seqStart = performance.now();
     seq = new Aterrizaje(moonRadius());
+    if (window.SFX) SFX.play("aterrizaje", 0);          // el golpe del alunizaje cae cuando la nave toca el suelo
   }
-  function terminarAterrizaje() { estado = "fundido"; fadeStart = performance.now(); }
+  function terminarAterrizaje() { estado = "fundido"; fadeStart = performance.now(); if (window.SFX) SFX.parar("aterrizaje"); }
   function entrarJuego() { estado = "juego"; juegoT0 = performance.now(); ultimaEscena = 0; hud.hidden = false; nuevaPartida(); MUSICA_BASE.sincronizar(); }
   function volverAlMenu() {
     abortar(); hud.hidden = true; $mj.hidden = true; stage.classList.remove("tiembla");
@@ -588,7 +589,11 @@
   };
 
   // ---------- escenas: plano de la base y cambio de módulo ----------
-  function escena(id, estados) { J.escena = id; J.est = Object.assign({}, estados || {}); }
+  function escena(id, estados) {
+    const antes = J.est && J.est.sismo;
+    J.escena = id; J.est = Object.assign({}, estados || {});
+    if (J.est.sismo && !antes && window.SFX) SFX.play("sismo");   // retumbe cuando empieza a temblar
+  }
   async function irA(destino, estados, motivo) {
     const mod = MODULO_DE[destino];
     if (destino === J.escena && !motivo) { escena(destino, estados); return; }
@@ -618,7 +623,8 @@
     laberinto: (s) => ["Muévete con las flechas o tocando una casilla vecina.", "Llega a la R antes de que se acabe el tiempo."].concat(s.oscuro ? ["Está oscuro: solo ves cerca de ti."] : []),
     tapar: () => ["Toca cada agujero en cuanto aparezca.", "¡Rápido, antes de que se escape el aire!"],
     secuencia: () => ["Toca los pasos en el orden correcto.", "Empieza por el primero."],
-    ajustar: () => ["Usa − y + (o ← →) para mover la aguja.", "Mantenla en la zona verde hasta llenar la barra."],
+    ajustar: (s) => (s.movil ? ["La zona verde se mueve: síguela con − y + (o ← →).", "Mantén la nave adentro hasta llenar la barra.", "Si te sales, la barra baja."]
+      : ["Usa − y + (o ← →) para mover la aguja.", "Mantenla en la zona verde hasta llenar la barra."]),
     buscar: (s) => [`Toca solo ${BUSCAR_QUE[s.objetivo] || "lo que buscas"}.`, "¡No toques las demás!"],
     grafica: (s) => (s.modo === "radiacion" ? ["Cada barra es un día de radiación.", "La última es hoy: ¿es seguro salir?"] : ["Lee las alertas del Sol.", "Decide cuándo tener listo el refugio."]),
     rover: (s) => ["Mueve el rover con las flechas.", "El radar te dice si el hielo está cerca."].concat(s.guia ? ["Sigue la flecha de Control de Misión."] : ["¡Cuida la batería!"]),
@@ -629,7 +635,7 @@
     const pasos = (COMO_SE_JUEGA[spec.tipo] || (() => []))(spec);
     const titulo = spec.titulo || (spec.tipo === "grafica" && spec.modo === "radiacion" ? "Lee el medidor de radiación" : TITULO_MJ[spec.tipo] || "Minijuego");
     $mj.innerHTML = `<div class="mj mj-intro"><div class="mj-cab"><span class="mj-tag">MINIJUEGO · ASÍ SE JUEGA</span><h3 class="mj-tit">${esc(titulo)}</h3></div>` +
-      `<div class="mj-demo"><img src="img/minijuegos/${spec.tipo}.gif" alt="Demostración: así se juega ${esc(titulo)}">` +
+      `<div class="mj-demo"><img src="img/minijuegos/${spec.movil ? spec.tipo + "-movil" : spec.tipo}.gif" alt="Demostración: así se juega ${esc(titulo)}">` +
       `<ol class="mj-pasos">${pasos.map((p) => `<li>${esc(p)}</li>`).join("")}</ol></div><div class="ops" id="mj-ops"></div></div>`;
     voz(titulo + ". " + pasos.join(" "));
     // Enter también empieza (durante el minijuego el teclado es del juego)
@@ -859,7 +865,8 @@
     if (window.BITACORA) BITACORA.registrar("aprendido", clave, { titulo, texto, quien, tema: tema || null });
   }
   // pregunta con opciones; en automático acierta con probabilidad "comprensión"
-  async function elegir(cont, opciones, correcta, delay = 2000, pAuto = ui.comp) {
+  // (no se puede llamar elegir: esa es la del menú y si se repite el nombre, JUGAR deja de funcionar)
+  async function elegirRespuesta(cont, opciones, correcta, delay = 2000, pAuto = ui.comp) {
     const i = await botones(cont, opciones.map((o) => ({ html: esc(o) })), { auto: () => PQ.respuestaAuto(opciones.length, correcta, pAuto), delay });
     const ok = i === correcta;
     marcar(cont, i, ok ? "ok" : "ko"); if (!ok) marcar(cont, correcta, "ok");
@@ -893,7 +900,7 @@
       `<div class="ops col" id="ops"></div><div id="res"></div>`, "control");
     voz(q.enunciado);
     if (q.tipo === "bitacora") c.querySelector("#abrir-bt").addEventListener("click", () => window.BITACORA && BITACORA.abrir("datos"));
-    const ok = await elegir(c.querySelector("#ops"), bj.opciones, bj.correcta, 2300);
+    const ok = await elegirRespuesta(c.querySelector("#ops"), bj.opciones, bj.correcta, 2300);
     if (window.BITACORA && BITACORA.abierta()) BITACORA.cerrar();
     const costo = ok ? "" : cobrarError(q.barra);
     J.cuenta.ll++; if (ok) J.cuenta.llOk++;
@@ -915,23 +922,23 @@
     const c = pantalla(`<span class="tag llamada">LLAMADA · CONTROL DE MISIÓN</span><p class="txt">${esc(x.situacion[nv])}</p>` +
       `<span class="paso">1 · PREDICE: ¿QUÉ BARRA CAMBIA PRIMERO?</span><div class="ops" id="p1"></div><div id="p2w"></div><div id="p3w"></div><div id="act"></div><div id="res"></div>`, "control");
     voz(x.situacion[nv]);
-    const ok1 = await elegir(c.querySelector("#p1"), BARRAS.map((b) => MAYUS[b]), BARRAS.indexOf(x.cadena[0]), 1900);
+    const ok1 = await elegirRespuesta(c.querySelector("#p1"), BARRAS.map((b) => MAYUS[b]), BARRAS.indexOf(x.cadena[0]), 1900);
     const resto = BARRAS.filter((b) => b !== x.cadena[0]);
     c.querySelector("#p2w").innerHTML = `<span class="paso">… ¿Y QUÉ BARRA CAMBIA DESPUÉS?</span><div class="ops" id="p2"></div>`;
-    const ok2 = await elegir(c.querySelector("#p2"), resto.map((b) => MAYUS[b]), resto.indexOf(x.cadena[1]), 1900);
+    const ok2 = await elegirRespuesta(c.querySelector("#p2"), resto.map((b) => MAYUS[b]), resto.indexOf(x.cadena[1]), 1900);
     const predOk = ok1 && ok2;
     const costoPred = predOk ? "" : cobrarError(s.prediccion.barra);
     c.querySelector("#p2w").insertAdjacentHTML("beforeend", `<p class="sub">${esc(x.porQue)}${costoPred}</p>`);
     // evidencia
     const ev = PQ.barajarConCorrecta([x.evidencia.correcta, ...x.evidencia.distractores.slice(0, PQ.opcionesPorNivel(J.reto) - 1)], 0);
     c.querySelector("#p3w").innerHTML = `<span class="paso">2 · ¿QUÉ DATO LO PRUEBA?</span><div class="ops col" id="p3"></div>`;
-    const evOk = await elegir(c.querySelector("#p3"), ev.opciones, ev.correcta, 2100);
+    const evOk = await elegirRespuesta(c.querySelector("#p3"), ev.opciones, ev.correcta, 2100);
     const costoEv = evOk ? "" : cobrarError(s.prediccion.barra);
     // actúa
     const acc = barajar(s.acciones.slice(0, J.reto + 1).map((a, i) => ({ ...a, i })));
     c.querySelector("#act").innerHTML = `<span class="paso">3 · ACTÚA</span><div class="ops col" id="accs"></div>`;
     const accs = c.querySelector("#accs"), pos = acc.findIndex((a) => a.i === s.correcta);
-    const accOk = await elegir(accs, acc.map((a) => a.texto), pos, 2300, lim(ui.comp + (predOk ? 0.1 : -0.1), 0.02, 0.98));
+    const accOk = await elegirRespuesta(accs, acc.map((a) => a.texto), pos, 2300, lim(ui.comp + (predOk ? 0.1 : -0.1), 0.02, 0.98));
     const elegida = acc[accs.querySelector(".elegida") ? +accs.querySelector(".elegida").dataset.i : pos];
     const ef = !accOk && conApoyo() ? suavizar(elegida.efectos) : elegida.efectos;
     aplicar(ef);
@@ -1072,7 +1079,7 @@
       const rz = PQ.barajarConCorrecta([razon(k2.momento), ...otras], 0);
       c = pantalla(`<span class="tag">MANUAL PARA EL SIGUIENTE CAPITÁN</span><h2 class="titulo">${esc(k2.nombre)}</h2><p class="txt">¿Por qué se la recomiendas?</p><div class="ops col" id="ops"></div><div id="res"></div>`);
       voz("¿Por qué recomiendas " + k2.nombre + "?");
-      const ok = await elegir(c.querySelector("#ops"), rz.opciones, rz.correcta, 1900);
+      const ok = await elegirRespuesta(c.querySelector("#ops"), rz.opciones, rz.correcta, 1900);
       if (ok) bien.push(tt);
       c.querySelector("#res").innerHTML = `<div class="res ${ok ? "ok" : "ko"}">${ok ? "¡Buen consejo!" : `Esta carta sirve ${esc(k2.momento.charAt(0).toLowerCase() + k2.momento.slice(1))}.`} ${esc(k2.frase)}</div><div class="ops" id="ops2"></div>`;
       await continuar(c.querySelector("#ops2"), "Siguiente ▸", 1800);

@@ -107,20 +107,23 @@ El color cambia según la tensión del momento. `pantalla()` en `public/js/juego
 - **Lo aprendido:** las explicaciones de Control de Misión (llamadas) y de la Dra. Ortiz (averías).
 
 ## Efectos de sonido
-`public/js/sfx.js`. Si el efecto tiene archivo, suena `public/audio/sfx/<nombre>.mp3`; si no, suena uno corto provisional generado en código. Para poner el suyo: guarden el mp3 con ese nombre en `public/audio/sfx/` y agreguen el nombre a `ARCHIVOS` en `sfx.js`.
+`public/js/sfx.js`. Si el efecto tiene archivo, suena `public/audio/sfx/<nombre>.mp3`; si no, suena uno corto provisional generado en código. Para poner el suyo: guarden el mp3 con ese nombre en `public/audio/sfx/` y agreguen el nombre a `ARCHIVOS` en `sfx.js`. Si el mp3 trae silencio o varias tomas, pongan en `TOMAS` los segundos [inicio, fin] de cada pedazo; `VOLUMEN` ajusta el volumen de cada uno.
 
 | Nombre | Dónde suena | Archivo |
 |---|---|---|
 | `limpiar-panel` | Limpiar el polvo de los paneles: en bucle mientras se arrastra | ✅ del equipo |
-| `rayon` | Limpiar: pasar dos veces y rayar el panel | provisional |
+| `rayon` | Limpiar: pasar dos veces y rayar el panel | ✅ vidrio rayado |
 | `cable-conectar` | Cables: conexión correcta (el archivo trae 4 tomas; se usa una distinta cada vez) | ✅ del equipo |
 | `atrapar` / `caer` | Atrapar cajas o piezas / se cae una | provisional |
 | `paso` | Laberinto al refugio: cada paso | provisional |
-| `tapar` / `fuga-aire` | Tapar agujeros / se escapa el aire | provisional |
+| `tapar` / `fuga-aire` | Tapar agujeros (8 tomas de cinta) / se escapa el aire | ✅ / provisional |
 | `perilla` | Ajustar temperatura o alinear la nave | provisional |
-| `encontrar` | Buscar plantas enfermas, lechugas o la fuga | provisional |
-| `rover-mover` / `radar` | Rover en el cráter | provisional |
-| `interruptor` | Repartir la energía de noche | provisional |
+| `plantas` / `encontrar` | Buscar plantas enfermas o lechugas / la fuga | ✅ / provisional |
+| `rover-mover` / `radar` | Rover en el cráter | ✅ / provisional |
+| `interruptor` | Repartir la energía de noche (usa el archivo de `cable-conectar`) | ✅ |
+| `sismo` | Cuando empieza a temblar en la base | ✅ |
+| `aterrizaje` | Alunizaje de la intro (el golpe cae al tocar el suelo) y la nave que baja en los finales | ✅ |
+| `despegue` | La nave despega rumbo a la Tierra en los finales | ✅ |
 | `acierto` / `error` | Secuencias, preguntas de la Tierra, llamadas y averías | provisional |
 | `gano` / `perdio` | Al terminar cualquier minijuego | provisional |
 | `llamada` | Llamada entrante de Control de Misión | provisional |
