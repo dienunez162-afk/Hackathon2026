@@ -148,3 +148,24 @@ test("las 10 situaciones tienen cadena de dos barras distintas y evidencia con d
 test("cada avería tiene cuatro causas posibles", () => {
   for (const a of RETOS.averias) assert.equal(DATOS.averias.causas[a.id].length, 4, a.id);
 });
+
+test("todo el banco: opciones (mínimo 3), índice entero válido y opciones de texto", () => {
+  for (const p of DATOS.banco) {
+    assert.ok(Array.isArray(p.opciones) && p.opciones.length >= 3, p.id + ": mínimo 3 opciones");
+    assert.ok(Number.isInteger(p.indiceCorrecto) && p.indiceCorrecto >= 0 && p.indiceCorrecto < p.opciones.length, p.id + ": indiceCorrecto");
+    assert.ok(p.opciones.every((o) => typeof o === "string" && o.trim()), p.id + ": opciones de texto");
+    assert.equal(P.validarPregunta(p), null, p.id);
+  }
+});
+
+test("validarPregunta rechaza preguntas rotas sin lanzar error", () => {
+  for (const mala of [null, undefined, {}, { id: "x" }, { ...DATOS.banco[0], opciones: undefined }, { ...DATOS.banco[0], opciones: ["a"] },
+    { ...DATOS.banco[0], indiceCorrecto: 99 }, { ...DATOS.banco[0], opciones: ["a", "a", "b"] }, { ...DATOS.banco[0], opciones: ["a", "", "b"] }])
+    assert.ok(P.validarPregunta(mala), String(JSON.stringify(mala)).slice(0, 60));
+});
+
+test("el juego no tiene dos funciones con el mismo nombre (el bug de elegir)", () => {
+  const src = require("node:fs").readFileSync(require("node:path").join(__dirname, "../public/js/juego.js"), "utf8");
+  const nombres = [...src.matchAll(/^ {2}(?:async )?function (\w+)\(/gm)].map((m) => m[1]);
+  assert.deepEqual(nombres.filter((n, i) => nombres.indexOf(n) !== i), []);
+});

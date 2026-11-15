@@ -975,6 +975,11 @@
   // pregunta con opciones; en automático acierta con probabilidad "comprensión"
   // (no se puede llamar elegir: esa es la del menú y si se repite el nombre, JUGAR deja de funcionar)
   async function elegirRespuesta(cont, opciones, correcta, delay = 2000, pAuto = ui.comp) {
+    if (!Array.isArray(opciones) || opciones.length < 2 || !(correcta >= 0 && correcta < opciones.length)) {
+      console.error("[G-NOSIS] pregunta omitida: opciones o respuesta inválidas", { opciones, correcta });
+      if (cont) cont.innerHTML = "";
+      return true;
+    }
     const i = await botones(cont, opciones.map((o) => ({ html: esc(o) })), { auto: () => PQ.respuestaAuto(opciones.length, correcta, pAuto), delay });
     const ok = i === correcta;
     marcar(cont, i, ok ? "ok" : "ko"); if (!ok) marcar(cont, correcta, "ok");
@@ -993,6 +998,8 @@
   //   1.er error: se tacha la opción, aparece la pista y cuesta un poco (cobrarPista);
   //   2.º error: se muestra la respuesta y la explicación, se cobra el costo normal y se sigue.
   async function preguntar(cont, q, { delay = 2000, pAuto = ui.comp } = {}) {
+    const invalida = PQ.validarPregunta(q);
+    if (invalida) { console.error("[G-NOSIS] pregunta omitida (" + (q && q.id) + "): " + invalida); if (cont) cont.innerHTML = ""; return { ok: true, intentos: 0, omitida: true }; }
     const { opciones, correcta } = q, tachadas = new Set();
     let aviso = cont.nextElementSibling;
     if (!aviso || !aviso.classList.contains("aviso-pista")) { aviso = document.createElement("div"); aviso.className = "aviso-pista"; cont.after(aviso); }

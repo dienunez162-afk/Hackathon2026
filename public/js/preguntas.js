@@ -150,10 +150,13 @@
   // valida que una pregunta tenga el esquema completo
   const CAMPOS = ["id", "nivel", "tipo", "enunciado", "opciones", "indiceCorrecto", "fraseEvidencia", "explicacion", "fuente", "pista"];
   function validarPregunta(p) {
+    if (!p || typeof p !== "object") return "no es una pregunta";
     const faltan = CAMPOS.filter((c) => p[c] === undefined || p[c] === null || p[c] === "");
     if (faltan.length) return "faltan: " + faltan.join(", ");
     if (![1, 2, 3].includes(p.nivel)) return "nivel inválido";
     if (!Array.isArray(p.opciones) || p.opciones.length < 2) return "pocas opciones";
+    if (!p.opciones.every((o) => typeof o === "string" && o.trim())) return "opción vacía o que no es texto";
+    if (!Number.isInteger(p.indiceCorrecto)) return "indiceCorrecto no es entero";
     if (p.indiceCorrecto < 0 || p.indiceCorrecto >= p.opciones.length) return "indiceCorrecto fuera de rango";
     if (new Set(p.opciones).size !== p.opciones.length) return "opciones repetidas";
     if (p.barra && !BARRAS.includes(p.barra)) return "barra inválida";

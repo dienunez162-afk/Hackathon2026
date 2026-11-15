@@ -1,9 +1,6 @@
 # Pendientes de G-NOSIS
 
-Lista revisada el 15 de noviembre de 2026, después del primer despliegue en Vercel.
-
-## Revisar en Vercel (5 minutos)
-- [ ] **Revisar las APIs en Vercel.** `/api/donki`, `/api/radlab` y `/api/osdr` deben responder con datos (ninguna pide llave). En "herramientas del equipo", la línea "Datos" debe decir `real` en las tres.
+Lista revisada el 15 de noviembre de 2026, después de probar `gnosis-kappa.vercel.app` (commit 0d4af7c): JUGAR arranca y dos misiones seguidas en modo automático 4× terminaron sin errores en consola.
 
 ## Antes de enseñarlo o entregarlo
 - [ ] **Ocultar las herramientas del equipo.** Hoy cualquier niño puede abrirlas, ver los niveles o activar el modo automático. Mostrarlas solo con un parámetro como `?equipo=1`.
@@ -30,10 +27,17 @@ Lista revisada el 15 de noviembre de 2026, después del primer despliegue en Ver
 - [ ] **Rebalancear con las llamadas nuevas.** Ahora hay ~6 llamadas con costo por error; el simulador (`herramientas/simulador-mision.js`) todavía no las modela, así que la tabla de evacuación del balance es de antes.
 - [ ] **Revisar con un docente las 16 preguntas** y los textos de las situaciones (lenguaje para 7-12 años).
 
+## Diferenciadores (ver propuesta en la conversación del 15-nov)
+- [ ] Elegir 2-3 para la demo: confianza antes de responder, "Explícaselo a Laika", repaso espaciado entre misiones, misiones cortas de 3 minutos, modo accesibilidad.
+
 ## Para Space Apps
 - [ ] Revisar en la página del reto qué piden exactamente (normalmente un video corto de demo, la descripción del proyecto y qué datos de la NASA se usan). La tabla de APIs del README sirve para esto último.
 
 ## Hecho
+- [x] **APIs en Vercel.** `/api/donki` (CCMC), `/api/radlab` y `/api/osdr` responden con datos reales (comprobado el 15-nov).
+- [x] **JUGAR / `elegir` duplicada.** Diego renombró la función de preguntas a `elegirRespuesta`; se añadieron guardas (`elegirRespuesta` y `preguntar` omiten una pregunta inválida y lo registran en consola), `validarPregunta` más estricta y pruebas: todo el banco (≥3 opciones, índice válido) y que `juego.js` no repita nombres de función.
+- [x] **Partida completa en Vercel** (modo automático 4×, navegador sin datos): dos misiones seguidas, sin errores.
+- [x] **Menú de pausa, Laika, escena ajustada a la franja, pantalla completa 16:9, preguntas ligadas a la lectura** (PRs 4-10 de Diego).
 - [x] **Pendientes del equipo (PDF).** Menú de cartas retráctil, "Así se juega" con demo animada antes de cada minijuego, sin la tira de días y barras sin rayitas en los segmentos apagados.
 - [x] **Cuadros de texto pixel art** con colores según la tensión (normal, llamada, alerta, catástrofe).
 - [x] **Bitácora en 0 / HUD encimado**: era el caché del navegador (index.html nuevo con juego.js viejo). Ahora los scripts llevan versión y se revalidan.
