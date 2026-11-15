@@ -945,6 +945,14 @@
     } else cab = `<span class="tag">INFORME</span><h2 class="titulo">${esc(n.titulo)}</h2>`;
     if (nueva && Object.keys(J.cartas).length === 1) J.laikaCarta = true;   // primera carta: Laika explica al terminar
     const q = preguntaDeInforme(n.id);
+    J.temasLeidos = J.temasLeidos || {};
+    const repetido = !q && !nueva && J.temasLeidos[t];
+    J.temasLeidos[t] = true;
+    if (repetido) {   // menos repetición: ya lo leíste; queda en la bitácora con la marca NUEVO
+      toast(`Nuevo informe en tu bitácora: «${n.titulo}».`);
+      log(`Informe guardado sin pantalla (tema ya leído): ${n.titulo}.`);
+      return;
+    }
     if (q) {
       J.usadas.push(q.id);
       const c = pantalla(cab + `<p class="txt pregunta-antes"><b>Busca en el texto:</b> ${esc(q.enunciado)}</p>` + lectura(n.informe.texto, saber) +
@@ -1057,8 +1065,7 @@
     await irA("control", { llamada: true }, "¡Suena la radio en");
     await consejoLaika("llamada", "¡Guau! Llama Control de Misión. Primero verás la pregunta y luego el informe: léelo para encontrar la respuesta.");
     if (window.SFX) SFX.play("llamada");
-    const c = pantalla(`<span class="tag llamada">LLAMADA ENTRANTE</span><h2 class="titulo">((( Control de Misión )))</h2><div class="ops" id="ops"></div>`, "control");
-    await continuar(c.querySelector("#ops"), "Contestar ▸", 1100);
+    toast("((( Llamada de Control de Misión )))");
     if (tipo === "situacion") { const sel = elegirTema(idx); if (sel) return llamadaSituacion(sel); }
     if (tipo === "bitacora" && !J.bitacoraHecha) { const q = PQ.preguntaBitacora(APIS.datos); if (q) { J.bitacoraHecha = true; return preguntaCtrl(q, "CONSULTA TU BITÁCORA"); } }
     const q = PQ.elegirPregunta(PD.banco, J.reto, J.usadas, Object.keys(J.aprendidos));
